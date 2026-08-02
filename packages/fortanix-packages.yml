@@ -1,0 +1,179 @@
+generated: '2026-08-01'
+method: searched
+source: 'npm, PyPI, Maven Central, NuGet, pkg.go.dev, crates.io, Packagist, the Terraform
+  Registry, github.com/fortanix, and https://support.fortanix.com/docs/fortanix-dsm-clients-sdks-for-rest-api'
+packages:
+- language: python
+  registry: pypi
+  name: sdkms
+  version: 5.6.2919
+  url: https://pypi.org/project/sdkms/
+  install: pip install sdkms
+  official: true
+  publisher: Fortanix <support@fortanix.com>
+  summary: Fortanix DSM REST API client for Python
+  api: fortanix:dsm
+- language: java
+  registry: maven-central
+  name: com.fortanix:sdkms-client
+  version: 5.0.2817
+  url: https://central.sonatype.com/artifact/com.fortanix/sdkms-client
+  install: '<dependency><groupId>com.fortanix</groupId><artifactId>sdkms-client</artifactId></dependency>'
+  official: true
+  summary: Java client library for Fortanix DSM (SDKMS)
+  api: fortanix:dsm
+- language: java
+  registry: maven-central
+  name: com.fortanix:sdkms-jce-provider
+  version: 5.0.2817
+  url: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider
+  official: true
+  summary: Java Cryptography Extension (JCE) provider backed by Fortanix DSM
+  api: fortanix:dsm
+- language: java
+  registry: maven-central
+  name: com.fortanix:sdkms-jce-provider-jdk11
+  version: 4.19.2244
+  url: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-jdk11
+  official: true
+  summary: JDK 11 build of the Fortanix DSM JCE provider
+  api: fortanix:dsm
+- language: java
+  registry: maven-central
+  name: com.fortanix:sdkms-jce-provider-dsma
+  version: 4.15.2182
+  url: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-dsma
+  official: true
+  summary: Fortanix DSM Accelerator build of the JCE provider
+  api: fortanix:dsm
+- language: java
+  registry: maven-central
+  name: com.fortanix:sdkms-jce-provider-dsma-jdk11
+  version: 4.15.2182
+  url: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-dsma-jdk11
+  official: true
+  summary: JDK 11 build of the Fortanix DSM Accelerator JCE provider
+  api: fortanix:dsm
+- language: go
+  registry: go-modules
+  name: github.com/fortanix/sdkms-client-go
+  version: v0.4.2
+  url: https://pkg.go.dev/github.com/fortanix/sdkms-client-go
+  install: go get github.com/fortanix/sdkms-client-go
+  official: true
+  repository: https://github.com/fortanix/sdkms-client-go
+  summary: Go client library for Fortanix DSM (Self-Defending Key Management Service)
+  api: fortanix:dsm
+- language: rust
+  registry: crates.io
+  name: sdkms
+  version: 0.5.0
+  url: https://crates.io/crates/sdkms
+  install: cargo add sdkms
+  official: true
+  repository: https://github.com/fortanix/sdkms-client-rust
+  summary: API bindings for Fortanix DSM (a.k.a. Fortanix SDKMS)
+  api: fortanix:dsm
+- language: rust
+  registry: crates.io
+  name: em-client
+  version: 4.0.2
+  url: https://crates.io/crates/em-client
+  install: cargo add em-client
+  official: true
+  repository: https://github.com/fortanix/em-client-rust
+  summary: Rust bindings for the Fortanix Enclave Manager / Confidential Computing
+    Manager API
+  api: fortanix:ccm
+- language: hcl
+  registry: terraform-registry
+  name: fortanix/dsm
+  version: 0.5.36
+  url: https://registry.terraform.io/providers/fortanix/dsm/latest
+  install: 'terraform { required_providers { dsm = { source = "fortanix/dsm" } } }'
+  official: true
+  repository: https://github.com/fortanix/terraform-provider-dsm
+  summary: Terraform provider for Fortanix Data Security Manager
+  api: fortanix:dsm
+- language: hcl
+  registry: terraform-registry
+  name: fortanix/ccm
+  version: 0.1.0
+  url: https://registry.terraform.io/providers/fortanix/ccm/latest
+  official: true
+  repository: https://github.com/fortanix/terraform-provider-ccm
+  summary: Terraform provider for Fortanix Confidential Computing Manager
+  api: fortanix:ccm
+- language: go
+  registry: github
+  name: k8s-sdkms-plugin
+  url: https://github.com/fortanix/k8s-sdkms-plugin
+  official: true
+  summary: Kubernetes KMS plugin for Fortanix DSM
+  api: fortanix:dsm
+- language: go
+  registry: github
+  name: fortanix-csi-provider
+  url: https://github.com/fortanix/fortanix-csi-provider
+  official: true
+  summary: Fortanix CSI provider for the Kubernetes secrets-store CSI driver
+  api: fortanix:dsm
+- language: java
+  registry: github
+  name: dsm-secrets-jenkins-plugin
+  url: https://github.com/fortanix/dsm-secrets-jenkins-plugin
+  official: true
+  summary: Jenkins plugin that initializes environment variables from secrets stored
+    in Fortanix DSM
+  api: fortanix:dsm
+- language: rust
+  registry: github
+  name: sq-dsm
+  url: https://github.com/fortanix/sq-dsm
+  official: true
+  summary: Sequoia-PGP fork performing OpenPGP operations with keys held in Fortanix
+    DSM
+  api: fortanix:dsm
+non_registry_clients:
+- name: sdkms-cli
+  language: python
+  kind: cli
+  official: true
+  docs: https://support.fortanix.com/docs/fortanix-dsm-clients-command-line-interface-cli
+  note: 'Distributed from the Fortanix support portal rather than PyPI; see cli/fortanix-cli.yml.'
+- name: Fortanix DSM PKCS#11 library
+  kind: cryptographic-interface
+  official: true
+  docs: https://support.fortanix.com/docs/fortanix-dsm-clients-pkcs11-library
+- name: Fortanix DSM Microsoft CNG Key Storage Provider
+  kind: cryptographic-interface
+  official: true
+  docs: https://support.fortanix.com/docs/fortanix-dsm-clients-microsoft-cng-key-storage-provider
+- name: Fortanix DSM Java Cryptography Extension (JCE) Provider
+  kind: cryptographic-interface
+  official: true
+  docs: https://support.fortanix.com/docs/fortanix-dsm-clients-java-cryptography-extension-jce-provider
+registries_checked:
+  npm: 'no first-party package (sdkms, fortanix, @fortanix/sdkms, sdkms-client all
+    404). The docs list a JavaScript SDK but ship it as example code rather than a
+    published npm module.'
+  nuget: no first-party package found for a "fortanix" query, though the docs list
+    a C# SDK as example code
+  packagist: no first-party package found, though the docs list a PHP SDK as example
+    code
+  rubygems: not applicable, no Ruby SDK documented
+summary:
+  official_count: 15
+  languages:
+  - python
+  - java
+  - go
+  - rust
+  - hcl
+  registries:
+  - pypi
+  - maven-central
+  - go-modules
+  - crates.io
+  - terraform-registry
+  - github

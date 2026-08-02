@@ -1,0 +1,129 @@
+generated: '2026-08-01'
+method: searched
+source: https://support.fortanix.com/docs/fortanix-dsm-clients-command-line-interface-cli
+clis:
+- name: sdkms-cli
+  api: fortanix:dsm
+  language: python
+  description: 'A cross-platform Fortanix Data Security Manager (DSM) client command-line
+    utility written in Python. It wraps the DSM REST API for authentication, key lifecycle,
+    cryptographic operations, application/group/account administration and plugin management.'
+  docs: https://support.fortanix.com/docs/fortanix-dsm-clients-command-line-interface-cli
+  install:
+  - method: download
+    source: https://support.fortanix.com/hc/en-us/sections/17701671182356-Fortanix-DSM-CLI
+    note: 'Downloaded from the Fortanix support portal; see the client Compatibility
+      Matrix at https://support.fortanix.com/docs/fortanix-dsm-clients-compatibility-matrix
+      for supported versions.'
+  command_groups:
+  - group: authentication
+    commands:
+    - app-login
+    - user-login
+    - app-logout
+    - user-logout
+    - app-certificate-login
+    - logout
+    - select-account
+  - group: key-management
+    commands:
+    - create-key
+    - import-key
+    - persist-key
+    - delete-key
+    - rotate-key
+    - list-keys
+    - show-sobject
+    - export-object
+    - activate-object
+    - revoke-object
+    - update-object
+  - group: cryptographic-operations
+    commands:
+    - encrypt
+    - decrypt
+    - wrap-key
+    - unwrap-key
+    - derive-key
+    - sign
+    - verify
+    - message-digest
+    - hmac-digest
+    - hmac-verify
+    - agree-key
+  - group: batch-operations
+    commands:
+    - batch-encrypt
+    - batch-decrypt
+    - batch-sign
+    - batch-verify
+  - group: multipart-operations
+    commands:
+    - encrypt-init
+    - encrypt-update
+    - encrypt-final
+    - decrypt-init
+    - decrypt-update
+    - decrypt-final
+  - group: certificates-and-secrets
+    commands:
+    - import-cert
+    - import-secret
+    - rotate-secret
+  - group: apps-and-groups
+    commands:
+    - create-app
+    - list-apps
+    - get-app-api-key
+    - regenerate-app-api-key
+    - delete-app
+    - show-app
+    - create-group
+    - list-groups
+    - delete-group
+    - show-group
+  - group: accounts
+    commands:
+    - list-accounts
+    - show-account
+  - group: administration
+    commands:
+    - server-version
+    - server-health
+    - audit-log
+    - invoke-plugin
+    - create-plugin
+    - update-plugin
+    - delete-plugin
+    - task-result
+    - show-user
+  key_flows:
+  - name: authenticate as an application
+    steps:
+    - sdkms-cli app-login
+    - sdkms-cli select-account
+    backing_operations:
+    - Authenticate
+  - name: create and use a key
+    steps:
+    - sdkms-cli create-key
+    - sdkms-cli encrypt
+    - sdkms-cli decrypt
+    backing_operations:
+    - GenerateSecurityObject
+    - Encrypt
+    - Decrypt
+  - name: rotate a key
+    steps:
+    - sdkms-cli rotate-key
+    backing_operations:
+    - RotateSobject
+- name: em-cli
+  api: fortanix:ccm
+  description: 'Command-line client for the Fortanix Confidential Computing Manager
+    (formerly Enclave Manager), used to enroll and manage applications, images and
+    compute nodes.'
+  docs: https://support.fortanix.com/docs/using-em-cli-with-fortanix-ccm
+  command_groups: []
+  note: 'Command surface not enumerated verbatim on the public docs page; only the
+    tool and its usage guide are recorded here.'

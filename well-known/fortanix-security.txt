@@ -1,0 +1,16 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+Contact: mailto:security@fortanix.com
+Expires: 2027-04-30T13:20:56.608Z
+Encryption: https://www.fortanix.com/trust-center/pgp-key
+Preferred-Languages: en
+Canonical: https://www.fortanix.com/.well-known/security.txt
+Canonical: https://www.fortanix.com/security.txt
+Policy: https://www.fortanix.com/trust-center
+-----BEGIN PGP SIGNATURE-----
+wr0EARYKAG8FgmnzOx8JEFihJWOhSfkCRxQAAAAAAB4AIHNhbHRAbm90YXRpb25z
+LnNlcXVvaWEtcGdwLm9yZ31LRhS5Js/C5gaQAatvZSw2S1YUwwHGAfmjgIcuJJtL
+FiEEvEyznxTYvFBMxHGcWKElY6FJ+QIAAGC3AQDdON6nqAgZZqK+fLH0NRgzj6uY
+hp4R7ISnb1pA4Rv1QQD/epAQjNQ6dciNewZx+j4DuLVKQjJMmcw8wVeWf6i2jQY=
+=7rjM
+-----END PGP SIGNATURE-----

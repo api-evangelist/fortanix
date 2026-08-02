@@ -1,0 +1,109 @@
+generated: '2026-08-01'
+method: derived
+source: 'openapi/fortanix-dsm-openapi-original.json, openapi/fortanix-ccm-openapi-original.json,
+  openapi/fortanix-armor-key-insight-openapi-original.json, https://www.fortanix.com/trust-center,
+  https://support.fortanix.com/docs/fortanix-dsm-clients-pkcs11-supported-functions-and-mechanisms'
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: 'DSM and Armor/Key Insight publish OpenAPI 3.0.0 documents (openapi: 3.0.0).'
+- id: swagger-2.0
+  conforms: true
+  evidence: The Confidential Computing Manager API publishes a Swagger 2.0 document.
+- id: oauth2
+  conforms: true
+  evidence: 'Armor / Key Insight declares an oauth2 securityScheme with the clientCredentials
+    flow (RFC 6749 section 4.4), tokenUrl https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token.'
+- id: rfc6749-client-credentials
+  conforms: true
+  evidence: The Armor securityScheme description cites RFC 6749 section 4.4 explicitly.
+- id: rfc8414-authorization-server-metadata
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server returns 404 on every probed host.
+- id: oidc
+  conforms: false
+  evidence: 'No openIdConnect securityScheme in any spec, and /.well-known/openid-configuration
+    returns 404 on every probed host. Note: DSM does support SAML SSO (SamlSpMetadata,
+    GET /saml/metadata.xml) and LDAP (LdapSearch, TestLdapConfig) for federated user
+    authentication.'
+- id: saml-2.0
+  conforms: true
+  evidence: DSM exposes SAML service-provider metadata at GET /saml/metadata.xml (operationId
+    SamlSpMetadata).
+- id: rfc7519-jwt
+  conforms: true
+  evidence: 'DSM bearerToken scheme declares bearerFormat: JWT; CCM documents its Authentication
+    header as "A JWT bearer token to be passed once authenticated".'
+- id: rfc9116-security-txt
+  conforms: true
+  evidence: 'PGP-signed security.txt served at https://www.fortanix.com/.well-known/security.txt
+    with Contact, Expires, Encryption, Preferred-Languages, Canonical and Policy fields.'
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: No application/problem+json response is declared anywhere across the three
+    specs.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header support documented; no deprecation policy
+    published.
+- id: rfc8615-well-known-uris
+  conforms: partial
+  evidence: security.txt is served at the well-known path; no other well-known document
+    (api-catalog, agent-card, oauth metadata, ai-plugin) is published.
+- id: a2a-agent-card
+  conforms: false
+  evidence: /.well-known/agent-card.json and /.well-known/agent.json return 404 on
+    every Fortanix host; ccm.fortanix.com answers 200 with an SPA HTML shell and was
+    rejected as a false positive.
+- id: mcp
+  conforms: false
+  evidence: No hosted or published Model Context Protocol server was found.
+- id: asyncapi
+  conforms: false
+  evidence: No event, streaming or webhook surface is documented for any Fortanix product,
+    so there is no AsyncAPI document to publish.
+- id: json-api
+  conforms: false
+  evidence: Responses are bare resource objects or an {items, metadata} envelope, not
+    JSON:API documents.
+- id: pkcs11
+  conforms: true
+  evidence: Fortanix publishes a PKCS#11 library with a documented supported-functions-and-mechanisms
+    matrix (https://support.fortanix.com/docs/fortanix-dsm-clients-pkcs11-supported-functions-and-mechanisms).
+- id: jce
+  conforms: true
+  evidence: 'First-party Java Cryptography Extension provider published to Maven Central
+    (com.fortanix:sdkms-jce-provider).'
+- id: microsoft-cng
+  conforms: true
+  evidence: Fortanix publishes a Microsoft CNG Key Storage Provider backed by DSM.
+- id: kmip
+  conforms: unknown
+  evidence: Not asserted in the harvested specs or the pages reviewed in this pass.
+- id: fips-140-2-level-3
+  conforms: true
+  evidence: 'The Fortanix DSM application runs in an Intel SGX enclave and is a FIPS
+    140-2 Level 3 validated cryptographic module (trust center; NIST certification
+    announced 2019).'
+- id: soc-2
+  conforms: true
+  evidence: Listed on https://www.fortanix.com/trust-center
+- id: iso-27001
+  conforms: true
+  evidence: Listed on https://www.fortanix.com/trust-center
+- id: pci-dss
+  conforms: true
+  evidence: Listed on https://www.fortanix.com/trust-center
+- id: cis-benchmarks
+  conforms: true
+  evidence: OS compliance against CIS benchmarks listed on https://www.fortanix.com/trust-center
+compliance_program:
+  published: true
+  url: https://www.fortanix.com/trust-center
+  certifications:
+  - SOC 2
+  - ISO 27001
+  - PCI DSS
+  - FIPS 140-2 Level 3
+  - CIS Benchmarks
+  see: security/fortanix-trust-center.yml

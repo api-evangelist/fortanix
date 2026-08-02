@@ -1,0 +1,27 @@
+generated: '2026-08-01'
+method: derived
+source: openapi/fortanix-armor-key-insight-openapi-original.json
+schemes:
+- name: Oauth2ClientCredentials
+  source: openapi/fortanix-armor-key-insight-openapi-original.json
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+  description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.
+  api: fortanix:armor-key-insight
+scopes: []
+docs:
+- name: Programmatic Access to Fortanix Armor IAM
+  url: https://support.fortanix.com/docs/programmatic-access-to-fortanix-armor-iam
+- name: Client Credentials Flow
+  url: https://support.fortanix.com/docs/fortanix-key-insight-aws-client-credentials-flow
+finding: 'Fortanix publishes NO OAuth scopes. The single oauth2 securityScheme in the
+  catalog — Oauth2ClientCredentials on the Armor / Key Insight API — declares an empty
+  scopes map, and no operation attaches a scope requirement. The docs describe how to
+  obtain a client-credentials token (including via Okta and Auth0 as external authorization
+  servers) but publish no scope or permission reference page.'
+authorization_model: 'Fortanix does not use scopes to express authorization anywhere
+  in its platform. DSM authorizes by GROUP MEMBERSHIP — an app or user may act on a
+  security object only if it belongs to that object''s group, with per-membership operation
+  restrictions — and by custom/external roles. CCM uses a JWT bearer token with no scope
+  claim documented. See authentication/fortanix-authentication.yml.'

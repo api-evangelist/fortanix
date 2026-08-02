@@ -1,0 +1,115 @@
+generated: '2026-08-01'
+method: searched
+source: live probes of every apis.yml host and OpenAPI servers[] host
+hosts_probed:
+- https://www.fortanix.com
+- https://fortanix.com
+- https://support.fortanix.com
+- https://amer.smartkey.io
+- https://eu.smartkey.io
+- https://apac.smartkey.io
+- https://ccm.fortanix.com
+- https://api.armor.fortanix.com
+- https://api.na.armor.fortanix.com
+documents:
+- host: https://www.fortanix.com
+  path: /.well-known/security.txt
+  status: 200
+  content_type: text/plain
+  file: fortanix-security.txt
+  spec: RFC 9116
+- host: https://fortanix.com
+  path: /.well-known/security.txt
+  status: 200
+  content_type: text/plain
+  note: apex serves the same document as www
+- host: https://www.fortanix.com
+  path: /.well-known/openid-configuration
+  status: 404
+- host: https://www.fortanix.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+- host: https://www.fortanix.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+- host: https://www.fortanix.com
+  path: /.well-known/api-catalog
+  status: 404
+- host: https://www.fortanix.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+- host: https://www.fortanix.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://www.fortanix.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://amer.smartkey.io
+  path: /.well-known/security.txt
+  status: 404
+- host: https://amer.smartkey.io
+  path: /.well-known/openid-configuration
+  status: 404
+- host: https://amer.smartkey.io
+  path: /.well-known/oauth-authorization-server
+  status: 404
+- host: https://amer.smartkey.io
+  path: /.well-known/oauth-protected-resource
+  status: 404
+- host: https://amer.smartkey.io
+  path: /.well-known/api-catalog
+  status: 404
+- host: https://amer.smartkey.io
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://amer.smartkey.io
+  path: /.well-known/agent.json
+  status: 404
+- host: https://api.armor.fortanix.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://api.armor.fortanix.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+- host: https://api.armor.fortanix.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://api.armor.fortanix.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://support.fortanix.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://support.fortanix.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://support.fortanix.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://ccm.fortanix.com
+  path: /.well-known/agent-card.json
+  status: 200
+  content_type: text/html
+  accepted: false
+  note: 'ccm.fortanix.com is a single-page application whose catch-all route answers
+    HTTP 200 with the same 5,332-byte HTML shell for every /.well-known/* path probed.
+    No JSON document is served; every hit on this host was rejected as a false positive.'
+- host: https://eu.smartkey.io
+  path: /.well-known/*
+  status: 404
+- host: https://apac.smartkey.io
+  path: /.well-known/*
+  status: 404
+summary:
+  security_txt: true
+  openid_configuration: false
+  oauth_authorization_server: false
+  oauth_protected_resource: false
+  api_catalog: false
+  ai_plugin: false
+  agent_card: false
+notes: 'The Armor / Key Insight OpenAPI declares an OAuth 2.0 client-credentials scheme
+  with tokenUrl https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token, but
+  Fortanix publishes no RFC 8414 authorization-server metadata and no OIDC discovery
+  document at any probed host, so the token endpoint is discoverable only from the
+  spec and the docs.'

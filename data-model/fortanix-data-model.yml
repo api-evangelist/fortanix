@@ -1,0 +1,274 @@
+generated: '2026-08-01'
+method: derived
+source: 'openapi/fortanix-dsm-openapi-original.json (741 schemas), openapi/fortanix-ccm-openapi-original.json
+  (280 definitions), openapi/fortanix-armor-key-insight-openapi-original.json (614
+  schemas)'
+derivation: 'Entities and relationships were computed from schema $ref links and id-reference
+  properties in the harvested specs. Identifiers are UUIDs (format: uuid) throughout;
+  Fortanix uses no typed id prefixes.'
+id_convention:
+  format: uuid
+  prefixes: none
+  note: 'Every entity key in the DSM model is a bare RFC 4122 UUID (acct_id, group_id,
+    app_id, kid, user_id, plugin_id, req_id, cred_id). There is no Stripe-style typed
+    prefix, so an id alone does not identify its entity type.'
+entities:
+- name: Account
+  api: fortanix:dsm
+  key: acct_id
+  description: The top-level tenant. Owns groups, apps, users, plugins and all security
+    objects. Supports parent/child nesting and cross-account replication credentials.
+  operations:
+  - CreateAccount
+  - ListAccounts
+  - GetAccount
+  - UpdateAccount
+  - DeleteAccount
+  - AccountUsage
+- name: Group
+  api: fortanix:dsm
+  key: group_id
+  description: 'Security-object container and unit of authorization. A group can be
+    backed by an external HSM/KMS (HMG) — Azure Key Vault, GCP Key Ring, AWS KMS, OCI
+    Vault — which is where the scan operations attach.'
+  operations:
+  - CreateGroup
+  - ListGroups
+  - GetGroup
+  - UpdateGroup
+  - DeleteGroup
+- name: Sobject
+  aka: Security Object
+  api: fortanix:dsm
+  key: kid
+  description: 'The central entity: a key, certificate or secret. Carries a lifecycle
+    state (Pre-Active, Active, Deactivated, Compromised, Destroyed), an object type,
+    custom attributes, and links to its group and creator. Every cryptographic operation
+    is performed against an Sobject.'
+  operations:
+  - CreateSobject
+  - ImportSobject
+  - ListSobjects
+  - GetSobject
+  - UpdateSobject
+  - DeleteSobject
+  - ActivateSobject
+  - RevokeSobject
+  - DestroySobject
+  - RotateSobject
+  - ReplaceSobject
+  - CopySobject
+  - ExportSobject
+  - PersistTransientKey
+- name: App
+  api: fortanix:dsm
+  key: app_id
+  description: A machine identity. Holds an API key or client certificate credential
+    and a set of group memberships that determine which security objects it may use.
+  operations:
+  - CreateApp
+  - ListApps
+  - GetApp
+  - UpdateApp
+  - DeleteApp
+  - GetAppCredential
+  - ResetAppSecret
+  - AddGroupMembership
+  - GetAllGroupMemberships
+  - UpdateGroupMembership
+  - DeleteGroupMembership
+- name: User
+  api: fortanix:dsm
+  key: user_id
+  description: A human identity with account memberships, group memberships, permissions,
+    2FA enrollment and recovery codes.
+  operations:
+  - SignupUser
+  - ListUsers
+  - GetUser
+  - UpdateUser
+  - DeleteUser
+  - InviteUser
+  - GetUserAccounts
+  - GetUserPermissions
+- name: Plugin
+  api: fortanix:dsm
+  key: plugin_id
+  description: A Lua program stored in DSM and executed server-side inside the enclave,
+    scoped to groups. Invoked through the API to compose custom cryptographic logic.
+  operations:
+  - CreatePlugin
+  - ListPlugins
+  - GetPlugin
+  - UpdatePlugin
+  - DeletePlugin
+  - InvokePlugin
+- name: ApprovalRequest
+  api: fortanix:dsm
+  key: req_id
+  description: A quorum gate. Wraps a deferred operation that requires N approvers
+    before it executes; the result is retrieved separately once approved.
+  operations:
+  - CreateApprovalRequest
+  - ListApprovalRequests
+  - GetApprovalRequest
+  - ApproveRequest
+  - DenyRequest
+  - GetApprovalRequestResult
+  - MfaChallenge
+  - DeleteApprovalRequest
+- name: ExternalRole
+  api: fortanix:dsm
+  key: external_role_id
+  description: A role synchronised from an external identity source (LDAP/AD), mapped
+    onto DSM groups.
+  operations:
+  - ListExternalRoles
+- name: ReplicationCredential
+  api: fortanix:dsm
+  key: credential_id
+  description: An admin-app credential used to replicate an account between DSM clusters,
+    optionally self-signed.
+  operations:
+  - CreateReplicationCredential
+  - ListReplicationCredentials
+  - GetReplicationCredential
+  - UpdateReplicationCredential
+  - DeleteReplicationCredential
+  - ReplicationCredentialSelfSignedCert
+- name: AuditLogEntry
+  api: fortanix:dsm
+  key: null
+  description: An immutable record of an action, keyed by actor type/id, action type,
+    affected object_id and severity, paged with a previous_id cursor.
+  operations:
+  - GetAllLogs
+- name: Application
+  api: fortanix:ccm
+  description: A workload registered with the Confidential Computing Manager, limited
+    to 10 per account, owning enclave images and a certificate configuration.
+- name: Image
+  api: fortanix:ccm
+  description: A converted enclave image with a unique MRENCLAVE measurement, limited
+    to 10 per application.
+- name: Node
+  api: fortanix:ccm
+  description: An enrolled compute node that attests itself to CCM; enrollment fails
+    to "Unprovisioned" when IAS attestation fails.
+- name: Zone
+  api: fortanix:ccm
+  description: A trust domain grouping accounts, nodes and applications under one CCM
+    certificate authority.
+- name: Workflow
+  api: fortanix:ccm
+  description: A multi-step confidential-computing pipeline with dataset inputs, compute
+    clusters and runs.
+- name: DiscoveryConnection
+  api: fortanix:armor-key-insight
+  description: A credentialed link to a cloud or on-premises environment that Key Insight
+    scans for cryptographic assets.
+- name: Scan
+  api: fortanix:armor-key-insight
+  key: scan_id
+  description: One execution of a discovery connection, producing a scan inventory.
+- name: ScanInventoryObject
+  api: fortanix:armor-key-insight
+  key: scan_inventory_object_id
+  description: An individual cryptographic asset (key, certificate, algorithm usage)
+    found by a scan and reported against AWS, Azure, on-premises, services, DSM and
+    post-quantum report views.
+relationships:
+- from: Group
+  to: Account
+  type: belongs_to
+  via: acct_id
+- from: Sobject
+  to: Account
+  type: belongs_to
+  via: acct_id
+- from: Sobject
+  to: Group
+  type: belongs_to
+  via: group_id
+- from: Sobject
+  to: User
+  type: belongs_to
+  via: creator
+- from: Account
+  to: Sobject
+  type: has_many
+  via: acct_id
+- from: Group
+  to: Sobject
+  type: has_many
+  via: group_id
+- from: App
+  to: Account
+  type: belongs_to
+  via: acct_id
+- from: App
+  to: Group
+  type: has_many
+  via: groups
+- from: User
+  to: Group
+  type: has_many
+  via: groups
+- from: Plugin
+  to: Account
+  type: belongs_to
+  via: acct_id
+- from: Plugin
+  to: Group
+  type: has_many
+  via: groups
+- from: ApprovalRequest
+  to: Account
+  type: belongs_to
+  via: acct_id
+- from: ExternalRole
+  to: Account
+  type: belongs_to
+  via: acct_id
+- from: ExternalRole
+  to: Group
+  type: has_many
+  via: groups
+- from: Account
+  to: Account
+  type: belongs_to
+  via: parent_acct_id
+  note: Parent/child account nesting.
+- from: ReplicationCredential
+  to: Account
+  type: belongs_to
+  via: acct_id
+- from: AuditLogEntry
+  to: Sobject
+  type: references
+  via: object_id
+- from: AuditLogEntry
+  to: User
+  type: references
+  via: actor_id
+- from: Image
+  to: Application
+  type: belongs_to
+  via: application
+- from: Application
+  to: Image
+  type: has_many
+  via: images
+- from: Scan
+  to: DiscoveryConnection
+  type: belongs_to
+  via: connection
+- from: ScanInventoryObject
+  to: Scan
+  type: belongs_to
+  via: scan_id
+core_graph_summary: 'Account → Group → Sobject is the spine of the DSM model. Identity
+  (App, User, ExternalRole) attaches to Groups, which is how authorization to use a
+  key is granted; Plugins are scoped the same way. ApprovalRequest sits orthogonally
+  as a deferred-execution wrapper around any gated operation.'
+render: null

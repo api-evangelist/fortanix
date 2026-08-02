@@ -1,0 +1,33 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Fortanix Confidential Computing Manager REST API
+  version: 1.0.0
+extends: openapi/fortanix-ccm-openapi-original.json
+x-generated: '2026-08-01'
+x-method: generated
+x-source: openapi/fortanix-ccm-openapi-original.json
+actions:
+- target: $.info
+  description: Record the API Evangelist provenance and rating context on the harvested
+    spec without mutating the original document.
+  update:
+    x-apievangelist-provider: fortanix
+    x-apievangelist-api: fortanix:ccm
+    x-apievangelist-harvested: '2026-08-01'
+    x-apievangelist-source: https://support.fortanix.com/apidocs/ccm-introduction
+    x-apievangelist-artifacts:
+      authentication: authentication/fortanix-authentication.yml
+      conventions: conventions/fortanix-conventions.yml
+      errors: errors/fortanix-problem-types.yml
+      lifecycle: lifecycle/fortanix-lifecycle.yml
+      data_model: data-model/fortanix-data-model.yml
+      conformance: conformance/fortanix-conformance.yml
+      packages: packages/fortanix-packages.yml
+- target: $.info
+  description: Quota and error behaviour documented outside the contract.
+  update:
+    x-apievangelist-conventions:
+      pagination: limit / offset / sort_by / filter / all_search
+      quotas: 10 applications per account, 10 images per application (HTTP 403 on breach)
+      error_contract: no 4xx or 5xx responses are declared in this document
+      spec_version: Swagger 2.0 - predates OpenAPI 3.x

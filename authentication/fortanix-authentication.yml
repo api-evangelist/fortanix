@@ -1,0 +1,121 @@
+generated: '2026-08-01'
+method: searched
+source: openapi/fortanix-armor-key-insight-openapi-original.json, openapi/fortanix-ccm-openapi-original.json,
+  openapi/fortanix-dsm-openapi-original.json
+docs:
+- name: Authentication - App and User (DSM)
+  url: https://support.fortanix.com/docs/fortanix-authentication-app-and-user
+- name: User Authentication (DSM)
+  url: https://support.fortanix.com/docs/user-authentication
+- name: Configure API Client and Client Authentication (DSM)
+  url: https://support.fortanix.com/docs/dsm-configure-api-client-and-client-authentication
+- name: Application Authentication with Client Certificate (DSM)
+  url: https://support.fortanix.com/docs/dsm-example-code-app-authentication-with-client-certificate
+- name: Programmatic Access to Fortanix Armor IAM
+  url: https://support.fortanix.com/docs/programmatic-access-to-fortanix-armor-iam
+- name: Client Credentials Flow (Key Insight)
+  url: https://support.fortanix.com/docs/fortanix-key-insight-aws-client-credentials-flow
+- name: Okta Configuration For Client Credentials Authentication (Key Insight)
+  url: https://support.fortanix.com/docs/fortanix-key-insight-okta-configuration-for-client-credentials-authentication
+- name: Auth0 Configuration For Client Credentials Authentication (Key Insight)
+  url: https://support.fortanix.com/docs/fortanix-key-insight-auth0-configuration-for-client-credentials-authentication
+by_api:
+  fortanix:dsm:
+    model: session-bearer-or-direct-key
+    schemes:
+    - basicAuth
+    - apiKeyAuth
+    - bearerToken
+    detail: 'DSM accepts HTTP Basic with an app credential (app UUID + API key) or user
+      credentials, an apiKey header named Authorization carrying a token prefixed with
+      "Basic ", or an HTTP bearer JWT minted by POST /sys/v1/session/auth (Authenticate).
+      Client-certificate authentication for applications is also supported.'
+    session_operations:
+    - AuthDiscover
+    - Authenticate
+    - SelectAccount
+    - Refresh
+    - Reauthenticate
+    - Terminate
+    mfa:
+      supported: true
+      operations:
+      - U2fAuth
+      - RecoveryCodeAuth
+      - Config2faAuth
+      - Config2faTerminate
+      - GenerateRecoveryCodes
+    federation:
+      saml: 'DSM publishes SAML SP metadata at GET /saml/metadata.xml (SamlSpMetadata).'
+      ldap: 'LDAP/AD integration via LdapSearch and TestLdapConfig, with external roles
+        mapped onto DSM groups.'
+    authorization_model: 'Authorization is group membership, not scopes. An app or user
+      may operate on a security object only if it is a member of that object''s group;
+      per-group memberships further restrict which operations are permitted.'
+  fortanix:ccm:
+    model: jwt-bearer
+    schemes:
+    - bearerToken
+    detail: 'A JWT bearer token passed once authenticated, in a header literally named
+      "Authentication" (not "Authorization") — a non-standard header name that trips
+      generic OAuth clients.'
+  fortanix:armor-key-insight:
+    model: oauth2-client-credentials
+    schemes:
+    - Oauth2ClientCredentials
+    detail: 'OAuth 2.0 client credentials (RFC 6749 section 4.4) against https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token.
+      The flow declares an EMPTY scopes map — there are no published scopes; authorization
+      rides on the credential identity. Okta and Auth0 are documented as external
+      authorization servers for this flow.'
+    session_operations:
+    - OauthToken
+    - Terminate
+discovery:
+  openid_configuration: false
+  oauth_authorization_server: false
+  note: 'No RFC 8414 or OIDC discovery document is served on any Fortanix host, so
+    the token endpoint is discoverable only from the OpenAPI and the docs. See well-known/fortanix-well-known.yml.'
+summary:
+  types:
+  - apiKey
+  - http
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - clientCredentials
+schemes:
+- name: Oauth2ClientCredentials
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+    scopes: 0
+  description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.
+  sources:
+  - openapi/fortanix-armor-key-insight-openapi-original.json
+- name: bearerToken
+  type: apiKey
+  in: header
+  parameter: Authentication
+  description: A JWT bearer token to be passed once authenticated.
+  sources:
+  - openapi/fortanix-ccm-openapi-original.json
+- name: basicAuth
+  type: http
+  scheme: basic
+  sources:
+  - openapi/fortanix-dsm-openapi-original.json
+- name: apiKeyAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: Please enter your token prefixed with 'Basic ' (e.g., 'Basic your_token_here')
+  sources:
+  - openapi/fortanix-dsm-openapi-original.json
+- name: bearerToken
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  sources:
+  - openapi/fortanix-dsm-openapi-original.json

@@ -1,0 +1,72 @@
+generated: '2026-08-01'
+method: searched
+source: https://fortanix.zendesk.com/hc/en-us/sections/4410270142484-DSM-Software-Release-Notes
+docs:
+- name: DSM Software Release Notes
+  url: https://fortanix.zendesk.com/hc/en-us/sections/4410270142484-DSM-Software-Release-Notes
+- name: DSM Accelerator Release Notes
+  url: https://fortanix.zendesk.com/hc/en-us/sections/12153054430356-DSM-Accelerator-Release-Notes
+scheme: major.minor
+current_version: '5.8'
+current_spec_version: 0.1.0-20260710
+access:
+  http_status: 403
+  note: 'The Fortanix release-notes index is served from fortanix.zendesk.com, which
+    returns HTTP 403 to non-browser clients. The entries below were captured from the
+    publicly indexed article titles (which carry the version and the release date verbatim);
+    the per-release change detail was not machine-readable and is deliberately left
+    unfilled rather than paraphrased.'
+entries:
+- version: '5.8'
+  date: '2026-07-09'
+  track: DSM Accelerator
+  url: https://fortanix.zendesk.com/hc/en-us/sections/12153054430356-DSM-Accelerator-Release-Notes
+- version: '5.6'
+  date: '2026-02-26'
+  track: DSM Accelerator
+  url: https://fortanix.zendesk.com/hc/en-us/sections/12153054430356-DSM-Accelerator-Release-Notes
+- version: '5.5'
+  date: '2026-02-02'
+  track: DSM Accelerator
+  url: https://fortanix.zendesk.com/hc/en-us/articles/45701827703572-DSM-Accelerator-5-5-February-02-2026
+- version: '5.5'
+  date: '2026-01-23'
+  track: DSM Software
+  url: https://fortanix.zendesk.com/hc/en-us/articles/45553299886612--5-5-January-23-2026
+- version: '5.4'
+  date: '2025-10-31'
+  track: DSM Software
+  url: https://fortanix.zendesk.com/hc/en-us/articles/42803809490452--5-4-October-31-2025
+- version: 5.2 Patch 1
+  date: '2025-09-22'
+  track: DSM Software
+  url: https://fortanix.zendesk.com/hc/en-us/articles/41484554628116--5-2-Patch-1-September-22-2025
+- version: '5.2'
+  date: '2025-08-27'
+  track: DSM Accelerator
+  url: https://fortanix.zendesk.com/hc/en-us/articles/40037848956436-DSM-Accelerator-5-2-Aug-27-2025
+- version: '5.2'
+  date: '2025-08-11'
+  track: DSM Software
+  url: https://fortanix.zendesk.com/hc/en-us/articles/39998017729940--5-2-August-11-2025
+infrastructure_notes:
+  description: 'Fortanix additionally publishes per-release Kubernetes upgrade notes
+    in the main documentation, which double as a coarse release timeline for the on-premises
+    product.'
+  entries:
+  - version: '5.6'
+    change: Kubernetes version upgrade to 1.34
+    url: https://support.fortanix.com/docs/fortanix-data-security-manager-release-56-kubernetes-version-upgrade-to-134-k8s
+  - version: '5.2'
+    change: Kubernetes version upgrade to 1.32
+    url: https://support.fortanix.com/docs/fortanix-data-security-manager-release-52-kubernetes-version-upgrade-to-132-k8s
+  - version: '4.34'
+    change: Kubernetes version upgrade to 1.30
+    url: https://support.fortanix.com/docs/fortanix-data-security-manager-release-434-kubernetes-version-upgrade-to-130-k8s
+  - version: '4.31'
+    change: Kubernetes version upgrade to 1.29
+    url: https://support.fortanix.com/docs/fortanix-data-security-manager-release-431-kubernetes-version-upgrade-to-129-k8s
+breaking_changes_policy: 'The API reference states the forward-compatibility contract
+  — clients must ignore unknown response fields, and Fortanix reserves the right to
+  add new fields at any time without affecting existing clients. No separate breaking-change
+  or sunset policy is published.'

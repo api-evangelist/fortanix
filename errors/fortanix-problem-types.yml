@@ -1,0 +1,114 @@
+generated: '2026-08-01'
+method: derived
+source: 'openapi/fortanix-dsm-openapi-original.json, openapi/fortanix-ccm-openapi-original.json,
+  openapi/fortanix-armor-key-insight-openapi-original.json, and https://support.fortanix.com/docs/error-handling-in-fortanix-confidential-computing-manager'
+format: none
+format_note: 'Fortanix does not implement RFC 9457 problem+json. No response in any
+  of the three harvested specs declares an application/problem+json content type, and
+  no error schema is defined in components. Error semantics are documented narratively
+  rather than in the contract.'
+spec_coverage:
+  fortanix:dsm:
+    operations: 171
+    documented_responses:
+      2XX: 134
+      '204': 37
+    documented_4xx: 0
+    documented_5xx: 0
+    note: 'The DSM spec models success only, using a wildcard 2XX response ("Success
+      result") plus 204 for empty bodies. Not a single 4xx or 5xx response is declared,
+      so no error contract can be derived from the spec for this API.'
+  fortanix:ccm:
+    operations: 109
+    documented_responses:
+      '200': 91
+      '204': 15
+      '201': 3
+    documented_4xx: 0
+    documented_5xx: 0
+    note: The CCM Swagger 2.0 document likewise declares success responses only.
+  fortanix:armor-key-insight:
+    operations: 36
+    documented_responses:
+      2XX: 34
+      '200': 1
+      '401': 1
+      '204': 1
+    documented_4xx: 1
+    documented_5xx: 0
+    note: The only error response declared anywhere across all three specs is a single
+      401 on the Armor authentication surface.
+problems:
+- status: 401
+  title: Unauthorized
+  api: fortanix:armor-key-insight
+  source_operation: openapi/fortanix-armor-key-insight-openapi-original.json
+  detail: 'The only 4xx response declared in any harvested Fortanix spec. Raised on
+    the Armor / Key Insight authentication surface when the OAuth 2.0 client-credentials
+    token is missing, expired or invalid.'
+  remediation: Re-mint a token against https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+    and retry.
+- status: 403
+  title: Application creation limit exceeded
+  api: fortanix:ccm
+  source: https://support.fortanix.com/docs/error-handling-in-fortanix-confidential-computing-manager
+  detail: 'Quota error. The current limit for application creation in Fortanix Confidential
+    Computing Manager is ten (10) applications per account.'
+  remediation: Delete an unused application or contact Fortanix support to raise the
+    account quota.
+  method: searched
+- status: 403
+  title: Image creation limit exceeded
+  api: fortanix:ccm
+  source: https://support.fortanix.com/docs/error-handling-in-fortanix-confidential-computing-manager
+  detail: Quota error. The limit is ten (10) images per application.
+  remediation: Delete an unused image before creating a new one.
+  method: searched
+- status: 400
+  title: Application already exists
+  api: fortanix:ccm
+  source: https://support.fortanix.com/docs/error-handling-in-fortanix-confidential-computing-manager
+  detail: Raised when creating an application whose name duplicates an existing application
+    in the account.
+  remediation: Choose a unique application name.
+  method: searched
+- status: 400
+  title: Pending domain whitelist task
+  api: fortanix:ccm
+  source: https://support.fortanix.com/docs/error-handling-in-fortanix-confidential-computing-manager
+  detail: A certificate domain update is blocked because a previous domain change is
+    still awaiting approval.
+  remediation: Approve or cancel the pending domain-whitelist task, then retry.
+  method: searched
+- status: 400
+  title: Duplicate MRENCLAVE
+  api: fortanix:ccm
+  source: https://support.fortanix.com/docs/error-handling-in-fortanix-confidential-computing-manager
+  detail: An EDP application image carries Enclave Sigstruct values identical to an
+    existing image. MRENCLAVE must be unique per account.
+  remediation: Rebuild the enclave image so its measurement differs, or reuse the existing
+    image.
+  method: searched
+- status: 500
+  title: Internal server error
+  api: fortanix:ccm
+  source: https://support.fortanix.com/docs/error-handling-in-fortanix-confidential-computing-manager
+  detail: 'Published verbatim: "This error appears when something went wrong with the
+    Fortanix CCM server, but the server could not be more specific on what the exact
+    problem is." Observed on application creation, application update and image creation.'
+  remediation: Retry; if persistent, contact Fortanix support with the request details.
+  method: searched
+non_http_failure_states:
+- name: Compute node Unprovisioned
+  api: fortanix:ccm
+  detail: When IAS attestation fails, the compute node is displayed as "Unprovisioned"
+    rather than returning an HTTP error status.
+  source: https://support.fortanix.com/docs/error-handling-in-fortanix-confidential-computing-manager
+gap:
+  summary: 'The dominant finding is an error-contract gap, not an error catalog. Across
+    316 operations in three public specs, exactly one 4xx response is declared. Agents
+    and generated clients cannot discover failure modes from the Fortanix contracts
+    and must fall back to prose documentation.'
+  recommendation: Declare 400/401/403/404/409/429/500 responses with a shared error
+    schema (ideally application/problem+json per RFC 9457) in components.responses
+    and reference them from every operation.

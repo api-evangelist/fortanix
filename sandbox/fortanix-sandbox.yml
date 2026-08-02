@@ -1,0 +1,41 @@
+generated: '2026-08-01'
+method: searched
+source: 'https://www.fortanix.com/start-your-free-trial, https://support.fortanix.com/docs/what-is-the-lifecycle-of-a-fortanix-dsm-saas-trial-account,
+  https://support.fortanix.com/apidocs/dsm-introduction'
+summary: 'Fortanix does not publish a separate test-mode API with magic test values.
+  Non-production access is a real, time-boxed SaaS trial account on the production
+  DSM SaaS endpoints, plus an interactive "Try it" console embedded in the API reference.'
+test_vs_live:
+  model: trial-account
+  note: 'There is no test/live key-prefix split. A trial account issues real API keys
+    against a real regional DSM SaaS endpoint; the boundary is the account state, not
+    the credential format.'
+trial:
+  url: https://www.fortanix.com/start-your-free-trial
+  duration_days: 30
+  cost: free
+  scope: 'Any or all features of the Fortanix DSM SaaS platform, and all Key Insight
+    features.'
+  docs: https://support.fortanix.com/docs/what-is-the-lifecycle-of-a-fortanix-dsm-saas-trial-account
+  on_expiry:
+  - Cannot create or modify any security objects
+  - Cannot perform any crypto operation on existing security objects
+  inactive_retention_days: 180
+  after_retention: Trial account data is permanently deleted unless the account is
+    converted to production before permanent deletion.
+console:
+  url: https://amer.smartkey.io/
+  description: 'The Fortanix DSM SaaS web console. Regional endpoints exist per data
+    centre; the DSM OpenAPI models this as a {dsmEndpoint} server variable defaulting
+    to https://amer.smartkey.io.'
+api_playground:
+  url: https://support.fortanix.com/apidocs/dsm-introduction
+  description: 'The API reference renders an interactive "Try it" panel per operation
+    that issues live requests against a DSM endpoint the caller supplies. It requires
+    real credentials — no hosted sandbox key is published.'
+test_values: []
+test_clock: null
+fixtures: null
+notes: 'NO FABRICATION: Fortanix publishes no test card numbers, magic identifiers,
+  sandbox tokens or fixture triggers. The absence of published test values is recorded
+  here as a real finding, not filled in.'

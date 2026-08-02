@@ -1,23 +1,184 @@
 aid: fortanix
 name: Fortanix
-description: 'Fortanix is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Fortanix is a data-security company building the Fortanix Data & AI Security
+  Platform, a unified control plane for enterprise cryptography. Its products include
+  Data Security Manager (DSM) — a FIPS 140-2 Level 3 validated key-management, HSM,
+  tokenization and secrets service delivered as SaaS or as on-premises appliances;
+  Confidential Computing Manager (CCM) for enclave conversion, attestation and workload
+  signing on Intel SGX and AWS Nitro; Key Insight for cryptographic discovery, posture
+  and post-quantum readiness across cloud and on-premises estates; and Fortanix Armor.
+  All three products publish public REST APIs with machine-readable OpenAPI/Swagger
+  contracts, and Fortanix ships first-party client SDKs (Java, Python, Go, Rust, C#,
+  PHP, JavaScript), a Python CLI (sdkms-cli), Terraform providers, and legacy cryptographic
+  interfaces (PKCS#11, Microsoft CNG, Java JCE).'
 url: https://raw.githubusercontent.com/api-evangelist/fortanix/refs/heads/main/apis.yml
+image: https://cdn.aglty.io/fortanix/global-header/fortanix-logo.svg
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
+x-tier: profiled
 x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-01'
 modified: '2026-08-01'
 tags:
 - Company
-apis: []
+- Security
+- Encryption
+- Key Management
+- Cryptography
+- Confidential Computing
+- HSM
+- Data Security
+- Post-Quantum
+- Secrets Management
+apis:
+- aid: fortanix:dsm
+  name: Fortanix Data Security Manager REST API
+  description: 'REST API for the Fortanix Data Security Manager (DSM): account, group,
+    app, user and role administration plus key lifecycle (generate, import, rotate,
+    export, destroy) and cryptographic operations (encrypt, decrypt, sign, verify,
+    digest, HMAC, key agreement, key wrapping, multi-part and batch crypto), approval
+    requests, Lua plugins, audit logs and account statistics.'
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Key Management
+  - Cryptography
+  - HSM
+  - Secrets Management
+  - Encryption
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-dsm-openapi-original.json
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: Overlay
+    url: overlays/fortanix-dsm-overlay.yaml
+- aid: fortanix:ccm
+  name: Fortanix Confidential Computing Manager REST API
+  description: 'REST API for the Fortanix Confidential Computing Manager (CCM) backend:
+    compute-node and application enrollment, enclave image build and conversion, attestation,
+    certificate issuance, container registries, application configuration, approval
+    requests, compute clusters, datasets and workflow runs.'
+  humanURL: https://support.fortanix.com/apidocs/ccm-introduction
+  baseURL: https://ccm.fortanix.com
+  tags:
+  - Confidential Computing
+  - Attestation
+  - Enclaves
+  - Certificates
+  properties:
+  - type: Swagger
+    url: openapi/fortanix-ccm-openapi-original.json
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/ccm-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-ccm-developers-guide
+  - type: Overlay
+    url: overlays/fortanix-ccm-overlay.yaml
+- aid: fortanix:armor-key-insight
+  name: Fortanix Armor and Key Insight API
+  description: 'REST API covering the Armor and Key Insight components of the Fortanix
+    Data & AI Security Platform: cloud and on-premises cryptographic discovery connections,
+    scans, scan inventory, discovery policies, and AWS, Azure, on-premises, services,
+    DSM and post-quantum-cryptography reporting, plus OAuth 2.0 client-credentials
+    authentication.'
+  humanURL: https://support.fortanix.com/apidocs/armor-ki-introduction
+  baseURL: https://api.armor.fortanix.com
+  tags:
+  - Cryptographic Discovery
+  - Post-Quantum
+  - Key Insight
+  - Security Posture
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-armor-key-insight-openapi-original.json
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+  - type: Overlay
+    url: overlays/fortanix-armor-key-insight-overlay.yaml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/fortanix-agentic-access.yml
+- type: TrustCenter
+  url: security/fortanix-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/fortanix-vulnerability-disclosure.yml
 - type: Website
-  url: https://forgeglobal.com/fortanix_stock/
+  url: https://www.fortanix.com/
+- type: DeveloperPortal
+  url: https://support.fortanix.com/
+- type: Documentation
+  url: https://support.fortanix.com/docs/getting-started
+- type: APIReference
+  url: https://support.fortanix.com/apidocs/dsm-introduction
+- type: GettingStarted
+  url: https://support.fortanix.com/docs/getting-started-with-fortanix-dsm
+- type: Support
+  url: https://support.fortanix.com/docs/fortanix-support
+- type: Blog
+  url: https://www.fortanix.com/blog
+- type: GitHubOrganization
+  url: https://github.com/fortanix
+- type: SignUp
+  url: https://www.fortanix.com/start-your-free-trial
+- type: TermsOfService
+  url: https://www.fortanix.com/legal/agreements-and-standard-terms
+- type: PrivacyPolicy
+  url: https://www.fortanix.com/legal/privacy-policy
+- type: StatusPage
+  url: https://status.fortanix.com/
+- type: Console
+  url: https://amer.smartkey.io/
+- type: Authentication
+  url: authentication/fortanix-authentication.yml
+- type: OAuthScopes
+  url: scopes/fortanix-scopes.yml
+- type: DomainSecurity
+  url: security/fortanix-domain-security.yml
+- type: Security
+  url: https://www.fortanix.com/trust-center
+- type: Compliance
+  url: https://www.fortanix.com/trust-center
+- type: SecurityTxt
+  url: well-known/fortanix-security.txt
+- type: WellKnown
+  url: well-known/fortanix-well-known.yml
+- type: Packages
+  url: packages/fortanix-packages.yml
+- type: SDKs
+  url: packages/fortanix-packages.yml
+- type: CLI
+  url: cli/fortanix-cli.yml
+- type: Sandbox
+  url: sandbox/fortanix-sandbox.yml
+- type: Lifecycle
+  url: lifecycle/fortanix-lifecycle.yml
+- type: ChangeLog
+  url: changelog/fortanix-changelog.yml
+- type: Conventions
+  url: conventions/fortanix-conventions.yml
+- type: Conformance
+  url: conformance/fortanix-conformance.yml
+- type: ErrorCatalog
+  url: errors/fortanix-problem-types.yml
+- type: DataModel
+  url: data-model/fortanix-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/fortanix-llms.txt
+x-enrichment:
+  date: '2026-08-01'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v1

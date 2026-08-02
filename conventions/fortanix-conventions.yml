@@ -1,0 +1,149 @@
+generated: '2026-08-01'
+method: searched
+source: 'https://support.fortanix.com/apidocs/dsm-introduction, https://support.fortanix.com/apidocs/armor-ki-introduction,
+  https://support.fortanix.com/docs/filtering-security-objects-using-fortanix-dsm-rest-api,
+  and the three harvested OpenAPI files'
+applies_to:
+- fortanix:dsm
+- fortanix:ccm
+- fortanix:armor-key-insight
+authentication:
+  style: mixed-per-product
+  detail: 'DSM accepts HTTP Basic (app API key, or user credentials), an apiKey header
+    named Authorization carrying a token prefixed with "Basic ", and an HTTP bearer
+    JWT obtained from POST /sys/v1/session/auth (Authenticate). CCM uses an apiKey
+    header literally named "Authentication" carrying a JWT bearer token. Armor / Key
+    Insight uses OAuth 2.0 client credentials against https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token.'
+  session_model: 'DSM is session-oriented: Authenticate mints a bearer token, Refresh
+    extends it, SelectAccount scopes it to an account, Reauthenticate re-elevates it,
+    and Terminate revokes it. Multi-factor paths exist for U2F/FIDO (U2fAuth) and recovery
+    codes (RecoveryCodeAuth).'
+  see: authentication/fortanix-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  detail: 'No idempotency key is documented or present in any of the three specs —
+    the strings "idempotent"/"Idempotency-Key" do not appear. Safe retry is instead
+    achieved structurally: many mutating crypto operations are naturally idempotent
+    by content (Encrypt/Decrypt/Sign/Verify with an explicit key id), and multi-step
+    state changes go through the approval-request workflow (CreateApprovalRequest →
+    ApproveRequest → GetApprovalRequestResult) which is keyed on a server-issued req_id.'
+pagination:
+  style: limit-offset
+  detail: 'Collection endpoints take limit and offset query parameters, delivered as
+    exploded object-valued query parameter groups (ListSobjectsParams, ListAppsParams,
+    ListCredentialsParams, ListUsersParams, …). ListSobjects documents a default limit
+    of 1000. Passing with_metadata=true switches the response to the metadata envelope.'
+  params:
+  - limit
+  - offset
+  - with_metadata
+  envelope:
+    without_metadata: bare JSON array of resources
+    with_metadata: '{ items: [...], metadata: CollectionMetadata }'
+    metadata_fields:
+    - total_count
+    - filtered_count
+  audit_log_variant:
+    detail: 'GetAllLogs uses a different pagination vocabulary: size (max 1000), from
+      (starting offset), previous_id (cursor — UUID of the log after which further
+      logs are required), plus range_from / range_to epoch-second time bounds.'
+    params:
+    - size
+    - from
+    - previous_id
+    - range_from
+    - range_to
+  ccm_variant:
+    detail: 'The CCM (Swagger 2.0) surface uses limit, offset, sort_by, filter and
+      all_search query parameters on its list endpoints.'
+    params:
+    - limit
+    - offset
+    - sort_by
+    - filter
+    - all_search
+filtering:
+  style: json-expression
+  detail: 'DSM supports a structured JSON filter expression on security-object listing,
+    with $-prefixed operators over named attributes. Logical operators $and, $or, $not;
+    comparison operators $eq, $lt, $gte; and specialised operators $text, $range, $exists.
+    Filterable attributes include name, kid, group_name, created_at, key_size and custom_attributes.'
+  docs: https://support.fortanix.com/docs/filtering-security-objects-using-fortanix-dsm-rest-api
+partial_update:
+  method: PATCH
+  semantics: 'Published verbatim in the DSM API reference: PATCH requests accept a
+    JSON value describing a partial update. All top-level fields are optional; an omitted
+    optional field preserves its existing value. For nested JSON objects the request
+    must in general provide the complete object value rather than a partial update.'
+  operations_example:
+  - UpdateSobject
+  - UpdateApp
+  - UpdateGroup
+  - UpdateAccount
+  - UpdateUser
+  - UpdatePlugin
+binary_encoding:
+  rule: 'All binary input must be base64-encoded. These fields are marked format: byte
+    in the OpenAPI.'
+  source: https://support.fortanix.com/apidocs/dsm-introduction
+forward_compatibility:
+  rule: 'Any API client is expected to ignore fields in the response not explicitly
+    mentioned in the documentation. Fortanix reserves the right to add new fields at
+    any time to provide new functionality without affecting existing API clients.'
+  source: https://support.fortanix.com/apidocs/dsm-introduction
+redirects:
+  rule: 'The Armor / Key Insight API client must follow HTTP redirects, including 308
+    redirects. cURL callers must pass --location.'
+  source: https://support.fortanix.com/apidocs/armor-ki-introduction
+  applies_to:
+  - fortanix:armor-key-insight
+versioning:
+  style: uri-path
+  detail: DSM versions per subsystem (/sys/v1, /crypto/v1, /batch/v1); Armor and Key
+    Insight use /api/v1. See lifecycle/fortanix-lifecycle.yml.
+  see: lifecycle/fortanix-lifecycle.yml
+request_tracing:
+  header: null
+  detail: 'No request-id / correlation-id response header is documented in any spec.
+    Traceability is provided server-side instead through the DSM audit log (GetAllLogs),
+    which records actor type/id, action type, affected object_id, severity and an epoch
+    time range.'
+error_envelope:
+  format: plain-text-or-json
+  detail: 'Fortanix does not use RFC 9457 application/problem+json. The DSM and Armor
+    specs collapse success into a single 2XX response and document almost no error
+    bodies; CCM documents error conditions narratively in its error-handling guide.
+    See errors/fortanix-problem-types.yml.'
+  see: errors/fortanix-problem-types.yml
+rate_limiting:
+  documented: false
+  headers: []
+  detail: 'No rate-limit headers (X-RateLimit-*, RateLimit-*, Retry-After) appear in
+    any harvested spec and no rate-limit policy page was found. CCM does enforce hard
+    resource quotas rather than request-rate limits — 10 applications per account and
+    10 images per application, returned as HTTP 403.'
+batching:
+  supported: true
+  detail: 'Two distinct batching surfaces. A generic request-batching endpoint (Batch,
+    POST /batch/v1) executes multiple API calls in one request; and dedicated bulk
+    crypto operations (BatchEncrypt, BatchDecrypt, BatchSign, BatchVerify) operate
+    across one or more keys in a single call.'
+multipart_operations:
+  supported: true
+  detail: 'Large-payload crypto is streamed through explicit init/update/final triples
+    — EncryptInit → EncryptUpdate → EncryptFinal and DecryptInit → DecryptUpdate →
+    DecryptFinal — with server-held state keyed by the handle returned from init.'
+approval_workflow:
+  supported: true
+  detail: 'Quorum-gated operations are not executed inline. The caller creates an approval
+    request (CreateApprovalRequest), approvers act (ApproveRequest / DenyRequest, optionally
+    via MfaChallenge), and the original operation result is collected with GetApprovalRequestResult.
+    Agents must treat a 202-style approval-pending outcome as a normal control-flow
+    branch, not an error.'
+cross_links:
+  authentication: authentication/fortanix-authentication.yml
+  scopes: scopes/fortanix-scopes.yml
+  errors: errors/fortanix-problem-types.yml
+  lifecycle: lifecycle/fortanix-lifecycle.yml
+  data_model: data-model/fortanix-data-model.yml

@@ -1,0 +1,68 @@
+generated: '2026-08-01'
+method: searched
+source: 'https://support.fortanix.com/apidocs/dsm-introduction, https://support.fortanix.com/docs/how-do-i-check-the-fortanix-dsm-saas-status-in-real-time,
+  https://fortanix.zendesk.com/hc/en-us/sections/4410270142484-DSM-Software-Release-Notes,
+  and the harvested OpenAPI files'
+versioning:
+  scheme: uri-path
+  note: 'Every Fortanix REST surface versions in the path segment: DSM uses /sys/v1/,
+    /crypto/v1/, /security/v1/ style prefixes per subsystem; Armor and Key Insight
+    use /api/v1/. The OpenAPI info.version fields carry a separate date-stamped build
+    identifier.'
+  apis:
+  - api: fortanix:dsm
+    path_prefixes:
+    - /sys/v1
+    - /crypto/v1
+    current: '0.1.0-20260710'
+    source: openapi/fortanix-dsm-openapi-original.json
+  - api: fortanix:ccm
+    current: 2.0.0
+    source: openapi/fortanix-ccm-openapi-original.json
+  - api: fortanix:armor-key-insight
+    path_prefixes:
+    - /api/v1
+    current: 0.1.0
+    source: openapi/fortanix-armor-key-insight-openapi-original.json
+  product_releases:
+    scheme: major.minor
+    latest: '5.8'
+    latest_date: '2026-07-09'
+    note: 'The DSM software release train (4.x → 5.x) drives the API build stamp; the
+      OpenAPI attachment published on the API reference is named for the software release
+      (fortanix_openapispec3.0-5.8.json).'
+forward_compatibility:
+  policy: 'Published in the DSM API reference: "For forward compatibility, any API
+    client is expected to ignore any fields in the response not explicitly mentioned
+    in the documentation. We reserve the right to add new fields at any time to provide
+    new functionality without affecting existing API clients."'
+  source: https://support.fortanix.com/apidocs/dsm-introduction
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  note: 'No RFC 8594 Sunset/Deprecation header support and no published API deprecation
+    policy were found. No operation in any of the three harvested specs carries deprecated:
+    true; the string "deprecat" appears only inside schema property descriptions and
+    enum values, not as an operation-level flag.'
+sla:
+  url: null
+  uptime_target: null
+  note: 'No public SLA / uptime-target document was found; DSM SaaS commitments appear
+    in the commercial agreements at https://www.fortanix.com/legal/agreements-and-standard-terms
+    rather than on a public SLA page.'
+status_page: https://status.fortanix.com/
+status_page_note: 'Real-time and historical data on Fortanix DSM SaaS system performance
+  across five regional data centres.'
+release_notes:
+- name: DSM Software Release Notes
+  url: https://fortanix.zendesk.com/hc/en-us/sections/4410270142484-DSM-Software-Release-Notes
+- name: DSM Accelerator Release Notes
+  url: https://fortanix.zendesk.com/hc/en-us/sections/12153054430356-DSM-Accelerator-Release-Notes
+deprecated_operations: []
+lifecycle_states:
+  note: 'Distinct from API lifecycle, Fortanix DSM models a formal lifecycle for the
+    resources themselves. Security objects transition through Pre-Active, Active, Deactivated,
+    Compromised and Destroyed states via dedicated operations (ActivateSobject, RevokeSobject,
+    DestroySobject, RevertSobject), and metadata for destroyed objects remains accessible.'
+  source: openapi/fortanix-dsm-openapi-original.json

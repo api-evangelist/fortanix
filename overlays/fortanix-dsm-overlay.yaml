@@ -1,0 +1,45 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Fortanix Data Security Manager REST API
+  version: 1.0.0
+extends: openapi/fortanix-dsm-openapi-original.json
+x-generated: '2026-08-01'
+x-method: generated
+x-source: openapi/fortanix-dsm-openapi-original.json
+actions:
+- target: $.info
+  description: Record the API Evangelist provenance and rating context on the harvested
+    spec without mutating the original document.
+  update:
+    x-apievangelist-provider: fortanix
+    x-apievangelist-api: fortanix:dsm
+    x-apievangelist-harvested: '2026-08-01'
+    x-apievangelist-source: https://support.fortanix.com/apidocs/dsm-introduction
+    x-apievangelist-artifacts:
+      authentication: authentication/fortanix-authentication.yml
+      conventions: conventions/fortanix-conventions.yml
+      errors: errors/fortanix-problem-types.yml
+      lifecycle: lifecycle/fortanix-lifecycle.yml
+      data_model: data-model/fortanix-data-model.yml
+      conformance: conformance/fortanix-conformance.yml
+      packages: packages/fortanix-packages.yml
+- target: $.info
+  description: Cross-cutting request/response semantics captured from the Fortanix
+    documentation, which the spec itself does not encode.
+  update:
+    x-apievangelist-conventions:
+      pagination: limit-offset with optional with_metadata envelope (items + metadata.total_count/filtered_count)
+      partial_update: PATCH accepts a partial top-level update; nested objects must
+        be supplied whole
+      binary_encoding: all binary input is base64-encoded (format is byte)
+      forward_compatibility: clients must ignore unknown response fields
+      idempotency: not supported; no idempotency key is documented
+      error_contract: no 4xx or 5xx responses are declared in this document
+- target: $.servers[0]
+  description: Record the regional DSM SaaS endpoints the dsmEndpoint server variable
+    is intended to be set to.
+  update:
+    x-apievangelist-known-endpoints:
+    - https://amer.smartkey.io
+    - https://eu.smartkey.io
+    - https://apac.smartkey.io

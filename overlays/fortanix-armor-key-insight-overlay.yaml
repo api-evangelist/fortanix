@@ -1,0 +1,38 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Fortanix Armor and Key Insight API
+  version: 1.0.0
+extends: openapi/fortanix-armor-key-insight-openapi-original.json
+x-generated: '2026-08-01'
+x-method: generated
+x-source: openapi/fortanix-armor-key-insight-openapi-original.json
+actions:
+- target: $.info
+  description: Record the API Evangelist provenance and rating context on the harvested
+    spec without mutating the original document.
+  update:
+    x-apievangelist-provider: fortanix
+    x-apievangelist-api: fortanix:armor-key-insight
+    x-apievangelist-harvested: '2026-08-01'
+    x-apievangelist-source: https://support.fortanix.com/apidocs/armor-ki-introduction
+    x-apievangelist-artifacts:
+      authentication: authentication/fortanix-authentication.yml
+      conventions: conventions/fortanix-conventions.yml
+      errors: errors/fortanix-problem-types.yml
+      lifecycle: lifecycle/fortanix-lifecycle.yml
+      data_model: data-model/fortanix-data-model.yml
+      conformance: conformance/fortanix-conformance.yml
+      packages: packages/fortanix-packages.yml
+- target: $.info
+  description: Client requirements published on the API reference that the contract
+    does not express.
+  update:
+    x-apievangelist-conventions:
+      redirects: clients MUST follow HTTP redirects including 308; cURL requires --location
+      auth: OAuth 2.0 client credentials (RFC 6749 section 4.4)
+      error_contract: a single 401 is the only declared error response
+- target: $.components.securitySchemes.Oauth2ClientCredentials
+  description: Note that no scopes are published for this flow.
+  update:
+    x-apievangelist-scopes: none published; the clientCredentials flow declares an
+      empty scopes map

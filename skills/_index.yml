@@ -1,0 +1,115 @@
+generated: '2026-08-01'
+method: generated
+source: 'openapi/fortanix-dsm-openapi-original.json, openapi/fortanix-armor-key-insight-openapi-original.json,
+  conventions/fortanix-conventions.yml, errors/fortanix-problem-types.yml'
+note: 'Fortanix publishes no AGENTS.md or first-party agent skills; these are generated
+  by API Evangelist. Every operationId referenced was verified verbatim against the
+  harvested specs.'
+skills:
+- file: fortanix-authenticate-session.md
+  name: Authenticate a Fortanix DSM session
+  api: openapi/fortanix-dsm-openapi-original.json
+  operations:
+  - AuthDiscover
+  - Authenticate
+  - SelectAccount
+  - Refresh
+  - Reauthenticate
+  - Terminate
+  - U2fAuth
+  - RecoveryCodeAuth
+  - Version
+- file: fortanix-create-key-and-encrypt.md
+  name: Create a key and encrypt data with Fortanix DSM
+  api: openapi/fortanix-dsm-openapi-original.json
+  operations:
+  - ListGroups
+  - CreateGroup
+  - CreateSobject
+  - ImportSobject
+  - GetSobject
+  - ActivateSobject
+  - ListSobjects
+  - Encrypt
+  - Decrypt
+  - EncryptInit
+  - EncryptUpdate
+  - EncryptFinal
+  - DecryptInit
+  - DecryptUpdate
+  - DecryptFinal
+  - BatchEncrypt
+  - BatchDecrypt
+- file: fortanix-rotate-and-retire-key.md
+  name: Rotate and retire a Fortanix DSM key
+  api: openapi/fortanix-dsm-openapi-original.json
+  operations:
+  - GetSobject
+  - RotateSobject
+  - ReplaceSobject
+  - GetKcv
+  - VerifyKcv
+  - RevokeSobject
+  - DestroySobject
+  - RemovePrivate
+  - RevertPrevKeyOp
+  - GetAllLogs
+- file: fortanix-provision-application-identity.md
+  name: Provision a Fortanix DSM application identity
+  api: openapi/fortanix-dsm-openapi-original.json
+  operations:
+  - ListGroups
+  - CreateGroup
+  - CreateApp
+  - ListApps
+  - GetApp
+  - UpdateApp
+  - AddGroupMembership
+  - GetAllGroupMemberships
+  - UpdateGroupMembership
+  - DeleteGroupMembership
+  - GetAppCredential
+  - ResetAppSecret
+  - GetClientConfigs
+  - DeleteApp
+- file: fortanix-quorum-approval-workflow.md
+  name: Run a Fortanix DSM quorum approval workflow
+  api: openapi/fortanix-dsm-openapi-original.json
+  operations:
+  - CreateApprovalRequest
+  - ListApprovalRequests
+  - GetApprovalRequest
+  - ApproveRequest
+  - DenyRequest
+  - MfaChallenge
+  - GetApprovalRequestResult
+  - DeleteApprovalRequest
+  - GetAllLogs
+- file: fortanix-key-insight-discovery-scan.md
+  name: Read Fortanix Key Insight discovery scans and PQC reports
+  api: openapi/fortanix-armor-key-insight-openapi-original.json
+  operations:
+  - OauthToken
+  - GetAllConnections
+  - GetConnection
+  - GetAllScans
+  - GetScan
+  - GetScanInventoryObjects
+  - GetScanInventoryObject
+  - GetInventoryObjects
+  - GetInventoryObject
+  - GetAllPolicies
+  - GetPolicy
+  - GetCumulativePqcReport
+  - GetPqcReport
+  - GetPqcReportConnections
+  - GetPqcReportServices
+  - GetAwsScanSummaryReport
+  - GetAwsScanAssessmentReport
+  - GetAwsScanKeyUsageReport
+  - GetAzureScanSummaryReport
+  - GetOnPremFsScanSummaryReport
+  - GetDsmScanSummaryReport
+  - GetServicesReportGroupedByServiceType
+  - GetServicesReportGroupedByViolationType
+  - Terminate

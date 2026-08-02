@@ -1,0 +1,105 @@
+generated: '2026-08-01'
+method: derived
+status: candidate
+source: openapi/fortanix-dsm-openapi-original.json
+search_result:
+  hosted_server: none
+  searched:
+  - Fortanix documentation (support.fortanix.com, including the full llms.txt index)
+  - github.com/fortanix (100 most recently updated repositories)
+  - npm @modelcontextprotocol scope and general MCP registries
+  - web search for "Fortanix MCP server"
+  finding: 'No official or community Fortanix MCP server was found, and no /.well-known/oauth-protected-resource
+    or MCP endpoint responded on any Fortanix host. The tool list below is a DERIVED
+    CANDIDATE proposal grounded in real DSM operationIds — it is not something Fortanix
+    publishes.'
+server:
+  name: fortanix-dsm
+  transport: http
+  url: null
+  status: not-published
+tools:
+- name: list_security_objects
+  description: List and filter security objects (keys, certificates, secrets) in a
+    Fortanix DSM account.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#ListSobjects
+  consequence: read
+- name: get_security_object
+  description: Look up a single security object by key id or name.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#GetSobject
+  consequence: read
+- name: create_security_object
+  description: Generate a new key, certificate or secret in a group.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#CreateSobject
+  consequence: write
+- name: import_security_object
+  description: Import existing key material into DSM.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#ImportSobject
+  consequence: write
+- name: rotate_security_object
+  description: Rotate a security object, producing a new version linked to the previous
+    one.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#RotateSobject
+  consequence: write
+- name: revoke_security_object
+  description: Transition a security object to Deactivated or Compromised state.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#RevokeSobject
+  consequence: safety-critical
+- name: destroy_security_object
+  description: Transition a security object to Destroyed state; it can no longer be
+    used in any cryptographic operation.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#DestroySobject
+  consequence: safety-critical
+- name: encrypt
+  description: Encrypt data with a symmetric or asymmetric key held in DSM.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#Encrypt
+  consequence: write
+- name: decrypt
+  description: Decrypt data with a symmetric or asymmetric key held in DSM.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#Decrypt
+  consequence: write
+- name: sign
+  description: Produce a signature with a private key held in DSM.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#Sign
+  consequence: write
+- name: verify
+  description: Verify a signature with a public key held in DSM.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#Verify
+  consequence: read
+- name: wrap_key
+  description: Wrap one security object with another.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#Wrap
+  consequence: write
+- name: unwrap_key
+  description: Unwrap a wrapped key into a group.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#Unwrap
+  consequence: write
+- name: list_groups
+  description: List the security-object groups in an account.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#ListGroups
+  consequence: read
+- name: list_apps
+  description: List the application identities in an account.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#ListApps
+  consequence: read
+- name: get_audit_log
+  description: Query the DSM audit log by actor, action type, affected object and time
+    range.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#GetAllLogs
+  consequence: read
+- name: create_approval_request
+  description: Open a quorum-gated approval request wrapping a deferred operation.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#CreateApprovalRequest
+  consequence: write
+- name: get_approval_request_result
+  description: Collect the result of an approved request.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#GetApprovalRequestResult
+  consequence: read
+- name: invoke_plugin
+  description: Execute a Lua plugin stored in DSM.
+  source_operation: openapi/fortanix-dsm-openapi-original.json#InvokePlugin
+  consequence: safety-critical
+notes: 'Each tool inherits its real input contract from the referenced operation''s
+  parameters and requestBody in the harvested OpenAPI — no input schema is invented
+  here. Destructive key-state transitions (revoke, destroy) and arbitrary server-side
+  plugin execution are flagged for human-in-the-loop treatment; see agentic-access/fortanix-agentic-access.yml.'
