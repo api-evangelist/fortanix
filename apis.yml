@@ -107,6 +107,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: MCPServer
+  url: mcp/fortanix-mcp.yml
 - type: AgenticAccess
   url: agentic-access/fortanix-agentic-access.yml
 - type: TrustCenter
