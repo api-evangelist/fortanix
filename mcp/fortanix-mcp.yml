@@ -9,10 +9,9 @@ search_result:
   - github.com/fortanix (100 most recently updated repositories)
   - npm @modelcontextprotocol scope and general MCP registries
   - web search for "Fortanix MCP server"
-  finding: 'No official or community Fortanix MCP server was found, and no /.well-known/oauth-protected-resource
-    or MCP endpoint responded on any Fortanix host. The tool list below is a DERIVED
-    CANDIDATE proposal grounded in real DSM operationIds — it is not something Fortanix
-    publishes.'
+  finding: No official or community Fortanix MCP server was found, and no /.well-known/oauth-protected-resource
+    or MCP endpoint responded on any Fortanix host. The tool list below is a DERIVED CANDIDATE proposal
+    grounded in real DSM operationIds — it is not something Fortanix publishes.
 server:
   name: fortanix-dsm
   transport: http
@@ -20,8 +19,7 @@ server:
   status: not-published
 tools:
 - name: list_security_objects
-  description: List and filter security objects (keys, certificates, secrets) in a
-    Fortanix DSM account.
+  description: List and filter security objects (keys, certificates, secrets) in a Fortanix DSM account.
   source_operation: openapi/fortanix-dsm-openapi-original.json#ListSobjects
   consequence: read
 - name: get_security_object
@@ -37,8 +35,7 @@ tools:
   source_operation: openapi/fortanix-dsm-openapi-original.json#ImportSobject
   consequence: write
 - name: rotate_security_object
-  description: Rotate a security object, producing a new version linked to the previous
-    one.
+  description: Rotate a security object, producing a new version linked to the previous one.
   source_operation: openapi/fortanix-dsm-openapi-original.json#RotateSobject
   consequence: write
 - name: revoke_security_object
@@ -46,8 +43,8 @@ tools:
   source_operation: openapi/fortanix-dsm-openapi-original.json#RevokeSobject
   consequence: safety-critical
 - name: destroy_security_object
-  description: Transition a security object to Destroyed state; it can no longer be
-    used in any cryptographic operation.
+  description: Transition a security object to Destroyed state; it can no longer be used in any cryptographic
+    operation.
   source_operation: openapi/fortanix-dsm-openapi-original.json#DestroySobject
   consequence: safety-critical
 - name: encrypt
@@ -83,8 +80,7 @@ tools:
   source_operation: openapi/fortanix-dsm-openapi-original.json#ListApps
   consequence: read
 - name: get_audit_log
-  description: Query the DSM audit log by actor, action type, affected object and time
-    range.
+  description: Query the DSM audit log by actor, action type, affected object and time range.
   source_operation: openapi/fortanix-dsm-openapi-original.json#GetAllLogs
   consequence: read
 - name: create_approval_request
@@ -99,7 +95,13 @@ tools:
   description: Execute a Lua plugin stored in DSM.
   source_operation: openapi/fortanix-dsm-openapi-original.json#InvokePlugin
   consequence: safety-critical
-notes: 'Each tool inherits its real input contract from the referenced operation''s
-  parameters and requestBody in the harvested OpenAPI — no input schema is invented
-  here. Destructive key-state transitions (revoke, destroy) and arbitrary server-side
-  plugin execution are flagged for human-in-the-loop treatment; see agentic-access/fortanix-agentic-access.yml.'
+notes: Each tool inherits its real input contract from the referenced operation's parameters and requestBody
+  in the harvested OpenAPI — no input schema is invented here. Destructive key-state transitions (revoke,
+  destroy) and arbitrary server-side plugin execution are flagged for human-in-the-loop treatment; see
+  agentic-access/fortanix-agentic-access.yml.
+deployment:
+  mode: none
+  verified: derived
+  tools: 19
+  checked: '2026-08-12'
+  source: catalog MCP census

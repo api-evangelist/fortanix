@@ -1,0 +1,4859 @@
+{
+  "item": [
+    {
+      "id": "b135da48-2186-4257-ad2b-6bccb508a2c3",
+      "name": "Authentication",
+      "description": {
+        "content": "APIs regarding creating or ending a session.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "20679454-4d44-4def-81fb-3e1896cdb038",
+          "name": "Authenticate with a token.",
+          "request": {
+            "name": "Authenticate with a token.",
+            "description": {
+              "content": "Authenticate using the Oauth 2.0 Client Credentials flow.\n\nTo call this you must provide the form url encoded app ID and the form url encoded API key in the form of a Basic auth header.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "iam",
+                "session",
+                "oauth2",
+                "token"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "grant_type",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2dc06d0b-ec10-4705-83bc-6887f80d3cc8",
+              "name": "Success result.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "iam",
+                    "session",
+                    "oauth2",
+                    "token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "grant_type",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"2YotnFZFEjr1zCsicMWpAA\",\n  \"expires_in\": 3600,\n  \"token_type\": \"Bearer\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4aca5736-d412-471e-9d95-58ddf4c2bacc",
+              "name": "Invalid credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "iam",
+                    "session",
+                    "oauth2",
+                    "token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "grant_type",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"invalid_scope\",\n  \"error_description\": \"string\",\n  \"error_uri\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c107d5a6-61ab-4ff0-bee7-6e56f85c9ae9",
+          "name": "Terminate the current session.",
+          "request": {
+            "name": "Terminate the current session.",
+            "description": {
+              "content": "Terminate the current session.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "iam",
+                "session",
+                "terminate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e54f8842-fc9c-4d20-b8d9-afee56ebdc44",
+              "name": "Nothing is returned on success.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "iam",
+                    "session",
+                    "terminate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "3ab09599-11fc-4e3b-a85c-f207d538b712",
+      "name": "DiscoveryConnection",
+      "description": {
+        "content": "APIs regarding obtaining details about the connection.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d5196d63-9bc1-4729-8f8c-4309e4919b75",
+          "name": "Get all  connections",
+          "request": {
+            "name": "Get all  connections",
+            "description": {
+              "content": "Get all  connections",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "connections"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<uuid>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f10d7712-3427-4b6a-8caf-5f22299b1bf4",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "connections"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"created_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_filter\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_config\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"external_key_sources\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"policies\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"created_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_filter\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_config\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"external_key_sources\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"policies\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"metadata\": {\n    \"total_count\": 1745397312,\n    \"filtered_count\": 1693550080\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "98c9c3f3-88d6-49e7-a098-84268142fe28",
+          "name": "Get a specific  connection",
+          "request": {
+            "name": "Get a specific  connection",
+            "description": {
+              "content": "Get a specific  connection",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "connections",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "475ead71-37e2-41f7-b872-3b0c2bf45d5d",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "connections",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"connection_id\": \"6ca37324-6494-585c-7e4f-760b3f0db796\",\n  \"name\": \"?PAYg|m/U\",\n  \"acct_id\": \"438b8292-7063-9be9-6eb8-c5096346c450\",\n  \"group_id\": \"fcfbae5e-c210-84e0-ad11-59bf434aac51\",\n  \"created_at\": \"20170509T070912Z\",\n  \"scan_filter\": {},\n  \"connection_config\": {\n    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n  },\n  \"external_key_sources\": [\n    \"84822d5e-d8e8-234c-6a3f-09d85d92df4f\",\n    \"e43785d3-73c8-49b4-8fd5-01258050f7ba\"\n  ],\n  \"policies\": {\n    \"crypto_policy\": \"5c09e739-a960-deef-2475-91abc04d8dc9\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "0d4bbd58-c7c6-4d6f-8ffe-83cb40249de3",
+      "name": "DiscoveryPolicies",
+      "description": {
+        "content": "APIs regarding obtaining details about the policies.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "452f2d56-bff2-4f26-ac63-51271b43346d",
+          "name": "Get all policies",
+          "request": {
+            "name": "Get all policies",
+            "description": {
+              "content": "Get all policies",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "policies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "1f8dc15e-caa5-4eeb-81ea-e598a8852042",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "policies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"created_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"details\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"policy_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"source\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"last_updated_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"created_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"details\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"policy_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"source\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"last_updated_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"metadata\": {\n    \"total_count\": 2254747608,\n    \"filtered_count\": 1187107185\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "260c0b61-f959-4d23-bb89-22b30b730591",
+          "name": "Get a specific Policy",
+          "request": {
+            "name": "Get a specific Policy",
+            "description": {
+              "content": "Get a specific Policy",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "policies",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "0ce1430c-c297-48df-a9f4-7aaeee928ead",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "policies",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created_at\": \"20170509T070912Z\",\n  \"details\": {\n    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n  },\n  \"name\": \"^XM1BGlfcxip\\\"\\\"<'z {\",\n  \"policy_id\": \"95d1750d-f131-5247-3581-f746321db138\",\n  \"source\": {\n    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n  },\n  \"last_updated_at\": \"20170509T070912Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "47fc2ce3-a467-4edc-9ba1-5133ffa9a38c",
+      "name": "DiscoveryScan",
+      "description": {
+        "content": "APIs regarding obtaining details about the scans.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "294d7865-be3a-42d8-99fc-d591ceefa9be",
+          "name": "Get all scans.",
+          "request": {
+            "name": "Get all scans.",
+            "description": {
+              "content": "Get all scans.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<uuid>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "0fe6dd88-1c5a-4dee-bfa7-bd9fc303b780",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"created_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"last_updated_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_status\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"ended_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_errors\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"created_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"last_updated_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_status\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"ended_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_errors\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "37a5be45-46ef-4a3f-a5d8-e5e8b98c217b",
+          "name": "Get a scan.",
+          "request": {
+            "name": "Get a scan.",
+            "description": {
+              "content": "Get a scan.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a9e0c832-a261-4b33-89da-43e220d6a8c3",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"acct_id\": \"bcafbaaf-e144-680f-13c9-6a2708dae00d\",\n  \"connection_id\": \"db642259-bc12-b851-e958-b02744f2857c\",\n  \"created_at\": \"20170509T070912Z\",\n  \"group_id\": \"d6e596df-2ad2-1e0e-fb7b-597bbff61087\",\n  \"last_updated_at\": \"20170509T070912Z\",\n  \"scan_id\": \"99fb62b6-d3d9-8088-5fec-85c22435bf07\",\n  \"scan_status\": \"stopped\",\n  \"ended_at\": \"20170509T070912Z\",\n  \"scan_errors\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "d2feaf79-ad0f-46c2-b782-c60f30d44406",
+      "name": "DiscoveryAwsReports",
+      "description": {
+        "content": "APIs regarding obtaining the reports related to AWS.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "97e06d14-6732-4725-9c28-7b4c1d290fbc",
+          "name": "Search Scanned account names",
+          "request": {
+            "name": "Search Scanned account names",
+            "description": {
+              "content": "Search Scanned account names",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "accounts",
+                "aws"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "98418229-05d4-4b1e-a009-3b765494e1d5",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "accounts",
+                    "aws"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"regions\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"details\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"regions\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"details\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "92d926a2-4a0d-41a3-8b95-6ecd25bef668",
+          "name": "Get Scan Assessment report.",
+          "request": {
+            "name": "Get Scan Assessment report.",
+            "description": {
+              "content": "Get Scan Assessment report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "assessment_report",
+                "aws"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8541fc57-ceb7-48d4-9945-8fe919885ac9",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "assessment_report",
+                    "aws"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"violations_by_service\": {\n    \"key_0\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_1\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_2\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"security_issues\": {\n    \"key_0\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_1\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_2\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"risk_assessment\": {\n    \"findings\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"overall_risk\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  },\n  \"certificate_assessment\": {\n    \"total_certificates\": 4634,\n    \"expiry_metrics_by_issuer\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"expired_certificate_count\": 8797,\n    \"shared_certificate_count\": 3627,\n    \"non_compliant_certificate_by_key_algorithm_count\": 9435,\n    \"non_compliant_certificate_by_signature_count\": 5808,\n    \"overly_permissive_certificate_usage_count\": 4810\n  },\n  \"keys_assessment\": {\n    \"total_keys\": 2792,\n    \"count_by_origin\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"pending_deletion_keys\": 7802,\n    \"pending_expiration_keys\": 4325,\n    \"quantum_vulnerable_keys\": 2921,\n    \"overly_permissive_key_usage\": 9973,\n    \"overly_permissive_key_management\": 1133\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "684dda31-7134-4e7a-9824-b12c0b9ecf3a",
+          "name": "Get Scan Keys report.",
+          "request": {
+            "name": "Get Scan Keys report.",
+            "description": {
+              "content": "Get Scan Keys report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "key_usage_report",
+                "aws"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_sort_value",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "30ac4aba-23e5-44e2-be45-e2a46a5b9554",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "key_usage_report",
+                    "aws"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "previous_sort_value",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"key_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"protected_services\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"key_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"protected_services\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b03d4808-ce85-4206-9b38-2748da45a11f",
+          "name": "Get Scan report.",
+          "request": {
+            "name": "Get Scan report.",
+            "description": {
+              "content": "Get Scan report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "summary_report",
+                "aws"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "08871dd3-d2f6-4553-b2a2-bb7fca16450e",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "summary_report",
+                    "aws"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"top_accounts\": [\n    {\n      \"account\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"total_keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"enabled_keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"account\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"total_keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"enabled_keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"key_status\": {\n    \"key_0\": 6142\n  },\n  \"key_types\": {\n    \"key_0\": 780\n  },\n  \"key_source\": {\n    \"key_0\": 6286,\n    \"key_1\": 5473\n  },\n  \"certificate_count_by_algorithm\": {\n    \"key_0\": 1870\n  },\n  \"certificate_count_by_status\": {\n    \"key_0\": 9552,\n    \"key_1\": 5319\n  },\n  \"cloud_discovery\": {\n    \"total_accounts\": 8060,\n    \"total_regions\": 7055,\n    \"total_keys\": 7334,\n    \"total_services\": 9080,\n    \"cross_account_keys\": 452,\n    \"customer_managed_keys\": 1482,\n    \"platform_managed_keys\": 8307,\n    \"total_certificates\": 288\n  },\n  \"protected_services\": {\n    \"total_services\": 9753,\n    \"encrypted_services\": 1773\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "f8c81a7d-8faf-4427-9789-a264e4077184",
+      "name": "DiscoveryAzureReports",
+      "description": {
+        "content": "APIs regarding obtaining the reports related to Azure.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3609c486-eb4c-4658-b862-dcff2eeb3c4c",
+          "name": "Get Azure Scanned Assessment report",
+          "request": {
+            "name": "Get Azure Scanned Assessment report",
+            "description": {
+              "content": "Get Azure Scanned Assessment report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "assessment_report",
+                "azure"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "715a3383-09bc-4586-8dca-dd9c98b55367",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "assessment_report",
+                    "azure"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"violations_by_service\": {\n    \"key_0\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_1\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"security_issues\": {\n    \"key_0\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_1\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"risk_assessment\": {\n    \"findings\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"overall_risk\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bb401be6-422f-4a8c-8462-36e7c168d9b9",
+          "name": "Get Scan Keys report.",
+          "request": {
+            "name": "Get Scan Keys report.",
+            "description": {
+              "content": "Get Scan Keys report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "key_usage_report",
+                "azure"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_sort_value",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6f5325e8-3413-4a2a-a5e0-241194a78682",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "key_usage_report",
+                    "azure"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "previous_sort_value",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"key_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"protected_services\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"key_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"protected_services\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "16032dde-eef9-4a90-8ea8-ab65792102d6",
+          "name": "Get Azure Scanned Subscriptions",
+          "request": {
+            "name": "Get Azure Scanned Subscriptions",
+            "description": {
+              "content": "Get Azure Scanned Subscriptions",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "subscriptions",
+                "azure"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<uuid>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_sort_value",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2a9300d9-7d65-431f-9b85-c480b5051481",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "subscriptions",
+                    "azure"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "previous_sort_value",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"details\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"resource_groups\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"regions\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"details\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"resource_groups\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"regions\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "286206fa-3a9e-49b8-b767-98c4820734cf",
+          "name": "Get Summary Report for Azure scan.",
+          "request": {
+            "name": "Get Summary Report for Azure scan.",
+            "description": {
+              "content": "Get Summary Report for Azure scan.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "summary_report",
+                "azure"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "33f0a46b-a89e-4fb0-a07a-431fdb0f4c99",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "summary_report",
+                    "azure"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"cloud_discovery\": {\n    \"total_subscriptions\": 9194,\n    \"total_resource_groups\": 6314,\n    \"total_regions\": 2015,\n    \"total_keys\": 1850,\n    \"total_services\": 13\n  },\n  \"top_subscriptions\": [\n    {\n      \"subscription\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"total_keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"enabled_keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"subscription\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"total_keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"enabled_keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"protected_services\": {\n    \"key_0\": {\n      \"total_services\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"azure_managed_key_encrypted\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"customer_managed_key_encrypted\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"key_count_by_status\": {\n    \"shared\": 8374,\n    \"auto_rotation_disabled\": 9431,\n    \"not_activated\": 7307,\n    \"customer_managed_keys\": 6541,\n    \"enabled_keys\": 4522,\n    \"platform_managed_keys\": 8351\n  },\n  \"key_count_by_type\": {\n    \"key_0\": 4747\n  },\n  \"key_vault_count_by_access_tier\": {\n    \"key_0\": 6214,\n    \"key_1\": 1352\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "36c82118-b5d7-40df-9d52-7fd27bfecebf",
+      "name": "DiscoveryServicesReports",
+      "description": {
+        "content": "APIs regarding obtaining the reports for Services.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "517d7264-94a2-4d71-aae0-2735abfdccb0",
+          "name": "Get AWS Services report grouped by account.",
+          "request": {
+            "name": "Get AWS Services report grouped by account.",
+            "description": {
+              "content": "Get AWS Services report grouped by account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "services_report",
+                "aws",
+                "by_account"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_sort_value",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b22f72ef-3996-4bbe-8983-b35e9843c1ac",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "services_report",
+                    "aws",
+                    "by_account"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "previous_sort_value",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"account_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"violations_by_region\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"account_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"violations_by_region\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"metadata\": {\n    \"violation_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"resource_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"region_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"account_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "95c54875-1329-4af8-9146-76233487d23f",
+          "name": "Get Azure Services report grouped by subscription.",
+          "request": {
+            "name": "Get Azure Services report grouped by subscription.",
+            "description": {
+              "content": "Get Azure Services report grouped by subscription.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "services_report",
+                "azure",
+                "by_subscription"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<uuid>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_sort_value",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "afc66d94-3179-4e01-a0aa-dfd9ac228c6b",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "services_report",
+                    "azure",
+                    "by_subscription"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "previous_sort_value",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"subscription_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"violations_by_resource_group\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"subscription_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"violations_by_resource_group\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"metadata\": {\n    \"violation_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"service_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"region_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"resource_group_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"subscription_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "30b1b22c-e748-438f-80b6-bc83d8b5fcb1",
+          "name": "Get Services report grouped by service type.",
+          "request": {
+            "name": "Get Services report grouped by service type.",
+            "description": {
+              "content": "Get Services report grouped by service type.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "services_report",
+                "by_service"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9180c284-bd98-43c0-b210-c18b4cfa2913",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "services_report",
+                    "by_service"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"cloud_provider_service_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"overall_risk\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"violations\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"cloud_provider_service_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"overall_risk\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"violations\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"metadata\": {\n    \"violation_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"service_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"scan_inventory_provider_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "324a98c4-d407-42d6-9778-fe4de8b3bb4c",
+          "name": "Get Services report grouped by violation type.",
+          "request": {
+            "name": "Get Services report grouped by violation type.",
+            "description": {
+              "content": "Get Services report grouped by violation type.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "services_report",
+                "by_violation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "efd6cf0f-9d78-47af-a290-5113c76e9ee6",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "services_report",
+                    "by_violation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"violation\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"overall_risk\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"violations_by_service\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"violation\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"overall_risk\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"violations_by_service\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"metadata\": {\n    \"violation_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"service_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"scan_inventory_provider_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "b565f0aa-c705-4092-80e5-b6376f6224a6",
+      "name": "DiscoveryPqcReports",
+      "description": {
+        "content": "APIs regarding obtaining the PQC reports.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b1f5bb06-1f89-44fc-8d20-1fa73906e6c0",
+          "name": "Get List of Connections for PQC Report.",
+          "request": {
+            "name": "Get List of Connections for PQC Report.",
+            "description": {
+              "content": "Get List of Connections for PQC Report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "pqc",
+                "connections"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b04c1238-c70a-463d-820a-ea0ec78fbb70",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "pqc",
+                    "connections"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"service_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"vulnerability_status\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"service_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"vulnerability_status\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0272fe1f-a366-4493-9cd8-5549f972d654",
+          "name": "Get Cumulative PQC Report.",
+          "request": {
+            "name": "Get Cumulative PQC Report.",
+            "description": {
+              "content": "Get Cumulative PQC Report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "pqc",
+                "report"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9164eeb0-d09c-44b4-a43a-1e3ae0f7a2a0",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "pqc",
+                    "report"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"connection_summary\": {\n    \"key_0\": {\n      \"total_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"pqc_vulnerable_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_1\": {\n      \"total_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"pqc_vulnerable_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_2\": {\n      \"total_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"pqc_vulnerable_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_3\": {\n      \"total_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"pqc_vulnerable_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"connection_metrics\": {\n    \"key_0\": {\n      \"keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"resources\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"certificates\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_1\": {\n      \"keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"resources\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"certificates\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_2\": {\n      \"keys\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"resources\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"certificates\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "36f48070-cbd1-4f55-8839-f84d7d72c38e",
+          "name": "Get List of Services for PQC Report.",
+          "request": {
+            "name": "Get List of Services for PQC Report.",
+            "description": {
+              "content": "Get List of Services for PQC Report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "pqc",
+                "services"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ded8f14e-4419-40d8-a6fc-76576a0d66bd",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "pqc",
+                    "services"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"service_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"service_name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"service_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"vulnerability_status\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"service_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"service_name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"service_type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"vulnerability_status\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f7e054b0-29c3-4dce-8d23-f2d4a21adbc2",
+          "name": "Get PQC Report for a single connection.",
+          "request": {
+            "name": "Get PQC Report for a single connection.",
+            "description": {
+              "content": "Get PQC Report for a single connection.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "pqc",
+                "report"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "babf5803-8d43-4757-b095-c58e593dc18e",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "pqc",
+                    "report"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"connection_id\": \"c162b2a4-42b5-3b6c-4a20-10632455c457\",\n  \"connection_metrics\": {\n    \"keys\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"resources\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"certificates\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  },\n  \"connection_name\": \"string\",\n  \"connection_type\": \"cloud\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "da80229b-4b40-479c-b926-dfa9ca0c56d4",
+      "name": "DiscoveryDsmReports",
+      "description": {
+        "content": "APIs regarding obtaining the reports related to DSM.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0fe2b47c-d032-4cc0-b47d-a90d0cdf70af",
+          "name": "Get DSM Summary report",
+          "request": {
+            "name": "Get DSM Summary report",
+            "description": {
+              "content": "Get DSM Summary report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "summary_report",
+                "dsm"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e8d53ba8-0d38-486e-a016-ab041862b8ac",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "summary_report",
+                    "dsm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"keys_by_status\": {\n    \"key_0\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"keys_by_type\": {\n    \"key_0\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_1\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"connection_correlation_data\": [\n    {\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"correlated_keys_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"correlated_keys_count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"keys_discovery\": {\n    \"total_keys\": 6370,\n    \"correlated_keys\": 7423\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9862063d-f078-4d8f-83ac-5ad637dc0e67",
+      "name": "DiscoveryInventory",
+      "description": {
+        "content": "APIs regarding obtaining the details about the inventory objects.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d70f3255-b3bd-4fa9-a152-8fdd52732ac8",
+          "name": "Get Inventory Objects.",
+          "request": {
+            "name": "Get Inventory Objects.",
+            "description": {
+              "content": "Get Inventory Objects.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "inventory_objects"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<uuid>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_sort_value",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "59892312-d9c6-4de7-ad00-b7a61a43bba9",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "inventory_objects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "previous_sort_value",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": {\n    \"key_0\": {\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"external_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"last_scan_inventory_object\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"object_info\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_1\": {\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"external_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"last_scan_inventory_object\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"object_info\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_2\": {\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"external_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"last_scan_inventory_object\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"object_info\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"key_3\": {\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"connection_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"external_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"last_scan_inventory_object\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"object_info\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fca7a687-f70f-4de5-a13a-07eeb77f673e",
+          "name": "Get Inventory Object.",
+          "request": {
+            "name": "Get Inventory Object.",
+            "description": {
+              "content": "Get Inventory Object.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "inventory_objects",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b0979bb7-8951-4aeb-8588-b43128232eb1",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "inventory_objects",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"acct_id\": \"024e0109-8d16-8be7-d7b1-29d8a69b19b2\",\n  \"connection_id\": \"4e2ff6bb-9e73-fa96-28bf-7e3784318c06\",\n  \"external_id\": {\n    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n  },\n  \"group_id\": \"86b5ad6f-d779-5038-89ac-fc65710701e7\",\n  \"id\": \"c6d1765b-d394-4a23-6552-92ac35d52d29\",\n  \"last_scan_inventory_object\": {\n    \"id\": \"1bd0c5b7-45f6-5574-eb64-0cff45cd0c9a\",\n    \"scan_id\": \"680d31da-4b5b-1742-c27b-84a398588f63\"\n  },\n  \"object_info\": {\n    \"ownership_details\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "e472f156-7fd8-4067-b145-2355999f969d",
+      "name": "DiscoveryOnPremReports",
+      "description": {
+        "content": "APIs regarding obtaining the reports related to On-Prem infrastructure.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "71214c28-0b0e-48df-8203-05bdb0731f2d",
+          "name": "Get On-Prem Database Scanned Assessment report",
+          "request": {
+            "name": "Get On-Prem Database Scanned Assessment report",
+            "description": {
+              "content": "Get On-Prem Database Scanned Assessment report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "assessment_report",
+                "on_prem",
+                "database"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b7f1e529-a61c-4d6f-947f-12009810b298",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "assessment_report",
+                    "on_prem",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"risk_assessment\": {\n    \"findings\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"overall_risk\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  },\n  \"security_issues\": {\n    \"key_0\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"resource_violations\": {\n    \"total_violations\": 7513,\n    \"violation_details_by_variant\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"crypto_asset_metrics\": {\n    \"total_keys\": 7388\n  },\n  \"resource_metrics\": {\n    \"total_databases\": 1481,\n    \"quantum_vulnerable_databases\": 2920\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ebf242bf-f2fb-455b-9a92-121bae7a67b5",
+          "name": "Get On-Prem Filesystem Assessment report",
+          "request": {
+            "name": "Get On-Prem Filesystem Assessment report",
+            "description": {
+              "content": "Get On-Prem Filesystem Assessment report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "assessment_report",
+                "on_prem",
+                "filesystem"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b90ec1f1-5542-40d9-974b-e888d2ff992c",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "assessment_report",
+                    "on_prem",
+                    "filesystem"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"risk_score\": {\n    \"findings\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"overall_risk\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  },\n  \"crypto_asset_metrics\": {\n    \"total_assets\": 1574,\n    \"total_violations\": 2362,\n    \"total_quantum_violations\": 4369,\n    \"asset_metrics_by_type\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_3\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"certificate_metrics_by_violation\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"resource_metrics\": {\n    \"resource_metrics_by_operating_system\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "36d56b6e-7d98-446e-9842-14121fca5473",
+          "name": "Get On-Prem Source Code Scanned Assessment report",
+          "request": {
+            "name": "Get On-Prem Source Code Scanned Assessment report",
+            "description": {
+              "content": "Get On-Prem Source Code Scanned Assessment report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "assessment_report",
+                "on_prem",
+                "source_code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "0845cc2f-4eb5-436a-9dca-46e2db7205b7",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "assessment_report",
+                    "on_prem",
+                    "source_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"risk_assessment\": {\n    \"findings\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"overall_risk\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  },\n  \"security_issues\": {\n    \"key_0\": {\n      \"count\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"resource_violations\": {\n    \"total_violations\": 821,\n    \"violation_details_by_repository\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"repository_metrics_by_violation\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_3\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_4\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"resource_metrics\": {\n    \"total_repositories\": 4433\n  },\n  \"crypto_asset_metrics\": {\n    \"total_assets\": 5752\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "058e7b18-3b95-4d1d-b575-b4136262889c",
+          "name": "Get On-Prem Database Scanned Summary report",
+          "request": {
+            "name": "Get On-Prem Database Scanned Summary report",
+            "description": {
+              "content": "Get On-Prem Database Scanned Summary report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "summary_report",
+                "on_prem",
+                "database"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "093622ac-e6eb-48b0-8697-02308da72f56",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "summary_report",
+                    "on_prem",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"crypto_asset_metrics\": {\n    \"total_keys\": 6951,\n    \"key_metrics\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"metrics_by_database_variant\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  },\n  \"resource_metrics\": {\n    \"total_database_servers\": 3368,\n    \"encryption_metrics_by_service\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "559d115e-61c0-4749-9a26-b4bdc07b95d6",
+          "name": "Get On-Prem Scanned Assessment report",
+          "request": {
+            "name": "Get On-Prem Scanned Assessment report",
+            "description": {
+              "content": "Get On-Prem Scanned Assessment report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "summary_report",
+                "on_prem",
+                "discovery"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "944b4c93-ae5b-4585-af55-8aceb98c54c6",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "summary_report",
+                    "on_prem",
+                    "discovery"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"onprem_discovery\": {\n    \"total_databases\": 9166,\n    \"total_repositories\": 8389,\n    \"total_keys\": 6898,\n    \"total_certificates\": 8356,\n    \"total_crypto_assets\": 9509,\n    \"total_filesystem_agents\": 8745\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0bda61f7-7e7e-4e22-bb4f-ffe3e7a3dc97",
+          "name": "Get On-Prem Filesystem Summary report",
+          "request": {
+            "name": "Get On-Prem Filesystem Summary report",
+            "description": {
+              "content": "Get On-Prem Filesystem Summary report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "summary_report",
+                "on_prem",
+                "filesystem"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "071d2c05-ae76-4175-8007-3494e3cf4aa7",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "summary_report",
+                    "on_prem",
+                    "filesystem"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"resource_metrics\": {\n    \"total_operating_systems\": 3591\n  },\n  \"crypto_asset_metrics\": {\n    \"total_assets\": 5863,\n    \"asset_metrics_by_type\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"asset_metrics_by_operating_system\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"asset_metrics_by_key_spec\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_2\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"certificate_metrics_by_status\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"key_1\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "064faf20-715c-473b-962e-52f2b2cd01c4",
+          "name": "Get On-Prem Source Code Scanned Summary report",
+          "request": {
+            "name": "Get On-Prem Source Code Scanned Summary report",
+            "description": {
+              "content": "Get On-Prem Source Code Scanned Summary report",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "summary_report",
+                "on_prem",
+                "source_code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "480c5b3a-55fb-4586-af86-a4c453e4b4dd",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "summary_report",
+                    "on_prem",
+                    "source_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"resource_metrics\": {\n    \"total_repositories\": 1973\n  },\n  \"crypto_asset_metrics\": {\n    \"total_assets\": 5219,\n    \"asset_metrics_by_repository\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"asset_metrics_by_type\": {\n      \"key_0\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "c3d66d36-15dc-4636-8838-5807850fa82d",
+      "name": "DiscoveryScanInventory",
+      "description": {
+        "content": "APIs regarding obtaining the details about the inventory objects associated to a scan.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "106bb034-7e95-4c50-a258-05577c118dcb",
+          "name": "List Scan Inventory objects.",
+          "request": {
+            "name": "List Scan Inventory objects.",
+            "description": {
+              "content": "List Scan Inventory objects.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":id",
+                "scan_inventory_objects"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_id",
+                  "value": "<uuid>"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous_sort_value",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e2931e27-419a-46d9-9fb3-3bbe65e57957",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":id",
+                    "scan_inventory_objects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "previous_id",
+                      "value": "<uuid>"
+                    },
+                    {
+                      "key": "previous_sort_value",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"details\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scanned_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"inventory_object\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"acct_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"details\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"group_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scan_id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"scanned_at\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"inventory_object\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "76a7167d-8272-4c87-a8b6-855842eb69ac",
+          "name": "Get a scan inventory object",
+          "request": {
+            "name": "Get a scan inventory object",
+            "description": {
+              "content": "Get a scan inventory object",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "discovery",
+                "scans",
+                ":scan_id",
+                "scan_inventory_objects",
+                ":scan_inventory_object_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "scan_id",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "scan_inventory_object_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "0fdc44f0-cc26-40be-abbc-0743bbc52c68",
+              "name": "Success result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "discovery",
+                    "scans",
+                    ":scan_id",
+                    "scan_inventory_objects",
+                    ":scan_inventory_object_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "scan_id",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "scan_inventory_object_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"acct_id\": \"9eaeddc6-4ea6-3a68-b276-497886419ecb\",\n  \"details\": {\n    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n  },\n  \"group_id\": \"bdb4e5ab-df29-6150-a19e-929da31482ea\",\n  \"id\": \"028b87a9-2286-a46d-1234-a09565f266c7\",\n  \"scan_id\": \"1aba13b5-475f-6479-1fd3-989c2fb3e5b7\",\n  \"scanned_at\": \"20170509T070912Z\",\n  \"inventory_object\": {\n    \"acct_id\": \"6ff1671b-9c60-4287-a420-9eb004d4d25a\",\n    \"connection_id\": \"6d654564-d047-bbf7-7526-af5dffa013ea\",\n    \"external_id\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"group_id\": \"a855c777-a47b-29cf-cf3d-f619b77e7c75\",\n    \"id\": \"2e6db571-d468-5e46-d6c2-37fa6d2cf3da\",\n    \"last_scan_inventory_object\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    },\n    \"object_info\": {\n      \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.armor.fortanix.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "b29500c5-406a-4712-a884-74deea4f5560",
+    "name": "Armor API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "**API of the Fortanix Unified Data and AI Security Platform**\n\nThe API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.\n",
+      "type": "text/plain"
+    }
+  }
+}

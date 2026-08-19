@@ -1,0 +1,3849 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Fortanix DSM REST API",
+    "version": "0.1.0-20260710"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get account usage information. See input and output of this API\nfor info on what it can return.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id/usage",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "CountParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get account usage information. See input and output of this API\nfor info on what it can return."
+        },
+        {
+          "info": {
+            "name": "Get info about all accounts.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/accounts",
+            "params": [
+              {
+                "name": "GetAccountParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "A user can have access to multiple accounts and this API gets\nall accounts the calling user has access to."
+        },
+        {
+          "info": {
+            "name": "Create a new account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/accounts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new account."
+        },
+        {
+          "info": {
+            "name": "Retrieve all stored replication credentials under the account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id/replication/credentials",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve all stored replication credentials under the account."
+        },
+        {
+          "info": {
+            "name": "Create an admin app credential that can be used to perform\naccount replication.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id/replication/credentials",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Note that this does _not_ immediately create a usable credential;\nfurther processing is necessary before it can be actually used for\naccount replication.\n\nCurrently, a single replication account can store up to two\nreplication credentials."
+        },
+        {
+          "info": {
+            "name": "Get info for a specific account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "GetAccountParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "A user can have access to multiple accounts and this API tries\nto look one up given by the input id."
+        },
+        {
+          "info": {
+            "name": "Update account settings such as authentication, logging, etc.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update account settings such as authentication, logging, etc."
+        },
+        {
+          "info": {
+            "name": "Delete an account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an account."
+        },
+        {
+          "info": {
+            "name": "Retrieve the specified replication credential.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id/replication/credentials/:credential_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "credential_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the specified replication credential."
+        },
+        {
+          "info": {
+            "name": "Update the specified replication credential.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id/replication/credentials/:credential_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "credential_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "This can be used to associate an app ID with the credential,\nand/or upload cert chains for the credential."
+        },
+        {
+          "info": {
+            "name": "Delete the specified replication credential.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id/replication/credentials/:credential_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "credential_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete the specified replication credential."
+        },
+        {
+          "info": {
+            "name": "Fetch a summary of recent scans.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id/replication/recent_scan_summary",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Fetch a summary of recent scans."
+        },
+        {
+          "info": {
+            "name": "Generate a self-signed cert for the specified credential.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/accounts/:acct_id/replication/credentials/:credential_id/self_sign",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "credential_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Note that this does _not_ immediately associate the certificate\nwith the credential; the credential still needs to be updated\nafterwards."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Keys",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Transition a security object to Active state.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/:key_id/activate",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Transition a security object to Active state."
+        },
+        {
+          "info": {
+            "name": "Make a copy of a security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/copy",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "A new key will be created in the target group and will have the\nsame key material as the original key. Links will be maintained\nbetween all copied keys and the source key.\nIf the key is being copied to an externally linked group, it needs\nto be exportable.\n\nThis can also be used to rotate an external key by copying the\nkey material from a native DSM key. This key material will then\nfinally be imported into the external KMS.\nFor AWS KMS keys, after the rotation, the new key will have the\noriginal"
+        },
+        {
+          "info": {
+            "name": "Get all security objects accessible to the requester.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/crypto/v1/keys",
+            "params": [
+              {
+                "name": "ListSobjectsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all security objects accessible to the requester."
+        },
+        {
+          "info": {
+            "name": "Generate a new security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate a new security object (such as an RSA key pair or an AES key)\nof the requested size, elliptic curve, etc.\n\nBy default, all key operations except for EXPORT that are implemented\nfor that type of key will be enabled. These may be overridden by\nrequesting specific operations in the key creation request.\n\nObjects of type Secret/Opaque may not be generated with this API.\nThey must be imported via the import API.\n\nFor AWS/Azure/GCP KMS keys, this generates the key material in the external KMS"
+        },
+        {
+          "info": {
+            "name": "Import a security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{dsmEndpoint}/crypto/v1/keys",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "By default, all key operations that are implemented for that type of\nkey will be enabled. These may be overridden by requesting specific\noperations in the key import request.\n\nFor symmetric and asymmetric keys, value is base64-encoding of the\nkey material in DER format.\n\nFor AWS/Azure/GCP KMS keys, this imports the key material provided into the\nexternal KMS and a corresponding virtual key is created in DSM.\nEC and RSA keys are supported for Azure while only 256-bit AES\nkeys are supported for AW"
+        },
+        {
+          "info": {
+            "name": "Update the properties of a security object like\nname, description, etc.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/crypto/v1/keys/:key_id",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the properties of a security object like\nname, description, etc."
+        },
+        {
+          "info": {
+            "name": "Delete the specified security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/crypto/v1/keys/:key_id",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete the specified security object."
+        },
+        {
+          "info": {
+            "name": "Transition a security object to Destroyed state. Objects in the\n`Destroyed` state cannot be used in any cryptographic operation.\nTheir metadata however, remains accessible.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/:key_id/destroy",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Transition a security object to Destroyed state. Objects in the\n`Destroyed` state cannot be used in any cryptographic operation.\nTheir metadata however, remains accessible."
+        },
+        {
+          "info": {
+            "name": "Retrieve the digest (hash) of the value of an exportable security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/digest",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the digest (hash) of the value of an exportable security object."
+        },
+        {
+          "info": {
+            "name": "Get the details and value of a particular exportable security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/export",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details and value of a particular exportable security object."
+        },
+        {
+          "info": {
+            "name": "Exports the security object as components.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/components/export",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Exports the security object as components. This API can only be called\nthrough an approval request and won't work if called directly. This\nrequires a key custodian policy and quorum approval policy to be set at\nthe group level. A new approval request needs to be created (see\n`POST /sys/v1/approval_requests`), then after getting the required approvals,\nthe key custodians can fetch the result of this approval request\n(See `POST /sys/v1/approval_requests/:req_id/result`).\nEach key custodian will be"
+        },
+        {
+          "info": {
+            "name": "Computes the KCV of the input and returns. This is\nonly valid for AES, DES & DES3 keys.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/kcv",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Computes the KCV of the input and returns. This is\nonly valid for AES, DES & DES3 keys."
+        },
+        {
+          "info": {
+            "name": "Retrieve a key attestation certificate for a security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/key_attestation",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "If the cluster is capable of key attestation, and requested security\nobject supports key attestation (currently only RSA or EC keys that have\ntheir private key component), a key attestation is returned."
+        },
+        {
+          "info": {
+            "name": "Get public part of an asymmetric key.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/crypto/v1/pubkey/:acct_id/:name",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the public part of an asymmetric key. This needs\naccount id and key name as input. No auth is required for this.\nThis works with RSA, EC and Certificate objects."
+        },
+        {
+          "info": {
+            "name": "Lookup a security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/info",
+            "params": [
+              {
+                "name": "GetSobjectParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lookup a security object."
+        },
+        {
+          "info": {
+            "name": "Import a security object by components.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/components/import",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Import a security object by components. This API can only be called\nthrough an approval request and won't work if called directly. A key\ncustodian and quorum policy needs to be set at the group level. After\nan import by components request has been made, key custodians will\nneed to add their respective component via\n`POST /sys/v1/approval_requests/:req_id/approve`.\n\nOnly AES, DES, DES3 & HMAC objects are importable by components.\n\nThis is described in detail in the following article:\nhttps://supp"
+        },
+        {
+          "info": {
+            "name": "Persist a transient key.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/persist",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "This API copies a transient key as a persisted security\nobject. If the transient key's origin is \"FortanixHSM\",\nthe origin of the persisted key will be \"Transient\". If the\ntransient key's origin is \"External\", the origin of the persisted\nkey will be \"External\"."
+        },
+        {
+          "info": {
+            "name": "Destroy private half of an asymmetric key.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/crypto/v1/keys/:key_id/private",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Removes the private portion of an asymmetric key. After this\noperation is performed, operations that require the private key, such\nas encryption and generating signatures, can no longer be performed."
+        },
+        {
+          "info": {
+            "name": "Rotate a security object to an existing security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/replace",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "For two keys R and S, where R is the key to be replaced,\nand S is the intended replacement, this operation will\n- Rename R to the name provided in the request\n- Establish an replaced-replacement between R and S\n- Assign R's old name to S\nThe metadata of S should be mostly same as that of R, and\nit is not possible to update any fields of S while\nperforming this operation. If S does not have any custom\nmetadata or a rotation policy, any corresponding values\nfrom R will be copied over to S.\nFor now"
+        },
+        {
+          "info": {
+            "name": "Reverts a security object to a previous state.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{dsmEndpoint}/crypto/v1/keys/:key_id/revert",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "When a Key Undo Policy is in place, security objects maintain a list\nof history states. Using this API endpoint, clients may revert the\nsecurity object to a previous (non-expired) history state."
+        },
+        {
+          "info": {
+            "name": "Transition a security object to Deactivated or Compromised state.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/:key_id/revoke",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Transition a security object to Deactivated or Compromised state."
+        },
+        {
+          "info": {
+            "name": "Rotate a security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/rekey",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Renames current key to \"<current_name> (rotated at <timestamp>)\"\nand generates a new key with the original name of the source key.\nThe metadata of the newly generated key is mostly same as original\nkey and it is possible to update the following fields while performing\nrotation: `activation_date`, `deactivation_date`, `state`, `rsa`,\n`aes`, `aria`, `des`, `des3`, `seed`, `dsa`, `kcdsa`, `eckcdsa`,\n`pub_exponent`, `elliptic_curve`, `key_size`, `key_ops`, `description`,\n`enabled`, `custom_metadata`"
+        },
+        {
+          "info": {
+            "name": "Computes the KCV of the input blob and checks if\nit matches the input KCV.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/kcv/verify",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Computes the KCV of the input blob and checks if\nit matches the input KCV."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Apps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all group memberships for the app",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id/groups",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "GetGroupsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all group memberships for the app"
+        },
+        {
+          "info": {
+            "name": "Assign the app a new group membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id/groups",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Assign the app a new group membership"
+        },
+        {
+          "info": {
+            "name": "Get details of all apps accessible to requester.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/apps",
+            "params": [
+              {
+                "name": "ListAppsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get details of all apps accessible to requester."
+        },
+        {
+          "info": {
+            "name": "Create a new application with the specified properties.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/apps",
+            "params": [
+              {
+                "name": "GetAppParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new application with the specified properties."
+        },
+        {
+          "info": {
+            "name": "Lookup an application.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "GetAppParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lookup an application."
+        },
+        {
+          "info": {
+            "name": "Update app settings like groups, client config, etc.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "GetAppParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update app settings like groups, client config, etc."
+        },
+        {
+          "info": {
+            "name": "Delete an app.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an app."
+        },
+        {
+          "info": {
+            "name": "Get an app's group membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id/groups/:group_id",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get an app's group membership"
+        },
+        {
+          "info": {
+            "name": "Update an app's particular group membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id/groups/:group_id",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update an app's particular group membership"
+        },
+        {
+          "info": {
+            "name": "Remove an app's membership in a specific group",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id/groups/:group_id",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Remove an app's membership in a specific group"
+        },
+        {
+          "info": {
+            "name": "Get an application's credential.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id/credential",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "In FIPS mode this secret will be reset after 100 failed API key authentication\nattempts in a 24 hour period."
+        },
+        {
+          "info": {
+            "name": "Get configurations for various clients. This API can only be called by apps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/apps/client_configs",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Client configurations can be set at account level, group level or app level.\nClient config set on the app itself overrides config set at group level and\nsimilarly group level config overrides account level config. This API returns\nthe combined client config according to the above explanation."
+        },
+        {
+          "info": {
+            "name": "Regenerate API key.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/apps/:app_id/reset_secret",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "GetAppParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "This will invalidate all existing sessions of this app. Although,\nif `credential_migration_period` is set in request, previous\ncredentials (or its sessions) won't invalidate until the given time."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Crypto",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Agree on a key from two other keys.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/agree",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Perform a cryptographic key agreement operation between a public key and a\nprivate key. Both keys must have been generated from the same parameters (e.g.\nthe same elliptic curve). Both keys must allow the AGREEKEY operation. The\nrequest body contains the requested properties for the new key as well as the\nmechanism (e.g. Diffie-Hellman) to be used to produce the key material for the\nnew key. The output of this API should not be used directly as a cryptographic\nkey. The target object type should "
+        },
+        {
+          "info": {
+            "name": "Batch decrypt with one or more keys.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/batch/decrypt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "The order of batch items in the response matches that of the request.\nreturned in the same order. An individual status code is returned\nfor each batch item.\n\n**Note** : Provide the key ID in the *`kid`* field. The *`key`* field within the *`request`* field should be omitted."
+        },
+        {
+          "info": {
+            "name": "Batch encrypt with one or more keys.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/batch/encrypt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "The order of batch items in the response matches that of the request.\nAn individual status code is returned for each batch item.\n\n**Note** : Provide the key ID in the *`kid`* field. The *`key`* field within the *`request`* field should be omitted."
+        },
+        {
+          "info": {
+            "name": "Batch sign with one or more private keys.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/batch/sign",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "The order of batch items in the response matches that of the request.\nAn individual status code is returned for each batch item."
+        },
+        {
+          "info": {
+            "name": "Batch verify with one or more public keys.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/keys/batch/verify",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "The order of batch items in the response matches that of the request.\nAn individual status code is returned for each batch item."
+        },
+        {
+          "info": {
+            "name": "Compute digest (hash) of data.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/digest",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Compute digest (hash) of data."
+        },
+        {
+          "info": {
+            "name": "Decrypt an encapsulated key with this Sobject, obtaining a new\nsymmetric key in the target group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/decapsulate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Decrypt an encapsulated key with this Sobject, obtaining a new\nsymmetric key in the target group."
+        },
+        {
+          "info": {
+            "name": "Decrypt data using a symmetric or asymmetric key.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/decrypt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "For symmetric ciphers, `mode` (the block cipher mode) is a required field.\nFor GCM and CCM modes, `tag_len` is a required field.\n`iv` is required for symmetric ciphers and unused for asymmetric ciphers.\nIf the mode requires one, the request must contain the initialization vector\nused when the data was encrypted.\nObjects of type Opaque, EC, or HMAC may not be used with this API."
+        },
+        {
+          "info": {
+            "name": "Conclude multi-part decryption. See `/crypto/v1/decrypt/init` for\nmore details.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/decrypt/final",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Conclude multi-part decryption. See `/crypto/v1/decrypt/init` for\nmore details."
+        },
+        {
+          "info": {
+            "name": "Begin multi-part decryption.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/decrypt/init",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "This API is used when decrypting more data than the client wishes\nto submit in a single request. It supports only symmetric ciphers\nand CBC, CBCNOPAD, CTR, and GCM modes of operation. To perform\nmulti-part decryption, the client makes one request to the `init`\nresource, zero or more requests to the `update` resource, followed\nby one request to the `final` resource. The response to init and\nupdate requests includes a `state` field. The `state` is an opaque\ndata blob that must be supplied unmodifi"
+        },
+        {
+          "info": {
+            "name": "Continue multi-part decryption. See `/crypto/v1/decrypt/init` for\nmore details.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/decrypt/update",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Continue multi-part decryption. See `/crypto/v1/decrypt/init` for\nmore details."
+        },
+        {
+          "info": {
+            "name": "Derive a new key from an existing key.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/derive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "The request body contains the requested properties for the new key\nas well as the mechanism to be used to produce the key material for\nthe new key."
+        },
+        {
+          "info": {
+            "name": "Obtain a new symmetric key and its encapsulated version from this Sobject.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/encapsulate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "The resulting symmetric key is created as a new Sobject in the given\ngroup. The details of this Sobject along with the ciphertext encapsulating the\nsymmetric key are returned in the response."
+        },
+        {
+          "info": {
+            "name": "Encrypt data using a symmetric or asymmetric key.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/encrypt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "For symmetric ciphers, `mode` (the block cipher mode) is a required field.\nFor GCM and CCM modes, `tag_len` is a required field.\n`iv` is optional for symmetric ciphers and unused for asymmetric ciphers. If\nprovided, it will be used as the cipher initialization vector. The length of\n`iv` must match the initialization vector size for the cipher and mode. If not\nprovided, a random iv of the correct length is created and returned in the\nresponse.\nObjects of type Opaque, EC, or HMAC may not be used w"
+        },
+        {
+          "info": {
+            "name": "Conclude multi-part encryption. See `/crypto/v1/encrypt/init`\nfor more details.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/encrypt/final",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Conclude multi-part encryption. See `/crypto/v1/encrypt/init`\nfor more details."
+        },
+        {
+          "info": {
+            "name": "Begin multi-part encryption.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/encrypt/init",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "This API is used when encrypting more data than the client wishes\nto submit in a single request. It supports only symmetric ciphers\nand CBC, CBCNOPAD, CTR, and GCM modes of operation. To perform\nmulti-part encryption, the client makes one request to the `init`\nresource, zero or more requests to the `update` resource, followed\nby one request to the `final` resource. The response to init and\nupdate requests includes a `state` field. The `state` is an opaque\ndata blob that must be supplied unmodifi"
+        },
+        {
+          "info": {
+            "name": "Continue multi-part encryption. See `/crypto/v1/encrypt/init`\nfor more details.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/encrypt/update",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Continue multi-part encryption. See `/crypto/v1/encrypt/init`\nfor more details."
+        },
+        {
+          "info": {
+            "name": "Compute a message authentication code (HMAC or CMAC). The key being used\nshould have the `MACGENERATE` key operation.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/mac",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "A key of type `HMAC` needs to be used for computing an HMAC, and the hash\nalgorithm should be present in the request.\n\nAES, ARIA, DES3, and SEED keys can be used for computing a CMAC. No hash\nalgorithm should be specified for CMAC computation.\nThe digest algorithm shouldn't be specified in case of CMAC."
+        },
+        {
+          "info": {
+            "name": "Verify the input MAC. The key used must have the `MACVERIFY`\nkey operation.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/macverify",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verify the input MAC. The key used must have the `MACVERIFY`\nkey operation."
+        },
+        {
+          "info": {
+            "name": "Sign with a private key. The key must be asymmetric and have the `SIGN`\nkey operation enabled.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/sign",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Note: Signing prehashed data with LMS keys\n\nWhen creating an LMS signature, the first step is to hash the message\nwith a prefix that is unknown to the caller (see RFC8554, algorithm 3).\nAs the caller cannot precompute this value, DSM follows different\nsemantics for prehashed data. Namely, when the hash field is used, DSM\nwill check the length of the digest and then feed it as raw data for the\nLMS signature generation.\n\nConsequently, if you hash your data using an algorithm such as SHA256\nand the"
+        },
+        {
+          "info": {
+            "name": "Transform an existing key into a new one.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/transform",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Some protocols (such as BIP32) require weak forms of key derivation,\nwhere the resulting key can be used to recompute the original key."
+        },
+        {
+          "info": {
+            "name": "Unwrap a security object with another security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/unwrapkey",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Unwrap (decrypt) a wrapped key and import it into DSM. This allows one to\nsecurely import security objects into DSM that were previously wrapped by\nDSM or another key management system. A new security object will be created\nin DSM with the unwrapped data.\nThe wrapping key must have the `UNWRAPKEY` operation enabled.\nThe `obj_type` parameter specifies the object type of the security object being\nunwrapped."
+        },
+        {
+          "info": {
+            "name": "Verify a signature with a public key. The verifying key must be an\nasymmetric key with the `VERIFY` key operation enabled.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/verify",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Note on using LMS key: See documentation of the /crypto/v1/sign API."
+        },
+        {
+          "info": {
+            "name": "Wrap a security object with another security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/crypto/v1/wrapkey",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Wrap (encrypt) an existing security object with a key. This allows keys to be\nsecurely exported from DSM so they can be later imported into DSM or\nanother key management system.\nThe key being wrapped must have the `EXPORT` operation enabled. The wrapping key\nmust have the `WRAPKEY` operation enabled.\n\nThe following wrapping operations are supported:\n* Symmetric keys, HMAC keys, opaque objects, and secret objects may be wrapped\nwith symmetric or asymmetric keys.\n* Asymmetric keys may be wrapped w"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Approval_requests",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Approve an approval request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/approval_requests/:req_id/approve",
+            "params": [
+              {
+                "name": "req_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "If the quorum policy was configured to require extra things\nlike 2FA, then, relevant info needs to be added to the request."
+        },
+        {
+          "info": {
+            "name": "Get all approval requests.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/approval_requests",
+            "params": [
+              {
+                "name": "ListApprovalRequestsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all approval requests."
+        },
+        {
+          "info": {
+            "name": "Create a new approval request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/approval_requests",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new approval request."
+        },
+        {
+          "info": {
+            "name": "Lookup a specific approval request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/approval_requests/:req_id",
+            "params": [
+              {
+                "name": "req_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lookup a specific approval request."
+        },
+        {
+          "info": {
+            "name": "Delete an approval request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/approval_requests/:req_id",
+            "params": [
+              {
+                "name": "req_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an approval request."
+        },
+        {
+          "info": {
+            "name": "Deny an approval request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/approval_requests/:req_id/deny",
+            "params": [
+              {
+                "name": "req_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deny an approval request."
+        },
+        {
+          "info": {
+            "name": "Get the result for an approved or failed request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/approval_requests/:req_id/result",
+            "params": [
+              {
+                "name": "req_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the result for an approved or failed request."
+        },
+        {
+          "info": {
+            "name": "Creates a challenge for the FIDO2/U2F device to sign.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/approval_requests/:req_id/challenge",
+            "params": [
+              {
+                "name": "req_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "MfaChallengeParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "If the quorum policy is configured to require 2FA, then a call to this API\nproduces a challenge that needs to be signed by the respective FIDO2/U2F device.\nThe signed data that U2F device provides can be then used with\n`POST /sys/v1/approval_requests/:req_id/approve` to successfully approve the\nrequest."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Groups",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve the scan status of an external group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/groups/:group_id/hmg/scans",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the scan status of an external group."
+        },
+        {
+          "info": {
+            "name": "Scan external objects asynchronously.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/groups/:group_id/hmg/scans",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Scan external objects asynchronously and create corresponding\nvirtual sobjects in the group as needed. If there is already a virtual\nsobject corresponding to a scanned object, no sobject is created.\nThis is only supported for DSM-backed groups currently."
+        },
+        {
+          "info": {
+            "name": "Check that the HMG configuration for a particular group is\nvalid and reachable.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/groups/:group_id/hmg/check",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Check that the HMG configuration for a particular group is\nvalid and reachable."
+        },
+        {
+          "info": {
+            "name": "Check that the HMG configuration provided is valid and reachable.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/groups/hmg/check",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Check that the HMG configuration provided is valid and reachable."
+        },
+        {
+          "info": {
+            "name": "Get all groups accessible to the requester.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/groups",
+            "params": [
+              {
+                "name": "GetGroupsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all groups accessible to the requester."
+        },
+        {
+          "info": {
+            "name": "Create a new group with the specified properties.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/groups",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new group with the specified properties."
+        },
+        {
+          "info": {
+            "name": "Lookup a specific group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/groups/:group_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lookup a specific group."
+        },
+        {
+          "info": {
+            "name": "Change a group's properties.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/groups/:group_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Change a group's properties."
+        },
+        {
+          "info": {
+            "name": "Delete the group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/groups/:group_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete the group."
+        },
+        {
+          "info": {
+            "name": "Given an GCP configuration, fetch a list of available\nGCP key rings which can be used to back a group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/groups/hmg/gcp_key_rings",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Given an GCP configuration, fetch a list of available\nGCP key rings which can be used to back a group."
+        },
+        {
+          "info": {
+            "name": "Query the status of a particular scan. Only the last five completed\nscans,as well as any in-progress scan, is queryable.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/groups/:group_id/hmg/scans/:scan_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "scan_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Query the status of a particular scan. Only the last five completed\nscans,as well as any in-progress scan, is queryable."
+        },
+        {
+          "info": {
+            "name": "Given an Azure configuration, fetch a list of available\nAzure key vaults which can be used to back a group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/groups/hmg/azure_vaults",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Given an Azure configuration, fetch a list of available\nAzure key vaults which can be used to back a group."
+        },
+        {
+          "info": {
+            "name": "Using the chosen credential, list the key collections available.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/groups/hmg/scan_collections",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Using the chosen credential, list the key collections available."
+        },
+        {
+          "info": {
+            "name": "Scan external objects.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/groups/:group_id/hmg/scan",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Scan external objects synchronously and create corresponding\nvirtual sobjects in the group as needed. If there is already a\nvirtual sobject corresponding to a scanned object, no sobject\nis created (but the existing virtual sobject may be updated).\n\nReturns a list of all the newly-created sobjects."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Session",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns the available auth methods for the given user email.\nExample: password, ldap, oauth, etc.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/auth/discover",
+            "params": [
+              {
+                "name": "AuthDiscoverParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the available auth methods for the given user email.\nExample: password, ldap, oauth, etc."
+        },
+        {
+          "info": {
+            "name": "Create a session for a user or an app.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/auth",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Authenticate a user or an app to begin a session.\nThe caller needs to provide a basic authentication token or\nan appropriate request body (see input type).\nThe response body contains a bearer authentication token\nwhich needs to be provided by subsequent calls for the\nduration of the session.\n\nIf this is basic auth and the user has MFA devices configured,\nthe response also contains challenge for the device to sign.\nUntil the signed assertion is passed to `POST /sys/v1/session/auth/2fa/fido2`\nto c"
+        },
+        {
+          "info": {
+            "name": "Unlock two factor configuration.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/config_2fa/auth",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Re-authenticate to unlock two factor configuration.\nTwo factor configuration must be unlocked to enable or disable two\nfactor authentication, add or remove two factor devices, or\nregenerate recovery codes."
+        },
+        {
+          "info": {
+            "name": "Lock two factor configuration.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/config_2fa/terminate",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lock two factor configuration after completing two factor\nreconfiguration. If this API is not called, two factor\nconfiguration will be locked automatically after ten minutes.\nLocking this back is necessary if the 2FA device needs to be used\nfor other things like approval requests. It is not possible use\n2FA for other purposes when configuration mode is unlocked."
+        },
+        {
+          "info": {
+            "name": "Create a new session for an App using an existing\nsession bearer token.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/reauth",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new session for an App using an existing\nsession bearer token."
+        },
+        {
+          "info": {
+            "name": "Use a backup recovery code to complete authentication.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/auth/2fa/recovery_code",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Complete two factor authentication with a backup recovery code.\nEach recovery code may only be used once, so users should update\ntheir two factor configuration after using this API."
+        },
+        {
+          "info": {
+            "name": "Perform a no-op to keep session from expiring.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/refresh",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Perform a no-op to keep session from expiring."
+        },
+        {
+          "info": {
+            "name": "Select one of user's account to proceed. Even if the user has only\none account, this needs to be called.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/select_account",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "For cluster-internal consistency, it may take several seconds for the\nnew Account to become the default one selected. Have your client code\nwait for the change to propagate across the DSM cluster. If this isn’t done,\nimmediate API calls may contain information from the old Account."
+        },
+        {
+          "info": {
+            "name": "This sets AWS temporary credentials in the session so that calls to\nAWS backed groups use these credentials.\nhttps://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/aws_temporary_credentials",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "This sets AWS temporary credentials in the session so that calls to\nAWS backed groups use these credentials.\nhttps://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html"
+        },
+        {
+          "info": {
+            "name": "Terminate the current session.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/terminate",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Terminate an authenticated session. After this call, the provided\nbearer authentication token will be invalidated and cannot be used\nto make any further API calls."
+        },
+        {
+          "info": {
+            "name": "Use of U2F is deprecated, this endpoint will return BadRequest.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/auth/2fa/u2f",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Use of U2F is deprecated, this endpoint will return BadRequest."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Batch",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a new batch request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/batch/v1",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "This API support for quorum approval operations like encrypt, decrypt, sign, wrap, unwrap etc.\n\nSobject operations like rotate, copy, delete, destroy, update profile,\nrevoke, revert, update operations, update policies, update enabled/ disabled\nstate, export as components.\n\nCreate and update accounts, groups etc"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Change user's password.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/change_password",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Change user's password."
+        },
+        {
+          "info": {
+            "name": "Confirms user's email address.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/:user_id/confirm_email",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Confirms user's email address."
+        },
+        {
+          "info": {
+            "name": "Lookup a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/users/:user_id",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "GetUserParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lookup a user."
+        },
+        {
+          "info": {
+            "name": "Change a user's properties like first_name, last_name,\ndescription, etc.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/users/:user_id",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Change a user's properties like first_name, last_name,\ndescription, etc."
+        },
+        {
+          "info": {
+            "name": "Delete a stale user (for sysadmins).",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/users/:user_id",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a stale user (for sysadmins)."
+        },
+        {
+          "info": {
+            "name": "Get all users accessible to the requester.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/users",
+            "params": [
+              {
+                "name": "ListUsersParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all users accessible to the requester."
+        },
+        {
+          "info": {
+            "name": "Create a new user with the given properties.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new user with the given properties."
+        },
+        {
+          "info": {
+            "name": "Delete the currently logged-in user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/users",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete the currently logged-in user."
+        },
+        {
+          "info": {
+            "name": "Remove user's association with an account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/users/:user_id/accounts",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Remove user's association with an account."
+        },
+        {
+          "info": {
+            "name": "Initiate password reset sequence for a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/forgot_password",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Initiate password reset sequence for a user."
+        },
+        {
+          "info": {
+            "name": "Generate recovery codes for two factor authentication.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/generate_recovery_codes",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate backup recovery codes that may be used to complete two\nfactor authentication. Two factor configuration must be unlocked\nto use this API."
+        },
+        {
+          "info": {
+            "name": "Get user's accounts.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/users/accounts",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get user's accounts."
+        },
+        {
+          "info": {
+            "name": "Returns the caller's permissions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/users/permissions",
+            "params": [
+              {
+                "name": "GetUserPermissionsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the caller's permissions"
+        },
+        {
+          "info": {
+            "name": "Invite an existing user or new user to join an existing account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/invite",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Invite an existing user or new user to join an existing account."
+        },
+        {
+          "info": {
+            "name": "Accept or reject pending account invitations.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/process_invite",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Accept or reject pending account invitations."
+        },
+        {
+          "info": {
+            "name": "Resend email with link to confirm user's email address.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/resend_confirm_email",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Resend email with link to confirm user's email address."
+        },
+        {
+          "info": {
+            "name": "Resend invite to the user to join a specific account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/:user_id/resend_invite",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Resend invite to the user to join a specific account."
+        },
+        {
+          "info": {
+            "name": "Reset a user's password. Requires a valid password reset token.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/:user_id/reset_password",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Reset a user's password. Requires a valid password reset token."
+        },
+        {
+          "info": {
+            "name": "Validates password reset token for the user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/users/:user_id/validate_token",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Validates password reset token for the user."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Fido",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Completes a pending authentication using a FIDO2 key.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/auth/2fa/fido2",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Completes a pending authentication using a FIDO2 key."
+        },
+        {
+          "info": {
+            "name": "Get credential creation options as per the given request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/session/config_2fa/new_challenge",
+            "params": [
+              {
+                "name": "MfaChallengeParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "The response of this API needs to be used with relevant API\nfor the protocol.\nFor U2F, it is `u2f.register()`.\nFor FIDO2, it is `navigator.credentials.create()`."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Account_extensions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get info for a specific account extension.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/account_extensions/:acct_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get info for a specific account extension."
+        },
+        {
+          "info": {
+            "name": "Create a new account extension.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{dsmEndpoint}/sys/v1/account_extensions/:acct_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new account extension."
+        },
+        {
+          "info": {
+            "name": "Update specific account extension.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/account_extensions/:acct_id",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update specific account extension."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Credentials",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all credentials accessible to the requester",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/credentials",
+            "params": [
+              {
+                "name": "ListCredentialsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all credentials accessible to the requester"
+        },
+        {
+          "info": {
+            "name": "Create a new integration credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/credentials",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new integration credential"
+        },
+        {
+          "info": {
+            "name": "Get a credential specified by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/credentials/:cred_id",
+            "params": [
+              {
+                "name": "cred_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a credential specified by id"
+        },
+        {
+          "info": {
+            "name": "Update a credential object",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/credentials/:cred_id",
+            "params": [
+              {
+                "name": "cred_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update a credential object"
+        },
+        {
+          "info": {
+            "name": "Delete a credential by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/credentials/:cred_id",
+            "params": [
+              {
+                "name": "cred_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a credential by id"
+        },
+        {
+          "info": {
+            "name": "Rotate a specified credential",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/credentials/:cred_id/rotate",
+            "params": [
+              {
+                "name": "cred_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Rotate a specified credential"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "External_roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all external roles.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/external_roles",
+            "params": [
+              {
+                "name": "ListExternalRolesParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all external roles."
+        },
+        {
+          "info": {
+            "name": "Create a new external role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/external_roles",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new external role."
+        },
+        {
+          "info": {
+            "name": "Lookup a particular external role by its ID.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/external_roles/:external_role_id",
+            "params": [
+              {
+                "name": "external_role_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lookup a particular external role by its ID."
+        },
+        {
+          "info": {
+            "name": "Update an external role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/external_roles/:external_role_id",
+            "params": [
+              {
+                "name": "external_role_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update an external role."
+        },
+        {
+          "info": {
+            "name": "Delete an external role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/external_roles/:external_role_id",
+            "params": [
+              {
+                "name": "external_role_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an external role."
+        },
+        {
+          "info": {
+            "name": "Synchronize information about the external role by retrieving it from external source.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/external_roles/:external_role_id/sync",
+            "params": [
+              {
+                "name": "external_role_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Synchronize information about the external role by retrieving it from external source."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Plugins",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get details of all plugins accessible to the requester.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/plugins",
+            "params": [
+              {
+                "name": "ListPluginsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get details of all plugins accessible to the requester."
+        },
+        {
+          "info": {
+            "name": "Create a new plugin.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/plugins",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new plugin."
+        },
+        {
+          "info": {
+            "name": "Lookup a plugin.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/plugins/:plugin_id",
+            "params": [
+              {
+                "name": "plugin_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lookup a plugin."
+        },
+        {
+          "info": {
+            "name": "Invokes a plugin execution with the provided request body\nas input to the plugin.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/plugins/:plugin_id",
+            "params": [
+              {
+                "name": "plugin_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Invokes a plugin execution with the provided request body\nas input to the plugin."
+        },
+        {
+          "info": {
+            "name": "Change a plugin's properties, such as name, description,\ncode, group membership, etc.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/plugins/:plugin_id",
+            "params": [
+              {
+                "name": "plugin_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Change a plugin's properties, such as name, description,\ncode, group membership, etc."
+        },
+        {
+          "info": {
+            "name": "Delete a plugin.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/plugins/:plugin_id",
+            "params": [
+              {
+                "name": "plugin_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a plugin."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all roles.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/roles",
+            "params": [
+              {
+                "name": "ListRolesParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all roles."
+        },
+        {
+          "info": {
+            "name": "Create a new role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/roles",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new role."
+        },
+        {
+          "info": {
+            "name": "Lookup a role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/roles/:custom_role_id",
+            "params": [
+              {
+                "name": "custom_role_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lookup a role."
+        },
+        {
+          "info": {
+            "name": "Update a role given by the input ID.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{dsmEndpoint}/sys/v1/roles/:custom_role_id",
+            "params": [
+              {
+                "name": "custom_role_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update a role given by the input ID."
+        },
+        {
+          "info": {
+            "name": "Delete a role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{dsmEndpoint}/sys/v1/roles/:custom_role_id",
+            "params": [
+              {
+                "name": "custom_role_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a role."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Logs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all logs visible to the requester.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/logs",
+            "params": [
+              {
+                "name": "LogsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all logs visible to the requester."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Misc",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check information about all connected services",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/services"
+          },
+          "docs": "Returns the information regarding the status of all the connected services."
+        },
+        {
+          "info": {
+            "name": "Check whether the server is handling requests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/health",
+            "params": [
+              {
+                "name": "HealthParams",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns a 200-class status code if the server is handling requests,\nor a 500-class status code if the server is having problems."
+        },
+        {
+          "info": {
+            "name": "Check information about the specified service",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/services/:name",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the information regarding the status of the specified service."
+        },
+        {
+          "info": {
+            "name": "Searches for LDAP objects in the specified LDAP directory.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/ldap/search/:ldap_id",
+            "params": [
+              {
+                "name": "ldap_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Searches for LDAP objects in the specified LDAP directory."
+        },
+        {
+          "info": {
+            "name": "Get the SP metadata file for SAML configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/saml/metadata.xml"
+          },
+          "docs": "Returns the Service Provider metadata file of this cluster, for SAML\nconfiguration. If this cluster has a SAML signing key, the public key is\nincluded in the SPSSODescriptor."
+        },
+        {
+          "info": {
+            "name": "Returns info about the system.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/info",
+            "params": [
+              {
+                "name": "SystemInfoParams",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns info about the system."
+        },
+        {
+          "info": {
+            "name": "Test connection using the ldap SSO configuration saved in the account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{dsmEndpoint}/sys/v1/ldap/test",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Test connection using the ldap SSO configuration saved in the account."
+        },
+        {
+          "info": {
+            "name": "Returns all TLS Certs SPKIs of the DSM endpoints\nDeprecated(legacy), please use API \"/sys/v1/tls_public_keys\" instead",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/tls_certificates"
+          },
+          "docs": "Returns all TLS Certs SPKIs of the DSM endpoints\nDeprecated(legacy), please use API \"/sys/v1/tls_public_keys\" instead"
+        },
+        {
+          "info": {
+            "name": "Returns all TLS Certs SPKIs of the DSM endpoints",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/tls_public_keys"
+          },
+          "docs": "Returns all TLS Certs SPKIs of the DSM endpoints"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Stats",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get app aggregate transaction statistics.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/stats/apps",
+            "params": [
+              {
+                "name": "StatsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get app aggregate transaction statistics."
+        },
+        {
+          "info": {
+            "name": "Get transaction statistics for a specific application.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/stats/:app_id/app",
+            "params": [
+              {
+                "name": "app_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "StatsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get transaction statistics for a specific application."
+        },
+        {
+          "info": {
+            "name": "Get group aggregate transaction statistics.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/stats/groups",
+            "params": [
+              {
+                "name": "StatsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get group aggregate transaction statistics."
+        },
+        {
+          "info": {
+            "name": "Get transaction statistics for a specific group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/stats/:group_id/group",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "StatsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get transaction statistics for a specific group."
+        },
+        {
+          "info": {
+            "name": "Get transaction statistics for a specific security object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/stats/:key_id/key",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "StatsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get transaction statistics for a specific security object."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Marketplace",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Gets all the plugins from the input url.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/marketplace",
+            "params": [
+              {
+                "name": "GetMarketplaceParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Gets all the plugins from the input url."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Version",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns information about the DSM server version and the client\nAPI version that it supports.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{dsmEndpoint}/sys/v1/version",
+            "params": [
+              {
+                "name": "VersionParams",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns information about the DSM server version and the client\nAPI version that it supports."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

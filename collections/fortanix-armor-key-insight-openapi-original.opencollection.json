@@ -1,0 +1,1107 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Armor API",
+    "version": "0.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "DiscoveryConnection",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all  connections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/connections",
+            "params": [
+              {
+                "name": "DiscoveryGetAllConnectionsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all  connections"
+        },
+        {
+          "info": {
+            "name": "Get a specific  connection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/connections/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a specific  connection"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryInventory",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Inventory Objects.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/inventory_objects",
+            "params": [
+              {
+                "name": "DiscoveryInventoryObjectsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Inventory Objects."
+        },
+        {
+          "info": {
+            "name": "Get Inventory Object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/inventory_objects/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Inventory Object."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryPolicies",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/policies",
+            "params": [
+              {
+                "name": "DiscoveryGetAllPoliciesParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all policies"
+        },
+        {
+          "info": {
+            "name": "Get a specific Policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/policies/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a specific Policy"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryPqcReports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get List of Connections for PQC Report.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/pqc/connections",
+            "params": [
+              {
+                "name": "DiscoveryPqcReportConnectionParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get List of Connections for PQC Report."
+        },
+        {
+          "info": {
+            "name": "Get Cumulative PQC Report.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/pqc/report",
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Cumulative PQC Report."
+        },
+        {
+          "info": {
+            "name": "Get List of Services for PQC Report.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/pqc/services",
+            "params": [
+              {
+                "name": "DiscoveryPqcReportServiceParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get List of Services for PQC Report."
+        },
+        {
+          "info": {
+            "name": "Get PQC Report for a single connection.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/pqc/report",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get PQC Report for a single connection."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryScan",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all scans.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans",
+            "params": [
+              {
+                "name": "DiscoveryScanParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all scans."
+        },
+        {
+          "info": {
+            "name": "Get a scan.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a scan."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryAwsReports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search Scanned account names",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/accounts/aws",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryScannedAwsAccountsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Search Scanned account names"
+        },
+        {
+          "info": {
+            "name": "Get Scan Assessment report.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/assessment_report/aws",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Scan Assessment report."
+        },
+        {
+          "info": {
+            "name": "Get Scan Keys report.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/key_usage_report/aws",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryAwsKeyUsageParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Scan Keys report."
+        },
+        {
+          "info": {
+            "name": "Get Scan report.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/summary_report/aws",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Scan report."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryAzureReports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Azure Scanned Assessment report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/assessment_report/azure",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Azure Scanned Assessment report"
+        },
+        {
+          "info": {
+            "name": "Get Scan Keys report.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/key_usage_report/azure",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryAzureKeyUsageParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Scan Keys report."
+        },
+        {
+          "info": {
+            "name": "Get Azure Scanned Subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/subscriptions/azure",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryScannedAzureSubscriptionsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Azure Scanned Subscriptions"
+        },
+        {
+          "info": {
+            "name": "Get Summary Report for Azure scan.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/summary_report/azure",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Summary Report for Azure scan."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryOnPremReports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get On-Prem Database Scanned Assessment report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/assessment_report/on_prem/database",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get On-Prem Database Scanned Assessment report"
+        },
+        {
+          "info": {
+            "name": "Get On-Prem Filesystem Assessment report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/assessment_report/on_prem/filesystem",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get On-Prem Filesystem Assessment report"
+        },
+        {
+          "info": {
+            "name": "Get On-Prem Source Code Scanned Assessment report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/assessment_report/on_prem/source_code",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get On-Prem Source Code Scanned Assessment report"
+        },
+        {
+          "info": {
+            "name": "Get On-Prem Database Scanned Summary report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/summary_report/on_prem/database",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get On-Prem Database Scanned Summary report"
+        },
+        {
+          "info": {
+            "name": "Get On-Prem Scanned Assessment report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/summary_report/on_prem/discovery",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get On-Prem Scanned Assessment report"
+        },
+        {
+          "info": {
+            "name": "Get On-Prem Filesystem Summary report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/summary_report/on_prem/filesystem",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get On-Prem Filesystem Summary report"
+        },
+        {
+          "info": {
+            "name": "Get On-Prem Source Code Scanned Summary report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/summary_report/on_prem/source_code",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get On-Prem Source Code Scanned Summary report"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryScanInventory",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Scan Inventory objects.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/scan_inventory_objects",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryScanInventoryObjectsParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List Scan Inventory objects."
+        },
+        {
+          "info": {
+            "name": "Get a scan inventory object",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:scan_id/scan_inventory_objects/:scan_inventory_object_id",
+            "params": [
+              {
+                "name": "scan_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "scan_inventory_object_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a scan inventory object"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryServicesReports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get AWS Services report grouped by account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/services_report/aws/by_account",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryAwsScannedServicesReportByAccountParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get AWS Services report grouped by account."
+        },
+        {
+          "info": {
+            "name": "Get Azure Services report grouped by subscription.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/services_report/azure/by_subscription",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryAzureScannedServicesReportBySubscriptionParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Azure Services report grouped by subscription."
+        },
+        {
+          "info": {
+            "name": "Get Services report grouped by service type.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/services_report/by_service",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryScannedServicesReportByServiceTypeParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Services report grouped by service type."
+        },
+        {
+          "info": {
+            "name": "Get Services report grouped by violation type.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/services_report/by_violation",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "DiscoveryScannedServicesReportByViolationTypeParams",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Services report grouped by violation type."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DiscoveryDsmReports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get DSM Summary report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armor.fortanix.com/api/v1/discovery/scans/:id/summary_report/dsm",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get DSM Summary report"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Authenticate with a token.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+            "body": {
+              "type": "form-urlencoded",
+              "data": [
+                {
+                  "name": "grant_type",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Authenticate using the Oauth 2.0 Client Credentials flow.\n\nTo call this you must provide the form url encoded app ID and the form url encoded API key in the form of a Basic auth header.\n"
+        },
+        {
+          "info": {
+            "name": "Terminate the current session.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armor.fortanix.com/api/v1/iam/session/terminate",
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Terminate the current session."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

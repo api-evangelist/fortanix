@@ -1,0 +1,2568 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Confidential Computing Manager",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Zone",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all zones.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/zones"
+          },
+          "docs": "Get details of all the zones."
+        },
+        {
+          "info": {
+            "name": "Get zone details.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/zones/:zone-id",
+            "params": [
+              {
+                "name": "zone-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a zone."
+              }
+            ]
+          },
+          "docs": "Get details for a zone."
+        },
+        {
+          "info": {
+            "name": "Get the authentication token.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/zones/:zone-id/token",
+            "params": [
+              {
+                "name": "zone-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a zone."
+              }
+            ]
+          },
+          "docs": "\"Retrieve the authentication token (\"join token\") used to enroll compute nodes in this zone.\"\n"
+        },
+        {
+          "info": {
+            "name": "Get all zone certificates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/zones/:zone-id/certificates",
+            "params": [
+              {
+                "name": "zone-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a zone."
+              }
+            ]
+          },
+          "docs": "Get all certificates in the specified zone"
+        },
+        {
+          "info": {
+            "name": "Create a new zone certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/zones/:zone-id/certificates",
+            "params": [
+              {
+                "name": "zone-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a zone."
+              }
+            ]
+          },
+          "docs": "Creates a new Zone Certificate for the specified Zone"
+        },
+        {
+          "info": {
+            "name": "Rotate zone certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/zones/:zone-id/certificates/rotate",
+            "params": [
+              {
+                "name": "zone-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a zone."
+              }
+            ]
+          },
+          "docs": "Rotates the Zone Certificate for the specified Zone"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all accounts.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounts",
+            "params": [
+              {
+                "name": "scope",
+                "value": "",
+                "type": "query",
+                "description": "Specify the scope from which to get the accounts. Possible options: USER, SYSTEM."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of accounts to return."
+              },
+              {
+                "name": "previous_id",
+                "value": "",
+                "type": "query",
+                "description": "Id of account from previous page of results."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              }
+            ]
+          },
+          "docs": "Get detailed information about all accounts that the current user has permission to see."
+        },
+        {
+          "info": {
+            "name": "Create a new account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/accounts"
+          },
+          "docs": "Create a new account with the specified properties. Only an authenticated user can create an account."
+        },
+        {
+          "info": {
+            "name": "Get a specific account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounts/:account-id",
+            "params": [
+              {
+                "name": "account-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an Account."
+              },
+              {
+                "name": "with_totals",
+                "value": "",
+                "type": "query",
+                "description": "Whether to return the `totals` field in the response"
+              }
+            ]
+          },
+          "docs": "Look up an account by account ID. Current user must belong to a particular account."
+        },
+        {
+          "info": {
+            "name": "Update an account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/accounts/:account-id",
+            "params": [
+              {
+                "name": "account-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an Account."
+              }
+            ]
+          },
+          "docs": "Update the properties of an account. Only certain properties may be changed with this API."
+        },
+        {
+          "info": {
+            "name": "Delete an account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/accounts/:account-id",
+            "params": [
+              {
+                "name": "account-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an Account."
+              }
+            ]
+          },
+          "docs": "Remove an account."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Build",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all images information.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/builds",
+            "params": [
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on all fields(docker image name, app name, mrenclave, mrsigner, app output image name)."
+              },
+              {
+                "name": "docker_image_name",
+                "value": "",
+                "type": "query",
+                "description": "Search on docker image name or app's output image name."
+              },
+              {
+                "name": "config_id",
+                "value": "",
+                "type": "query",
+                "description": "Search builds with access to application config id."
+              },
+              {
+                "name": "deployed_status",
+                "value": "",
+                "type": "query",
+                "description": "Deployment Status string for the image."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Status string for the image."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of images to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of images to skip from start."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter to use for items, currently supports list of groups"
+              }
+            ]
+          },
+          "docs": "Get the image's information with all the attributes."
+        },
+        {
+          "info": {
+            "name": "Create a new image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/builds"
+          },
+          "docs": "Create a new image."
+        },
+        {
+          "info": {
+            "name": "Get details of a particular image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/builds/:build-id",
+            "params": [
+              {
+                "name": "build-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an image."
+              }
+            ]
+          },
+          "docs": "Details of a particular image."
+        },
+        {
+          "info": {
+            "name": "Update details of a particular image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/builds/:build-id",
+            "params": [
+              {
+                "name": "build-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an image."
+              }
+            ]
+          },
+          "docs": "Update details of a particular image."
+        },
+        {
+          "info": {
+            "name": "Delete a particular image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/builds/:build-id",
+            "params": [
+              {
+                "name": "build-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an image."
+              }
+            ]
+          },
+          "docs": "Delete a particular image."
+        },
+        {
+          "info": {
+            "name": "Get all deployments of an image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/builds/deployments/:build-id",
+            "params": [
+              {
+                "name": "build-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an image."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Status string for the Application compute node."
+              },
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on all fields (image status and compute node name)."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of images to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of images to skip from start."
+              }
+            ]
+          },
+          "docs": "Get all deployments of an image."
+        },
+        {
+          "info": {
+            "name": "Convert a docker image and create a new Nitro enclaves converted image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/builds/convert-app/nitro-enclaves"
+          },
+          "docs": "Convert a docker image and create a new Nitro enclaves converted image."
+        },
+        {
+          "info": {
+            "name": "Analyze a docker image and create Confidential ACI deployment templates.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/builds/convert-app/aci"
+          },
+          "docs": "Analyze a docker image and create Confidential ACI deployment templates."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Node",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all compute nodes information.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/nodes",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Compute node name."
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "Compute node description."
+              },
+              {
+                "name": "sgx_version",
+                "value": "",
+                "type": "query",
+                "description": "Search on node's SGX platform software version."
+              },
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on name or description."
+              },
+              {
+                "name": "attestation_type",
+                "value": "",
+                "type": "query",
+                "description": "Node Attestation type (DCAP, NITRO_ENCLAVE or AMD_SEV_SNP)."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Status string for the compute node."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of compute nodes to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of compute nodes to skip from start."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter query supports searching by list of node_id."
+              }
+            ]
+          },
+          "docs": "Get compute nodes information with status."
+        },
+        {
+          "info": {
+            "name": "Provision a new compute node.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/nodes"
+          },
+          "docs": "Provision a new compute node."
+        },
+        {
+          "info": {
+            "name": "Get details of a particular compute node.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/nodes/:node-id",
+            "params": [
+              {
+                "name": "node-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute node."
+              }
+            ]
+          },
+          "docs": "Details of a particular compute node."
+        },
+        {
+          "info": {
+            "name": "Update details of a particular compute node.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/nodes/:node-id",
+            "params": [
+              {
+                "name": "node-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute node."
+              }
+            ]
+          },
+          "docs": "Update details of a particular compute node."
+        },
+        {
+          "info": {
+            "name": "Get an attested compute node's certificate.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/nodes/:node-id/certificate",
+            "params": [
+              {
+                "name": "node-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute node."
+              }
+            ]
+          },
+          "docs": "Get certificate for the compute node, only if the compute node is attested."
+        },
+        {
+          "info": {
+            "name": "Get a compute node's certificate.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/nodes/:node-id/certificate-details",
+            "params": [
+              {
+                "name": "node-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute node."
+              }
+            ]
+          },
+          "docs": "Get certificate for the compute node."
+        },
+        {
+          "info": {
+            "name": "Deactivate a particular compute node.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/nodes/:node-id/deactivate",
+            "params": [
+              {
+                "name": "node-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute node."
+              }
+            ]
+          },
+          "docs": "Deactivate a particular compute node."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Certificate",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a certificate.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/certificates/:cert-id",
+            "params": [
+              {
+                "name": "cert-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an issued certificate."
+              }
+            ]
+          },
+          "docs": "Retrieve a certificate."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "App",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all apps information.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/apps",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "App name."
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "Compute node description."
+              },
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on name or description."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of apps to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of apps to skip from start."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter to use for items, currently supports list of groups"
+              }
+            ]
+          },
+          "docs": "Get app's information with status."
+        },
+        {
+          "info": {
+            "name": "Add an application.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/apps"
+          },
+          "docs": "Add an application."
+        },
+        {
+          "info": {
+            "name": "Get details of a particular app.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/apps/:app-id",
+            "params": [
+              {
+                "name": "app-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an app."
+              }
+            ]
+          },
+          "docs": "Details of a particular app."
+        },
+        {
+          "info": {
+            "name": "Update details of a particular app.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/apps/:app-id",
+            "params": [
+              {
+                "name": "app-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an app."
+              }
+            ]
+          },
+          "docs": "Update a particular app."
+        },
+        {
+          "info": {
+            "name": "Delete a particular app",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/apps/:app-id",
+            "params": [
+              {
+                "name": "app-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an app."
+              }
+            ]
+          },
+          "docs": "Delete a particular app."
+        },
+        {
+          "info": {
+            "name": "Get an app's certificate for a compute node.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/apps/:app-id/node/:node-id/certificate-details",
+            "params": [
+              {
+                "name": "node-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute node."
+              },
+              {
+                "name": "app-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an app."
+              }
+            ]
+          },
+          "docs": "Get certificate for the app of a compute node."
+        },
+        {
+          "info": {
+            "name": "Get an attested app's certificate.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/apps/:app-id/node/:node-id/certificate",
+            "params": [
+              {
+                "name": "node-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute node."
+              },
+              {
+                "name": "app-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an app."
+              }
+            ]
+          },
+          "docs": "Get certificate for the app, only if the compute node and app has been attested."
+        },
+        {
+          "info": {
+            "name": "Get all the unique labels across all the applications within selected account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/apps/unique_labels/count"
+          },
+          "docs": "Get all the unique labels (with count) across all the applications within selected account."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Task",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all the tasks.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/tasks",
+            "params": [
+              {
+                "name": "task_type",
+                "value": "",
+                "type": "query",
+                "description": "Task type."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Task status."
+              },
+              {
+                "name": "requester",
+                "value": "",
+                "type": "query",
+                "description": "UserName of requester."
+              },
+              {
+                "name": "approver",
+                "value": "",
+                "type": "query",
+                "description": "UserName of approver."
+              },
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on Requester or Request."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of tasks to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of tasks to skip from start."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "base_filters",
+                "value": "",
+                "type": "query",
+                "description": "Filters to be applied on base query (count and results) key1:ASC,key2:DESC,key3:DESC"
+              }
+            ]
+          },
+          "docs": "Get all the tasks in the system."
+        },
+        {
+          "info": {
+            "name": "Get details of a particular task.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/tasks/:task-id",
+            "params": [
+              {
+                "name": "task-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a task."
+              }
+            ]
+          },
+          "docs": "Get the details of a task."
+        },
+        {
+          "info": {
+            "name": "Update status of approver and task.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/tasks/:task-id",
+            "params": [
+              {
+                "name": "task-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a task."
+              }
+            ]
+          },
+          "docs": "Update status of approver and task."
+        },
+        {
+          "info": {
+            "name": "Delete a particular task.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/tasks/:task-id",
+            "params": [
+              {
+                "name": "task-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a task."
+              }
+            ]
+          },
+          "docs": "Delete a particular task if not in pending state."
+        },
+        {
+          "info": {
+            "name": "Get status and result of a particular task.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/tasks/status/:task-id",
+            "params": [
+              {
+                "name": "task-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a task."
+              }
+            ]
+          },
+          "docs": "Get status of a task. If the task is completed, it also returns the result values, if any."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get details of the current logged in user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/user"
+          },
+          "docs": "Get details of the current logged in user."
+        },
+        {
+          "info": {
+            "name": "Get all user's information.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/users",
+            "params": [
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on name or email."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of users to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of users to skip from start."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              }
+            ]
+          },
+          "docs": "Get user's information with status."
+        },
+        {
+          "info": {
+            "name": "Create a new user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/users"
+          },
+          "docs": "Sign up a new user."
+        },
+        {
+          "info": {
+            "name": "Invite a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/users/invite"
+          },
+          "docs": "Invite an existing user or a new user to join an existing account."
+        },
+        {
+          "info": {
+            "name": "Get details of a particular user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/users/:user-id",
+            "params": [
+              {
+                "name": "user-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a user."
+              }
+            ]
+          },
+          "docs": "Get details of a user."
+        },
+        {
+          "info": {
+            "name": "Update status, name, and the role of a user. User with MANAGER access role can only update another user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/users/:user-id",
+            "params": [
+              {
+                "name": "user-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a user."
+              }
+            ]
+          },
+          "docs": "Update status, name, and the role of a user. User with MANAGER access role can only update another users."
+        },
+        {
+          "info": {
+            "name": "Completely delete a user profile from system",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/users/:user-id",
+            "params": [
+              {
+                "name": "user-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a user."
+              }
+            ]
+          },
+          "docs": "Completely deletes the currently logged in user from the system."
+        },
+        {
+          "info": {
+            "name": "Get user accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/users/:user-id/accounts",
+            "params": [
+              {
+                "name": "user-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a user."
+              }
+            ]
+          },
+          "docs": "Get information about the accounts of which the user is a member"
+        },
+        {
+          "info": {
+            "name": "Remove user's association with an account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/users/:user-id/accounts",
+            "params": [
+              {
+                "name": "user-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a user."
+              }
+            ]
+          },
+          "docs": "Remove user's association with an account."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "User authentication",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/sys/auth"
+          },
+          "docs": "User authentication."
+        },
+        {
+          "info": {
+            "name": "Discover the supported authentication methods for a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/sys/auth/discover",
+            "params": [
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Discover the supported authentication methods for a user."
+        },
+        {
+          "info": {
+            "name": "Refreshes existing user session.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/sys/session/refresh"
+          },
+          "docs": "Refreshes an existing session, thus extending the expiration time of the existing session token."
+        },
+        {
+          "info": {
+            "name": "Terminate a session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/sys/session/terminate"
+          },
+          "docs": "Terminate an authenticated session. After this call, session cannot be refreshed."
+        },
+        {
+          "info": {
+            "name": "Select a user's account to work on.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/sys/session/select_account/:account-id",
+            "params": [
+              {
+                "name": "account-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an Account."
+              }
+            ]
+          },
+          "docs": "\"Select one of the user's account to proceed. This is applicable when a user is associated with one or more account.\"\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "System",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Manager Version.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/sys/version"
+          },
+          "docs": "Get Manager Version."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Admin",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get cluster configuration by SysAdmin",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/system/config",
+            "params": [
+              {
+                "name": "future",
+                "value": "",
+                "type": "query",
+                "description": "Whether to get current or future cluster configuration"
+              }
+            ]
+          },
+          "docs": "Get cluster-wide configuration by SysAdmin."
+        },
+        {
+          "info": {
+            "name": "Modify cluster configuration by SysAdmin",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/system/config"
+          },
+          "docs": "Modify cluster-wide configuration by SysAdmin."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tools",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Convert an application to run in Nitro Enclaves.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/tools/converter/convert-app/nitro-enclaves"
+          },
+          "docs": "Convert an application to run in Nitro Enclaves."
+        },
+        {
+          "info": {
+            "name": "Convert an application to run in ACI.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/tools/converter/convert-app/aci"
+          },
+          "docs": "Convert an application to run in ACI."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Registry",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get details of all registry in the account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/registry"
+          },
+          "docs": "Get details of all registry in the account."
+        },
+        {
+          "info": {
+            "name": "Add a new registry to an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/registry"
+          },
+          "docs": "Add a new registry to an account."
+        },
+        {
+          "info": {
+            "name": "Get details of a particular registry",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/registry/:registry-id",
+            "params": [
+              {
+                "name": "registry-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a registry."
+              }
+            ]
+          },
+          "docs": "Details of a particular registry."
+        },
+        {
+          "info": {
+            "name": "Update a particular registry details",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/registry/:registry-id",
+            "params": [
+              {
+                "name": "registry-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a registry."
+              }
+            ]
+          },
+          "docs": "Update a particular registry details. Description and credential are the only editable field of a registry."
+        },
+        {
+          "info": {
+            "name": "Delete registry",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/registry/:registry-id",
+            "params": [
+              {
+                "name": "registry-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a registry."
+              }
+            ]
+          },
+          "docs": "Delete registry."
+        },
+        {
+          "info": {
+            "name": "Get details of the registry that will be used for the particular app images",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/registry/app/:app-id",
+            "params": [
+              {
+                "name": "app-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of an app."
+              }
+            ]
+          },
+          "docs": "Get details of the registry that will be used for the particular app images."
+        },
+        {
+          "info": {
+            "name": "Get details of the registry that will be used for the particular image",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/image/registry",
+            "params": [
+              {
+                "name": "image_name",
+                "value": "",
+                "type": "query",
+                "description": "Docker image name."
+              }
+            ]
+          },
+          "docs": "Get details of the registry that will be used for the particular image."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "ApplicationConfig",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all app configs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/app_configs",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "App config name"
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "App config description."
+              },
+              {
+                "name": "image_id",
+                "value": "",
+                "type": "query",
+                "description": "Search configurations for given image id"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter to use for items, currently supports labels, syntax: {\"labels\":{\"key1\":\"value1\",\"key2\":\"value2\"}}"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of app configs to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of app configs to skip from start."
+              }
+            ]
+          },
+          "docs": "Get detailed information of all app configs that the current user has access to."
+        },
+        {
+          "info": {
+            "name": "Add an app config.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/app_configs"
+          },
+          "docs": "Add an app config."
+        },
+        {
+          "info": {
+            "name": "Get app config",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/runtime/app_configs"
+          },
+          "docs": "Get current app config via certificate authentication"
+        },
+        {
+          "info": {
+            "name": "Get details of a particular runtime app config.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/runtime/app_configs/:config-id",
+            "params": [
+              {
+                "name": "config-id",
+                "value": "",
+                "type": "path",
+                "description": "Identity of an application config."
+              }
+            ]
+          },
+          "docs": "Get details of a particular runtime app config."
+        },
+        {
+          "info": {
+            "name": "Get details of a particular app config.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/app_configs/:config-id",
+            "params": [
+              {
+                "name": "config-id",
+                "value": "",
+                "type": "path",
+                "description": "Identity of an application config."
+              }
+            ]
+          },
+          "docs": "Get details of a particular app config."
+        },
+        {
+          "info": {
+            "name": "Update details of a particular app config.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/app_configs/:config-id",
+            "params": [
+              {
+                "name": "config-id",
+                "value": "",
+                "type": "path",
+                "description": "Identity of an application config."
+              }
+            ]
+          },
+          "docs": "Update details of a particular app config."
+        },
+        {
+          "info": {
+            "name": "Delete a particular app config",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/app_configs/:config-id",
+            "params": [
+              {
+                "name": "config-id",
+                "value": "",
+                "type": "path",
+                "description": "Identity of an application config."
+              }
+            ]
+          },
+          "docs": "Delete a particular app config"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "ApprovalRequests",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all approval requests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/approval_requests",
+            "params": [
+              {
+                "name": "requester",
+                "value": "",
+                "type": "query",
+                "description": "Only retrieve approval requests with the specified requester ID"
+              },
+              {
+                "name": "reviewer",
+                "value": "",
+                "type": "query",
+                "description": "Only retrieve approval requests with the specified reviewer ID"
+              },
+              {
+                "name": "subject",
+                "value": "",
+                "type": "query",
+                "description": "Only retrieve approval requests with the specified subject ID"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Only retrieve approval requests with the specified approval status"
+              },
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on name or description."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of app configs to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of app configs to skip from start."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter items based on groups or labels."
+              }
+            ]
+          },
+          "docs": "Get detailed information of all approval requests that the current user has access to."
+        },
+        {
+          "info": {
+            "name": "Create approval request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/approval_requests"
+          },
+          "docs": "Create approval request"
+        },
+        {
+          "info": {
+            "name": "Get an approval request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/approval_requests/:request-id",
+            "params": [
+              {
+                "name": "request-id",
+                "value": "",
+                "type": "path",
+                "description": "Approval Request Identifier"
+              }
+            ]
+          },
+          "docs": "Get the details and status of a particular approval request."
+        },
+        {
+          "info": {
+            "name": "Delete an approval request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/approval_requests/:request-id",
+            "params": [
+              {
+                "name": "request-id",
+                "value": "",
+                "type": "path",
+                "description": "Approval Request Identifier"
+              }
+            ]
+          },
+          "docs": "Delete an approval request."
+        },
+        {
+          "info": {
+            "name": "Approve a request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/approval_requests/:request-id/approve",
+            "params": [
+              {
+                "name": "request-id",
+                "value": "",
+                "type": "path",
+                "description": "Approval Request Identifier"
+              }
+            ]
+          },
+          "docs": "Approve a request."
+        },
+        {
+          "info": {
+            "name": "Deny a request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/approval_requests/:request-id/deny",
+            "params": [
+              {
+                "name": "request-id",
+                "value": "",
+                "type": "path",
+                "description": "Approval Request Identifier"
+              }
+            ]
+          },
+          "docs": "Deny a request."
+        },
+        {
+          "info": {
+            "name": "Get the result for an approved or failed request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/approval_requests/:request-id/result",
+            "params": [
+              {
+                "name": "request-id",
+                "value": "",
+                "type": "path",
+                "description": "Approval Request Identifier"
+              }
+            ]
+          },
+          "docs": "Get the result for an approved or failed request."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "ComputeClusters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get details of all compute clusters in the account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/clusters",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Cluster name"
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "Cluster description."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of clusters to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of clusters to skip from start."
+              }
+            ]
+          },
+          "docs": "Get details of all compute clusters in the account"
+        },
+        {
+          "info": {
+            "name": "Add a new compute cluster to an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/clusters"
+          },
+          "docs": "Add a new compute cluster to an account"
+        },
+        {
+          "info": {
+            "name": "Get details of a particular compute cluster",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/clusters/:cluster-id",
+            "params": [
+              {
+                "name": "cluster-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute cluster"
+              }
+            ]
+          },
+          "docs": "Get details of a particular compute cluster"
+        },
+        {
+          "info": {
+            "name": "Update a particular compute cluster details",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/clusters/:cluster-id",
+            "params": [
+              {
+                "name": "cluster-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute cluster"
+              }
+            ]
+          },
+          "docs": "Update a particular compute cluster details."
+        },
+        {
+          "info": {
+            "name": "Delete compute cluster",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/clusters/:cluster-id",
+            "params": [
+              {
+                "name": "cluster-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a compute cluster"
+              }
+            ]
+          },
+          "docs": "Delete compute cluster"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Dataset",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all datasets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/datasets",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Dataset name"
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "Dataset description."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter to use for items, currently supports labels, syntax: {\"labels\":{\"key1\":\"value1\",\"key2\":\"value2\"}}"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of datasets to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of datasets to skip from start."
+              }
+            ]
+          },
+          "docs": "Get detailed information of all datasets that the current user has access to."
+        },
+        {
+          "info": {
+            "name": "Create a new dataset object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/datasets"
+          },
+          "docs": "Create a new dataset object."
+        },
+        {
+          "info": {
+            "name": "Retrieve information about a particular dataset.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/datasets/:dataset-id",
+            "params": [
+              {
+                "name": "dataset-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a dataset."
+              }
+            ]
+          },
+          "docs": "Retrieve information about a particular dataset. Note that credentials are treated as secrets and are excluded from the response here."
+        },
+        {
+          "info": {
+            "name": "Modify a particular dataset.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/datasets/:dataset-id",
+            "params": [
+              {
+                "name": "dataset-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a dataset."
+              }
+            ]
+          },
+          "docs": "Modify a particular dataset."
+        },
+        {
+          "info": {
+            "name": "Delete a particular dataset.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/datasets/:dataset-id",
+            "params": [
+              {
+                "name": "dataset-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a dataset."
+              }
+            ]
+          },
+          "docs": "Deleting a particular dataset also deletes any affiliated stored secrets."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "WorkflowRuns",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all registered running workflows",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/workflow_runs",
+            "params": [
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A FilterQuery expression that specifies a filter to apply"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum amount of entries to provide (default is 1000)"
+              },
+              {
+                "name": "previous_id",
+                "value": "",
+                "type": "query",
+                "description": "Start after this Run ID"
+              },
+              {
+                "name": "previous_sort_value",
+                "value": "",
+                "type": "query",
+                "description": "If a sort_by is specified that is not the ID (e.g. sort_by=name:ASC), then the value corresponding to that field of the previous_id entry must be given. This field is used for (1) efficient index lookup, and (2) to keep track of the current position in the collection, even if the previous_id entry is updated or deleted in the mean time."
+              }
+            ]
+          },
+          "docs": "Does not query the orchestrator backend but rather a database table of registered running workflows"
+        },
+        {
+          "info": {
+            "name": "Start the given workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/workflow_runs"
+          },
+          "docs": "Start the given workflow"
+        },
+        {
+          "info": {
+            "name": "Update the properties of a workflow run",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/workflow_runs/:run-id",
+            "params": [
+              {
+                "name": "run-id",
+                "value": "",
+                "type": "path",
+                "description": "An instance of a running workflow."
+              }
+            ]
+          },
+          "docs": "Update the properties of a workflow run"
+        },
+        {
+          "info": {
+            "name": "Get the status of the given running workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/workflow_runs/:run-id/status",
+            "params": [
+              {
+                "name": "run-id",
+                "value": "",
+                "type": "path",
+                "description": "An instance of a running workflow."
+              }
+            ]
+          },
+          "docs": "Get the status of the given running workflow"
+        },
+        {
+          "info": {
+            "name": "Retrieve logs from an app in the given workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/workflow_runs/:run-id/logs",
+            "params": [
+              {
+                "name": "run-id",
+                "value": "",
+                "type": "path",
+                "description": "An instance of a running workflow."
+              },
+              {
+                "name": "runtime_config_id",
+                "value": "",
+                "type": "query",
+                "description": "Runtime config_id of final workflow app."
+              }
+            ]
+          },
+          "docs": "Retrieve logs from an app in the given workflow"
+        },
+        {
+          "info": {
+            "name": "Stop execution for the given workflow.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/workflow_runs/:run-id/stop",
+            "params": [
+              {
+                "name": "run-id",
+                "value": "",
+                "type": "path",
+                "description": "An instance of a running workflow."
+              }
+            ]
+          },
+          "docs": "Stop execution for the given workflow."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "WorkflowFinal",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search all the final workflow graphs.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/workflows/final/graphs",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Final workflow name"
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "Final workflow description."
+              },
+              {
+                "name": "project",
+                "value": "",
+                "type": "query",
+                "description": "The workflow project."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter to use for contained workflow versions, currently supports labels, syntax: {\"labels\":{\"key1\":\"value1\",\"key2\":\"value2\"}}"
+              },
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on name or description."
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of workflows to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of workflows to skip from start."
+              }
+            ]
+          },
+          "docs": "Search all the final workflow graphs."
+        },
+        {
+          "info": {
+            "name": "Create a finalized workflow graph request via approval.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/workflows/final/graphs"
+          },
+          "docs": "Create a finalized workflow graph request via approval."
+        },
+        {
+          "info": {
+            "name": "Get details of a particular final workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/workflows/final/graphs/:graph-id",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              },
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "query",
+                "description": "Account which owns the final workflow"
+              }
+            ]
+          },
+          "docs": "Get details of a particular final workflow"
+        },
+        {
+          "info": {
+            "name": "Create a new version for a particular final workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/workflows/final/graphs/:graph-id",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              }
+            ]
+          },
+          "docs": "Create a new version for a particular final workflow"
+        },
+        {
+          "info": {
+            "name": "Change name/description of a particular final workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/workflows/final/graphs/:graph-id",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              }
+            ]
+          },
+          "docs": "Change name/description of a particular final workflow"
+        },
+        {
+          "info": {
+            "name": "Get details of a particular final workflow version",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/workflows/final/graphs/:graph-id/:version",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "Version of a graph."
+              },
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "query",
+                "description": "Account which owns the final workflow"
+              }
+            ]
+          },
+          "docs": "Get details of a particular final workflow version"
+        },
+        {
+          "info": {
+            "name": "Update the final workflow graph's runtime (reference to ComputeCluster).",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/v1/workflows/final/graphs/:graph-id/:version",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "Version of a graph."
+              }
+            ]
+          },
+          "docs": "Update the final workflow graph's runtime (reference to ComputeCluster)."
+        },
+        {
+          "info": {
+            "name": "Delete a particular final workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/workflows/final/graphs/:graph-id/:version",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "Version of a graph."
+              }
+            ]
+          },
+          "docs": "Delete a particular final workflow"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Workflow",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search all workflow draft graphs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/workflows/draft/graphs",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Draft workflow name"
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "Draft workflow description."
+              },
+              {
+                "name": "all_search",
+                "value": "",
+                "type": "query",
+                "description": "Search on name or description."
+              },
+              {
+                "name": "parent_graph_id",
+                "value": "",
+                "type": "query",
+                "description": "The final workflow from which this draft was derived."
+              },
+              {
+                "name": "project",
+                "value": "",
+                "type": "query",
+                "description": "The workflow project."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filter to use for items, currently supports labels, syntax: {\"labels\":{\"key1\":\"value1\",\"key2\":\"value2\"}}"
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum numbers of images to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of images to skip from start."
+              }
+            ]
+          },
+          "docs": "Search all workflow draft graphs"
+        },
+        {
+          "info": {
+            "name": "Create a new workflow graph as a draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/workflows/draft/graphs"
+          },
+          "docs": "Create a new workflow graph as a draft"
+        },
+        {
+          "info": {
+            "name": "Get details of a particular draft workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/workflows/draft/graphs/:graph-id",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              },
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "query",
+                "description": "Account in which workflow belong"
+              }
+            ]
+          },
+          "docs": "Get details of a particular draft workflow"
+        },
+        {
+          "info": {
+            "name": "Update a particular workflow graph.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/workflows/draft/graphs/:graph-id",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              },
+              {
+                "name": "acct_id",
+                "value": "",
+                "type": "query",
+                "description": "Account in which workflow belong"
+              }
+            ]
+          },
+          "docs": "Update a particular workflow graph."
+        },
+        {
+          "info": {
+            "name": "Delete a particular draft workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/workflows/draft/graphs/:graph-id",
+            "params": [
+              {
+                "name": "graph-id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of a graph."
+              }
+            ]
+          },
+          "docs": "Delete a particular draft workflow"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
