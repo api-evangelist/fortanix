@@ -32,36 +32,12 @@ tags:
 - Post-Quantum
 - Secrets Management
 apis:
-- aid: fortanix:dsm
-  name: Fortanix Data Security Manager REST API
-  description: 'REST API for the Fortanix Data Security Manager (DSM): account, group,
-    app, user and role administration plus key lifecycle (generate, import, rotate,
-    export, destroy) and cryptographic operations (encrypt, decrypt, sign, verify,
-    digest, HMAC, key agreement, key wrapping, multi-part and batch crypto), approval
-    requests, Lua plugins, audit logs and account statistics.'
-  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
-  baseURL: https://amer.smartkey.io
-  tags:
-  - Key Management
-  - Cryptography
-  - HSM
-  - Secrets Management
-  - Encryption
-  properties:
-  - type: OpenAPI
-    url: openapi/fortanix-dsm-openapi-original.json
-  - type: Documentation
-    url: https://support.fortanix.com/docs/dsm-rest-apis
-  - type: APIReference
-    url: https://support.fortanix.com/apidocs/dsm-introduction
-  - type: Overlay
-    url: overlays/fortanix-dsm-overlay.yaml
 - aid: fortanix:ccm
   name: Fortanix Confidential Computing Manager REST API
-  description: 'REST API for the Fortanix Confidential Computing Manager (CCM) backend:
-    compute-node and application enrollment, enclave image build and conversion, attestation,
-    certificate issuance, container registries, application configuration, approval
-    requests, compute clusters, datasets and workflow runs.'
+  description: >-
+    REST API for the Fortanix Confidential Computing Manager (CCM) backend: compute-node and application
+    enrollment, enclave image build and conversion, attestation, certificate issuance, container registries,
+    application configuration, approval requests, compute clusters, datasets and workflow runs.
   humanURL: https://support.fortanix.com/apidocs/ccm-introduction
   baseURL: https://ccm.fortanix.com
   tags:
@@ -78,35 +54,916 @@ apis:
     url: https://support.fortanix.com/docs/fortanix-ccm-developers-guide
   - type: Overlay
     url: overlays/fortanix-ccm-overlay.yaml
-- aid: fortanix:armor-key-insight
-  name: Fortanix Armor and Key Insight API
-  description: 'REST API covering the Armor and Key Insight components of the Fortanix
-    Data & AI Security Platform: cloud and on-premises cryptographic discovery connections,
-    scans, scan inventory, discovery policies, and AWS, Azure, on-premises, services,
-    DSM and post-quantum-cryptography reporting, plus OAuth 2.0 client-credentials
-    authentication.'
-  humanURL: https://support.fortanix.com/apidocs/armor-ki-introduction
-  baseURL: https://api.armor.fortanix.com
+- aid: fortanix:fortanix-account-extensions-api
+  name: Fortanix Account Extensions API
+  description: The Account_extensions API from Fortanix — 1 operation(s) for account_extensions.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
   tags:
-  - Cryptographic Discovery
-  - Post-Quantum
-  - Key Insight
-  - Security Posture
+  - Account_extensions
   properties:
   - type: OpenAPI
-    url: openapi/fortanix-armor-key-insight-openapi-original.json
+    url: openapi/fortanix-account-extensions-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
   - type: APIReference
     url: https://support.fortanix.com/apidocs/armor-ki-introduction
   - type: Documentation
     url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
-  - type: Overlay
-    url: overlays/fortanix-armor-key-insight-overlay.yaml
+- aid: fortanix:fortanix-accounts-api
+  name: Fortanix Accounts API
+  description: The Accounts API from Fortanix — 9 operation(s) for accounts.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-admin-api
+  name: Fortanix Admin API
+  description: The Admin API from Fortanix — 1 operation(s) for admin.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Admin
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-admin-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-app-api
+  name: Fortanix App API
+  description: The App API from Fortanix — 5 operation(s) for app.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - App
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-app-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-applicationconfig-api
+  name: Fortanix Application Config API
+  description: The ApplicationConfig API from Fortanix — 4 operation(s) for applicationconfig.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - ApplicationConfig
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-applicationconfig-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-approval-requests-api
+  name: Fortanix Approval Requests API
+  description: The Approval_requests API from Fortanix — 6 operation(s) for approval_requests.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Approval_requests
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-approval-requests-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-approvalrequests-api
+  name: Fortanix Approval Requests API
+  description: The ApprovalRequests API from Fortanix — 5 operation(s) for approvalrequests.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - ApprovalRequests
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-approvalrequests-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-apps-api
+  name: Fortanix Apps API
+  description: The Apps API from Fortanix — 7 operation(s) for apps.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Apps
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-apps-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-auth-api
+  name: Fortanix Auth API
+  description: The Auth API from Fortanix — 5 operation(s) for auth.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Auth
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-auth-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-authentication-api
+  name: Fortanix Authentication API
+  description: APIs regarding creating or ending a session.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-authentication-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-batch-api
+  name: Fortanix Batch API
+  description: The Batch API from Fortanix — 1 operation(s) for batch.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Batch
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-batch-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-build-api
+  name: Fortanix Build API
+  description: The Build API from Fortanix — 5 operation(s) for build.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Build
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-build-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-certificate-api
+  name: Fortanix Certificate API
+  description: The Certificate API from Fortanix — 1 operation(s) for certificate.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Certificate
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-certificate-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-computeclusters-api
+  name: Fortanix Compute Clusters API
+  description: The ComputeClusters API from Fortanix — 2 operation(s) for computeclusters.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - ComputeClusters
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-computeclusters-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-credentials-api
+  name: Fortanix Credentials API
+  description: The Credentials API from Fortanix — 3 operation(s) for credentials.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Credentials
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-credentials-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-crypto-api
+  name: Fortanix Crypto API
+  description: The Crypto API from Fortanix — 24 operation(s) for crypto.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Crypto
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-crypto-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-dataset-api
+  name: Fortanix Dataset API
+  description: The Dataset API from Fortanix — 2 operation(s) for dataset.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Dataset
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-dataset-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoveryawsreports-api
+  name: Fortanix Discovery Aws Reports API
+  description: APIs regarding obtaining the reports related to AWS.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryAwsReports
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoveryawsreports-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoveryazurereports-api
+  name: Fortanix Discovery Azure Reports API
+  description: APIs regarding obtaining the reports related to Azure.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryAzureReports
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoveryazurereports-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoveryconnection-api
+  name: Fortanix Discovery Connection API
+  description: APIs regarding obtaining details about the connection.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryConnection
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoveryconnection-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoverydsmreports-api
+  name: Fortanix Discovery Dsm Reports API
+  description: APIs regarding obtaining the reports related to DSM.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryDsmReports
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoverydsmreports-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoveryinventory-api
+  name: Fortanix Discovery Inventory API
+  description: APIs regarding obtaining the details about the inventory objects.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryInventory
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoveryinventory-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoveryonpremreports-api
+  name: Fortanix Discovery On Prem Reports API
+  description: APIs regarding obtaining the reports related to On-Prem infrastructure.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryOnPremReports
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoveryonpremreports-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoverypolicies-api
+  name: Fortanix Discovery Policies API
+  description: APIs regarding obtaining details about the policies.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryPolicies
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoverypolicies-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoverypqcreports-api
+  name: Fortanix Discovery Pqc Reports API
+  description: APIs regarding obtaining the PQC reports.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryPqcReports
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoverypqcreports-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoveryscan-api
+  name: Fortanix Discovery Scan API
+  description: APIs regarding obtaining details about the scans.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryScan
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoveryscan-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoveryscaninventory-api
+  name: Fortanix Discovery Scan Inventory API
+  description: APIs regarding obtaining the details about the inventory objects associated to a scan.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryScanInventory
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoveryscaninventory-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-discoveryservicesreports-api
+  name: Fortanix Discovery Services Reports API
+  description: APIs regarding obtaining the reports for Services.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - DiscoveryServicesReports
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-discoveryservicesreports-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-external-roles-api
+  name: Fortanix External Roles API
+  description: The External_roles API from Fortanix — 3 operation(s) for external_roles.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - External_roles
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-external-roles-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-fido-api
+  name: Fortanix Fido API
+  description: The Fido API from Fortanix — 2 operation(s) for fido.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Fido
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-fido-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-groups-api
+  name: Fortanix Groups API
+  description: The Groups API from Fortanix — 10 operation(s) for groups.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-groups-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-keys-api
+  name: Fortanix Keys API
+  description: The Keys API from Fortanix — 20 operation(s) for keys.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Keys
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-keys-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-logs-api
+  name: Fortanix Logs API
+  description: The Logs API from Fortanix — 1 operation(s) for logs.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Logs
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-logs-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-marketplace-api
+  name: Fortanix Marketplace API
+  description: The Marketplace API from Fortanix — 1 operation(s) for marketplace.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Marketplace
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-marketplace-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-misc-api
+  name: Fortanix Misc API
+  description: The Misc API from Fortanix — 9 operation(s) for misc.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Misc
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-misc-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-node-api
+  name: Fortanix Node API
+  description: The Node API from Fortanix — 5 operation(s) for node.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Node
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-node-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-plugins-api
+  name: Fortanix Plugins API
+  description: The Plugins API from Fortanix — 2 operation(s) for plugins.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Plugins
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-plugins-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-registry-api
+  name: Fortanix Registry API
+  description: The Registry API from Fortanix — 4 operation(s) for registry.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Registry
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-registry-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-roles-api
+  name: Fortanix Roles API
+  description: The Roles API from Fortanix — 2 operation(s) for roles.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-roles-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-session-api
+  name: Fortanix Session API
+  description: The Session API from Fortanix — 11 operation(s) for session.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Session
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-session-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-stats-api
+  name: Fortanix Stats API
+  description: The Stats API from Fortanix — 5 operation(s) for stats.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Stats
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-stats-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-system-api
+  name: Fortanix System API
+  description: The System API from Fortanix — 1 operation(s) for system.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - System
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-system-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-task-api
+  name: Fortanix Task API
+  description: The Task API from Fortanix — 3 operation(s) for task.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Task
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-task-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-tools-api
+  name: Fortanix Tools API
+  description: The Tools API from Fortanix — 2 operation(s) for tools.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Tools
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-tools-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-users-api
+  name: Fortanix Users API
+  description: The Users API from Fortanix — 20 operation(s) for users.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-users-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-version-api
+  name: Fortanix Version API
+  description: The Version API from Fortanix — 1 operation(s) for version.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Version
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-version-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-workflow-api
+  name: Fortanix Workflow API
+  description: The Workflow API from Fortanix — 2 operation(s) for workflow.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Workflow
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-workflow-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-workflowfinal-api
+  name: Fortanix Workflow Final API
+  description: The WorkflowFinal API from Fortanix — 3 operation(s) for workflowfinal.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - WorkflowFinal
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-workflowfinal-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-workflowruns-api
+  name: Fortanix Workflow Runs API
+  description: The WorkflowRuns API from Fortanix — 5 operation(s) for workflowruns.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - WorkflowRuns
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-workflowruns-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-zone-api
+  name: Fortanix Zone API
+  description: The Zone API from Fortanix — 5 operation(s) for zone.
+  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
+  baseURL: https://amer.smartkey.io
+  tags:
+  - Zone
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-zone-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/fortanix-dsm-overlay.yaml
+- type: Overlay
+  url: overlays/fortanix-armor-key-insight-overlay.yaml
 - type: MCPServer
   url: mcp/fortanix-mcp.yml
 - type: AgenticAccess
