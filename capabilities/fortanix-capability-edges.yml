@@ -1,0 +1,181 @@
+slug: fortanix
+provider: Fortanix
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 16
+edges:
+- tag: External_roles
+  spec_file: fortanix-external-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: Create a new external role; Synchronize information about the external role by retrieving
+    it from external source; schemas ExternalRoleMapping, UserGroupRole, AppPermissions
+  reason: Full CRUD plus directory synchronisation of external roles mapped to internal group roles and
+    app permissions — this is federated role/entitlement administration, i.e. Identity & Access Management.
+- tag: Fido
+  spec_file: fortanix-fido-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: Completes a pending authentication using a FIDO2 key; MfaNewChallenge  Get credential creation
+    options; schemas PublicKeyCredentialDescriptor, UserVerificationRequirement, MfaProtocol
+  reason: FIDO2/WebAuthn multi-factor authentication enrolment and completion — authentication and credential
+    lifecycle, squarely Identity & Access Management rather than any business-domain capability.
+- tag: Keys
+  spec_file: fortanix-keys-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.85
+  evidence: CreateSobject  Generate a new security object; ImportSobject; DestroySobject  Transition a
+    security object to Destroyed state; ExportSobjectComponents
+  reason: Cryptographic key/security-object lifecycle management (generate, import, activate, destroy,
+    export, KCV) — the core enterprise cryptography and key-management capability, mapped to Cybersecurity
+    Management at L1 as no candidate L2 addresses key management explicitly.
+- tag: Crypto
+  spec_file: fortanix-crypto-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.8
+  evidence: POST /crypto/v1/decrypt  Decrypt  Decrypt data using a symmetric or asymmetric key.
+  reason: Encrypt/decrypt/sign/verify/derive/digest operations against managed keys — enterprise cryptographic
+    security services; no listed sub-capability specifically covers key/crypto operations.
+- tag: Users
+  spec_file: fortanix-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: POST /v1/users/invite  inviteUser  Invite a user. ... PATCH /v1/users/{user-id}  UpdateUser  Update
+    status, name, and the role of a user. ... POST /sys/v1/users/change_password  ChangePassword
+  reason: 'Administration of platform user accounts: create, invite, confirm email, change password, assign
+    access roles (AccessRoles, UserGroupRole), remove user from account. This is joiner-mover-leaver account
+    and access administration, i.e. Identity & Access Management — not HR employee records.'
+- tag: DiscoveryAwsReports
+  spec_file: fortanix-discoveryawsreports-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.75
+  evidence: GET /api/v1/discovery/scans/{id}/assessment_report/aws  GetAwsScanAssessmentReport  Get Scan
+    Assessment report.
+  reason: Scan-based discovery and assessment of AWS KMS keys, encryption rules and 'DiscoveryOverlyPermissiveViolations'
+    — cryptographic security posture assessment and reporting.
+- tag: DiscoveryAzureReports
+  spec_file: fortanix-discoveryazurereports-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.75
+  evidence: GET /api/v1/discovery/scans/{id}/assessment_report/azure  GetAzureScanAssessmentReport  Get
+    Azure Scanned Assessment report
+  reason: Azure key/encryption discovery reports with 'DiscoveryAzureCryptoPolicyCompliance' and key analysis
+    schemas — security posture assessment of cryptographic assets.
+- tag: DiscoveryInventory
+  spec_file: fortanix-discoveryinventory-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.75
+  evidence: GET /api/v1/discovery/inventory_objects  GetInventoryObjects  Get Inventory Objects; schemas
+    DiscoveryInventoryObjectInfo, DiscoveryDsmDeployment, DiscoveryAwsService
+  reason: Read-only inventory of discovered cryptographic assets/services across AWS, Azure, on-prem and
+    DSM deployments. This is security posture asset inventory within a data-security platform, so Cybersecurity
+    Management at L1; no listed sub-capability specifically covers crypto asset inventory, so L2 is left
+    null.
+- tag: DiscoveryPqcReports
+  spec_file: fortanix-discoverypqcreports-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.75
+  evidence: Get Cumulative PQC Report; schemas DiscoveryPqcReportVulnerabilityStatus, DiscoveryPqcReportCertificatesViolationMetrics
+  reason: Post-quantum-readiness reporting on connections, services, keys and certificates, including
+    vulnerability status and violation metrics — security assessment/reporting of the cryptographic estate.
+    L1 Cybersecurity Management; not clearly scanning-and-patching vulnerability management, so no L2.
+- tag: DiscoveryScanInventory
+  spec_file: fortanix-discoveryscaninventory-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.75
+  evidence: List Scan Inventory objects; schemas DiscoveryAwsKmsKeyState, DiscoveryAcmCertificateStatus,
+    DiscoveryDsmSobjectRotationPolicy
+  reason: Per-scan inventory of discovered cryptographic objects (KMS keys, certificates, encryption rules,
+    rotation policies) across cloud and on-prem — security asset discovery. Cybersecurity Management at
+    L1; no listed L2 matches crypto asset inventory precisely.
+- tag: Roles
+  spec_file: fortanix-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: 'POST /sys/v1/roles  CreateRole  Create a new role. ... schemas: Role, GroupPermissions, AccountPermissions,
+    AccountRole, GroupRole'
+  reason: Operations define and maintain custom roles carrying account- and group-level permissions, i.e.
+    role-based access control administration. That is Identity & Access Management; confidence tempered
+    because this is the product's own authorisation model rather than an enterprise IAM programme.
+- tag: DiscoveryOnPremReports
+  spec_file: fortanix-discoveryonpremreports-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.72
+  evidence: Get On-Prem Database Scanned Assessment report; schemas DiscoveryOnPremDatabaseRiskAssessment,
+    DiscoveryViolationDetails, DiscoveryRiskLevel
+  reason: Assessment and summary reports of cryptographic violations and risk levels found by on-prem
+    scans of databases, filesystems and source code — security assessment reporting. Mapped to Cybersecurity
+    Management at L1; evidence does not cleanly name vulnerability remediation or governance, so no L2.
+- tag: DiscoveryServicesReports
+  spec_file: fortanix-discoveryservicesreports-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.72
+  evidence: Get Services report grouped by violation type; schemas DiscoveryViolation, DiscoveryRiskLevel,
+    DiscoveryAwsRegionViolationMetrics
+  reason: Reports of scanned cloud services grouped by account, subscription, service type and cryptographic
+    violation type with risk levels — security posture reporting, so Cybersecurity Management at L1 without
+    a confidently named sub-capability.
+- tag: ComputeClusters
+  spec_file: fortanix-computeclusters-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: POST /v1/clusters  createComputeCluster  Add a new compute cluster to an account
+  reason: CRUD over Kubernetes/Azure ACI compute clusters with KubeConfig and ServicePrincipal schemas
+    — registration and stewardship of compute infrastructure.
+- tag: Credentials
+  spec_file: fortanix-credentials-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /sys/v1/credentials/{cred_id}/rotate  RotateCredential  Rotate a specified credential
+  reason: Lifecycle of integration credentials (AzureCredentialAuthVariantClientSecret, OciCredentialAuthApiKey,
+    RotationMethod) including creation, update and rotation — credential/secret administration within
+    identity and access management.
+- tag: DiscoveryDsmReports
+  spec_file: fortanix-discoverydsmreports-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.7
+  evidence: GET /api/v1/discovery/scans/{id}/summary_report/dsm  GetDsmScanSummaryReport  Get DSM Summary
+    report
+  reason: Summary reporting of discovered DSM keys, key status and algorithms (DiscoveryDsmKeysDiscoveryData)
+    — reporting on cryptographic security posture.
