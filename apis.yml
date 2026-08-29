@@ -12,6 +12,18 @@ description: 'Fortanix is a data-security company building the Fortanix Data & A
   PHP, JavaScript), a Python CLI (sdkms-cli), Terraform providers, and legacy cryptographic
   interfaces (PKCS#11, Microsoft CNG, Java JCE).'
 url: https://raw.githubusercontent.com/api-evangelist/fortanix/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://cdn.aglty.io/fortanix/global-header/fortanix-logo.svg
 x-type: company
 x-source: harvest:secondary-market
