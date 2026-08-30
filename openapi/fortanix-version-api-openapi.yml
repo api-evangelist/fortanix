@@ -1,0 +1,114 @@
+openapi: 3.2.0
+info:
+  title: Fortanix DSM REST Version API
+  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0-20260710
+servers:
+- url: '{dsmEndpoint}'
+  description: DSM Endpoint
+  variables:
+    dsmEndpoint:
+      default: https://amer.smartkey.io
+      description: Type your DSM server URL here (include https://)
+tags:
+- name: Version
+paths:
+  /sys/v1/version:
+    get:
+      operationId: Version
+      tags:
+      - Version
+      summary: 'Returns information about the DSM server version and the client
+
+        API version that it supports.'
+      description: 'Returns information about the DSM server version and the client
+
+        API version that it supports.'
+      parameters:
+      - $ref: '#/components/parameters/VersionParams'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionResponse'
+components:
+  schemas:
+    ServerMode:
+      description: Server execution mode.
+      type: string
+      enum:
+      - Software
+      - Sgx
+    VersionParams:
+      allOf:
+      - type: object
+        properties:
+          detailed_fips_info:
+            type: boolean
+            description: 'Include FIPS-relevant info in the response. Currently that is `plugins_digest`.
+
+
+              Only applicable to FIPS builds.'
+    VersionResponse:
+      allOf:
+      - type: object
+        description: Information about the service version.
+        properties:
+          version:
+            type: string
+            description: Server version. This is encoded as "major.minor.build".
+          api_version:
+            type: string
+            description: The API version implemented by the server.
+          server_mode:
+            $ref: '#/components/schemas/ServerMode'
+          fips_level:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 255
+            description: 'FIPS level at which the service in running. If this field is absent, then the service is
+
+              not running in FIPS compliant mode.'
+          plugins_digest:
+            type: string
+            format: byte
+            description: 'An opaque digest of all current plugins.
+
+
+              Only present when the server is running in FIPS mode.'
+        required:
+        - version
+        - api_version
+        - server_mode
+  parameters:
+    VersionParams:
+      in: query
+      name: VersionParams
+      schema:
+        $ref: '#/components/schemas/VersionParams'
+      explode: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    apiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Please enter your token prefixed with 'Basic ' (e.g., 'Basic your_token_here')
+    bearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

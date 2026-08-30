@@ -1,0 +1,114 @@
+openapi: 3.2.0
+info:
+  description: '**API of the Fortanix Unified Data and AI Security Platform**
+
+
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
+
+    '
+  title: Armor Authentication API
+  version: 0.1.0
+servers:
+- url: https://api.armor.fortanix.com
+tags:
+- description: APIs regarding creating or ending a session.
+  name: Authentication
+paths:
+  /api/v1/iam/session/oauth2/token:
+    post:
+      description: 'Authenticate using the Oauth 2.0 Client Credentials flow.
+
+
+        To call this you must provide the form url encoded app ID and the form url encoded API key in the form of a Basic auth header.
+
+        '
+      operationId: OauthToken
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                grant_type:
+                  enum:
+                  - client_credentials
+                  type: string
+        description: Conforms to RFC 6749 Section 4.4.2.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OauthTokenResponse'
+          description: Success result.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OauthTokenError'
+          description: Invalid credentials.
+      summary: Authenticate with a token.
+      tags:
+      - Authentication
+  /api/v1/iam/session/terminate:
+    post:
+      description: Terminate the current session.
+      operationId: Terminate
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Terminate the current session.
+      tags:
+      - Authentication
+components:
+  schemas:
+    OauthTokenError:
+      properties:
+        error:
+          $ref: '#/components/schemas/OauthTokenErrorCode'
+        error_description:
+          type: string
+        error_uri:
+          type: string
+      required:
+      - error
+      - error_description
+      type: object
+    OauthTokenErrorCode:
+      description: Conforms to RFC 6749 Section 5.2.
+      enum:
+      - invalid_client
+      - invalid_grant
+      - invalid_request
+      - invalid_scope
+      - unauthorized_client
+      - unsupported_grant_type
+      type: string
+    OauthTokenResponse:
+      example:
+        access_token: 2YotnFZFEjr1zCsicMWpAA
+        expires_in: 3600
+        token_type: Bearer
+      properties:
+        access_token:
+          type: string
+        expires_in:
+          description: Token lifetime in seconds.
+          type: integer
+        token_type:
+          type: string
+      required:
+      - access_token
+      - token_type
+      - expires_in
+      type: object
+  securitySchemes:
+    Oauth2ClientCredentials:
+      description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+      type: oauth2

@@ -1,0 +1,712 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Workflow Final API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: WorkflowFinal
+paths:
+  /v1/workflows/final/graphs:
+    get:
+      summary: Search all the final workflow graphs.
+      tags:
+      - WorkflowFinal
+      operationId: getAllFinalWorkflowGraphs
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - name: name
+        in: query
+        description: Final workflow name
+        required: false
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: Final workflow description.
+        required: false
+        schema:
+          type: string
+      - name: project
+        in: query
+        description: The workflow project.
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: 'Filter to use for contained workflow versions, currently supports labels, syntax: {"labels":{"key1":"value1","key2":"value2"}}'
+        required: false
+        schema:
+          type: string
+      - name: all_search
+        in: query
+        description: Search on name or description.
+        required: false
+        schema:
+          type: string
+      - name: sort_by
+        in: query
+        description: Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum numbers of workflows to return.
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of workflows to skip from start.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllFinalWorkflowGraphsResponse'
+      security:
+      - bearerToken: []
+    post:
+      summary: Create a finalized workflow graph request via approval.
+      tags:
+      - WorkflowFinal
+      operationId: createFinalWorkflowGraph
+      x-auth-resource: ApprovalAuth
+      parameters:
+      - $ref: '#/components/parameters/CreateFinalWorkflowGraphRequest'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinalWorkflow'
+      security:
+      - bearerToken: []
+  /v1/workflows/final/graphs/{graph-id}:
+    post:
+      tags:
+      - WorkflowFinal
+      summary: Create a new version for a particular final workflow
+      description: Create a new version for a particular final workflow
+      operationId: updateFinalWorkflowGraph
+      x-auth-resource: ApprovalAuth
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      - $ref: '#/components/parameters/CreateWorkflowVersionRequest'
+      responses:
+        '200':
+          description: The data for the created version within the workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionInFinalWorkflow'
+      security:
+      - bearerToken: []
+    get:
+      tags:
+      - WorkflowFinal
+      summary: Get details of a particular final workflow
+      description: Get details of a particular final workflow
+      operationId: getFullFinalWorkflowGraph
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      - name: acct_id
+        in: query
+        description: Account which owns the final workflow
+        required: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: The workflow with all contained graph versions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinalWorkflow'
+      security:
+      - bearerToken: []
+    patch:
+      tags:
+      - WorkflowFinal
+      summary: Change name/description of a particular final workflow
+      description: Change name/description of a particular final workflow
+      operationId: updateFinalWorkflowGraphName
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      - $ref: '#/components/parameters/UpdateFinalWorkflowName'
+      responses:
+        '200':
+          description: The renamed workflow with all contained graph versions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinalWorkflow'
+      security:
+      - bearerToken: []
+  /v1/workflows/final/graphs/{graph-id}/{version}:
+    get:
+      tags:
+      - WorkflowFinal
+      summary: Get details of a particular final workflow version
+      description: Get details of a particular final workflow version
+      operationId: getFinalWorkflowGraph
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      - $ref: '#/components/parameters/WorkflowGraphVersion'
+      - name: acct_id
+        in: query
+        description: Account which owns the final workflow
+        required: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionInFinalWorkflow'
+      security:
+      - bearerToken: []
+    delete:
+      tags:
+      - WorkflowFinal
+      summary: Delete a particular final workflow
+      description: Delete a particular final workflow
+      operationId: deleteFinalWorkflowGraph
+      x-auth-resource: ApprovalAuth
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      - $ref: '#/components/parameters/WorkflowGraphVersion'
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - bearerToken: []
+    patch:
+      summary: Update the final workflow graph's runtime (reference to ComputeCluster).
+      tags:
+      - WorkflowFinal
+      operationId: updateFinalWorkflowGraphRuntime
+      x-auth-resource: Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      - $ref: '#/components/parameters/WorkflowGraphVersion'
+      - $ref: '#/components/parameters/UpdateWorkflowVersionRequest'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionInFinalWorkflow'
+      security:
+      - bearerToken: []
+components:
+  schemas:
+    WorkflowObjectFinalAppPatch:
+      type: object
+      description: ''
+      properties:
+        deployment:
+          $ref: '#/components/schemas/WorkflowAppDeployment'
+    CreateFinalWorkflowGraph:
+      type: object
+      description: ''
+      required:
+      - name
+      - description
+      - contents
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        group_id:
+          type: string
+          format: uuid
+        contents:
+          $ref: '#/components/schemas/CreateWorkflowVersionRequest'
+    KubernetesSingleJob:
+      type: object
+      description: ''
+      required:
+      - namespace
+      - cluster_id
+      properties:
+        namespace:
+          type: string
+        cluster_id:
+          type: string
+          format: uuid
+    UpdateFinalWorkflowNameRequest:
+      type: object
+      description: ''
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    DockerNetworkProtocol:
+      type: string
+      description: Protocol Associated with a Port exposed by a docker container.
+      enum:
+      - Tcp
+      - Udp
+    AciSingleJob:
+      type: object
+      description: ''
+      required:
+      - cluster_id
+      properties:
+        cluster_id:
+          type: string
+          format: uuid
+        deployment_location:
+          type: string
+    WorkflowLinkMetadata:
+      type: object
+      description: The final workflow from which this draft was derived. This field may point to a deleted final workflow in which you should treat it as if it's not present.
+      required:
+      - graph_id
+      - source_version
+      properties:
+        graph_id:
+          type: string
+          format: uuid
+        source_version:
+          type: integer
+    VersionInFinalWorkflow:
+      type: object
+      required:
+      - graph_id
+      - name
+      - description
+      - version
+      - contents
+      properties:
+        graph_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        version:
+          type: string
+        contents:
+          $ref: '#/components/schemas/FinalWorkflowGraph'
+    DockerNetworkPort:
+      type: object
+      description: A port exposed by a docker container.
+      required:
+      - port
+      - protocol
+      properties:
+        port:
+          type: integer
+          description: A valid, specific port number from 1..65535 (inclusive).
+        protocol:
+          $ref: '#/components/schemas/DockerNetworkProtocol'
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    WorkflowAppAci:
+      type: object
+      description: ''
+      required:
+      - exposed_ports
+      - env_vars
+      properties:
+        exposed_ports:
+          description: List of ports exposed for the azure container instance.
+          type: array
+          items:
+            $ref: '#/components/schemas/DockerNetworkPort'
+        env_vars:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+    WorkflowMetadata:
+      type: object
+      description: ''
+      required:
+      - nodes
+      properties:
+        nodes:
+          type: object
+          additionalProperties:
+            type: object
+        parent:
+          $ref: '#/components/schemas/WorkflowLinkMetadata'
+        project:
+          type: string
+    WorkflowObject:
+      type: object
+      description: ''
+      required:
+      - name
+      - ref
+      properties:
+        name:
+          type: string
+        user_id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        ref:
+          $ref: '#/components/schemas/WorkflowObjectRef'
+    WorkflowAppDeployment:
+      type: object
+      description: Deployment info for an app. Exactly one of kubernetes or aci field must be set.
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        kubernetes:
+          $ref: '#/components/schemas/WorkflowAppKubernetes'
+        aci:
+          $ref: '#/components/schemas/WorkflowAppAci'
+    WorkflowObjectRefDataset:
+      type: object
+      description: ''
+      required:
+      - dataset_id
+      properties:
+        dataset_id:
+          type: string
+          format: uuid
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+    GetAllFinalWorkflowGraphsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FinalWorkflow'
+    FinalWorkflow:
+      type: object
+      required:
+      - graph_id
+      - name
+      - created_at
+      - updated_at
+      - description
+      - versions
+      - group_id
+      - acct_id
+      properties:
+        graph_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        group_id:
+          type: string
+          format: uuid
+        acct_id:
+          type: string
+          format: uuid
+        created_at:
+          type: integer
+          format: int64
+          description: Dataset creation time (seconds since epoch).
+        updated_at:
+          type: integer
+          format: int64
+          description: Last update UNIX timestamp (seconds since epoch).
+        description:
+          type: string
+        versions:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/FinalWorkflowGraph'
+        type:
+          $ref: '#/components/schemas/WorkflowType'
+    WorkflowEdgeLink:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+        port:
+          type: string
+    WorkflowObjectFinalApp:
+      type: object
+      description: ''
+      required:
+      - image_id
+      - config_id
+      - child_nodes
+      properties:
+        image_id:
+          type: string
+          format: uuid
+        config_id:
+          type: string
+        deployment:
+          $ref: '#/components/schemas/WorkflowAppDeployment'
+        child_nodes:
+          type: array
+          items:
+            type: string
+    WorkflowObjectRef:
+      type: object
+      description: ''
+      properties:
+        placeholder:
+          $ref: '#/components/schemas/WorkflowObjectRefPlaceholder'
+        dataset:
+          $ref: '#/components/schemas/WorkflowObjectRefDataset'
+        app:
+          $ref: '#/components/schemas/WorkflowObjectRefApp'
+    UpdateWorkflowVersionRequest:
+      type: object
+      description: ''
+      required:
+      - deployment
+      - runtime_configs
+      properties:
+        deployment:
+          $ref: '#/components/schemas/WorkflowDeployment'
+        runtime_configs:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowObjectFinalAppPatch'
+    CreateWorkflowVersionRequest:
+      type: object
+      description: ''
+      required:
+      - objects
+      - edges
+      properties:
+        objects:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowObject'
+        edges:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowEdge'
+        metadata:
+          $ref: '#/components/schemas/WorkflowMetadata'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+    WorkflowType:
+      type: string
+      description: Workflow is owned or Shared
+      enum:
+      - OWNED
+      - SHARED
+    FinalWorkflowGraph:
+      type: object
+      description: ''
+      required:
+      - created_at
+      - objects
+      - edges
+      - runtime_configs
+      - labels
+      properties:
+        created_at:
+          type: integer
+          format: int64
+          description: Dataset creation time.
+        objects:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowObject'
+        edges:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowEdge'
+        metadata:
+          $ref: '#/components/schemas/WorkflowMetadata'
+        runtime_configs:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowObjectFinalApp'
+        deployment:
+          $ref: '#/components/schemas/WorkflowDeployment'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+    WorkflowEdge:
+      type: object
+      description: ''
+      required:
+      - source
+      - target
+      properties:
+        source:
+          $ref: '#/components/schemas/WorkflowEdgeLink'
+        target:
+          $ref: '#/components/schemas/WorkflowEdgeLink'
+    WorkflowDeployment:
+      type: object
+      description: Deployment info for a workflow. Exactly one of kubernetes_single_job or aci_single_job field must be set.
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        kubernetes_single_job:
+          $ref: '#/components/schemas/KubernetesSingleJob'
+        aci_single_job:
+          $ref: '#/components/schemas/AciSingleJob'
+    WorkflowAppKubernetes:
+      type: object
+      description: ''
+      required:
+      - job_spec
+      properties:
+        job_spec:
+          type: object
+    WorkflowObjectRefApp:
+      type: object
+      description: ''
+      required:
+      - image_id
+      - config_id
+      properties:
+        image_id:
+          type: string
+          format: uuid
+        config_id:
+          type: string
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+    WorkflowObjectRefPlaceholder:
+      type: object
+      description: ''
+      required:
+      - kind
+      properties:
+        kind:
+          type: string
+          enum:
+          - dataset
+          - app
+          - script
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+  parameters:
+    UpdateWorkflowVersionRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/UpdateWorkflowVersionRequest'
+    WorkflowGraphId:
+      name: graph-id
+      in: path
+      required: true
+      description: UUID of a graph.
+      schema:
+        type: string
+        format: uuid
+    CreateWorkflowVersionRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/CreateWorkflowVersionRequest'
+    WorkflowGraphVersion:
+      name: version
+      in: path
+      required: true
+      description: Version of a graph.
+      schema:
+        type: string
+    UpdateFinalWorkflowName:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/UpdateFinalWorkflowNameRequest'
+    CreateFinalWorkflowGraphRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/CreateFinalWorkflowGraph'
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

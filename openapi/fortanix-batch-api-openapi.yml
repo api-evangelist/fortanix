@@ -1,0 +1,178 @@
+openapi: 3.2.0
+info:
+  title: Fortanix DSM REST Batch API
+  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0-20260710
+servers:
+- url: '{dsmEndpoint}'
+  description: DSM Endpoint
+  variables:
+    dsmEndpoint:
+      default: https://amer.smartkey.io
+      description: Type your DSM server URL here (include https://)
+tags:
+- name: Batch
+paths:
+  /batch/v1:
+    post:
+      operationId: Batch
+      tags:
+      - Batch
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Create a new batch request
+      description: 'This API support for quorum approval operations like encrypt, decrypt, sign, wrap, unwrap etc.
+
+
+        Sobject operations like rotate, copy, delete, destroy, update profile,
+
+        revoke, revert, update operations, update policies, update enabled/ disabled
+
+        state, export as components.
+
+
+        Create and update accounts, groups etc'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResponse'
+components:
+  schemas:
+    BatchExecutionType:
+      type: string
+      enum:
+      - Serial
+      - Unordered
+    BatchResponseObjectSkipped:
+      allOf:
+      - type: object
+        properties:
+          reason:
+            type: string
+        required:
+        - reason
+    BatchResponse:
+      oneOf:
+      - title: BatchResponseVariantBatch
+        type: object
+        properties:
+          Batch:
+            $ref: '#/components/schemas/BatchResponseList'
+        required:
+        - Batch
+      - title: BatchResponseVariantSingleItem
+        type: object
+        properties:
+          SingleItem:
+            $ref: '#/components/schemas/BatchResponseObject'
+        required:
+        - SingleItem
+    BatchResponseList:
+      allOf:
+      - type: object
+        properties:
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/BatchResponse'
+        required:
+        - items
+    BatchRequestItem:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+          operation:
+            type: string
+          body: {}
+        required:
+        - method
+        - operation
+    BatchResponseObject:
+      oneOf:
+      - title: BatchResponseObjectVariantResult
+        type: object
+        properties:
+          Result:
+            $ref: '#/components/schemas/BatchResponseObjectResult'
+        required:
+        - Result
+      - title: BatchResponseObjectVariantSkipped
+        type: object
+        properties:
+          Skipped:
+            $ref: '#/components/schemas/BatchResponseObjectSkipped'
+        required:
+        - Skipped
+    BatchResponseObjectResult:
+      allOf:
+      - type: object
+        properties:
+          status:
+            type: integer
+            minimum: 0
+            maximum: 65535
+          body: {}
+        required:
+        - status
+    BatchRequestList:
+      allOf:
+      - type: object
+        properties:
+          batch_execution_type:
+            $ref: '#/components/schemas/BatchExecutionType'
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/BatchRequest'
+        required:
+        - batch_execution_type
+        - items
+    BatchRequest:
+      oneOf:
+      - title: BatchRequestVariantBatch
+        type: object
+        properties:
+          Batch:
+            $ref: '#/components/schemas/BatchRequestList'
+        required:
+        - Batch
+      - title: BatchRequestVariantSingleItem
+        type: object
+        properties:
+          SingleItem:
+            $ref: '#/components/schemas/BatchRequestItem'
+        required:
+        - SingleItem
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    apiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Please enter your token prefixed with 'Basic ' (e.g., 'Basic your_token_here')
+    bearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,602 @@
+openapi: 3.2.0
+info:
+  description: '**API of the Fortanix Unified Data and AI Security Platform**
+
+
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
+
+    '
+  title: Armor Discovery Services Reports API
+  version: 0.1.0
+servers:
+- url: https://api.armor.fortanix.com
+tags:
+- description: APIs regarding obtaining the reports for Services.
+  name: DiscoveryServicesReports
+paths:
+  /api/v1/discovery/scans/{id}/services_report/aws/by_account:
+    get:
+      description: Get AWS Services report grouped by account.
+      operationId: GetAwsServicesReportGroupedByAccounts
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - $ref: '#/components/parameters/DiscoveryAwsScannedServicesReportByAccountParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryAwsScannedServicesResponseByAccount'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get AWS Services report grouped by account.
+      tags:
+      - DiscoveryServicesReports
+  /api/v1/discovery/scans/{id}/services_report/azure/by_subscription:
+    get:
+      description: Get Azure Services report grouped by subscription.
+      operationId: GetAzureServicesReportGroupedBySubscriptions
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - $ref: '#/components/parameters/DiscoveryAzureScannedServicesReportBySubscriptionParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryAzureScannedServicesResponseBySubscription'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Azure Services report grouped by subscription.
+      tags:
+      - DiscoveryServicesReports
+  /api/v1/discovery/scans/{id}/services_report/by_service:
+    get:
+      description: Get Services report grouped by service type.
+      operationId: GetServicesReportGroupedByServiceType
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - $ref: '#/components/parameters/DiscoveryScannedServicesReportByServiceTypeParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryScannedServicesResponseByServiceType'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Services report grouped by service type.
+      tags:
+      - DiscoveryServicesReports
+  /api/v1/discovery/scans/{id}/services_report/by_violation:
+    get:
+      description: Get Services report grouped by violation type.
+      operationId: GetServicesReportGroupedByViolationType
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - $ref: '#/components/parameters/DiscoveryScannedServicesReportByViolationTypeParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryScannedServicesResponseByViolationType'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Services report grouped by violation type.
+      tags:
+      - DiscoveryServicesReports
+components:
+  schemas:
+    DiscoveryAwsRegionViolationMetrics:
+      allOf:
+      - properties:
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations_by_service_type:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryServiceViolationMetricsWithOverallRisk'
+            type: object
+        required:
+        - overall_risk
+        - violations_by_service_type
+        type: object
+    DiscoveryAzureService:
+      enum:
+      - key_vaults
+      - storage_accounts
+      - sql_server
+      - cosmos_db
+      - container_groups
+      - managed_disks
+      - managed_clusters
+      - storage_account_blobs
+      type: string
+    DiscoveryAzureResourceGroupViolationMetrics:
+      allOf:
+      - properties:
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations_by_region:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryAzureRegionViolationMetrics'
+            type: object
+        required:
+        - overall_risk
+        - violations_by_region
+        type: object
+    DiscoveryScannedServicesReportByServiceTypeParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+        type: object
+    DiscoveryAzureFilterMetadata:
+      allOf:
+      - properties:
+          region_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          resource_group_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          subscription_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+        required:
+        - subscription_metrics
+        - resource_group_metrics
+        - region_metrics
+        type: object
+    DiscoveryCloudProviderServiceTypeVariantAzure:
+      allOf:
+      - properties:
+          cloud_provider:
+            enum:
+            - azure
+            type: string
+        required:
+        - cloud_provider
+        type: object
+      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeAzure'
+    DiscoveryServiceMetadataMetrics:
+      allOf:
+      - properties:
+          filtered_count:
+            type: integer
+          total_count:
+            type: integer
+        required:
+        - total_count
+        - filtered_count
+        type: object
+    DiscoveryAzureServicesReportMetadata:
+      allOf:
+      - properties:
+          region_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          resource_group_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          service_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          subscription_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          violation_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+        required:
+        - violation_metrics
+        - service_metrics
+        - region_metrics
+        - resource_group_metrics
+        - subscription_metrics
+        type: object
+    DiscoveryRiskLevel:
+      enum:
+      - critical
+      - high
+      - medium
+      - low
+      - good
+      type: string
+    DiscoveryAzureRegionViolationMetrics:
+      allOf:
+      - properties:
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations_by_service_type:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryServiceViolationMetricsWithOverallRisk'
+            type: object
+        required:
+        - overall_risk
+        - violations_by_service_type
+        type: object
+    DiscoveryViolationDetails:
+      allOf:
+      - properties:
+          count:
+            type: integer
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - count
+        type: object
+    DiscoveryAwsFilterMetadata:
+      allOf:
+      - properties:
+          account_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          region_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+        required:
+        - account_metrics
+        - region_metrics
+        type: object
+    DiscoveryViolation:
+      enum:
+      - shared_keys
+      - expired_keys
+      - exportable_keys
+      - noncompliant_keys
+      - csp_generated_keys
+      - keys_without_expiry
+      - unused_keys
+      - quantum_vulnerable_keys
+      - keys_with_rotation_disabled
+      - cross_account_keys
+      - shared_certificate
+      - expired_certificate
+      - non_compliant_certificate_by_key_algorithm
+      - non_compliant_certificate_by_signature_algorithm
+      - overly_permissive_certificate_usage
+      - overly_permissive_key_usage
+      - overly_permissive_key_management
+      - services_encrypted_with_overly_permissive_usage_key
+      - services_encrypted_with_overly_permissive_management_key
+      - unencrypted_services
+      - services_encrypted_with_shared_key
+      - services_encrypted_with_noncompliant_key
+      - services_encrypted_with_soft_deleted_key
+      - services_encrypted_with_purged_key
+      - services_encrypted_with_expired_key
+      - services_encrypted_with_exportable_key
+      - services_encrypted_with_quantum_vulnerable_key
+      - services_encrypted_with_csp_generated_key
+      - services_encrypted_with_platform_managed_key
+      - services_encrypted_with_cross_account_key
+      type: string
+    DiscoveryAzureScannedServicesResponseBySubscription:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureServicesViolationMetrics'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryAzureServicesReportMetadata'
+        required:
+        - items
+        - metadata
+        type: object
+    DiscoveryScannedServicesResponseByViolationType:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryViolationTypeMetrics'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryServicesMetadata'
+        required:
+        - items
+        - metadata
+        type: object
+    DiscoveryCloudProviderServiceTypeVariantAws:
+      allOf:
+      - properties:
+          cloud_provider:
+            enum:
+            - aws
+            type: string
+        required:
+        - cloud_provider
+        type: object
+      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeAws'
+    DiscoveryViolationMetrics:
+      allOf:
+      - description: A structure to store the violation metrics for each violation.
+        properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryCloudProviderServiceTypeAws:
+      allOf:
+      - properties:
+          service_type:
+            $ref: '#/components/schemas/DiscoveryAwsService'
+        required:
+        - service_type
+        type: object
+    DiscoveryCspServicesMetadataVariantAzure:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - azure
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureFilterMetadata'
+    DiscoveryCspServicesMetadata:
+      discriminator:
+        mapping:
+          aws: DiscoveryCspServicesMetadataVariantAws
+          azure: DiscoveryCspServicesMetadataVariantAzure
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryCspServicesMetadataVariantAws'
+      - $ref: '#/components/schemas/DiscoveryCspServicesMetadataVariantAzure'
+    DiscoveryCspServicesMetadataVariantAws:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - aws
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsFilterMetadata'
+    DiscoveryServicesMetadata:
+      allOf:
+      - properties:
+          scan_inventory_provider_metrics:
+            $ref: '#/components/schemas/DiscoveryCspServicesMetadata'
+          service_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          violation_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+        required:
+        - violation_metrics
+        - service_metrics
+        - scan_inventory_provider_metrics
+        type: object
+    DiscoveryScannedServicesReportByViolationTypeParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+        type: object
+    DiscoveryAwsScannedServicesReportByAccountParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            type: string
+          previous_sort_value:
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryAwsServicesReportMetadata:
+      allOf:
+      - properties:
+          account_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          region_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          resource_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          violation_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+        required:
+        - violation_metrics
+        - resource_metrics
+        - region_metrics
+        - account_metrics
+        type: object
+    DiscoveryAwsService:
+      enum:
+      - acm
+      - ebs
+      - kms
+      - s3
+      - rds
+      - dynamo_db
+      - eks
+      - efs
+      - redshift
+      type: string
+    DiscoveryCloudProviderServiceTypeAzure:
+      allOf:
+      - properties:
+          service_type:
+            $ref: '#/components/schemas/DiscoveryAzureService'
+        required:
+        - service_type
+        type: object
+    DiscoveryAzureServicesViolationMetrics:
+      allOf:
+      - properties:
+          subscription_id:
+            format: uuid
+            type: string
+          violations_by_resource_group:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryAzureResourceGroupViolationMetrics'
+            type: object
+        required:
+        - subscription_id
+        - violations_by_resource_group
+        type: object
+    DiscoveryCloudProviderServiceType:
+      discriminator:
+        mapping:
+          aws: DiscoveryCloudProviderServiceTypeVariantAws
+          azure: DiscoveryCloudProviderServiceTypeVariantAzure
+        propertyName: cloud_provider
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeVariantAws'
+      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeVariantAzure'
+    DiscoveryAwsAccountViolationMetrics:
+      allOf:
+      - properties:
+          account_id:
+            type: string
+          violations_by_region:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryAwsRegionViolationMetrics'
+            type: object
+        required:
+        - account_id
+        - violations_by_region
+        type: object
+    DiscoveryAwsScannedServicesResponseByAccount:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryAwsAccountViolationMetrics'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryAwsServicesReportMetadata'
+        required:
+        - items
+        - metadata
+        type: object
+    DiscoveryAzureScannedServicesReportBySubscriptionParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            format: uuid
+            type: string
+          previous_sort_value:
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryScannedServicesResponseByServiceType:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryServiceViolationMetrics'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryServicesMetadata'
+        required:
+        - items
+        - metadata
+        type: object
+    DiscoveryViolationTypeMetrics:
+      allOf:
+      - properties:
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violation:
+            $ref: '#/components/schemas/DiscoveryViolation'
+          violations_by_service:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationMetrics'
+            type: object
+        required:
+        - violation
+        - overall_risk
+        - violations_by_service
+        type: object
+    DiscoveryServiceViolationMetrics:
+      allOf:
+      - properties:
+          cloud_provider_service_type:
+            $ref: '#/components/schemas/DiscoveryCloudProviderServiceType'
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationDetails'
+            type: object
+        required:
+        - cloud_provider_service_type
+        - overall_risk
+        - violations
+        type: object
+    DiscoveryServiceViolationMetricsWithOverallRisk:
+      allOf:
+      - properties:
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          total_resources:
+            type: integer
+          violation_metrics:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationDetails'
+            type: object
+        required:
+        - overall_risk
+        - total_resources
+        - violation_metrics
+        type: object
+  parameters:
+    DiscoveryScannedServicesReportByServiceTypeParams:
+      explode: true
+      in: query
+      name: DiscoveryScannedServicesReportByServiceTypeParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryScannedServicesReportByServiceTypeParams'
+    DiscoveryAwsScannedServicesReportByAccountParams:
+      explode: true
+      in: query
+      name: DiscoveryAwsScannedServicesReportByAccountParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryAwsScannedServicesReportByAccountParams'
+    DiscoveryScannedServicesReportByViolationTypeParams:
+      explode: true
+      in: query
+      name: DiscoveryScannedServicesReportByViolationTypeParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryScannedServicesReportByViolationTypeParams'
+    DiscoveryAzureScannedServicesReportBySubscriptionParams:
+      explode: true
+      in: query
+      name: DiscoveryAzureScannedServicesReportBySubscriptionParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryAzureScannedServicesReportBySubscriptionParams'
+  securitySchemes:
+    Oauth2ClientCredentials:
+      description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+      type: oauth2

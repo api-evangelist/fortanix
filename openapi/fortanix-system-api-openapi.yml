@@ -1,0 +1,47 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager System API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: System
+paths:
+  /v1/sys/version:
+    get:
+      tags:
+      - System
+      summary: Get Manager Version.
+      description: Get Manager Version.
+      operationId: getManagerVersion
+      x-auth-resource: NoAuth
+      responses:
+        '200':
+          description: Manager Version.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionResponse'
+components:
+  schemas:
+    VersionResponse:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Manager Version.
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

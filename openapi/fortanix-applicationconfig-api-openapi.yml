@@ -1,0 +1,514 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Application Config API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: ApplicationConfig
+paths:
+  /v1/app_configs:
+    get:
+      tags:
+      - ApplicationConfig
+      summary: Get all app configs
+      description: Get detailed information of all app configs that the current user has access to.
+      operationId: getAllApplicationConfigs
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - name: name
+        in: query
+        description: App config name
+        required: false
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: App config description.
+        required: false
+        schema:
+          type: string
+      - name: image_id
+        in: query
+        description: Search configurations for given image id
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: filter
+        in: query
+        description: 'Filter to use for items, currently supports labels, syntax: {"labels":{"key1":"value1","key2":"value2"}}'
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum numbers of app configs to return.
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of app configs to skip from start.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Search result for app config objects.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllApplicationConfigsResponse'
+      security:
+      - bearerToken: []
+    post:
+      tags:
+      - ApplicationConfig
+      summary: Add an app config.
+      description: Add an app config.
+      operationId: createApplicationConfig
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/CreateApplicationConfigRequest'
+      responses:
+        '200':
+          description: Details of an app config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigResponse'
+      security:
+      - bearerToken: []
+  /v1/runtime/app_configs:
+    get:
+      tags:
+      - ApplicationConfig
+      summary: Get app config
+      description: Get current app config via certificate authentication
+      operationId: getRuntimeApplicationConfig
+      x-auth-resource: AppAuth
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeAppConfig'
+      security:
+      - bearerToken: []
+  /v1/runtime/app_configs/{config-id}:
+    get:
+      tags:
+      - ApplicationConfig
+      summary: Get details of a particular runtime app config.
+      description: Get details of a particular runtime app config.
+      operationId: getSpecificRuntimeApplicationConfig
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/ApplicationConfigId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeAppConfig'
+      security:
+      - bearerToken: []
+  /v1/app_configs/{config-id}:
+    get:
+      tags:
+      - ApplicationConfig
+      summary: Get details of a particular app config.
+      description: Get details of a particular app config.
+      operationId: getApplicationConfig
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/ApplicationConfigId'
+      responses:
+        '200':
+          description: Details of an app config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigResponse'
+      security:
+      - bearerToken: []
+    delete:
+      tags:
+      - ApplicationConfig
+      summary: Delete a particular app config
+      description: Delete a particular app config
+      operationId: deleteApplicationConfig
+      x-auth-resource: Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/ApplicationConfigId'
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - bearerToken: []
+    patch:
+      tags:
+      - ApplicationConfig
+      summary: Update details of a particular app config.
+      description: Update details of a particular app config.
+      operationId: updateApplicationConfig
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/ApplicationConfigId'
+      - $ref: '#/components/parameters/UpdateApplicationConfigRequest'
+      responses:
+        '200':
+          description: Details of an app config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfigResponse'
+      security:
+      - bearerToken: []
+components:
+  schemas:
+    ApplicationConfigWorkflow:
+      type: object
+      description: ''
+      required:
+      - workflow_id
+      - app_name
+      - port_map
+      properties:
+        workflow_id:
+          type: string
+          format: uuid
+        app_name:
+          type: string
+        port_map:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: object
+            x-sorted: true
+            additionalProperties:
+              $ref: '#/components/schemas/ApplicationConfigPort'
+        app_acct_id:
+          type: string
+          format: uuid
+        app_group_id:
+          type: string
+          format: uuid
+    ApplicationConfigPortDataset:
+      type: object
+      description: ''
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+    ApplicationConfigConnectionDataset:
+      type: object
+      description: ''
+      required:
+      - location
+      - credentials
+      properties:
+        location:
+          type: string
+        credentials:
+          $ref: '#/components/schemas/ApplicationConfigDatasetCredentials'
+    RuntimeAppConfig:
+      type: object
+      description: ''
+      required:
+      - config
+      - extra
+      properties:
+        config:
+          $ref: '#/components/schemas/HashedConfig'
+        extra:
+          $ref: '#/components/schemas/ApplicationConfigExtra'
+    ApplicationConfigDatasetCredentials:
+      type: object
+      description: ''
+      properties:
+        sdkms:
+          $ref: '#/components/schemas/ApplicationConfigSdkmsCredentials'
+    ApplicationConfigResponse:
+      type: object
+      description: ''
+      required:
+      - config_id
+      - created_at
+      - updated_at
+      - name
+      - description
+      - app_config
+      - labels
+      - ports
+      - group_id
+      properties:
+        config_id:
+          type: string
+        created_at:
+          type: integer
+          format: int64
+        updated_at:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        app_config:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/ApplicationConfigContents'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+        ports:
+          type: array
+          x-sorted: true
+          items:
+            type: string
+        zone:
+          $ref: '#/components/schemas/VersionedZoneId'
+        group_id:
+          type: string
+          format: uuid
+    ApplicationConfigPortApp:
+      type: object
+      description: ''
+      properties:
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+    ApplicationConfigConnectionApplication:
+      type: object
+      description: ''
+      required:
+      - workflow_domain
+      properties:
+        workflow_domain:
+          type: string
+    GetAllApplicationConfigsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationConfigResponse'
+    ApplicationConfigPort:
+      type: object
+      description: ''
+      properties:
+        dataset:
+          $ref: '#/components/schemas/ApplicationConfigPortDataset'
+        application:
+          $ref: '#/components/schemas/ApplicationConfigPortApp'
+    HashedConfig:
+      type: object
+      description: ''
+      required:
+      - app_config
+      - labels
+      - zone_ca
+      properties:
+        app_config:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/ApplicationConfigContents'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+        zone_ca:
+          type: array
+          x-sorted: true
+          items:
+            type: string
+        workflow:
+          $ref: '#/components/schemas/ApplicationConfigWorkflow'
+    VersionedZoneId:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        version:
+          type: integer
+          format: int64
+    UpdateApplicationConfigRequest:
+      type: object
+      description: Update an application config.
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        ports:
+          type: array
+          x-sorted: true
+          items:
+            type: string
+        group_id:
+          type: string
+          format: uuid
+    ApplicationConfigContents:
+      type: object
+      required:
+      - value
+      properties:
+        contents:
+          type: string
+    ApplicationConfigSdkmsCredentials:
+      type: object
+      description: ''
+      required:
+      - credentials_url
+      - credentials_key_name
+      - sdkms_app_id
+      properties:
+        credentials_url:
+          type: string
+        credentials_key_name:
+          type: string
+        sdkms_app_id:
+          type: string
+          format: uuid
+    ApplicationConfigExtra:
+      type: object
+      description: ''
+      properties:
+        connections:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: object
+            x-sorted: true
+            additionalProperties:
+              $ref: '#/components/schemas/ApplicationConfigConnection'
+    ApplicationConfig:
+      type: object
+      description: ''
+      required:
+      - name
+      - description
+      - app_config
+      - labels
+      - ports
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        app_config:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/ApplicationConfigContents'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+        ports:
+          type: array
+          x-sorted: true
+          items:
+            type: string
+        zone:
+          $ref: '#/components/schemas/VersionedZoneId'
+        group_id:
+          type: string
+          format: uuid
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    ApplicationConfigConnection:
+      type: object
+      description: ''
+      properties:
+        dataset:
+          $ref: '#/components/schemas/ApplicationConfigConnectionDataset'
+        application:
+          $ref: '#/components/schemas/ApplicationConfigConnectionApplication'
+  parameters:
+    ApplicationConfigId:
+      name: config-id
+      in: path
+      required: true
+      description: Identity of an application config.
+      schema:
+        type: string
+    CreateApplicationConfigRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/ApplicationConfig'
+    UpdateApplicationConfigRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/UpdateApplicationConfigRequest'
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

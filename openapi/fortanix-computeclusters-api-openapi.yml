@@ -1,0 +1,401 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Compute Clusters API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: ComputeClusters
+paths:
+  /v1/clusters:
+    post:
+      tags:
+      - ComputeClusters
+      summary: Add a new compute cluster to an account
+      description: Add a new compute cluster to an account
+      operationId: createComputeCluster
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/ComputeClusterRequest'
+      responses:
+        '200':
+          description: Cluster information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputeClusterResponse'
+      security:
+      - bearerToken: []
+    get:
+      tags:
+      - ComputeClusters
+      summary: Get details of all compute clusters in the account
+      description: Get details of all compute clusters in the account
+      operationId: getAllComputeClusters
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - name: name
+        in: query
+        description: Cluster name
+        required: false
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: Cluster description.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum numbers of clusters to return.
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of clusters to skip from start.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Get details of all clusters in the account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllComputeClustersResponse'
+      security:
+      - bearerToken: []
+  /v1/clusters/{cluster-id}:
+    get:
+      tags:
+      - ComputeClusters
+      summary: Get details of a particular compute cluster
+      description: Get details of a particular compute cluster
+      operationId: getComputeClusters
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/ComputeClusterId'
+      responses:
+        '200':
+          description: Details of a cluster
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputeClusterResponse'
+      security:
+      - bearerToken: []
+    patch:
+      tags:
+      - ComputeClusters
+      summary: Update a particular compute cluster details
+      description: Update a particular compute cluster details.
+      operationId: updateComputeCluster
+      parameters:
+      - $ref: '#/components/parameters/ComputeClusterId'
+      - $ref: '#/components/parameters/ComputeClusterRequest'
+      x-auth-resource: Writer,Manager,ActiveAccount
+      responses:
+        '200':
+          description: Cluster information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputeClusterResponse'
+      security:
+      - bearerToken: []
+    delete:
+      tags:
+      - ComputeClusters
+      summary: Delete compute cluster
+      description: Delete compute cluster
+      operationId: deleteComputeCluster
+      parameters:
+      - $ref: '#/components/parameters/ComputeClusterId'
+      x-auth-resource: Writer,Manager
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - bearerToken: []
+components:
+  schemas:
+    KubeConfigUserRef:
+      type: object
+      required:
+      - name
+      - user
+      properties:
+        name:
+          type: string
+        user:
+          $ref: '#/components/schemas/KubeConfigUser'
+    ComputeClusterRequest:
+      type: object
+      description: Request body for creating a compute cluster. Exactly one of kubernetes or aci field must be set.
+      required:
+      - name
+      - description
+      minProperties: 3
+      maxProperties: 3
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        kubernetes:
+          $ref: '#/components/schemas/KubernetesClusterRequest'
+        aci:
+          $ref: '#/components/schemas/AciClusterRequest'
+    KubeConfigCluster:
+      type: object
+      required:
+      - server
+      properties:
+        server:
+          type: string
+        insecure-skip-tls-verify:
+          type: boolean
+        certificate-authority-data:
+          type: string
+    KubeConfig:
+      type: object
+      required:
+      - clusters
+      - users
+      - contexts
+      properties:
+        kind:
+          type: string
+        apiVersion:
+          type: string
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KubeConfigClusterRef'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/KubeConfigUserRef'
+        contexts:
+          type: array
+          items:
+            $ref: '#/components/schemas/KubeConfigContextRef'
+        current-context:
+          type: string
+    AciClusterRequest:
+      type: object
+      required:
+      - subscription
+      - resource_group
+      - secrets
+      properties:
+        subscription:
+          type: string
+          format: uuid
+        resource_group:
+          type: string
+        deployment_location:
+          type: string
+        secrets:
+          $ref: '#/components/schemas/AciComputeSecrets'
+    KubeConfigContext:
+      type: object
+      required:
+      - cluster
+      - user
+      properties:
+        cluster:
+          type: string
+        user:
+          type: string
+        namespace:
+          type: string
+    KubeConfigUser:
+      type: object
+      properties:
+        token:
+          type: string
+        client-certificate-data:
+          type: string
+        client-key-data:
+          type: string
+        exec:
+          $ref: '#/components/schemas/ExecConfig'
+    ServicePrincipal:
+      type: object
+      required:
+      - app_id
+      - tenant
+      - password
+      properties:
+        app_id:
+          description: Service principal app id.
+          type: string
+        tenant:
+          description: Service principal tenant id.
+          type: string
+        password:
+          description: Service principal app passcode.
+          type: string
+    KubernetesClusterRequest:
+      type: object
+      properties:
+        kubeconfig:
+          $ref: '#/components/schemas/KubeConfig'
+    AciComputeSecrets:
+      type: object
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        service_principal:
+          $ref: '#/components/schemas/ServicePrincipal'
+    ComputeClusterResponse:
+      type: object
+      required:
+      - cluster_id
+      - name
+      - description
+      - created_by
+      properties:
+        cluster_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        kubernetes:
+          $ref: '#/components/schemas/KubernetesClusterInfo'
+        aci:
+          $ref: '#/components/schemas/AciClusterInfo'
+    GetAllComputeClustersResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComputeClusterResponse'
+    KubeConfigContextRef:
+      type: object
+      required:
+      - name
+      - context
+      properties:
+        name:
+          type: string
+        context:
+          $ref: '#/components/schemas/KubeConfigContext'
+    KubernetesClusterInfo:
+      type: object
+      required:
+      - cluster
+      - server
+      - user
+      properties:
+        cluster:
+          type: string
+        server:
+          type: string
+        user:
+          type: string
+    AciClusterInfo:
+      type: object
+      required:
+      - subscription
+      - resource_group
+      properties:
+        subscription:
+          type: string
+          format: uuid
+        resource_group:
+          type: string
+        deployment_location:
+          type: string
+    ExecConfig:
+      type: object
+      description: This struct is built to match ExecConfig from the rust kube-client crate.
+      required:
+      - command
+      properties:
+        api_version:
+          type: string
+        command:
+          type: string
+        args:
+          type: array
+          items:
+            type: string
+    KubeConfigClusterRef:
+      type: object
+      required:
+      - name
+      - cluster
+      properties:
+        name:
+          type: string
+        cluster:
+          $ref: '#/components/schemas/KubeConfigCluster'
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+  parameters:
+    ComputeClusterId:
+      name: cluster-id
+      in: path
+      required: true
+      description: UUID of a compute cluster
+      schema:
+        type: string
+        format: uuid
+    ComputeClusterRequest:
+      name: body
+      in: body
+      required: true
+      description: request to add compute clusters
+      schema:
+        $ref: '#/components/schemas/ComputeClusterRequest'
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

@@ -1,0 +1,1141 @@
+openapi: 3.2.0
+info:
+  title: Fortanix DSM REST Session API
+  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0-20260710
+servers:
+- url: '{dsmEndpoint}'
+  description: DSM Endpoint
+  variables:
+    dsmEndpoint:
+      default: https://amer.smartkey.io
+      description: Type your DSM server URL here (include https://)
+tags:
+- name: Session
+paths:
+  /sys/v1/session/auth/discover:
+    post:
+      operationId: AuthDiscover
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: 'Returns the available auth methods for the given user email.
+
+        Example: password, ldap, oauth, etc.'
+      description: 'Returns the available auth methods for the given user email.
+
+        Example: password, ldap, oauth, etc.'
+      parameters:
+      - $ref: '#/components/parameters/AuthDiscoverParams'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthDiscoverRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthMethod'
+  /sys/v1/session/auth:
+    post:
+      operationId: Authenticate
+      tags:
+      - Session
+      security:
+      - basicAuth: []
+      - apiKeyAuth: []
+      summary: Create a session for a user or an app.
+      description: 'Authenticate a user or an app to begin a session.
+
+        The caller needs to provide a basic authentication token or
+
+        an appropriate request body (see input type).
+
+        The response body contains a bearer authentication token
+
+        which needs to be provided by subsequent calls for the
+
+        duration of the session.
+
+
+        If this is basic auth and the user has MFA devices configured,
+
+        the response also contains challenge for the device to sign.
+
+        Until the signed assertion is passed to `POST /sys/v1/session/auth/2fa/fido2`
+
+        to complete 2FA, the bearer token can''t be used for anything else.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /sys/v1/session/config_2fa/auth:
+    post:
+      operationId: Config2faAuth
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Unlock two factor configuration.
+      description: 'Re-authenticate to unlock two factor configuration.
+
+        Two factor configuration must be unlocked to enable or disable two
+
+        factor authentication, add or remove two factor devices, or
+
+        regenerate recovery codes.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Config2faAuthRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config2faAuthResponse'
+  /sys/v1/session/config_2fa/terminate:
+    post:
+      operationId: Config2faTerminate
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Lock two factor configuration.
+      description: 'Lock two factor configuration after completing two factor
+
+        reconfiguration. If this API is not called, two factor
+
+        configuration will be locked automatically after ten minutes.
+
+        Locking this back is necessary if the 2FA device needs to be used
+
+        for other things like approval requests. It is not possible use
+
+        2FA for other purposes when configuration mode is unlocked.'
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /sys/v1/session/reauth:
+    post:
+      operationId: Reauthenticate
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: 'Create a new session for an App using an existing
+
+        session bearer token.'
+      description: 'Create a new session for an App using an existing
+
+        session bearer token.'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /sys/v1/session/auth/2fa/recovery_code:
+    post:
+      operationId: RecoveryCodeAuth
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Use a backup recovery code to complete authentication.
+      description: 'Complete two factor authentication with a backup recovery code.
+
+        Each recovery code may only be used once, so users should update
+
+        their two factor configuration after using this API.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryCodeAuthRequest'
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /sys/v1/session/refresh:
+    post:
+      operationId: Refresh
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Perform a no-op to keep session from expiring.
+      description: Perform a no-op to keep session from expiring.
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /sys/v1/session/select_account:
+    post:
+      operationId: SelectAccount
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: 'Select one of user''s account to proceed. Even if the user has only
+
+        one account, this needs to be called.'
+      description: 'For cluster-internal consistency, it may take several seconds for the
+
+        new Account to become the default one selected. Have your client code
+
+        wait for the change to propagate across the DSM cluster. If this isn’t done,
+
+        immediate API calls may contain information from the old Account.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectAccountRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectAccountResponse'
+  /sys/v1/session/aws_temporary_credentials:
+    post:
+      operationId: SetAwsTemporaryCredentials
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: 'This sets AWS temporary credentials in the session so that calls to
+
+        AWS backed groups use these credentials.
+
+        https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html'
+      description: 'This sets AWS temporary credentials in the session so that calls to
+
+        AWS backed groups use these credentials.
+
+        https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AwsTemporaryCredentials'
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /sys/v1/session/terminate:
+    post:
+      operationId: Terminate
+      tags:
+      - Session
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Terminate the current session.
+      description: 'Terminate an authenticated session. After this call, the provided
+
+        bearer authentication token will be invalidated and cannot be used
+
+        to make any further API calls.'
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /sys/v1/session/auth/2fa/u2f:
+    post:
+      operationId: U2fAuth
+      tags:
+      - Session
+      security:
+      - basicAuth: []
+      - apiKeyAuth: []
+      summary: Use of U2F is deprecated, this endpoint will return BadRequest.
+      description: Use of U2F is deprecated, this endpoint will return BadRequest.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/U2fAuthRequest'
+      responses:
+        '204':
+          description: Nothing is returned on success
+components:
+  schemas:
+    RecoveryCodeAuthRequest:
+      allOf:
+      - type: object
+        description: Request to authenticate using U2F recovery code.
+        properties:
+          recovery_code:
+            type: string
+        required:
+        - recovery_code
+    U2fRegisteredKey:
+      allOf:
+      - type: object
+        description: Description of a registered U2F device.
+        properties:
+          keyHandle:
+            type: string
+          version:
+            type: string
+        required:
+        - keyHandle
+        - version
+    AuthRequestMethodVariantAuthByAppName:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - auth-by-app-name
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthRequestMethodAuthByAppName'
+    UserVerificationRequirement:
+      description: 'https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement
+
+        https://www.w3.org/TR/webauthn-2/#user-verification'
+      type: string
+      enum:
+      - required
+      - preferred
+      - discouraged
+    OauthAuthenticationParameters:
+      allOf:
+      - type: object
+        description: 'Parameters for the OpenID Connect Authentication Request
+
+          https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest'
+        properties:
+          prompt:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/OauthAuthParamPrompt'
+            description: Specifies whether the Authorization Server prompts the End-User for reauthentication and consent
+          display:
+            $ref: '#/components/schemas/OauthAuthParamDisplay'
+          max_age:
+            type:
+            - integer
+            - 'null'
+            description: 'Specifies the allowable elapsed time in seconds since the last time the End-User was actively authenticated by the OP.
+
+              If the elapsed time is greater than this value, the OP MUST attempt to actively re-authenticate the End-User'
+    AuthMethodLdapPassword:
+      allOf:
+      - type: object
+        properties:
+          name:
+            type: string
+          icon_url:
+            type: string
+          idp_id:
+            type: string
+            format: byte
+        required:
+        - name
+        - icon_url
+        - idp_id
+    AuthDiscoverParams:
+      allOf:
+      - type: object
+        properties:
+          acct_id:
+            type: string
+            format: uuid
+            description: 'The account for which the user wishes to discover authentication mechanisms.
+
+              Note that if specified, the user_email field in an AuthDiscoverRequest will
+
+              be ignored.'
+    Config2faAuthResponse:
+      allOf:
+      - type: object
+        properties: {}
+    AuthMethodVcd:
+      allOf:
+      - type: object
+        properties:
+          name:
+            type: string
+          authorization_url:
+            type: string
+          idp_id:
+            type: string
+            format: byte
+        required:
+        - name
+        - authorization_url
+        - idp_id
+    AuthMethodVariantSamlPost:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - saml-post
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthMethodSamlPost'
+    AuthRequestMethodVariantAwsIam:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - aws-iam
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthRequestMethodAwsIam'
+    Base64UrlSafe:
+      type: string
+      format: byte
+    AuthRequestMethodVariantPassword:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - password
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthRequestMethodPassword'
+    AuthRequestMethodVariantSamlResponse:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - saml-response
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthRequestMethodSamlResponse'
+    U2fAuthRequest:
+      allOf:
+      - type: object
+        description: Use of U2F is deprecated, use FIDO2 for second factor authentication.
+        properties:
+          keyHandle:
+            type: string
+            format: byte
+          signatureData:
+            type: string
+            format: byte
+          clientData:
+            type: string
+            format: byte
+        required:
+        - keyHandle
+        - signatureData
+        - clientData
+    SelectAccountResponse:
+      allOf:
+      - type: object
+        description: Response to select account request.
+        properties:
+          cookie:
+            type:
+            - string
+            - 'null'
+    MfaAuthMethod:
+      oneOf:
+      - title: MfaAuthMethodVariantFido2
+        type: object
+        properties:
+          Fido2:
+            $ref: '#/components/schemas/MfaAuthMethodFido2'
+        required:
+        - Fido2
+    AuthMethodVariantOauthAuthCodeGrant:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - oauth-auth-code-grant
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthMethodOauthAuthCodeGrant'
+    AuthMethodSamlPost:
+      allOf:
+      - type: object
+        properties:
+          name:
+            type: string
+          icon_url:
+            type: string
+          id:
+            type: string
+          binding_url:
+            type: string
+          authn_request:
+            type: string
+          idp_id:
+            type: string
+            format: byte
+        required:
+        - name
+        - icon_url
+        - id
+        - binding_url
+        - authn_request
+        - idp_id
+    AuthRequestMethodSamlResponse:
+      allOf:
+      - type: object
+        properties:
+          id:
+            type:
+            - string
+            - 'null'
+          response:
+            type: string
+        required:
+        - response
+    PublicKeyCredentialDescriptor:
+      allOf:
+      - type: object
+        description: 'Used to in registration response (telling about existing creds) to prevent
+
+          creation of duplicate creds on the same authenticator.
+
+          Used in authentication as the allowed creds.'
+        properties:
+          type:
+            $ref: '#/components/schemas/PublicKeyCredentialType'
+          id:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          transports:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/AuthenticatorTransport'
+            description: 'Hints by relying party on what transport client should
+
+              use to communicate with authenticator.'
+        required:
+        - type
+        - id
+    AuthMethod:
+      oneOf:
+      - $ref: '#/components/schemas/AuthMethodVariantPassword'
+      - $ref: '#/components/schemas/AuthMethodVariantSamlPost'
+      - $ref: '#/components/schemas/AuthMethodVariantOauthAuthCodeGrant'
+      - $ref: '#/components/schemas/AuthMethodVariantLdapPassword'
+      - $ref: '#/components/schemas/AuthMethodVariantVcd'
+      discriminator:
+        propertyName: method
+        mapping:
+          password: AuthMethodVariantPassword
+          saml-post: AuthMethodVariantSamlPost
+          oauth-auth-code-grant: AuthMethodVariantOauthAuthCodeGrant
+          ldap-password: AuthMethodVariantLdapPassword
+          vcd: AuthMethodVariantVcd
+    AuthMethodVariantPassword:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - password
+        required:
+        - method
+      - type: object
+        properties: {}
+    AuthRequestMethodLdapBasicAuth:
+      allOf:
+      - type: object
+        properties:
+          idp_id:
+            type: string
+            format: byte
+          email:
+            type: string
+          password:
+            type: string
+          acct_id:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: 'The account where the IdP is configured. This should
+
+              only be used if attempting to self-provision into the
+
+              account. (Self-provisioning may not be possible for
+
+              existing users; they may need to be manually invited
+
+              into the account.)'
+        required:
+        - idp_id
+        - email
+        - password
+    Config2faAuthRequest:
+      allOf:
+      - type: object
+        description: Request to start configuring U2F.
+        properties:
+          password:
+            type: string
+        required:
+        - password
+    AuthRequestMethodAuthByAppName:
+      allOf:
+      - type: object
+        properties:
+          acct_id:
+            type: string
+            format: uuid
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+          password:
+            type: string
+        required:
+        - acct_id
+        - name
+        - password
+    AuthResponse:
+      allOf:
+      - type: object
+        properties:
+          token_type:
+            $ref: '#/components/schemas/TokenType'
+          expires_in:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+          access_token:
+            type: string
+            description: Token value that the client should subsequently pass in Authorization header.
+          entity_id:
+            type: string
+            format: uuid
+          challenge:
+            $ref: '#/components/schemas/U2fMfaChallengeResponse'
+          fido2_assertion_options:
+            $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
+          allowed_mfa_methods:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/MfaAuthMethod'
+        required:
+        - token_type
+        - expires_in
+        - entity_id
+    OauthAuthParamDisplay:
+      description: 'Corresponds to the `display` parameter in
+
+        https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest'
+      type: string
+      enum:
+      - page
+      - popup
+      - touch
+      - wap
+    AuthRequestMethodPassword:
+      allOf:
+      - type: object
+        description: 'Login using a DSM user password and, optionally, a captcha. This is useful
+
+          for situations where a user is locked out of their DSM account, and wants to
+
+          become unlocked.'
+        properties:
+          email:
+            type: string
+            format: email
+            description: The user's email.
+          password:
+            type: string
+            description: The user's password.
+          recaptcha_response:
+            type:
+            - string
+            - 'null'
+            description: The response token after solving a reCAPTCHA successfully.
+        required:
+        - email
+        - password
+    AuthMethodVariantVcd:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - vcd
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthMethodVcd'
+    OauthAuthParamPrompt:
+      description: 'Corresponds to the `prompt` parameter in
+
+        https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest'
+      type: string
+      enum:
+      - login
+      - none
+      - consent
+      - select_account
+    AuthenticatorTransportInner:
+      description: See [AuthenticatorTransport] type.
+      type: string
+      enum:
+      - usb
+      - nfc
+      - ble
+      - internal
+    AuthMethodVariantLdapPassword:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - ldap-password
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthMethodLdapPassword'
+    AuthRequest:
+      allOf:
+      - type: object
+        properties:
+          token_type:
+            $ref: '#/components/schemas/TokenType'
+          bind_to:
+            $ref: '#/components/schemas/BindToPrincipal'
+      - $ref: '#/components/schemas/AuthRequestMethod'
+    PublicKeyCredentialType:
+      description: 'https://www.w3.org/TR/webauthn-2/#enum-credentialType
+
+
+        This enum defines valid cred types.'
+      type: string
+      enum:
+      - public-key
+    U2fMfaChallengeResponse:
+      allOf:
+      - type: object
+        description: A challenge used for multi-factor authentication.
+        properties:
+          u2f_challenge:
+            type: string
+          u2f_keys:
+            type: array
+            items:
+              $ref: '#/components/schemas/U2fRegisteredKey'
+        required:
+        - u2f_challenge
+        - u2f_keys
+    AuthRequestMethod:
+      oneOf:
+      - $ref: '#/components/schemas/AuthRequestMethodVariantSamlResponse'
+      - $ref: '#/components/schemas/AuthRequestMethodVariantOauthAuthCode'
+      - $ref: '#/components/schemas/AuthRequestMethodVariantLdapBasicAuth'
+      - $ref: '#/components/schemas/AuthRequestMethodVariantAuthByAppName'
+      - $ref: '#/components/schemas/AuthRequestMethodVariantAwsIam'
+      - $ref: '#/components/schemas/AuthRequestMethodVariantPassword'
+      discriminator:
+        propertyName: method
+        mapping:
+          saml-response: AuthRequestMethodVariantSamlResponse
+          oauth-auth-code: AuthRequestMethodVariantOauthAuthCode
+          ldap-basic-auth: AuthRequestMethodVariantLdapBasicAuth
+          auth-by-app-name: AuthRequestMethodVariantAuthByAppName
+          aws-iam: AuthRequestMethodVariantAwsIam
+          password: AuthRequestMethodVariantPassword
+    MfaDevice:
+      allOf:
+      - type: object
+        description: A FIDO device that may be used for second factor authentication.
+        properties:
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Name given to the FIDO device.
+          type:
+            $ref: '#/components/schemas/MfaDeviceType'
+          origin:
+            type:
+            - string
+            - 'null'
+            description: Origin of the FIDO device.
+        required:
+        - name
+        - type
+    AuthenticatorTransport:
+      description: 'Hints by relying party on how client should communicate
+
+        with the authenticator.
+
+
+        https://www.w3.org/TR/webauthn-2/#enum-transport'
+      oneOf:
+      - $ref: '#/components/schemas/AuthenticatorTransportInner'
+      - type: string
+        description: 'Unknown values are stored as spec asks to do so.
+
+          As per the spec level 3 (which is draft):
+
+          "The values SHOULD be members of AuthenticatorTransport
+
+          but Relying Parties SHOULD accept and store unknown values."
+
+          See `[[transports]]` in https://w3c.github.io/webauthn/#iface-authenticatorattestationresponse
+
+
+          Level 2 also says that but comparitively unclear.
+
+          "The values SHOULD be members of AuthenticatorTransport but
+
+          Relying Parties MUST ignore unknown values."
+
+          See `[[transports]]` in https://www.w3.org/TR/webauthn-2/#iface-authenticatorattestationresponse'
+    BindToPrincipal:
+      description: 'A security principal that a session can be bound to.
+
+
+        Eg: When app-1 creates a session that can be validated against app-2''s credentials,
+
+        app-1 specifies app-2''s ID in an Auth request body like below:
+
+
+        ```json
+
+        {
+
+        "token_type":"Bearer",
+
+        "bind_to" : {
+
+        "app":"<app-2''s ID>"
+
+        }
+
+        }
+
+        ```
+
+
+        This is particularly useful when the session token generated using certificate auth of
+
+        one app needs to be used by another app.'
+      oneOf:
+      - title: BindToPrincipalVariantApp
+        type: object
+        properties:
+          app:
+            type: string
+            format: uuid
+        required:
+        - app
+    AuthRequestMethodAwsIam:
+      allOf:
+      - type: object
+        properties:
+          acct_id:
+            type: string
+            format: uuid
+          region:
+            type: string
+          headers:
+            type: object
+            additionalProperties:
+              type: string
+        required:
+        - acct_id
+        - region
+        - headers
+    TokenType:
+      description: 'The type of a session token.
+
+
+        (The default session token type is Bearer.)'
+      type: string
+      enum:
+      - Bearer
+      - Cookie
+    AuthRequestMethodVariantOauthAuthCode:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - oauth-auth-code
+        required:
+        - method
+      - $ref: '#/components/schemas/OauthCodeData'
+    MfaAuthMethodFido2:
+      allOf:
+      - type: object
+        properties:
+          challenge:
+            $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
+          challenge_token:
+            type: string
+            format: byte
+          mfa_devices:
+            type: array
+            items:
+              $ref: '#/components/schemas/MfaDevice'
+        required:
+        - challenge
+        - challenge_token
+        - mfa_devices
+    PublicKeyCredentialRequestOptions:
+      allOf:
+      - type: object
+        description: <https://www.w3.org/TR/webauthn-2/#dictionary-assertion-options>
+        properties:
+          challenge:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          timeout:
+            type:
+            - integer
+            - 'null'
+            description: 'The time for which response from the authenticator
+
+              would be awaited. This should only be a hint as per the spec.
+
+              This is in milliseconds.'
+          rpId:
+            type:
+            - string
+            - 'null'
+            description: 'This optional member specifies the relying party identifier
+
+              claimed by the caller. If omitted, its value will be the
+
+              CredentialsContainer object’s relevant settings object''s
+
+              origin''s effective domain.'
+          allowCredentials:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/PublicKeyCredentialDescriptor'
+            description: 'This OPTIONAL member contains a list of [PublicKeyCredentialDescriptor]
+
+              objects representing public key credentials acceptable to the caller,
+
+              in descending order of the caller’s preference (the first item in the
+
+              list is the most preferred credential, and so on down the list).'
+          userVerification:
+            $ref: '#/components/schemas/UserVerificationRequirement'
+          extensions:
+            $ref: '#/components/schemas/AuthenticationExtensionsClientInputs'
+        required:
+        - challenge
+    AwsTemporaryCredentials:
+      allOf:
+      - type: object
+        description: Temporary credentials to be used for AWS KMS.
+        properties:
+          access_key:
+            type: string
+          secret_key:
+            type: string
+          session_token:
+            type: string
+        required:
+        - access_key
+        - secret_key
+        - session_token
+    AuthDiscoverRequest:
+      allOf:
+      - type: object
+        properties:
+          user_email:
+            type: string
+            format: email
+            description: 'The email of the user wishing to log in. If the auth discovery
+
+              request also includes an acct_id query parameter, this field
+
+              will be effectively ignored.'
+    OauthCodeData:
+      allOf:
+      - type: object
+        properties:
+          idp_id:
+            type: string
+            format: byte
+          code:
+            type: string
+          email:
+            type: string
+        required:
+        - idp_id
+        - code
+        - email
+    SelectAccountRequest:
+      allOf:
+      - type: object
+        description: Request to select an account.
+        properties:
+          acct_id:
+            type: string
+            format: uuid
+        required:
+        - acct_id
+    AuthRequestMethodVariantLdapBasicAuth:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - ldap-basic-auth
+        required:
+        - method
+      - $ref: '#/components/schemas/AuthRequestMethodLdapBasicAuth'
+    MfaDeviceType:
+      description: Type of MFA device
+      type: string
+      enum:
+      - U2f
+      - Fido2
+    AuthenticationExtensionsClientInputs:
+      allOf:
+      - type: object
+        description: 'Extensions for webauthn. For every extension input, an
+
+          output must be returned if the input was considered.
+
+
+          https://www.w3.org/TR/webauthn-2/#dictdef-authenticationextensionsclientinputs'
+        properties:
+          appidExclude:
+            type:
+            - string
+            - 'null'
+            description: 'This extension excludes authenticators during registration
+
+              based on legacy u2f key handles specified in "excludeCredentials".
+
+              If that key handle was created with that device, it is excluded.
+
+
+              https://www.w3.org/TR/webauthn-2/#sctn-appid-exclude-extension'
+          appid:
+            type:
+            - string
+            - 'null'
+            description: 'This extension allows RPs that have previously registered a cred
+
+              using legacy U2F APIs to request an assertion.
+
+
+              https://www.w3.org/TR/webauthn-2/#sctn-appid-extension'
+          example.extension.bool:
+            type:
+            - boolean
+            - 'null'
+            description: Dummy extension used by conformance tests
+    AuthMethodOauthAuthCodeGrant:
+      allOf:
+      - type: object
+        properties:
+          name:
+            type: string
+          icon_url:
+            type: string
+          authorization_url:
+            type: string
+          client_id:
+            type: string
+          redirect_uri:
+            type: string
+          state:
+            type: string
+          idp_id:
+            type: string
+            format: byte
+          auth_params:
+            $ref: '#/components/schemas/OauthAuthenticationParameters'
+        required:
+        - name
+        - icon_url
+        - authorization_url
+        - client_id
+        - redirect_uri
+        - state
+        - idp_id
+        - auth_params
+  parameters:
+    AuthDiscoverParams:
+      in: query
+      name: AuthDiscoverParams
+      schema:
+        $ref: '#/components/schemas/AuthDiscoverParams'
+      explode: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    apiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Please enter your token prefixed with 'Basic ' (e.g., 'Basic your_token_here')
+    bearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

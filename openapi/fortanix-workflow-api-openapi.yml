@@ -1,0 +1,494 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Workflow API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: Workflow
+paths:
+  /v1/workflows/draft/graphs:
+    get:
+      summary: Search all workflow draft graphs
+      tags:
+      - Workflow
+      operationId: getAllWorkflowGraphs
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - name: name
+        in: query
+        description: Draft workflow name
+        required: false
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: Draft workflow description.
+        required: false
+        schema:
+          type: string
+      - name: all_search
+        in: query
+        description: Search on name or description.
+        required: false
+        schema:
+          type: string
+      - name: parent_graph_id
+        in: query
+        description: The final workflow from which this draft was derived.
+        required: false
+        schema:
+          type: string
+      - name: project
+        in: query
+        description: The workflow project.
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: 'Filter to use for items, currently supports labels, syntax: {"labels":{"key1":"value1","key2":"value2"}}'
+        required: false
+        schema:
+          type: string
+      - name: sort_by
+        in: query
+        description: Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum numbers of images to return.
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of images to skip from start.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllWorkflowGraphsResponse'
+      security:
+      - bearerToken: []
+    post:
+      summary: Create a new workflow graph as a draft
+      tags:
+      - Workflow
+      operationId: createWorkflowGraph
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/CreateWorkflowGraphRequest'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowGraph'
+      security:
+      - bearerToken: []
+  /v1/workflows/draft/graphs/{graph-id}:
+    get:
+      tags:
+      - Workflow
+      summary: Get details of a particular draft workflow
+      description: Get details of a particular draft workflow
+      operationId: getWorkflowGraph
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      - name: acct_id
+        in: query
+        description: Account in which workflow belong
+        required: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowGraph'
+      security:
+      - bearerToken: []
+    put:
+      summary: Update a particular workflow graph.
+      tags:
+      - Workflow
+      operationId: updateWorkflowGraph
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      - $ref: '#/components/parameters/UpdateWorkflowGraphRequest'
+      - name: acct_id
+        in: query
+        description: Account in which workflow belong
+        required: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowGraph'
+      security:
+      - bearerToken: []
+    delete:
+      tags:
+      - Workflow
+      summary: Delete a particular draft workflow
+      description: Delete a particular draft workflow
+      operationId: deleteWorkflowGraph
+      x-auth-resource: Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/WorkflowGraphId'
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - bearerToken: []
+components:
+  schemas:
+    WorkflowLinkMetadata:
+      type: object
+      description: The final workflow from which this draft was derived. This field may point to a deleted final workflow in which you should treat it as if it's not present.
+      required:
+      - graph_id
+      - source_version
+      properties:
+        graph_id:
+          type: string
+          format: uuid
+        source_version:
+          type: integer
+    WorkflowType:
+      type: string
+      description: Workflow is owned or Shared
+      enum:
+      - OWNED
+      - SHARED
+    WorkflowObjectRefDataset:
+      type: object
+      description: ''
+      required:
+      - dataset_id
+      properties:
+        dataset_id:
+          type: string
+          format: uuid
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+    WorkflowGraph:
+      type: object
+      description: ''
+      required:
+      - graph_id
+      - name
+      - creator_id
+      - created_at
+      - updated_at
+      - description
+      - version
+      - objects
+      - edges
+      - labels
+      - group_id
+      - acct_id
+      properties:
+        graph_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        creator_id:
+          type: string
+          format: uuid
+        created_at:
+          type: integer
+          format: int64
+          description: Dataset creation time (seconds since epoch).
+        updated_at:
+          type: integer
+          format: int64
+          description: Last update UNIX timestamp (seconds since epoch).
+        description:
+          type: string
+        version:
+          type: integer
+        group_id:
+          type: string
+          format: uuid
+        acct_id:
+          type: string
+          format: uuid
+        objects:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowObject'
+        edges:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowEdge'
+        metadata:
+          $ref: '#/components/schemas/WorkflowMetadata'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+        type:
+          $ref: '#/components/schemas/WorkflowType'
+    WorkflowEdge:
+      type: object
+      description: ''
+      required:
+      - source
+      - target
+      properties:
+        source:
+          $ref: '#/components/schemas/WorkflowEdgeLink'
+        target:
+          $ref: '#/components/schemas/WorkflowEdgeLink'
+    GetAllWorkflowGraphsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowGraph'
+    WorkflowEdgeLink:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+        port:
+          type: string
+    WorkflowObjectRef:
+      type: object
+      description: ''
+      properties:
+        placeholder:
+          $ref: '#/components/schemas/WorkflowObjectRefPlaceholder'
+        dataset:
+          $ref: '#/components/schemas/WorkflowObjectRefDataset'
+        app:
+          $ref: '#/components/schemas/WorkflowObjectRefApp'
+    UpdateWorkflowGraph:
+      type: object
+      description: ''
+      required:
+      - name
+      - description
+      - version
+      - objects
+      - edges
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        version:
+          type: integer
+        objects:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowObject'
+        edges:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowEdge'
+        metadata:
+          $ref: '#/components/schemas/WorkflowMetadata'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+    WorkflowMetadata:
+      type: object
+      description: ''
+      required:
+      - nodes
+      properties:
+        nodes:
+          type: object
+          additionalProperties:
+            type: object
+        parent:
+          $ref: '#/components/schemas/WorkflowLinkMetadata'
+        project:
+          type: string
+    WorkflowObject:
+      type: object
+      description: ''
+      required:
+      - name
+      - ref
+      properties:
+        name:
+          type: string
+        user_id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        ref:
+          $ref: '#/components/schemas/WorkflowObjectRef'
+    CreateWorkflowGraph:
+      type: object
+      description: Request to create a workflow graph.
+      required:
+      - name
+      - description
+      - objects
+      - edges
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        group_id:
+          type: string
+          format: uuid
+        objects:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowObject'
+        edges:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowEdge'
+        metadata:
+          $ref: '#/components/schemas/WorkflowMetadata'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    WorkflowObjectRefApp:
+      type: object
+      description: ''
+      required:
+      - image_id
+      - config_id
+      properties:
+        image_id:
+          type: string
+          format: uuid
+        config_id:
+          type: string
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+    WorkflowObjectRefPlaceholder:
+      type: object
+      description: ''
+      required:
+      - kind
+      properties:
+        kind:
+          type: string
+          enum:
+          - dataset
+          - app
+          - script
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+  parameters:
+    CreateWorkflowGraphRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/CreateWorkflowGraph'
+    WorkflowGraphId:
+      name: graph-id
+      in: path
+      required: true
+      description: UUID of a graph.
+      schema:
+        type: string
+        format: uuid
+    UpdateWorkflowGraphRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/UpdateWorkflowGraph'
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

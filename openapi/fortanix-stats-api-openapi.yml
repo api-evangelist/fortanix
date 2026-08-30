@@ -1,0 +1,243 @@
+openapi: 3.2.0
+info:
+  title: Fortanix DSM REST Stats API
+  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0-20260710
+servers:
+- url: '{dsmEndpoint}'
+  description: DSM Endpoint
+  variables:
+    dsmEndpoint:
+      default: https://amer.smartkey.io
+      description: Type your DSM server URL here (include https://)
+tags:
+- name: Stats
+paths:
+  /sys/v1/stats/apps:
+    get:
+      operationId: GetAppAggregate
+      tags:
+      - Stats
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Get app aggregate transaction statistics.
+      description: Get app aggregate transaction statistics.
+      parameters:
+      - $ref: '#/components/parameters/StatsParams'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsStatsCountQueryResponse'
+  /sys/v1/stats/{app_id}/app:
+    get:
+      operationId: GetAppStats
+      tags:
+      - Stats
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Get transaction statistics for a specific application.
+      description: Get transaction statistics for a specific application.
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/StatsParams'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsStatsCountQueryResponse'
+  /sys/v1/stats/groups:
+    get:
+      operationId: GetGroupAggregate
+      tags:
+      - Stats
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Get group aggregate transaction statistics.
+      description: Get group aggregate transaction statistics.
+      parameters:
+      - $ref: '#/components/parameters/StatsParams'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsStatsCountQueryResponse'
+  /sys/v1/stats/{group_id}/group:
+    get:
+      operationId: GetGroupStats
+      tags:
+      - Stats
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Get transaction statistics for a specific group.
+      description: Get transaction statistics for a specific group.
+      parameters:
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/StatsParams'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsStatsCountQueryResponse'
+  /sys/v1/stats/{key_id}/key:
+    get:
+      operationId: GetSobjectStats
+      tags:
+      - Stats
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Get transaction statistics for a specific security object.
+      description: Get transaction statistics for a specific security object.
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/StatsParams'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsStatsCountQueryResponse'
+components:
+  schemas:
+    EsTotalTxn:
+      allOf:
+      - type: object
+        properties:
+          buckets:
+            type: array
+            items:
+              $ref: '#/components/schemas/InnerEsBucket'
+        required:
+        - buckets
+    UniqueOperationsCount:
+      allOf:
+      - type: object
+        properties:
+          value:
+            type: integer
+        required:
+        - value
+    OuterEsBucket:
+      allOf:
+      - type: object
+        properties:
+          doc_count:
+            type: integer
+          key:
+            type: integer
+          key_as_string:
+            type: string
+          total_txn:
+            $ref: '#/components/schemas/EsTotalTxn'
+        required:
+        - doc_count
+        - key
+        - key_as_string
+        - total_txn
+    InnerEsBucket:
+      allOf:
+      - type: object
+        properties:
+          doc_count:
+            type: integer
+          key:
+            type: string
+            format: uuid
+          unique_operations_count:
+            $ref: '#/components/schemas/UniqueOperationsCount'
+          unique_active_sobj_count:
+            $ref: '#/components/schemas/UniqueOperationsCount'
+          unique_active_app_count:
+            $ref: '#/components/schemas/UniqueOperationsCount'
+        required:
+        - doc_count
+        - key
+    EsStatsCountQueryResponse:
+      allOf:
+      - type: object
+        properties:
+          time:
+            $ref: '#/components/schemas/EsCountStatsLog'
+        required:
+        - time
+    EsCountStatsLog:
+      allOf:
+      - type: object
+        properties:
+          buckets:
+            type: array
+            items:
+              $ref: '#/components/schemas/OuterEsBucket'
+        required:
+        - buckets
+    StatsParams:
+      allOf:
+      - type: object
+        properties:
+          num_points:
+            type: integer
+          top_count:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+          range_from:
+            type: integer
+          range_to:
+            type: integer
+  parameters:
+    StatsParams:
+      in: query
+      name: StatsParams
+      schema:
+        $ref: '#/components/schemas/StatsParams'
+      explode: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    apiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Please enter your token prefixed with 'Basic ' (e.g., 'Basic your_token_here')
+    bearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

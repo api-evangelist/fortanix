@@ -1,0 +1,89 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Certificate API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: Certificate
+paths:
+  /v1/certificates/{cert-id}:
+    get:
+      tags:
+      - Certificate
+      summary: Retrieve a certificate.
+      description: Retrieve a certificate.
+      operationId: getCertificate
+      x-auth-resource: Reader,Writer,Manager,AgentAuth,JoinTokenAuth
+      parameters:
+      - $ref: '#/components/parameters/CertificateId'
+      responses:
+        '200':
+          description: Certificate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+components:
+  schemas:
+    CertificateStatusType:
+      type: string
+      description: Certificate status.
+      enum:
+      - PENDING
+      - REJECTED
+      - ISSUED
+      - REVOKED
+      - EXPIRED
+    Certificate:
+      description: A certificate request or issued certificate.
+      type: object
+      properties:
+        certificate_id:
+          type: string
+          format: uuid
+          description: Certificate ID.
+        status:
+          $ref: '#/components/schemas/CertificateStatusType'
+        csr:
+          type: string
+          description: The certificate signing request.
+        certificate:
+          type: string
+          description: The certificate itself, if issued.
+        node_id:
+          type: string
+          format: uuid
+          description: The node relevant to this certificate, if known.
+        app_id:
+          type: string
+          format: uuid
+          description: The app relevant to this certificate, if known.
+        build_id:
+          type: string
+          format: uuid
+          description: The build relevant to this certificate, if known.
+  parameters:
+    CertificateId:
+      name: cert-id
+      in: path
+      required: true
+      description: UUID of an issued certificate.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

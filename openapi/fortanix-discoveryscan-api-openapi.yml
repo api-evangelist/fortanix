@@ -1,0 +1,150 @@
+openapi: 3.2.0
+info:
+  description: '**API of the Fortanix Unified Data and AI Security Platform**
+
+
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
+
+    '
+  title: Armor Discovery Scan API
+  version: 0.1.0
+servers:
+- url: https://api.armor.fortanix.com
+tags:
+- description: APIs regarding obtaining details about the scans.
+  name: DiscoveryScan
+paths:
+  /api/v1/discovery/scans:
+    get:
+      description: Get all scans.
+      operationId: GetAllScans
+      parameters:
+      - $ref: '#/components/parameters/DiscoveryScanParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryGetAllScansResponse'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get all scans.
+      tags:
+      - DiscoveryScan
+  /api/v1/discovery/scans/{id}:
+    get:
+      description: Get a scan.
+      operationId: GetScan
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryScan'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get a scan.
+      tags:
+      - DiscoveryScan
+components:
+  parameters:
+    DiscoveryScanParams:
+      explode: true
+      in: query
+      name: DiscoveryScanParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryScanParams'
+  schemas:
+    DiscoveryScan:
+      allOf:
+      - description: Scan in Predjama.
+        properties:
+          acct_id:
+            format: uuid
+            type: string
+          connection_id:
+            format: uuid
+            type: string
+          created_at:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          ended_at:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          group_id:
+            format: uuid
+            type: string
+          last_updated_at:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          scan_errors:
+            items:
+              type: string
+            type:
+            - array
+            - 'null'
+          scan_id:
+            format: uuid
+            type: string
+          scan_status:
+            $ref: '#/components/schemas/DiscoveryScanStatus'
+        required:
+        - acct_id
+        - connection_id
+        - created_at
+        - group_id
+        - last_updated_at
+        - scan_id
+        - scan_status
+        type: object
+    DiscoveryScanParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            format: uuid
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryScanStatus:
+      enum:
+      - in_progress
+      - completed
+      - stopped
+      - pending
+      - failed
+      type: string
+    DiscoveryGetAllScansResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryScan'
+            type: array
+        required:
+        - items
+        type: object
+  securitySchemes:
+    Oauth2ClientCredentials:
+      description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+      type: oauth2

@@ -1,0 +1,336 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Dataset API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: Dataset
+paths:
+  /v1/datasets:
+    get:
+      tags:
+      - Dataset
+      summary: Get all datasets
+      description: Get detailed information of all datasets that the current user has access to.
+      operationId: getAllDatasets
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - name: name
+        in: query
+        description: Dataset name
+        required: false
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: Dataset description.
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: 'Filter to use for items, currently supports labels, syntax: {"labels":{"key1":"value1","key2":"value2"}}'
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum numbers of datasets to return.
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of datasets to skip from start.
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllDatasetsResponse'
+      security:
+      - bearerToken: []
+    post:
+      tags:
+      - Dataset
+      summary: Create a new dataset object.
+      operationId: createDataset
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/CreateDatasetRequest'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+      security:
+      - bearerToken: []
+  /v1/datasets/{dataset-id}:
+    get:
+      summary: Retrieve information about a particular dataset.
+      description: Retrieve information about a particular dataset. Note that credentials are treated as secrets and are excluded from the response here.
+      tags:
+      - Dataset
+      operationId: getDataset
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/DatasetId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+      security:
+      - bearerToken: []
+    delete:
+      summary: Delete a particular dataset.
+      description: Deleting a particular dataset also deletes any affiliated stored secrets.
+      tags:
+      - Dataset
+      operationId: deleteDataset
+      x-auth-resource: Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/DatasetId'
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - bearerToken: []
+    patch:
+      summary: Modify a particular dataset.
+      tags:
+      - Dataset
+      operationId: updateDataset
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/DatasetId'
+      - $ref: '#/components/parameters/DatasetUpdateRequest'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+      security:
+      - bearerToken: []
+components:
+  schemas:
+    DatasetUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        location:
+          type: string
+        credentials:
+          $ref: '#/components/schemas/DatasetCredentialsRequest'
+        long_description:
+          type: string
+          description: A github-flavored-markdown formatted string that will be rendered in UI for viewing a summary of this dataset, limited to 16 KiB.
+        metadata:
+          $ref: '#/components/schemas/DatasetMetadata'
+        group_id:
+          type: string
+          format: uuid
+    CreateDatasetRequest:
+      type: object
+      required:
+      - name
+      - description
+      - labels
+      - location
+      - credentials
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        location:
+          type: string
+        credentials:
+          $ref: '#/components/schemas/DatasetCredentialsRequest'
+        metadata:
+          $ref: '#/components/schemas/DatasetMetadata'
+        long_description:
+          type: string
+          description: A github-flavored markdown-formatted string that will be rendered in UI for viewing a summary of this dataset, limited to 16KiB.
+        group_id:
+          type: string
+          format: uuid
+    DatasetCredentialsRequest:
+      type: object
+      description: ''
+      required:
+      - contents
+      properties:
+        contents:
+          type: string
+    SdkmsCredentials:
+      type: object
+      description: ''
+      required:
+      - credentials_url
+      - credentials_key_name
+      properties:
+        credentials_url:
+          type: string
+        credentials_key_name:
+          type: string
+    Dataset:
+      type: object
+      description: ''
+      required:
+      - dataset_id
+      - owner
+      - creator_id
+      - created_at
+      - updated_at
+      - name
+      - description
+      - location
+      - labels
+      - credentials
+      - group_id
+      properties:
+        dataset_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        owner:
+          type: string
+          format: uuid
+        creator_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+        created_at:
+          type: integer
+          format: int64
+          description: Dataset creation time (seconds since epoch).
+        updated_at:
+          type: integer
+          format: int64
+          description: Last update UNIX timestamp (seconds since epoch).
+        description:
+          type: string
+        location:
+          type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        credentials:
+          $ref: '#/components/schemas/DatasetCredentials'
+        metadata:
+          $ref: '#/components/schemas/DatasetMetadata'
+        last_workflow_output:
+          type: integer
+          format: int64
+        long_description:
+          type: string
+          description: A github-flavored markdown-formatted string that will be rendered in UI for viewing a summary of this dataset, limited to 16KiB.
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    DatasetCredentials:
+      type: object
+      description: ''
+      properties:
+        sdkms:
+          $ref: '#/components/schemas/SdkmsCredentials'
+    DatasetMetadata:
+      type: object
+      description: Metadata about the dataset.
+    GetAllDatasetsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataset'
+  parameters:
+    DatasetId:
+      name: dataset-id
+      in: path
+      required: true
+      description: UUID of a dataset.
+      schema:
+        type: string
+        format: uuid
+    DatasetUpdateRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/DatasetUpdateRequest'
+    CreateDatasetRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/CreateDatasetRequest'
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

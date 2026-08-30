@@ -1,0 +1,205 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Admin API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: Admin
+paths:
+  /v1/system/config:
+    patch:
+      tags:
+      - Admin
+      summary: Modify cluster configuration by SysAdmin
+      description: Modify cluster-wide configuration by SysAdmin.
+      operationId: sysadminUpdateClusterConfig
+      x-auth-resource: Manager,ManagerInLockedAccount
+      responses:
+        '200':
+          description: Cluster was configured by SysAdmin successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SysAdminGetClusterConfigurationResponse'
+    get:
+      tags:
+      - Admin
+      summary: Get cluster configuration by SysAdmin
+      description: Get cluster-wide configuration by SysAdmin.
+      operationId: sysadminGetClusterConfigure
+      x-auth-resource: Reader,Manager,ManagerInLockedAccount
+      parameters:
+      - $ref: '#/components/parameters/GetClusterConfigParams'
+      responses:
+        '200':
+          description: Cluster configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SysAdminGetClusterConfigurationResponse'
+components:
+  schemas:
+    SysAdminGetClusterConfigurationResponse:
+      type: object
+      required:
+      - dsm_config
+      - nitro_enclaves_converter_config
+      - microsoft_attestation_service_config
+      - nvidia_attestation_service_config
+      - aci_config
+      - eks_config
+      properties:
+        dsm_config:
+          $ref: '#/components/schemas/DsmClusterConfig'
+        nitro_enclaves_converter_config:
+          $ref: '#/components/schemas/NitroEnclavesConverterConfig'
+        microsoft_attestation_service_config:
+          $ref: '#/components/schemas/MicrosoftAttestationServiceConfig'
+        nvidia_attestation_service_config:
+          $ref: '#/components/schemas/NvidiaAttestationServiceConfig'
+        aci_config:
+          $ref: '#/components/schemas/AciConfig'
+        eks_config:
+          $ref: '#/components/schemas/EksConfig'
+    EksConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - access_key_id
+      properties:
+        access_key_id:
+          type: string
+          description: AWS access key ID
+        secret_access_key:
+          type: string
+          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
+    NitroEnclavesConverterConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - converter_url
+      properties:
+        converter_url:
+          type: string
+          description: URL to use for contacting the Nitro Enclaves Converter microservice.
+    ConversionRequestImageInfo:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Docker image name
+        auth_config:
+          $ref: '#/components/schemas/AuthConfig'
+          description: Docker credentials
+    AciConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - converter_url
+      - allow_large_images
+      - agent_image
+      - init_image
+      properties:
+        converter_url:
+          type: string
+          description: URL to use for contacting the ACI fortifier microservice.
+        agent_image:
+          $ref: '#/components/schemas/ConversionRequestImageInfo'
+        init_image:
+          $ref: '#/components/schemas/ConversionRequestImageInfo'
+    NvidiaAttestationServiceConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - nras_url
+      properties:
+        nras_url:
+          type: string
+          description: Nvidia Remote Attestation Service (NRAS) url.
+    DsmCluster:
+      type: object
+      required:
+      - app_id
+      - url
+      properties:
+        app_id:
+          type: string
+          format: uuid
+          description: SDKMS administrative app id.
+        url:
+          type: string
+          description: SDKMS URL to use for storing datasets.
+    MicrosoftAttestationServiceConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - url
+      - trusted_report_mrsigners
+      properties:
+        url:
+          type: string
+          description: Microsoft Azure Attestation Service (MAA) endpoint url.
+        trusted_report_mrsigners:
+          type: array
+          items:
+            type: string
+          description: Array of Microsoft Azure Attestation Service (MAA) expected MRSigner value (hex string).
+    AuthConfig:
+      description: Credentials for authenticating to a docker registry
+      type: object
+      required:
+      - username
+      properties:
+        username:
+          type: string
+          description: User name for docker registry authentication
+        password:
+          type: string
+          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
+    DsmClusterConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - active_cluster
+      - transition_clusters
+      properties:
+        active_cluster:
+          $ref: '#/components/schemas/DsmCluster'
+        transition_clusters:
+          type: array
+          description: Clusters that are being phased out but still have objects inside them. In order of their use, first being the oldest.
+          items:
+            $ref: '#/components/schemas/DsmCluster'
+  parameters:
+    GetClusterConfigParams:
+      name: future
+      in: query
+      required: false
+      description: Whether to get current or future cluster configuration
+      schema:
+        type: boolean
+        default: false
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

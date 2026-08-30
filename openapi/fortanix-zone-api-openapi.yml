@@ -1,0 +1,215 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Zone API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: Zone
+paths:
+  /v1/zones:
+    get:
+      tags:
+      - Zone
+      summary: Get all zones.
+      description: Get details of all the zones.
+      operationId: getZones
+      x-auth-resource: Reader,Writer,Manager
+      responses:
+        '200':
+          description: Details of all the zones.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+  /v1/zones/{zone-id}:
+    get:
+      tags:
+      - Zone
+      summary: Get zone details.
+      description: Get details for a zone.
+      operationId: getZone
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/ZoneId'
+      responses:
+        '200':
+          description: Details of the zone.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+  /v1/zones/{zone-id}/token:
+    get:
+      tags:
+      - Zone
+      summary: Get the authentication token.
+      description: '"Retrieve the authentication token ("join token") used to enroll compute nodes in this zone."
+
+        '
+      operationId: getZoneJoinToken
+      x-auth-resource: Manager
+      parameters:
+      - $ref: '#/components/parameters/ZoneId'
+      responses:
+        '200':
+          description: Join token for the zone.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneJoinToken'
+  /v1/zones/{zone-id}/certificates:
+    get:
+      tags:
+      - Zone
+      summary: Get all zone certificates
+      description: Get all certificates in the specified zone
+      operationId: GetZoneCertificates
+      x-auth-resource: Reader,Writer,Manager,ServiceAuth,AdminIfAuth
+      parameters:
+      - $ref: '#/components/parameters/ZoneId'
+      responses:
+        '200':
+          description: Details of all zone certificates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneCertificates'
+      security:
+      - bearerToken: []
+    post:
+      tags:
+      - Zone
+      summary: Create a new zone certificate
+      description: Creates a new Zone Certificate for the specified Zone
+      operationId: createZoneCertificate
+      x-auth-resource: Manager
+      parameters:
+      - $ref: '#/components/parameters/ZoneId'
+      responses:
+        '200':
+          description: Details of the new zone certificate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneCertificateCreateResponse'
+      security:
+      - bearerToken: []
+  /v1/zones/{zone-id}/certificates/rotate:
+    post:
+      tags:
+      - Zone
+      summary: Rotate zone certificate
+      description: Rotates the Zone Certificate for the specified Zone
+      operationId: rotateZoneCertificate
+      x-auth-resource: Manager
+      parameters:
+      - $ref: '#/components/parameters/ZoneId'
+      responses:
+        '200':
+          description: Details of the new zone certificate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneCertificates'
+      security:
+      - bearerToken: []
+components:
+  schemas:
+    ZoneJoinToken:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Bearer token used to enroll compute nodes.
+    ZoneCertificateCreateResponse:
+      type: object
+      description: Detailed info of all zone certificates.
+      required:
+      - next_certificate
+      properties:
+        next_certificate:
+          type: string
+          description: New Zone certificate (PEM format).
+    NodeEnrollment:
+      type: object
+      required:
+      - attestation_enforcement_disabled_insecure
+      properties:
+        attestation_enforcement_disabled_insecure:
+          type: boolean
+    ZoneCertificates:
+      type: object
+      description: Detailed info of all zone certificates.
+      required:
+      - current_certificate
+      - previous_certificates
+      properties:
+        current_certificate:
+          type: string
+          description: Current Zone certificate (PEM format).
+        next_certificate:
+          type: string
+          description: New Zone certificate (PEM format).
+        previous_certificates:
+          items:
+            type: string
+          type: array
+          description: Old Zone certificates (PEM format).
+    Zone:
+      type: object
+      description: Detailed info of a zone.
+      required:
+      - acct_id
+      - certificate
+      - zone_id
+      - name
+      - node_refresh_interval
+      - node_renewal_threshold
+      - node_enrollment
+      properties:
+        acct_id:
+          type: string
+          format: uuid
+          description: The account ID of the account that this zone belongs to.
+        node_enrollment:
+          $ref: '#/components/schemas/NodeEnrollment'
+        certificate:
+          type: string
+          description: Zone certificate (PEM format).
+        zone_id:
+          type: string
+          format: uuid
+          description: Zone Id.
+        name:
+          type: string
+          description: Zone name.
+        description:
+          type: string
+          description: Zone description.
+  parameters:
+    ZoneId:
+      name: zone-id
+      in: path
+      required: true
+      description: UUID of a zone.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

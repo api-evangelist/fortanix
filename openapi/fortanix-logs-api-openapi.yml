@@ -1,0 +1,240 @@
+openapi: 3.2.0
+info:
+  title: Fortanix DSM REST Logs API
+  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0-20260710
+servers:
+- url: '{dsmEndpoint}'
+  description: DSM Endpoint
+  variables:
+    dsmEndpoint:
+      default: https://amer.smartkey.io
+      description: Type your DSM server URL here (include https://)
+tags:
+- name: Logs
+paths:
+  /sys/v1/logs:
+    get:
+      operationId: GetAllLogs
+      tags:
+      - Logs
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Get all logs visible to the requester.
+      description: Get all logs visible to the requester.
+      parameters:
+      - $ref: '#/components/parameters/LogsParams'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsAuditQueryResponse'
+components:
+  schemas:
+    EsAuditLog:
+      allOf:
+      - type: object
+        description: Response parameters to show Audit log details.
+        properties:
+          action_type:
+            $ref: '#/components/schemas/ActionType'
+          actor_type:
+            type: string
+            description: 'Actor Type
+
+              Available values are: User, App & Plugin.'
+          message:
+            type: string
+            description: Audit log message
+          client_provided_context:
+            type:
+            - string
+            - 'null'
+            description: 'Additional information not already captured by
+
+              `message`. In some cases, the format might
+
+              be customized by the client.'
+          severity:
+            $ref: '#/components/schemas/SeverityLevel'
+          time:
+            type: string
+            pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
+            example: '2017-05-09T07:09:12Z'
+            description: Time of Event
+          acct_id:
+            type: string
+            format: uuid
+            description: UUID of account
+          actor_id:
+            type: string
+            format: uuid
+            description: UUID of Actor (User, App or Plugin)
+          group_ids:
+            type: array
+            items:
+              type: string
+              format: uuid
+            description: UUIDs of groups involved/used in event
+          object_id:
+            type: string
+            format: uuid
+            description: UUID of entity affected by event. For instance, if a group is created object_id will be UUID of group.
+          client_ip:
+            oneOf:
+            - type:
+              - string
+              - 'null'
+              format: ipv4
+            - type:
+              - string
+              - 'null'
+              format: ipv6
+            description: IP Address of client
+          response_time:
+            type:
+            - object
+            - 'null'
+            properties:
+              secs:
+                type: integer
+              nanos:
+                type: integer
+                minimum: 0
+                maximum: 999999999
+            required:
+            - secs
+            - nanos
+            description: Time taken for event/operation completion
+        required:
+        - action_type
+        - actor_type
+        - message
+        - severity
+        - time
+        - acct_id
+        - actor_id
+        - group_ids
+        - object_id
+    ActionType:
+      type: string
+      enum:
+      - ADMINISTRATIVE
+      - AUTH
+      - CRYPTOOPERATION
+      - RUNPLUGIN
+      - CUSTOM
+      - OTHER
+    SeverityLevel:
+      type: string
+      enum:
+      - INFO
+      - WARNING
+      - ERROR
+      - CRITICAL
+    EsAuditQueryResponse:
+      allOf:
+      - type: object
+        description: Response for Audit log Query.
+        properties:
+          hits:
+            type: array
+            items:
+              $ref: '#/components/schemas/EsAuditLogOuter'
+            description: List of audit logs.
+        required:
+        - hits
+    EsAuditLogOuter:
+      allOf:
+      - type: object
+        description: Response structure of a single log.
+        properties:
+          _id:
+            type: string
+            description: UUID of audit log
+          _source:
+            $ref: '#/components/schemas/EsAuditLog'
+        required:
+        - _id
+        - _source
+    LogsParams:
+      allOf:
+      - type: object
+        description: Query parameters to get audit logs.
+        properties:
+          size:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: Maximum number of entries to return. Upper limit for max entries is 1000.
+          from:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: Starting offset
+          range_from:
+            type: integer
+            description: Starting time for search. This is EPOCH time.
+          range_to:
+            type: integer
+            description: Ending time for search. This is EPOCH time.
+          action_type:
+            type: array
+            items:
+              $ref: '#/components/schemas/ActionType'
+            description: Action Type
+          actor_type:
+            type: array
+            items:
+              type: string
+            description: 'Actor Type
+
+              Available values are: User, App & Plugin.'
+          actor_id:
+            type: string
+            format: uuid
+            description: UUID of Actor (User, App or Plugin)
+          object_id:
+            type: string
+            format: uuid
+            description: UUID of entity affected by event. For instance, if a group is created object_id will be UUID of group.
+          previous_id:
+            type: string
+            format: uuid
+            description: UUID of log after which further logs are required.
+          severity:
+            type: array
+            items:
+              $ref: '#/components/schemas/SeverityLevel'
+            description: Severity of event
+  parameters:
+    LogsParams:
+      in: query
+      name: LogsParams
+      schema:
+        $ref: '#/components/schemas/LogsParams'
+      explode: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    apiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Please enter your token prefixed with 'Basic ' (e.g., 'Basic your_token_here')
+    bearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

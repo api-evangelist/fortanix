@@ -1,0 +1,387 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Task API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: Task
+paths:
+  /v1/tasks:
+    get:
+      tags:
+      - Task
+      summary: Get all the tasks.
+      description: Get all the tasks in the system.
+      operationId: getAllTasks
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - name: task_type
+        in: query
+        required: false
+        description: Task type.
+        schema:
+          type: string
+          enum:
+          - NODE_ATTESTATION
+          - CERTIFICATE_ISSUANCE
+          - BUILD_WHITELIST
+          - DOMAIN_WHITELIST
+      - name: status
+        in: query
+        description: Task status.
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - CLOSED
+      - name: requester
+        in: query
+        description: UserName of requester.
+        required: false
+        schema:
+          type: string
+      - name: approver
+        in: query
+        description: UserName of approver.
+        required: false
+        schema:
+          type: string
+      - name: all_search
+        in: query
+        description: Search on Requester or Request.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum numbers of tasks to return.
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of tasks to skip from start.
+        required: false
+        schema:
+          type: integer
+      - name: sort_by
+        in: query
+        description: Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC
+        required: false
+        schema:
+          type: string
+      - name: base_filters
+        in: query
+        description: Filters to be applied on base query (count and results) key1:ASC,key2:DESC,key3:DESC
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Search result for Task objects.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllTasksResponse'
+      security:
+      - bearerToken: []
+  /v1/tasks/{task-id}:
+    get:
+      tags:
+      - Task
+      summary: Get details of a particular task.
+      description: Get the details of a task.
+      operationId: getTask
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Task Details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+      security:
+      - bearerToken: []
+    patch:
+      tags:
+      - Task
+      summary: Update status of approver and task.
+      description: Update status of approver and task.
+      operationId: UpdateTask
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/TaskId'
+      - $ref: '#/components/parameters/TaskUpdateRequest'
+      responses:
+        '200':
+          description: Updated Task status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+      security:
+      - bearerToken: []
+    delete:
+      tags:
+      - Task
+      summary: Delete a particular task.
+      description: Delete a particular task if not in pending state.
+      operationId: deleteTask
+      x-auth-resource: Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/TaskId'
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - bearerToken: []
+  /v1/tasks/status/{task-id}:
+    get:
+      tags:
+      - Task
+      summary: Get status and result of a particular task.
+      description: Get status of a task. If the task is completed, it also returns the result values, if any.
+      operationId: getTaskStatus
+      x-auth-resource: Reader,Writer,Manager,AgentAuth,JoinTokenAuth
+      parameters:
+      - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Task Details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+components:
+  schemas:
+    ApprovalInfo:
+      type: object
+      required:
+      - user_id
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: User Id.
+        user_name:
+          type: string
+          description: User Name.
+        status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        denial_reason:
+          type: string
+          description: Reason associated with the denial.
+    RequesterInfo:
+      required:
+      - requester_type
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: User Id.
+        user_name:
+          type: string
+          description: User Name.
+        app_id:
+          type: string
+          format: uuid
+          description: App Id.
+        app_name:
+          type: string
+          description: App Name.
+        requester_type:
+          $ref: '#/components/schemas/RequesterType'
+    RequesterType:
+      type: string
+      description: Type of requester.
+      enum:
+      - USER
+      - APP
+      - SYSTEM
+    TaskUpdateRequest:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        denial_reason:
+          type: string
+          description: Reason associated with the denial.
+    TaskResult:
+      type: object
+      properties:
+        task_id:
+          type: string
+          format: uuid
+          description: Task Id
+        certificate_id:
+          type: string
+          format: uuid
+          description: Certificate Id in case of certificate issuance task.
+        node_id:
+          type: string
+          format: uuid
+          description: Compute Node Id.
+        task_type:
+          $ref: '#/components/schemas/TaskType'
+        task_status:
+          $ref: '#/components/schemas/TaskStatus'
+        build_id:
+          type: string
+          format: uuid
+          description: Build Id.
+    TaskStatusType:
+      type: string
+      description: Status string for a task.
+      enum:
+      - INPROGRESS
+      - FAILED
+      - SUCCESS
+      - DENIED
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    ApprovalStatus:
+      type: string
+      description: Approval status.
+      enum:
+      - APPROVED
+      - DENIED
+    TaskType:
+      type: string
+      description: The types of tasks supported.
+      enum:
+      - NODE_ATTESTATION
+      - CERTIFICATE_ISSUANCE
+      - BUILD_WHITELIST
+      - DOMAIN_WHITELIST
+    Task:
+      type: object
+      required:
+      - approvals
+      - task_id
+      - status
+      - task_type
+      - requester_info
+      - entity_id
+      properties:
+        task_id:
+          type: string
+          format: uuid
+          description: Task Id.
+        requester_info:
+          $ref: '#/components/schemas/RequesterInfo'
+        entity_id:
+          type: string
+          format: uuid
+          description: app_id, build_id, node_id, cert_id are entity_id for app_domain_whitelisting, build_whitelisting, node_attestation and certificate_issuance respectively.
+        task_type:
+          $ref: '#/components/schemas/TaskType'
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        description:
+          type: string
+          description: Task details.
+        approvals:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApprovalInfo'
+        domains_added:
+          type: array
+          items:
+            type: string
+        domains_removed:
+          type: array
+          items:
+            type: string
+        group_id:
+          type: string
+          format: uuid
+          description: Group Id
+    GetAllTasksResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+    TaskStatus:
+      required:
+      - created_at
+      - status_updated_at
+      - status
+      type: object
+      description: Status info for a task.
+      properties:
+        created_at:
+          type: integer
+          format: int64
+          description: Task creation time
+        status_updated_at:
+          type: integer
+          format: int64
+          description: Time since the status change.
+        status:
+          $ref: '#/components/schemas/TaskStatusType'
+  parameters:
+    TaskUpdateRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/TaskUpdateRequest'
+    TaskId:
+      name: task-id
+      in: path
+      required: true
+      description: UUID of a task.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

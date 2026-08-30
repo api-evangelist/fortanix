@@ -1,0 +1,1608 @@
+openapi: 3.2.0
+info:
+  description: '**API of the Fortanix Unified Data and AI Security Platform**
+
+
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
+
+    '
+  title: Armor Discovery Aws Reports API
+  version: 0.1.0
+servers:
+- url: https://api.armor.fortanix.com
+tags:
+- description: APIs regarding obtaining the reports related to AWS.
+  name: DiscoveryAwsReports
+paths:
+  /api/v1/discovery/scans/{id}/accounts/aws:
+    get:
+      description: Search Scanned account names
+      operationId: GetScannedAwsAccounts
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - $ref: '#/components/parameters/DiscoveryScannedAwsAccountsParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryScannedAwsAccountsResponse'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Search Scanned account names
+      tags:
+      - DiscoveryAwsReports
+  /api/v1/discovery/scans/{id}/assessment_report/aws:
+    get:
+      description: Get Scan Assessment report.
+      operationId: GetAwsScanAssessmentReport
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryAwsScanAssessmentReport'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Scan Assessment report.
+      tags:
+      - DiscoveryAwsReports
+  /api/v1/discovery/scans/{id}/key_usage_report/aws:
+    get:
+      description: Get Scan Keys report.
+      operationId: GetAwsScanKeyUsageReport
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - $ref: '#/components/parameters/DiscoveryAwsKeyUsageParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryAwsKeyUsageResponse'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Scan Keys report.
+      tags:
+      - DiscoveryAwsReports
+  /api/v1/discovery/scans/{id}/summary_report/aws:
+    get:
+      description: Get Scan report.
+      operationId: GetAwsScanSummaryReport
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryAwsSummaryData'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Scan report.
+      tags:
+      - DiscoveryAwsReports
+components:
+  schemas:
+    DiscoveryAwsKmsKeyRotationStatusVariantUnknown:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - unknown
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryAwsKeysAssessment:
+      allOf:
+      - properties:
+          count_by_origin:
+            additionalProperties:
+              type: integer
+            type: object
+          overly_permissive_key_management:
+            type: integer
+          overly_permissive_key_usage:
+            type: integer
+          pending_deletion_keys:
+            type: integer
+          pending_expiration_keys:
+            type: integer
+          quantum_vulnerable_keys:
+            type: integer
+          total_keys:
+            type: integer
+        required:
+        - total_keys
+        - count_by_origin
+        - pending_deletion_keys
+        - pending_expiration_keys
+        - quantum_vulnerable_keys
+        - overly_permissive_key_usage
+        - overly_permissive_key_management
+        type: object
+    DiscoveryAwsRegion:
+      description: 'Reference: https://docs.aws.amazon.com/general/latest/gr/rande.html'
+      enum:
+      - us-east-2
+      - us-east-1
+      - us-west-1
+      - us-west-2
+      - af-south-1
+      - ap-east-1
+      - ap-south-2
+      - ap-southeast-3
+      - ap-southeast-4
+      - ap-south-1
+      - ap-northeast-3
+      - ap-northeast-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - ca-central-1
+      - ca-west-1
+      - eu-central-1
+      - eu-west-1
+      - eu-west-2
+      - eu-south-1
+      - eu-west-3
+      - eu-south-2
+      - eu-north-1
+      - eu-central-2
+      - il-central-1
+      - me-south-1
+      - me-central-1
+      - sa-east-1
+      - us-gov-east-1
+      - us-gov-west-1
+      type: string
+    DiscoveryAwsKmsKeyState:
+      enum:
+      - creating
+      - enabled
+      - disabled
+      - pending_deletion
+      - pending_import
+      - pending_replica_deletion
+      - unavailable
+      - updating
+      - other
+      type: string
+    DiscoveryAwsServerSideEncryptionRule:
+      allOf:
+      - properties:
+          bucket_key_enabled:
+            type: boolean
+          default_sse:
+            $ref: '#/components/schemas/DiscoveryAwsDefaultServerSideEncryption'
+        required:
+        - bucket_key_enabled
+        type: object
+    DiscoveryAwsRdsDbInstance:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAwsRdsDbInstanceAnalysis'
+          engine:
+            type:
+            - string
+            - 'null'
+          engine_version:
+            type:
+            - string
+            - 'null'
+          identifier:
+            type:
+            - string
+            - 'null'
+          kms_key_id:
+            type:
+            - string
+            - 'null'
+        required:
+        - analysis
+        type: object
+    DiscoveryOverlyPermissiveViolations:
+      allOf:
+      - properties:
+          management_violations:
+            items:
+              $ref: '#/components/schemas/DiscoveryKeyPolicyId'
+            type: array
+          usage_violations:
+            items:
+              $ref: '#/components/schemas/DiscoveryKeyPolicyId'
+            type: array
+        required:
+        - usage_violations
+        - management_violations
+        type: object
+    DiscoveryAwsKeyUsageDetails:
+      allOf:
+      - properties:
+          key:
+            $ref: '#/components/schemas/DiscoveryAwsObject'
+          key_id:
+            type: string
+          protected_services:
+            items:
+              $ref: '#/components/schemas/DiscoveryAwsObject'
+            type: array
+        required:
+        - key_id
+        - key
+        - protected_services
+        type: object
+    DiscoveryAwsEfsFileSystem:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAwsEfsFileSystemAnalysis'
+          file_system_id:
+            type: string
+          kms_key_id:
+            type:
+            - string
+            - 'null'
+          life_cycle_state:
+            $ref: '#/components/schemas/DiscoveryAwsEfsLifeCycleState'
+          size:
+            format: int64
+            type:
+            - integer
+            - 'null'
+        required:
+        - file_system_id
+        - life_cycle_state
+        - analysis
+        type: object
+    DiscoveryAwsEksClusterStatus:
+      enum:
+      - active
+      - creating
+      - deleting
+      - failed
+      - pending
+      - updating
+      - unknown
+      type: string
+    DiscoveryAwsObjectDetailsVariantEfs:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - efs
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsEfsFileSystem'
+    DiscoveryAwsDynamoDbInstance:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAwsDynamoDbInstanceAnalysis'
+          identifier:
+            type:
+            - string
+            - 'null'
+          kms_key_id:
+            type:
+            - string
+            - 'null'
+        required:
+        - analysis
+        type: object
+    DiscoveryAcmCertificateExtendedKeyUsageName:
+      enum:
+      - any
+      - code_signing
+      - custom
+      - email_protection
+      - ipsec_end_system
+      - ipsec_tunnel
+      - ipsec_user
+      - none
+      - ocsp_signing
+      - time_stamping
+      - tls_web_server_authentication
+      - tls_web_client_authentication
+      - unknown
+      type: string
+    DiscoveryAwsScanAssessmentReport:
+      allOf:
+      - properties:
+          certificate_assessment:
+            $ref: '#/components/schemas/DiscoveryAwsCertificateAssessment'
+          keys_assessment:
+            $ref: '#/components/schemas/DiscoveryAwsKeysAssessment'
+          risk_assessment:
+            $ref: '#/components/schemas/DiscoveryAwsRiskAssessment'
+          security_issues:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationMetrics'
+            type: object
+          violations_by_service:
+            additionalProperties:
+              additionalProperties:
+                $ref: '#/components/schemas/DiscoveryViolationDetails'
+              type: object
+            type: object
+        required:
+        - violations_by_service
+        - security_issues
+        - risk_assessment
+        type: object
+    DiscoveryAcmCertificateStatus:
+      enum:
+      - expired
+      - pending
+      - issued
+      - failed
+      - inactive
+      - revoked
+      - validation_timed_out
+      - unknown
+      type: string
+    DiscoveryScannedAwsAccountDetails:
+      allOf:
+      - properties:
+          name:
+            type:
+            - string
+            - 'null'
+        type: object
+    DiscoveryAcmCertificateExtendedKeyUsage:
+      allOf:
+      - properties:
+          name:
+            $ref: '#/components/schemas/DiscoveryAcmCertificateExtendedKeyUsageName'
+          object_identifier:
+            type:
+            - string
+            - 'null'
+        required:
+        - name
+        type: object
+    DiscoveryAwsObjectDetailsVariantKms:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - kms
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsKmsKey'
+    DiscoveryAwsRedshiftClusterAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type: boolean
+          encrypted_with_overly_permissive_usage_key:
+            type: boolean
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type: boolean
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsEncryptionStatus'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        - encrypted_with_overly_permissive_usage_key
+        - encrypted_with_overly_permissive_management_key
+        - encrypted_with_shared_key
+        type: object
+    DiscoveryKeyPolicyIdAwsGrantId:
+      allOf:
+      - properties:
+          id:
+            type: string
+        required:
+        - id
+        type: object
+    DiscoveryAwsEksCluster:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAwsEksClusterAnalysis'
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsEksEncryptionStatus'
+          kms_key_id:
+            type:
+            - string
+            - 'null'
+          name:
+            type: string
+          status:
+            $ref: '#/components/schemas/DiscoveryAwsEksClusterStatus'
+        required:
+        - name
+        - encryption_status
+        - status
+        - analysis
+        type: object
+    DiscoveryAwsKeyUsageParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            type: string
+          previous_sort_value:
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryAwsObjectDetailsVariantEbs:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - ebs
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsEbsVolume'
+    DiscoveryAwsProtectedServicesCount:
+      allOf:
+      - properties:
+          encrypted_services:
+            type: integer
+          total_services:
+            type: integer
+        required:
+        - total_services
+        - encrypted_services
+        type: object
+    DiscoveryAwsKmsExternalKeyStore:
+      allOf:
+      - properties:
+          id:
+            type: string
+          name:
+            type: string
+        required:
+        - id
+        - name
+        type: object
+    DiscoveryAwsRedshiftEncryptionStatus:
+      enum:
+      - encrypted
+      - unencrypted
+      type: string
+    DiscoveryAcmCertificateKeyAlgorithm:
+      enum:
+      - rsa2048
+      - rsa3072
+      - rsa4096
+      - unknown
+      type: string
+    DiscoveryViolationMetrics:
+      allOf:
+      - description: A structure to store the violation metrics for each violation.
+        properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryAwsKeyUsageResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryAwsKeyUsageDetails'
+            type: array
+        required:
+        - items
+        type: object
+    DiscoveryKeyPolicyIdAwsKeyPolicySid:
+      allOf:
+      - properties:
+          sid:
+            type: string
+        required:
+        - sid
+        type: object
+    DiscoveryScannedAwsAccount:
+      allOf:
+      - properties:
+          details:
+            $ref: '#/components/schemas/DiscoveryScannedAwsAccountDetails'
+          id:
+            type: string
+          regions:
+            items:
+              $ref: '#/components/schemas/DiscoveryAwsRegion'
+            type: array
+            uniqueItems: true
+        required:
+        - id
+        - regions
+        type: object
+    DiscoveryAwsObjectDetailsVariantAcm:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - acm
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAcmCertificate'
+    DiscoveryScanInventoryObjectReference:
+      allOf:
+      - properties:
+          id:
+            format: uuid
+            type: string
+          scan_id:
+            format: uuid
+            type: string
+        required:
+        - id
+        - scan_id
+        type: object
+    DiscoveryScannedAwsAccountsParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryAwsCloudDiscoveryData:
+      allOf:
+      - properties:
+          cross_account_keys:
+            type:
+            - integer
+            - 'null'
+          customer_managed_keys:
+            type:
+            - integer
+            - 'null'
+          platform_managed_keys:
+            type:
+            - integer
+            - 'null'
+          total_accounts:
+            type: integer
+          total_certificates:
+            type:
+            - integer
+            - 'null'
+          total_keys:
+            type: integer
+          total_regions:
+            type: integer
+          total_services:
+            type: integer
+        required:
+        - total_accounts
+        - total_regions
+        - total_keys
+        - total_services
+        type: object
+    DiscoveryAwsRdsDbInstanceAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsEncryptionStatus'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryKeyUsage:
+      enum:
+      - encrypt
+      - unused
+      type: string
+    DiscoveryAwsSseAlgorithm:
+      enum:
+      - aes256
+      - kms
+      - aws:kms_dsse
+      - other
+      type: string
+    DiscoveryAwsEbsVolume:
+      allOf:
+      - description: 'Internal model to describe an AWS EBS volume.
+
+
+          This is a selection of the fields most relevant for the current dashboard and could be
+
+          updated to include more fields in the future.'
+        properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAwsEbsVolumeAnalysis'
+          availability_zone:
+            description: The region this volume will be available
+            type: string
+          kms_key_id:
+            description: The arn of the key in KMS that encrypts this drive
+            type:
+            - string
+            - 'null'
+          volume_id:
+            description: The ARN of the volume
+            type:
+            - string
+            - 'null'
+          volume_size:
+            description: The storage limit (in GB) of the volume
+            format: int32
+            type:
+            - integer
+            - 'null'
+          volume_state:
+            $ref: '#/components/schemas/DiscoveryAwsEbsVolumeState'
+          volume_type:
+            $ref: '#/components/schemas/DiscoveryAwsEbsVolumeType'
+        required:
+        - availability_zone
+        - analysis
+        type: object
+    DiscoveryAwsAccountKeysCount:
+      allOf:
+      - properties:
+          account:
+            $ref: '#/components/schemas/DiscoveryAwsAccount'
+          enabled_keys:
+            type: integer
+          total_keys:
+            type: integer
+        required:
+        - account
+        - total_keys
+        - enabled_keys
+        type: object
+    DiscoveryAwsObjectDetailsVariantDynamoDb:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - dynamo_db
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsDynamoDbInstance'
+    DiscoveryKeyUsageDetails:
+      allOf:
+      - properties:
+          encrypt:
+            $ref: '#/components/schemas/DiscoveryKeyEncryptUsageDetails'
+        type: object
+    DiscoveryAwsEbsVolumeState:
+      description: 'Enumeration of the states that a volume may occupy.
+
+
+        This enum will default to the `Other` variant when a new variant is
+
+        found as the SDK from AWS marks their enum as "non-exhaustive"'
+      enum:
+      - available
+      - creating
+      - deleted
+      - deleting
+      - error
+      - in_use
+      - other
+      type: string
+    DiscoveryAwsDynamoDbInstanceAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsEncryptionStatus'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryAwsSummaryData:
+      allOf:
+      - properties:
+          certificate_count_by_algorithm:
+            additionalProperties:
+              type: integer
+            type:
+            - object
+            - 'null'
+          certificate_count_by_status:
+            additionalProperties:
+              type: integer
+            type:
+            - object
+            - 'null'
+          cloud_discovery:
+            $ref: '#/components/schemas/DiscoveryAwsCloudDiscoveryData'
+          key_source:
+            additionalProperties:
+              type: integer
+            type: object
+          key_status:
+            additionalProperties:
+              type: integer
+            type: object
+          key_types:
+            additionalProperties:
+              type: integer
+            type: object
+          protected_services:
+            $ref: '#/components/schemas/DiscoveryAwsProtectedServicesCount'
+          top_accounts:
+            items:
+              $ref: '#/components/schemas/DiscoveryAwsAccountKeysCount'
+            type: array
+        required:
+        - top_accounts
+        - key_status
+        - key_types
+        - key_source
+        type: object
+    DiscoveryAwsEksEncryptionStatus:
+      enum:
+      - encrypted
+      - unencrypted
+      type: string
+    DiscoveryKeyEncryptUsageDetails:
+      allOf:
+      - properties:
+          service_count:
+            type: integer
+        required:
+        - service_count
+        type: object
+    DiscoveryAwsKmsKeyRotationStatus:
+      discriminator:
+        mapping:
+          disabled: DiscoveryAwsKmsKeyRotationStatusVariantDisabled
+          enabled: DiscoveryAwsKmsKeyRotationStatusVariantEnabled
+          unknown: DiscoveryAwsKmsKeyRotationStatusVariantUnknown
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAwsKmsKeyRotationStatusVariantUnknown'
+      - $ref: '#/components/schemas/DiscoveryAwsKmsKeyRotationStatusVariantEnabled'
+      - $ref: '#/components/schemas/DiscoveryAwsKmsKeyRotationStatusVariantDisabled'
+    DiscoveryViolationDetails:
+      allOf:
+      - properties:
+          count:
+            type: integer
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - count
+        type: object
+    DiscoveryKeyPolicyIdVariantAwsGrantId:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - aws_grant_id
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryKeyPolicyIdAwsGrantId'
+    DiscoveryAwsAccount:
+      allOf:
+      - properties:
+          details:
+            $ref: '#/components/schemas/DiscoveryAwsAccountDetails'
+          id:
+            type: string
+        required:
+        - id
+        type: object
+    DiscoveryAwsEfsFileSystemAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsEncryptionStatus'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryAwsRedshiftCluster:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAwsRedshiftClusterAnalysis'
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsRedshiftEncryptionStatus'
+          kms_key_id:
+            type:
+            - string
+            - 'null'
+          name:
+            type: string
+          status:
+            $ref: '#/components/schemas/DiscoveryAwsRedshiftClusterStatus'
+        required:
+        - name
+        - encryption_status
+        - status
+        - analysis
+        type: object
+    DiscoveryAwsRiskAssessment:
+      allOf:
+      - properties:
+          findings:
+            additionalProperties:
+              additionalProperties:
+                additionalProperties:
+                  $ref: '#/components/schemas/DiscoveryViolationMetrics'
+                type: object
+              type: object
+            type: object
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - findings
+        - overall_risk
+        type: object
+    DiscoveryAwsObjectDetailsVariantS3:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - s3
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsS3Bucket'
+    DiscoveryAwsKmsKeyOrigin:
+      enum:
+      - kms
+      - imported
+      - cloud_hsm
+      - xks
+      - fortanix
+      - other
+      type: string
+    DiscoveryAwsCertificateAssessment:
+      allOf:
+      - properties:
+          expired_certificate_count:
+            type: integer
+          expiry_metrics_by_issuer:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryExpiryMetrics'
+            type: object
+          non_compliant_certificate_by_key_algorithm_count:
+            type: integer
+          non_compliant_certificate_by_signature_count:
+            type: integer
+          overly_permissive_certificate_usage_count:
+            type: integer
+          shared_certificate_count:
+            type: integer
+          total_certificates:
+            type: integer
+        required:
+        - total_certificates
+        - expiry_metrics_by_issuer
+        - expired_certificate_count
+        - shared_certificate_count
+        - non_compliant_certificate_by_key_algorithm_count
+        - non_compliant_certificate_by_signature_count
+        - overly_permissive_certificate_usage_count
+        type: object
+    DiscoveryAwsS3BucketAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsEncryptionStatus'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryKeyAvailability:
+      description: 'This enum will be used for denoting key availability for all services in all cloud providers.
+
+        Each variant corresponds to different states of key used to encrypt the service. If a service is
+
+        not encrypted, the key will me marked as Unknown'
+      enum:
+      - available
+      - soft_deleted
+      - purged
+      - cross_account
+      - unknown
+      type: string
+    DiscoveryAwsEbsVolumeAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsEncryptionStatus'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryAwsKmsKeyManager:
+      enum:
+      - aws
+      - customer
+      - other
+      type: string
+    DiscoveryAwsKmsKeyUsage:
+      enum:
+      - sign_verify
+      - encrypt_decrypt
+      - generate_verify_mac
+      - other
+      type: string
+    DiscoveryAwsObjectDetailsVariantRedshift:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - redshift
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsRedshiftCluster'
+    DiscoveryAwsKmsKeyRotationStatusVariantDisabled:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - disabled
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryAwsEfsLifeCycleState:
+      enum:
+      - available
+      - creating
+      - deleted
+      - deleting
+      - error
+      - updating
+      - unknown
+      type: string
+    DiscoveryAwsKmsKeyRotationStatusEnabled:
+      allOf:
+      - properties:
+          next_rotation_date:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          rotation_period:
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+        required:
+        - next_rotation_date
+        - rotation_period
+        type: object
+    DiscoveryAwsObjectDetailsVariantEks:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - eks
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsEksCluster'
+    DiscoveryAwsEksClusterAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          encryption_status:
+            $ref: '#/components/schemas/DiscoveryAwsEncryptionStatus'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryKeyPolicyIdVariantAwsKeyPolicySid:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - aws_key_policy_sid
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryKeyPolicyIdAwsKeyPolicySid'
+    DiscoveryKeyPolicyId:
+      discriminator:
+        mapping:
+          aws_grant_id: DiscoveryKeyPolicyIdVariantAwsGrantId
+          aws_key_policy_sid: DiscoveryKeyPolicyIdVariantAwsKeyPolicySid
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryKeyPolicyIdVariantAwsKeyPolicySid'
+      - $ref: '#/components/schemas/DiscoveryKeyPolicyIdVariantAwsGrantId'
+    DiscoveryRiskLevel:
+      enum:
+      - critical
+      - high
+      - medium
+      - low
+      - good
+      type: string
+    DiscoveryAcmCertificateAnalysis:
+      allOf:
+      - properties:
+          is_expired:
+            type: boolean
+          is_shared:
+            type: boolean
+          key_algo_crypto_policy_compliance:
+            $ref: '#/components/schemas/DiscoveryAwsCryptoPolicyCompliance'
+          overly_permissive_usage_violation:
+            type: boolean
+          signature_crypto_policy_compliance:
+            $ref: '#/components/schemas/DiscoveryAwsCryptoPolicyCompliance'
+        required:
+        - is_shared
+        - is_expired
+        - overly_permissive_usage_violation
+        type: object
+    DiscoveryAcmCertificateSignatureAlgorithm:
+      enum:
+      - sha256_with_rsa
+      - sha512_with_rsa
+      - unknown
+      type: string
+    DiscoveryAwsAccountDetails:
+      allOf:
+      - properties:
+          name:
+            type:
+            - string
+            - 'null'
+        type: object
+    DiscoveryAwsRedshiftClusterStatus:
+      enum:
+      - available
+      - available_prep_for_resize
+      - available_resize_cleanup
+      - canceling_resize
+      - creating
+      - deleting
+      - final_snapshot
+      - hardware_failure
+      - incompatible_hsm
+      - incompatible_network
+      - incompatible_parameters
+      - incompatible_restore
+      - modifying
+      - paused
+      - rebooting
+      - renaming
+      - resizing
+      - rotating_keys
+      - storage_full
+      - updating_hsm
+      - pausing
+      - resuming
+      - restoring
+      - unknown
+      type: string
+    DiscoveryAwsEbsVolumeType:
+      description: 'Enumeration of the various types of volumes supported.
+
+
+        This enum will default to the `Other` variant when a new variant is
+
+        found as the SDK from AWS marks their enum as "non-exhaustive"'
+      enum:
+      - gp2
+      - gp3
+      - io1
+      - io2
+      - sc1
+      - st1
+      - standard
+      - other
+      type: string
+    DiscoveryAwsS3Bucket:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAwsS3BucketAnalysis'
+          name:
+            type: string
+          server_side_encryption_rules:
+            items:
+              $ref: '#/components/schemas/DiscoveryAwsServerSideEncryptionRule'
+            type: array
+        required:
+        - name
+        - server_side_encryption_rules
+        - analysis
+        type: object
+    DiscoveryAwsEncryptionStatus:
+      enum:
+      - unencrypted
+      - encrypted_with_csp_generated_key
+      - encrypted_with_platform_managed_key
+      - encrypted_with_customer_managed_key
+      type: string
+    DiscoveryAwsKmsKey:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAwsKmsKeyAnalysis'
+          external_key_stores:
+            items:
+              $ref: '#/components/schemas/DiscoveryAwsKmsExternalKeyStore'
+            type:
+            - array
+            - 'null'
+          key_aliases:
+            items:
+              type: string
+            type: array
+          key_creation_date:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          key_id:
+            type:
+            - string
+            - 'null'
+          key_manager:
+            $ref: '#/components/schemas/DiscoveryAwsKmsKeyManager'
+          key_origin:
+            $ref: '#/components/schemas/DiscoveryAwsKmsKeyOrigin'
+          key_rotation_status:
+            $ref: '#/components/schemas/DiscoveryAwsKmsKeyRotationStatus'
+          key_spec:
+            $ref: '#/components/schemas/DiscoveryAwsKmsKeySpec'
+          key_state:
+            $ref: '#/components/schemas/DiscoveryAwsKmsKeyState'
+          key_tags:
+            additionalProperties:
+              type: string
+            type:
+            - object
+            - 'null'
+          key_usage:
+            $ref: '#/components/schemas/DiscoveryAwsKmsKeyUsage'
+          key_valid_to:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          last_rotated_at:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          source_scan_inventory_object:
+            $ref: '#/components/schemas/DiscoveryScanInventoryObjectReference'
+        required:
+        - key_aliases
+        - analysis
+        type: object
+    DiscoveryAcmCertificateRenewalEligibility:
+      enum:
+      - ineligible
+      - eligible
+      - unknown
+      type: string
+    DiscoveryAwsKmsKeyRotationStatusVariantEnabled:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - enabled
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsKmsKeyRotationStatusEnabled'
+    DiscoveryAwsObjectDetails:
+      discriminator:
+        mapping:
+          acm: DiscoveryAwsObjectDetailsVariantAcm
+          dynamo_db: DiscoveryAwsObjectDetailsVariantDynamoDb
+          ebs: DiscoveryAwsObjectDetailsVariantEbs
+          efs: DiscoveryAwsObjectDetailsVariantEfs
+          eks: DiscoveryAwsObjectDetailsVariantEks
+          kms: DiscoveryAwsObjectDetailsVariantKms
+          rds: DiscoveryAwsObjectDetailsVariantRds
+          redshift: DiscoveryAwsObjectDetailsVariantRedshift
+          s3: DiscoveryAwsObjectDetailsVariantS3
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantAcm'
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantEbs'
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantKms'
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantS3'
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantRds'
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantDynamoDb'
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantEks'
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantEfs'
+      - $ref: '#/components/schemas/DiscoveryAwsObjectDetailsVariantRedshift'
+    DiscoveryAwsKmsKeyAnalysis:
+      allOf:
+      - properties:
+          crypto_policy_compliance:
+            $ref: '#/components/schemas/DiscoveryAwsCryptoPolicyCompliance'
+          is_cross_account_key:
+            type:
+            - boolean
+            - 'null'
+          is_shared:
+            type: boolean
+          overly_permissive_violations:
+            $ref: '#/components/schemas/DiscoveryOverlyPermissiveViolations'
+          usage_details:
+            $ref: '#/components/schemas/DiscoveryKeyUsageDetails'
+          usages:
+            items:
+              $ref: '#/components/schemas/DiscoveryKeyUsage'
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+        required:
+        - is_shared
+        type: object
+    DiscoveryAcmCertificate:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAcmCertificateAnalysis'
+          certificate_arn:
+            type: string
+          created_at:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          domain_name:
+            type: string
+          extended_key_usages:
+            items:
+              $ref: '#/components/schemas/DiscoveryAcmCertificateExtendedKeyUsage'
+            type:
+            - array
+            - 'null'
+          issuer:
+            type: string
+          key_algorithm:
+            $ref: '#/components/schemas/DiscoveryAcmCertificateKeyAlgorithm'
+          not_valid_after:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          not_valid_before:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          renewal_eligibility:
+            $ref: '#/components/schemas/DiscoveryAcmCertificateRenewalEligibility'
+          serial:
+            type: string
+          signature_algorithm:
+            $ref: '#/components/schemas/DiscoveryAcmCertificateSignatureAlgorithm'
+          status:
+            $ref: '#/components/schemas/DiscoveryAcmCertificateStatus'
+          subject_alternative_names:
+            items:
+              type: string
+            type:
+            - array
+            - 'null'
+          used_by_services:
+            items:
+              type: string
+            type: array
+        required:
+        - certificate_arn
+        - domain_name
+        - status
+        - renewal_eligibility
+        - issuer
+        - key_algorithm
+        - signature_algorithm
+        - serial
+        - used_by_services
+        - analysis
+        type: object
+    DiscoveryAwsDefaultServerSideEncryption:
+      allOf:
+      - properties:
+          kms_master_key:
+            type:
+            - string
+            - 'null'
+          sse_algorithm:
+            $ref: '#/components/schemas/DiscoveryAwsSseAlgorithm'
+        type: object
+    DiscoveryAwsKmsKeySpec:
+      enum:
+      - rsa2048
+      - rsa3072
+      - rsa4096
+      - ecc_nist_p256
+      - ecc_nist_p384
+      - ecc_nist_p521
+      - ecc_secg_p256k1
+      - symmetric_default
+      - hmac224
+      - hmac256
+      - hmac384
+      - hmac512
+      - sm2
+      - other
+      type: string
+    DiscoveryAwsObject:
+      allOf:
+      - properties:
+          account:
+            $ref: '#/components/schemas/DiscoveryAwsAccount'
+          arn:
+            type: string
+          details:
+            $ref: '#/components/schemas/DiscoveryAwsObjectDetails'
+          region:
+            $ref: '#/components/schemas/DiscoveryAwsRegion'
+        required:
+        - arn
+        - region
+        - account
+        - details
+        type: object
+    DiscoveryAwsCryptoPolicyCompliance:
+      allOf:
+      - properties:
+          is_compliant:
+            type: boolean
+          violation_reason:
+            type:
+            - string
+            - 'null'
+        required:
+        - is_compliant
+        type: object
+    DiscoveryExpiryMetrics:
+      allOf:
+      - properties:
+          expired_count:
+            type: integer
+          expiring_in_30_days_count:
+            type: integer
+        required:
+        - expired_count
+        - expiring_in_30_days_count
+        type: object
+    DiscoveryAwsObjectDetailsVariantRds:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - rds
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsRdsDbInstance'
+    DiscoveryScannedAwsAccountsResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryScannedAwsAccount'
+            type: array
+        required:
+        - items
+        type: object
+  parameters:
+    DiscoveryScannedAwsAccountsParams:
+      explode: true
+      in: query
+      name: DiscoveryScannedAwsAccountsParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryScannedAwsAccountsParams'
+    DiscoveryAwsKeyUsageParams:
+      explode: true
+      in: query
+      name: DiscoveryAwsKeyUsageParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryAwsKeyUsageParams'
+  securitySchemes:
+    Oauth2ClientCredentials:
+      description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+      type: oauth2

@@ -1,0 +1,4343 @@
+openapi: 3.2.0
+info:
+  title: Fortanix DSM REST Keys API
+  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0-20260710
+servers:
+- url: '{dsmEndpoint}'
+  description: DSM Endpoint
+  variables:
+    dsmEndpoint:
+      default: https://amer.smartkey.io
+      description: Type your DSM server URL here (include https://)
+tags:
+- name: Keys
+paths:
+  /crypto/v1/keys/{key_id}/activate:
+    post:
+      operationId: ActivateSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Transition a security object to Active state.
+      description: Transition a security object to Active state.
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /crypto/v1/keys/copy:
+    post:
+      operationId: CopySobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Make a copy of a security object.
+      description: 'A new key will be created in the target group and will have the
+
+        same key material as the original key. Links will be maintained
+
+        between all copied keys and the source key.
+
+        If the key is being copied to an externally linked group, it needs
+
+        to be exportable.
+
+
+        This can also be used to rotate an external key by copying the
+
+        key material from a native DSM key. This key material will then
+
+        finally be imported into the external KMS.
+
+        For AWS KMS keys, after the rotation, the new key will have the
+
+        original aliases and the old key''s aliases will have
+
+        (rotated at <timestamp>) appended in front of it.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopySobjectRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+  /crypto/v1/keys:
+    post:
+      operationId: CreateSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Generate a new security object.
+      description: 'Generate a new security object (such as an RSA key pair or an AES key)
+
+        of the requested size, elliptic curve, etc.
+
+
+        By default, all key operations except for EXPORT that are implemented
+
+        for that type of key will be enabled. These may be overridden by
+
+        requesting specific operations in the key creation request.
+
+
+        Objects of type Secret/Opaque may not be generated with this API.
+
+        They must be imported via the import API.
+
+
+        For AWS/Azure/GCP KMS keys, this generates the key material in the external KMS and a
+
+        corresponding virtual key is created in DSM. EC and RSA keys are supported for Azure
+
+        while only 256-bit AES keys are supported for AWS and GCP.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SobjectRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+    put:
+      operationId: ImportSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Import a security object.
+      description: 'By default, all key operations that are implemented for that type of
+
+        key will be enabled. These may be overridden by requesting specific
+
+        operations in the key import request.
+
+
+        For symmetric and asymmetric keys, value is base64-encoding of the
+
+        key material in DER format.
+
+
+        For AWS/Azure/GCP KMS keys, this imports the key material provided into the
+
+        external KMS and a corresponding virtual key is created in DSM.
+
+        EC and RSA keys are supported for Azure while only 256-bit AES
+
+        keys are supported for AWS and GCP.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SobjectRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+    get:
+      operationId: ListSobjects
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Get all security objects accessible to the requester.
+      description: Get all security objects accessible to the requester.
+      parameters:
+      - $ref: '#/components/parameters/ListSobjectsParams'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSobjectsResponse'
+  /crypto/v1/keys/{key_id}:
+    delete:
+      operationId: DeleteSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Delete the specified security object.
+      description: Delete the specified security object.
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Nothing is returned on success
+    patch:
+      operationId: UpdateSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: 'Update the properties of a security object like
+
+        name, description, etc.'
+      description: 'Update the properties of a security object like
+
+        name, description, etc.'
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SobjectRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+  /crypto/v1/keys/{key_id}/destroy:
+    post:
+      operationId: DestroySobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: 'Transition a security object to Destroyed state. Objects in the
+
+        `Destroyed` state cannot be used in any cryptographic operation.
+
+        Their metadata however, remains accessible.'
+      description: 'Transition a security object to Destroyed state. Objects in the
+
+        `Destroyed` state cannot be used in any cryptographic operation.
+
+        Their metadata however, remains accessible.'
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /crypto/v1/keys/digest:
+    post:
+      operationId: DigestSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Retrieve the digest (hash) of the value of an exportable security object.
+      description: Retrieve the digest (hash) of the value of an exportable security object.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectDigestRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectDigestResponse'
+  /crypto/v1/keys/export:
+    post:
+      operationId: ExportSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Get the details and value of a particular exportable security object.
+      description: Get the details and value of a particular exportable security object.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SobjectDescriptor'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+  /crypto/v1/keys/components/export:
+    post:
+      operationId: ExportSobjectComponents
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Exports the security object as components.
+      description: 'Exports the security object as components. This API can only be called
+
+        through an approval request and won''t work if called directly. This
+
+        requires a key custodian policy and quorum approval policy to be set at
+
+        the group level. A new approval request needs to be created (see
+
+        `POST /sys/v1/approval_requests`), then after getting the required approvals,
+
+        the key custodians can fetch the result of this approval request
+
+        (See `POST /sys/v1/approval_requests/:req_id/result`).
+
+        Each key custodian will be able to get only their component.
+
+
+        Only AES, DES, DES3 & HMAC objects are exportable by components.
+
+
+        This is described in detail in the following article:
+
+        https://support.fortanix.com/hc/en-us/articles/360043559332-User-s-Guide-Key-Components'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportSobjectComponentsRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportComponentsResponse'
+  /crypto/v1/keys/kcv:
+    post:
+      operationId: GetKcv
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: 'Computes the KCV of the input and returns. This is
+
+        only valid for AES, DES & DES3 keys.'
+      description: 'Computes the KCV of the input and returns. This is
+
+        only valid for AES, DES & DES3 keys.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyCheckValueRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyCheckValueResponse'
+  /crypto/v1/keys/key_attestation:
+    post:
+      operationId: GetKeyAttestation
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Retrieve a key attestation certificate for a security object.
+      description: 'If the cluster is capable of key attestation, and requested security
+
+        object supports key attestation (currently only RSA or EC keys that have
+
+        their private key component), a key attestation is returned.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyAttestationRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyAttestationResponse'
+  /crypto/v1/pubkey/{acct_id}/{name}:
+    get:
+      operationId: GetPubkey
+      tags:
+      - Keys
+      summary: Get public part of an asymmetric key.
+      description: 'Returns the public part of an asymmetric key. This needs
+
+        account id and key name as input. No auth is required for this.
+
+        This works with RSA, EC and Certificate objects.'
+      parameters:
+      - name: acct_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 4096
+          pattern: ^[^\n]*[^\s\n][^\n]*$
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+                  format: byte
+  /crypto/v1/keys/info:
+    post:
+      operationId: GetSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Lookup a security object.
+      description: Lookup a security object.
+      parameters:
+      - $ref: '#/components/parameters/GetSobjectParams'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SobjectDescriptor'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+  /crypto/v1/keys/components/import:
+    post:
+      operationId: ImportSobjectByComponents
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Import a security object by components.
+      description: 'Import a security object by components. This API can only be called
+
+        through an approval request and won''t work if called directly. A key
+
+        custodian and quorum policy needs to be set at the group level. After
+
+        an import by components request has been made, key custodians will
+
+        need to add their respective component via
+
+        `POST /sys/v1/approval_requests/:req_id/approve`.
+
+
+        Only AES, DES, DES3 & HMAC objects are importable by components.
+
+
+        This is described in detail in the following article:
+
+        https://support.fortanix.com/hc/en-us/articles/360043559332-User-s-Guide-Key-Components'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportSobjectComponentsRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+  /crypto/v1/keys/persist:
+    post:
+      operationId: PersistTransientKey
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Persist a transient key.
+      description: 'This API copies a transient key as a persisted security
+
+        object. If the transient key''s origin is "FortanixHSM",
+
+        the origin of the persisted key will be "Transient". If the
+
+        transient key''s origin is "External", the origin of the persisted
+
+        key will be "External".'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersistTransientKeyRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+  /crypto/v1/keys/{key_id}/private:
+    delete:
+      operationId: RemovePrivate
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Destroy private half of an asymmetric key.
+      description: 'Removes the private portion of an asymmetric key. After this
+
+        operation is performed, operations that require the private key, such
+
+        as encryption and generating signatures, can no longer be performed.'
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /crypto/v1/keys/replace:
+    post:
+      operationId: ReplaceSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Rotate a security object to an existing security object.
+      description: 'For two keys R and S, where R is the key to be replaced,
+
+        and S is the intended replacement, this operation will
+
+        - Rename R to the name provided in the request
+
+        - Establish an replaced-replacement between R and S
+
+        - Assign R''s old name to S
+
+        The metadata of S should be mostly same as that of R, and
+
+        it is not possible to update any fields of S while
+
+        performing this operation. If S does not have any custom
+
+        metadata or a rotation policy, any corresponding values
+
+        from R will be copied over to S.
+
+        For now, this operation is not supported if R, S, or both
+
+        are externally-backed keys.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SobjectReplaceRequest'
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /crypto/v1/keys/{key_id}/revert:
+    put:
+      operationId: RevertPrevKeyOp
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Reverts a security object to a previous state.
+      description: 'When a Key Undo Policy is in place, security objects maintain a list
+
+        of history states. Using this API endpoint, clients may revert the
+
+        security object to a previous (non-expired) history state.'
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevertRequest'
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /crypto/v1/keys/{key_id}/revoke:
+    post:
+      operationId: RevokeSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Transition a security object to Deactivated or Compromised state.
+      description: Transition a security object to Deactivated or Compromised state.
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevocationReason'
+      responses:
+        '204':
+          description: Nothing is returned on success
+  /crypto/v1/keys/rekey:
+    post:
+      operationId: RotateSobject
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: Rotate a security object.
+      description: 'Renames current key to "<current_name> (rotated at <timestamp>)"
+
+        and generates a new key with the original name of the source key.
+
+        The metadata of the newly generated key is mostly same as original
+
+        key and it is possible to update the following fields while performing
+
+        rotation: `activation_date`, `deactivation_date`, `state`, `rsa`,
+
+        `aes`, `aria`, `des`, `des3`, `seed`, `dsa`, `kcdsa`, `eckcdsa`,
+
+        `pub_exponent`, `elliptic_curve`, `key_size`, `key_ops`, `description`,
+
+        `enabled`, `custom_metadata`, `publish_public_key`, `rotation_policy`.
+
+
+        If the key is an external key, additional changes
+
+        might happen (like changes to aws-alias custom_metadata, etc).
+
+        (yet to be documented)
+
+
+        For AWS KMS keys, a new key is generated in the external KMS and
+
+        after the rotation, the new key will have the original aliases and the old
+
+        key''s aliases will have (rotated at <timestamp>) appended in front of it.
+
+        For Azure KV and GCP KMS keys, this creates a new version of the target key.
+
+
+        For Tokenization Keys `fpe` subobject should be null or
+
+        excluded to allow existing fpe policy to be copied to the new key.
+
+
+        **Note:** Key rotation requires that Encryption calls be made using Key name and
+
+        the corresponding returned Key UUID be stored with the encrypted value.
+
+
+        If the encrypting key UUID is lost, then the encrypted data can no longer
+
+        reliably be decrypted after the key is rotated.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SobjectRekeyRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sobject'
+  /crypto/v1/keys/kcv/verify:
+    post:
+      operationId: VerifyKcv
+      tags:
+      - Keys
+      security:
+      - bearerToken: []
+      - apiKeyAuth: []
+      summary: 'Computes the KCV of the input blob and checks if
+
+        it matches the input KCV.'
+      description: 'Computes the KCV of the input blob and checks if
+
+        it matches the input KCV.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyKcvRequest'
+      responses:
+        2XX:
+          description: Success result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyKcvResponse'
+components:
+  schemas:
+    SobjectComponent:
+      allOf:
+      - type: object
+        description: Component of security object, held by a custodian.
+        properties:
+          component:
+            type: string
+            format: byte
+            description: Key component
+          component_kcv:
+            type: string
+            description: Key component KCV
+          custodian:
+            $ref: '#/components/schemas/Principal'
+        required:
+        - component
+        - custodian
+    FpeDate:
+      description: 'A structure for specifying a token part representing a date that occurs after a specified date
+
+        and/or occurs before a specified date. Depending on the subparts that make up the date, one of
+
+        the three options is used.'
+      oneOf:
+      - title: FpeDateVariantDayMonthYear
+        type: object
+        properties:
+          dmy_date:
+            $ref: '#/components/schemas/FpeDateDayMonthYear'
+        required:
+        - dmy_date
+      - title: FpeDateVariantMonthDay
+        type: object
+        properties:
+          month_day_date:
+            $ref: '#/components/schemas/FpeDateMonthDay'
+        required:
+        - month_day_date
+      - title: FpeDateVariantMonthYear
+        type: object
+        properties:
+          month_year_date:
+            $ref: '#/components/schemas/FpeDateMonthYear'
+        required:
+        - month_year_date
+    EffectiveKeyOperations:
+      description: "Operations allowed to be performed on a given key by a given User or an app\n\n\n\n          SIGN:\n            If this is set, the key can be used for signing.\n\n\n          VERIFY:\n            If this is set, the key can used for verifying a signature.\n\n\n          ENCRYPT:\n            If this is set, the key can be used for encryption.\n\n\n          DECRYPT:\n            If this is set, the key can be used for decryption.\n\n\n          WRAPKEY:\n            If this is set, the key can be used wrapping other keys.\n            The key being wrapped must have the EXPORT operation enabled.\n\n\n          UNWRAPKEY:\n            If this is set, the key can be used to unwrap a wrapped key.\n\n\n          DERIVEKEY:\n            If this is set, the key can be used to derive another key.\n\n\n          TRANSFORM:\n            If this is set, the key can be transformed.\n\n\n          MACGENERATE:\n            If this is set, the key can be used to compute a cryptographic\n            Message Authentication Code (MAC) on a message.\n\n\n          MACVERIFY:\n            If they is set, the key can be used to verify a MAC.\n\n\n          EXPORT:\n            If this is set, the value of the key can be retrieved\n            with an authenticated request. This shouldn't be set unless\n            required. It is more secure to keep the key's value inside DSM only.\n\n\n          APPMANAGEABLE:\n            Without this operation, management operations like delete, destroy,\n            rotate, activate, restore, revoke, revert, update, remove_private, etc.\n            cannot be performed by a crypto App.\n            A user with access or admin app can still perform these operations.\n            This option is only relevant for crypto apps.\n\n\n          HIGHVOLUME:\n            If this is set, audit logs will not be recorded for the key.\n            High volume here tries to signify a key that is being used a lot\n            and will produce lots of logs. Setting this operation disables\n            audit logs for the key.\n\n\n          AGREEKEY:\n            If this is set, the key can be used for key agreement.\n            Both the private and public key should have this option enabled\n            to perform an agree operation.\n\n\n          ENCAPSULATE:\n            If this is set, the key can be used for key encapsulation. The\n            result is a new symmetric key and a ciphertext.\n\n\n          DECAPSULATE:\n            If this is set, the key can be used for key decapsulation. If\n            decapsulation succeeds, the result is a new symmetric key.\n\n\n          MASKDECRYPT:\n            If this is set, the key can be used for masked decryption only.\n\n"
+      type: string
+      enum:
+      - SIGN
+      - VERIFY
+      - ENCRYPT
+      - DECRYPT
+      - WRAPKEY
+      - UNWRAPKEY
+      - DERIVEKEY
+      - TRANSFORM
+      - MACGENERATE
+      - MACVERIFY
+      - EXPORT
+      - APPMANAGEABLE
+      - HIGHVOLUME
+      - AGREEKEY
+      - ENCAPSULATE
+      - DECAPSULATE
+      - MASKDECRYPT
+    ExternalKmsInfoVariantOci:
+      allOf:
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - Oci
+        required:
+        - type
+      - $ref: '#/components/schemas/OciVaultInfo'
+    VerifyKcvRequest:
+      allOf:
+      - type: object
+        description: Verify KCV of a key
+        properties:
+          kcv:
+            type: string
+            description: 'Key Checksum Value. Could be one of following two variants:
+
+              - Encrypt KCV: 24-bit checksum as a 6-character case-insensitive hex string (Default)
+
+              - Cmac KCV: 40-bit checksum as a 10-character case-insensitive hex string
+
+              Note: Cmac KCV is only available for AES or 3-key DES3 keys'
+          value:
+            type: string
+            format: byte
+            description: Key material
+          obj_type:
+            $ref: '#/components/schemas/ObjectType'
+          kcv_method:
+            $ref: '#/components/schemas/KcvMethod'
+        required:
+        - kcv
+        - value
+        - obj_type
+    Mgf:
+      description: Specifies the Mask Generating Function (MGF) to use.
+      oneOf:
+      - title: MgfVariantMgf1
+        type: object
+        properties:
+          mgf1:
+            $ref: '#/components/schemas/MgfMgf1'
+        required:
+        - mgf1
+    KeyCreationMethodVariantUnwrap:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - Unwrap
+        required:
+        - method
+      - type: object
+        properties: {}
+    RsaEncryptionPaddingOaep:
+      allOf:
+      - type: object
+        description: Optimal Asymmetric Encryption Padding (PKCS#1 v2.1).
+        properties:
+          mgf:
+            $ref: '#/components/schemas/Mgf'
+        required:
+        - mgf
+    FpeDataPart:
+      description: Structure for specifying (part of) a complex tokenization data type.
+      oneOf:
+      - $ref: '#/components/schemas/FpeEncryptedPart'
+      - $ref: '#/components/schemas/FpeDataPartLiteral'
+      - $ref: '#/components/schemas/FpeCompoundPart'
+    PublishPublicKeyConfigEnabled:
+      allOf:
+      - type: object
+        properties:
+          list_previous_version:
+            type: boolean
+            description: Additionally list the previous version of the key if not compromised.
+        required:
+        - list_previous_version
+    GoogleAccessReason:
+      description: An access reason provided by Google when making EKMS API calls.
+      type: string
+      enum:
+      - REASON_UNSPECIFIED
+      - CUSTOMER_INITIATED_SUPPORT
+      - GOOGLE_INITIATED_SERVICE
+      - THIRD_PARTY_DATA_REQUEST
+      - GOOGLE_INITIATED_REVIEW
+      - CUSTOMER_INITIATED_ACCESS
+      - GOOGLE_INITIATED_SYSTEM_OPERATION
+      - REASON_NOT_EXPECTED
+      - MODIFIED_CUSTOMER_INITIATED_ACCESS
+      - MODIFIED_GOOGLE_INITIATED_SYSTEM_OPERATION
+      - GOOGLE_RESPONSE_TO_PRODUCTION_ALERT
+      - CUSTOMER_AUTHORIZED_WORKFLOW_SERVICING
+    Slip10Options:
+      allOf:
+      - type: object
+        properties:
+          derivation_path:
+            type: array
+            items:
+              type: integer
+              minimum: 0
+              maximum: 4294967295
+            description: 'The Slip10 path, starting from master. Master key is [].
+
+
+              Ex: m/42/42''/0 -> [42, 2**31 + 42, 0]'
+        required:
+        - derivation_path
+    CipherMode:
+      description: Cipher mode used for symmetric key algorithms.
+      type: string
+      enum:
+      - ECB
+      - CBC
+      - CBCNOPAD
+      - CFB
+      - OFB
+      - CTR
+      - GCM
+      - CCM
+      - KW
+      - KWP
+      - FF1
+    GoogleAccessReasonPolicy:
+      allOf:
+      - type: object
+        description: 'Policy specifying acceptable access reasons
+
+          by Google Service Account at App or Sobject level.'
+        properties:
+          allow:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/GoogleAccessReason'
+            description: Set of allowed Google Access reasons.
+          allow_missing_reason:
+            type: boolean
+            description: Accept incoming requests which do not specify any access reasons.
+        required:
+        - allow
+        - allow_missing_reason
+    FpeDayMonthDate:
+      allOf:
+      - type: object
+        description: 'A structure for specifying a particular date consisting of a day and a month, for use in an
+
+          FpeDate structure.'
+        properties:
+          month:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: The month, which should be an integer from 1 to 12.
+          day:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: 'The day, which should be an integer from 1 to either 29, 30, or 31, depending on the month
+
+              and year. Here, February is treated as having 29 days.'
+        required:
+        - month
+        - day
+    FpeInputProcessing:
+      description: Options to apply some pre- and post-processing to the input.
+      oneOf:
+      - title: FpeInputProcessingVariantStripUnknown
+        type: string
+        enum:
+        - strip_unknown
+      - title: FpeInputProcessingVariantPassthroughUnknown
+        type: string
+        enum:
+        - passthrough_unknown
+      - title: FpeInputProcessingVariantPassthroughSpecific
+        type: object
+        properties:
+          passthrough_specific:
+            $ref: '#/components/schemas/FpeInputProcessingPassthroughSpecific'
+        required:
+        - passthrough_specific
+    VerifyKcvResponse:
+      allOf:
+      - type: object
+        description: Key Checksum Value verification status.
+        properties:
+          verified:
+            type: boolean
+            description: Verification status
+        required:
+        - verified
+    PublishPublicKeyConfig:
+      description: If enabled, the public key will be available publicly (without authentication) through the GetPublicKey API.
+      oneOf:
+      - $ref: '#/components/schemas/PublishPublicKeyConfigVariantEnabled'
+      - $ref: '#/components/schemas/PublishPublicKeyConfigVariantDisabled'
+      discriminator:
+        propertyName: state
+        mapping:
+          enabled: PublishPublicKeyConfigVariantEnabled
+          disabled: PublishPublicKeyConfigVariantDisabled
+    AriaOptions:
+      allOf:
+      - type: object
+        properties:
+          key_sizes:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+              minimum: 0
+              maximum: 4294967295
+          tag_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 255
+          cipher_mode:
+            $ref: '#/components/schemas/CipherMode'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+          iv_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 255
+    ListSobjectsResponse:
+      oneOf:
+      - title: ListSobjectsResponseWithMetadata
+        type: object
+        description: List security objects response
+        properties:
+          metadata:
+            $ref: '#/components/schemas/Metadata'
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/Sobject'
+        required:
+        - metadata
+        - items
+      - type: array
+        items:
+          $ref: '#/components/schemas/Sobject'
+    OciVaultInfo:
+      allOf:
+      - type: object
+        description: 'Any key specific metadata that isn''t already described
+
+          by an existing security object field.'
+        properties:
+          protection_mode:
+            type: string
+            description: 'Describes the OCI vault protection mode, usually
+
+              meaning HSM or SOFTWARE.'
+          deletion_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: The scheduled deletion_date of the OCI key version
+          display_name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: 'The name in the OCI Vault (and may differ from
+
+              what the DSM virtual key shows).'
+        required:
+        - protection_mode
+        - display_name
+    KeyCreationMethodVariantImport:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - Import
+        required:
+        - method
+      - type: object
+        properties: {}
+    FpeInputProcessingPassthroughSpecific:
+      allOf:
+      - type: object
+        properties:
+          passthrough:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
+              minLength: 1
+              maxLength: 1
+          other:
+            $ref: '#/components/schemas/FpeInputDefaultProcessing'
+        required:
+        - passthrough
+        - other
+    KeyCheckValueRequest:
+      allOf:
+      - type: object
+        description: Request for getting the KCV of a security object
+        properties:
+          kcv_method:
+            $ref: '#/components/schemas/KcvMethod'
+      - $ref: '#/components/schemas/SobjectDescriptor'
+    ApprovalAuthConfig:
+      allOf:
+      - type: object
+        description: Authentication requirements for approval request reviewers.
+        properties:
+          require_password:
+            type:
+            - boolean
+            - 'null'
+          require_2fa:
+            type:
+            - boolean
+            - 'null'
+    PublishPublicKeyConfigVariantEnabled:
+      allOf:
+      - type: object
+        properties:
+          state:
+            type: string
+            enum:
+            - enabled
+        required:
+        - state
+      - $ref: '#/components/schemas/PublishPublicKeyConfigEnabled'
+    RotationPolicy:
+      allOf:
+      - type: object
+        properties:
+          effective_at:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+          deactivate_rotated_key:
+            type:
+            - boolean
+            - 'null'
+          rotate_copied_keys:
+            $ref: '#/components/schemas/RotateCopiedKeys'
+      - $ref: '#/components/schemas/RotationInterval'
+    FpeConstraints:
+      allOf:
+      - type: object
+        description: Constraints on a portion of a complex tokenization data type.
+        properties:
+          luhn_check:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the token part contains a checksum that satisfies the Luhn formula. It is an
+
+              error to apply this constraint to non-numeric parts, or to have an encrypted part be
+
+              under more than one Luhn check constraint. Also, if an encrypted part has a Luhn check
+
+              constraint applied to it and may contain at least one digit that is not preserved, it
+
+              must not specify any other constraints.'
+          num_gt:
+            type:
+            - integer
+            - 'null'
+            description: 'Number that the token part should be greater than.
+
+
+              This constraint can only be specified on (non-compound) numeric encrypted parts
+
+              guaranteed to preserve either everything or nothing at all. (For example, if an
+
+              encrypted part consists of 5 to 10 digits, a `preserve` list that covers only the
+
+              first five digits is not guaranteed to preserve everything, because if the input
+
+              happens to be six or more digits long, there will be at least one digit that
+
+              remains unpreserved.)'
+          num_lt:
+            type:
+            - integer
+            - 'null'
+            description: 'Number that the token part should be smaller than.
+
+
+              This constraint can only be specified on (non-compound) numeric encrypted parts
+
+              guaranteed to preserve either everything or nothing at all. (For example, if an
+
+              encrypted part consists of 5 to 10 digits, a `preserve` list that covers only the
+
+              first five digits is not guaranteed to preserve everything, because if the input
+
+              happens to be six or more digits long, there will be at least one digit that
+
+              remains unpreserved.)'
+          num_ne:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+            description: 'Numbers that the token part should not be equal to. It is an error to apply this
+
+              constraint to non-numeric parts.'
+          date:
+            $ref: '#/components/schemas/FpeDateConstraint'
+          applies_to:
+            $ref: '#/components/schemas/FpeConstraintsApplicability'
+    AwsKeyRotationStatusVariantKeyRotationEnabled:
+      allOf:
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - KeyRotationEnabled
+        required:
+        - type
+      - $ref: '#/components/schemas/AwsKeyRotationStatusKeyRotationEnabled'
+    AwsKmsInfo:
+      allOf:
+      - type: object
+        description: Information and properties of an AWS KMS key.
+        properties:
+          multi_region:
+            $ref: '#/components/schemas/AwsMultiRegionInfo'
+          aws_key_rotation_status:
+            $ref: '#/components/schemas/AwsKeyRotationStatus'
+          origin:
+            $ref: '#/components/schemas/AwsKeyOrigin'
+    RevertRequest:
+      allOf:
+      - type: object
+        properties:
+          ids:
+            type: array
+            items:
+              type: string
+              format: uuid
+        required:
+        - ids
+    FpeCompoundPartOr:
+      allOf:
+      - type: object
+        description: 'Represents an OR of multiple structures.
+
+
+          Implementation note: an OR is _not_ a union of `FpeDataPart`s. Rather, when parsing
+
+          the input, the backend will simply choose the first subpart that matches the current
+
+          portion of the input, and tokenize/detokenize accordingly. If that choice results in
+
+          an invalid parse of the rest of the input, the backend ***will not backtrack*** and
+
+          will simply return with an error.'
+        properties:
+          or:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeDataPart'
+            description: The actual subparts that make up this compound part.
+          constraints:
+            $ref: '#/components/schemas/FpeConstraints'
+          preserve:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the entire OR should be preserved as-is (i.e., not tokenized). If this is
+
+              set, any descendant subparts cannot contain any preserve-related fields set.'
+          mask:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the entire OR should be masked when doing masked decryption. If this is set,
+
+              any descendant subparts cannot contain any mask-related fields set.'
+          min_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The minimum allowed length for this part (in chars).
+          max_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The maximum allowed length for this part (in chars).
+        required:
+        - or
+    FpeDayMonthYearDate:
+      allOf:
+      - type: object
+        description: 'A structure for specifying a particular date consisting of a day, month, and year, for use in
+
+          an FpeDate structure.'
+        properties:
+          year:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
+          month:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: The month, which should be an integer from 1 to 12.
+          day:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: 'The day, which should be an integer from 1 to either 28, 29, 30, or 31, depending on the
+
+              month and year.'
+        required:
+        - year
+        - month
+        - day
+    AwsKeyRotationStatus:
+      oneOf:
+      - $ref: '#/components/schemas/AwsKeyRotationStatusVariantKeyRotationDisabled'
+      - $ref: '#/components/schemas/AwsKeyRotationStatusVariantKeyRotationEnabled'
+      discriminator:
+        propertyName: type
+        mapping:
+          KeyRotationDisabled: AwsKeyRotationStatusVariantKeyRotationDisabled
+          KeyRotationEnabled: AwsKeyRotationStatusVariantKeyRotationEnabled
+    FpeOptions:
+      description: 'FPE-specific options (for specifying the format of the
+
+        data to be encrypted)'
+      oneOf:
+      - $ref: '#/components/schemas/FpeOptionsBasic'
+      - $ref: '#/components/schemas/FpeOptionsAdvanced'
+      - $ref: '#/components/schemas/FpeOptionsV2'
+    MlDsaParamSet:
+      description: ML-DSA parameter sets
+      type: string
+      enum:
+      - MlDsa44
+      - MlDsa65
+      - MlDsa87
+    SobjectReplaceRequest:
+      allOf:
+      - type: object
+        description: Request to rotate a security object to an existing security object.
+        properties:
+          replaced:
+            $ref: '#/components/schemas/SobjectDescriptorPersisted'
+          replaced_new_name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: New name for the replaced security object.
+          replacement:
+            $ref: '#/components/schemas/SobjectDescriptorPersisted'
+        required:
+        - replaced
+        - replaced_new_name
+        - replacement
+    ExternalKmsInfoVariantAWS:
+      allOf:
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - AWS
+        required:
+        - type
+      - $ref: '#/components/schemas/AwsKmsInfo'
+    FpeSection:
+      allOf:
+      - type: object
+        description: A concatenation of groups, optionally including a checksum.
+        properties:
+          groups:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeGroup'
+          checksum:
+            $ref: '#/components/schemas/FpeChecksum'
+        required:
+        - groups
+    ExportSobjectComponentsRequest:
+      allOf:
+      - type: object
+        description: Request to Export a security object by components
+        properties:
+          key:
+            $ref: '#/components/schemas/SobjectDescriptor'
+          wrap_key_params:
+            $ref: '#/components/schemas/WrapKeyParams'
+          custodians:
+            type: array
+            items:
+              $ref: '#/components/schemas/Principal'
+            description: Key holder identifier
+          method:
+            $ref: '#/components/schemas/SplittingMethod'
+          description:
+            type:
+            - string
+            - 'null'
+            description: Description of the exported security object
+        required:
+        - key
+        - custodians
+    RsaEncryptionPadding:
+      description: 'Type of padding to use for RSA encryption. The use of PKCS#1 v1.5 padding is strongly
+
+        discouraged, because of its susceptibility to Bleichenbacher''s attack. The padding specified
+
+        must adhere to the key''s encryption policy. If not specified, the default based on the key''s
+
+        policy will be used.'
+      oneOf:
+      - title: RsaEncryptionPaddingVariantOaep
+        type: object
+        properties:
+          OAEP:
+            $ref: '#/components/schemas/RsaEncryptionPaddingOaep'
+        required:
+        - OAEP
+      - title: RsaEncryptionPaddingVariantPkcs1V15
+        type: object
+        properties:
+          PKCS1_V15:
+            type: object
+            properties: {}
+        required:
+        - PKCS1_V15
+      - title: RsaEncryptionPaddingVariantRawDecrypt
+        type: object
+        properties:
+          RAW_DECRYPT:
+            type: object
+            properties: {}
+        required:
+        - RAW_DECRYPT
+    KcvMethod:
+      description: Methods for calculating a Key Checksum Value.
+      type: string
+      enum:
+      - Encrypt
+      - Cmac
+    EffectiveKeyPolicy:
+      allOf:
+      - type: object
+        description: 'An aggregation of policies and permissions of the session creator for
+
+          a security object.'
+        properties:
+          key_ops:
+            type: array
+            items:
+              $ref: '#/components/schemas/EffectiveKeyOperations'
+            description: Indicates allowed key operations for the security key.
+          export_policy:
+            $ref: '#/components/schemas/ExportPolicy'
+        required:
+        - key_ops
+    FpeMonthYearDate:
+      allOf:
+      - type: object
+        description: 'A structure for specifying a particular date consisting of a month and a year, for use in an
+
+          FpeDate structure.'
+        properties:
+          year:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
+          month:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: The month, which should be an integer from 1 to 12.
+        required:
+        - year
+        - month
+    AwsMultiRegionInfo:
+      allOf:
+      - type: object
+        description: 'This structure mentions various properties
+
+          of AWS multi region keys.
+
+          https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html'
+        properties:
+          multi_region_key_type:
+            $ref: '#/components/schemas/AwsMultiRegionKeyType'
+          primary_key_arn:
+            type:
+            - string
+            - 'null'
+            description: Specifies a replica key's primary key ARN.
+          replica_key_arns:
+            type:
+            - array
+            - 'null'
+            items:
+              type: string
+            description: Specifies ARNs of a primary key's replicas.
+        required:
+        - multi_region_key_type
+    FpeVariant:
+      allOf:
+      - type: object
+        description: A concatenation of sections.
+        properties:
+          sections:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeSection'
+        required:
+        - sections
+    KeyCreationMethodVariantGenerate:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - Generate
+        required:
+        - method
+      - type: object
+        properties: {}
+    EcKcdsaOptions:
+      allOf:
+      - type: object
+        properties:
+          hash_alg:
+            $ref: '#/components/schemas/DigestAlgorithm'
+    WrappingKeys:
+      oneOf:
+      - $ref: '#/components/schemas/WrappingKeysVariantOnly'
+      - $ref: '#/components/schemas/WrappingKeysVariantAny'
+      discriminator:
+        propertyName: $type
+        mapping:
+          Only: WrappingKeysVariantOnly
+          Any: WrappingKeysVariantAny
+    FpeDateDayMonthYear:
+      allOf:
+      - type: object
+        description: 'Represents a date that consists of a Month subpart, a Day subpart, and a Year subpart. The
+
+          Year part is allowed to be preserved, and the Day and Month parts are allowed to be
+
+          preserved together. (The Day part cannot be preserved if the Month part is not, and vice
+
+          versa.)'
+        properties:
+          before:
+            $ref: '#/components/schemas/FpeDayMonthYearDate'
+          after:
+            $ref: '#/components/schemas/FpeDayMonthYearDate'
+    UnwrapKeyParams:
+      allOf:
+      - type: object
+        description: Request to unwrap a security object
+        properties:
+          key:
+            $ref: '#/components/schemas/SobjectDescriptor'
+          alg:
+            $ref: '#/components/schemas/Algorithm'
+          mode:
+            $ref: '#/components/schemas/CryptMode'
+          iv:
+            type: string
+            format: byte
+            description: Initialization vector is required for symmetric algorithms.
+          ad:
+            type: string
+            format: byte
+            description: Authenticated data is only applicable if mode is GCM.
+          tag:
+            type: string
+            format: byte
+            description: Tag is required if mode is GCM.
+        required:
+        - key
+        - alg
+    LmsOptions:
+      allOf:
+      - type: object
+        description: LMS specific options
+        properties:
+          l1_height:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The height of the top level tree. This field will be deprecated in v2.
+          l2_height:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The height of the secondary tree. This field will be deprecated in v2.
+          digest:
+            $ref: '#/components/schemas/DigestAlgorithm'
+          heights:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+            description: Heights of the trees in each level.
+          node_size:
+            type:
+            - integer
+            - 'null'
+            description: Amount of bytes associated to each node (the 'm' parameter)
+          winternitz_width:
+            type:
+            - integer
+            - 'null'
+            description: The width of the Winternitz coefficients. The default value is 8.
+    AesOptions:
+      allOf:
+      - type: object
+        properties:
+          key_sizes:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+              minimum: 0
+              maximum: 4294967295
+          fpe:
+            $ref: '#/components/schemas/FpeOptions'
+          tag_length:
+            type:
+            - integer
+            - 'null'
+            format: int32
+          cipher_mode:
+            $ref: '#/components/schemas/CipherMode'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+          iv_length:
+            type:
+            - integer
+            - 'null'
+            format: int32
+    FpeCompoundPartMultiple:
+      allOf:
+      - type: object
+        description: 'Indicates a part that is possibly repeated multiple times.
+
+
+          Implementation note: the backend parser is locally "greedy" and will attempt to match
+
+          as many repetitions as possible. If this later results in an invalid parse of the rest
+
+          of the input, the backend ***will not backtrack*** and will simply return with an error.'
+        properties:
+          multiple:
+            $ref: '#/components/schemas/FpeDataPart'
+          min_repetitions:
+            type:
+            - integer
+            - 'null'
+            description: 'The minimum number of times the subpart may occur. (A value of 1 marks a single
+
+              occurrence.)'
+          max_repetitions:
+            type:
+            - integer
+            - 'null'
+            description: 'The maximum number of times the subpart may occur. (A value of 1 marks a single
+
+              occurrence.)'
+          constraints:
+            $ref: '#/components/schemas/FpeConstraints'
+          preserve:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the entire Multiple should be preserved as-is (i.e., not tokenized). If this
+
+              is set, the `multiple` subpart and its descendants cannot contain any preserve-related
+
+              fields set.'
+          mask:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the entire Multiple should be masked when doing masked decryption. If this is
+
+              set, the `multiple` subpart and its descendants cannot contain any mask-related fields
+
+              set.'
+          min_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The minimum allowed length for this part (in chars).
+          max_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The maximum allowed length for this part (in chars).
+        required:
+        - multiple
+    All:
+      description: 'A helper enum with a single variant, All, which indicates that something should apply to an
+
+        entire part. (This is here mainly to allow other untagged enums to work properly.)'
+      type: string
+      enum:
+      - all
+    FpeWords:
+      description: A set of fixed-length strings.
+      oneOf:
+      - title: FpeWordsVariantIntegerRanges
+        type: object
+        properties:
+          integer_ranges:
+            $ref: '#/components/schemas/FpeWordsIntegerRanges'
+        required:
+        - integer_ranges
+      - title: FpeWordsVariantAlphabet
+        type: object
+        properties:
+          alphabet:
+            $ref: '#/components/schemas/FpeCharSet'
+        required:
+        - alphabet
+      - title: FpeWordsVariantCustom
+        type: object
+        properties:
+          custom:
+            $ref: '#/components/schemas/FpeWordsCustom'
+        required:
+        - custom
+    KeyCheckValueResponse:
+      allOf:
+      - type: object
+        description: KCV of a key
+        properties:
+          kid:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: UUID, only for persistent keys
+          kcv:
+            type: string
+            description: 'Key Checksum Value. Could be one of following two variants:
+
+              - Encrypt KCV: 24-bit checksum as a 6-character case-insensitive hex string (Default)
+
+              - Cmac KCV: 40-bit checksum as a 10-character case-insensitive hex string'
+        required:
+        - kcv
+    HistoryItemState:
+      allOf:
+      - type: object
+        description: 'The key metadata of the security object for a
+
+          given `HistoryItem`. This keeps track of properties
+
+          such as allowed key operations, key state, and so on.'
+        properties:
+          activation_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+          activation_undo_window:
+            $ref: '#/components/schemas/Secs'
+          revocation_reason:
+            $ref: '#/components/schemas/RevocationReason'
+          compromise_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+          deactivation_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+          deactivation_undo_window:
+            $ref: '#/components/schemas/Secs'
+          destruction_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+          deletion_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+          state:
+            $ref: '#/components/schemas/SobjectState'
+          key_ops:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyOperations'
+          public_only:
+            type: boolean
+          has_key:
+            type: boolean
+          rotation_policy:
+            $ref: '#/components/schemas/RotationPolicy'
+          group_id:
+            type:
+            - string
+            - 'null'
+            format: uuid
+        required:
+        - state
+        - key_ops
+        - public_only
+        - has_key
+    Secs:
+      allOf:
+      - type: integer
+    WrappingKeysOnly:
+      allOf:
+      - type: object
+        description: Only keys in this list can be used to wrap the sobject
+        properties:
+          keys:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/SobjectDescriptorPersisted'
+        required:
+        - keys
+    RsaEncryptionPaddingPolicy:
+      description: RSA encryption padding policy.
+      oneOf:
+      - title: RsaEncryptionPaddingPolicyVariantOaep
+        type: object
+        properties:
+          OAEP:
+            $ref: '#/components/schemas/RsaEncryptionPaddingPolicyOaep'
+        required:
+        - OAEP
+      - title: RsaEncryptionPaddingPolicyVariantPkcs1V15
+        type: object
+        properties:
+          PKCS1_V15:
+            type: object
+            properties: {}
+        required:
+        - PKCS1_V15
+      - title: RsaEncryptionPaddingPolicyVariantRawDecrypt
+        type: object
+        properties:
+          RAW_DECRYPT:
+            type: object
+            properties: {}
+        required:
+        - RAW_DECRYPT
+    MgfPolicy:
+      description: MGF policy.
+      oneOf:
+      - title: MgfPolicyVariantMgf1
+        type: object
+        properties:
+          mgf1:
+            $ref: '#/components/schemas/MgfPolicyMgf1'
+        required:
+        - mgf1
+    Des3Options:
+      allOf:
+      - type: object
+        properties:
+          key_sizes:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+              minimum: 0
+              maximum: 4294967295
+          cipher_mode:
+            $ref: '#/components/schemas/CipherMode'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+          iv_length:
+            type:
+            - integer
+            - 'null'
+            format: int32
+    RsaSignaturePaddingPolicyPss:
+      allOf:
+      - type: object
+        properties:
+          mgf:
+            $ref: '#/components/schemas/MgfPolicy'
+    ObjectOrigin:
+      description: The origin of a security object - where it was created / generated.
+      type: string
+      enum:
+      - FortanixHSM
+      - Transient
+      - External
+    SobjectDescriptorInline:
+      allOf:
+      - type: object
+        properties:
+          value:
+            type: string
+            format: byte
+          obj_type:
+            $ref: '#/components/schemas/ObjectType'
+        required:
+        - value
+        - obj_type
+    FpePreserveMask:
+      description: A structure indicating which indices in an encrypted part to mask or preserve.
+      oneOf:
+      - $ref: '#/components/schemas/All'
+      - type: array
+        items:
+          type: integer
+          format: int64
+        description: 'Indicates that only certain characters are to be preserved or masked. Indices are
+
+          Python-like; i.e., negative indices index from the end of the token portion, with
+
+          index -1 denoting the last character. (Indicating that nothing should be preserved
+
+          or masked can be done via an empty list, which is the default value for this enum.)'
+    RsaEncryptionPaddingPolicyOaep:
+      allOf:
+      - type: object
+        description: 'The Optional Asymmetric Encryption Padding scheme, as defined
+
+          in RFC 8017 (PKCS #1 version 2.2)'
+        properties:
+          mgf:
+            $ref: '#/components/schemas/MgfPolicy'
+    KeyCreationMethod:
+      description: Information about the method by which a key was created
+      oneOf:
+      - $ref: '#/components/schemas/KeyCreationMethodVariantGenerate'
+      - $ref: '#/components/schemas/KeyCreationMethodVariantAgree'
+      - $ref: '#/components/schemas/KeyCreationMethodVariantTransform'
+      - $ref: '#/components/schemas/KeyCreationMethodVariantDerive'
+      - $ref: '#/components/schemas/KeyCreationMethodVariantUnwrap'
+      - $ref: '#/components/schemas/KeyCreationMethodVariantImport'
+      - $ref: '#/components/schemas/KeyCreationMethodVariantEncapsulate'
+      - $ref: '#/components/schemas/KeyCreationMethodVariantDecapsulate'
+      discriminator:
+        propertyName: method
+        mapping:
+          Generate: KeyCreationMethodVariantGenerate
+          Agree: KeyCreationMethodVariantAgree
+          Transform: KeyCreationMethodVariantTransform
+          Derive: KeyCreationMethodVariantDerive
+          Unwrap: KeyCreationMethodVariantUnwrap
+          Import: KeyCreationMethodVariantImport
+          Encapsulate: KeyCreationMethodVariantEncapsulate
+          Decapsulate: KeyCreationMethodVariantDecapsulate
+    ExternalKeyIdOciVault:
+      allOf:
+      - type: object
+        description: A key in an OCI key vault.
+        properties:
+          oci_key_id:
+            type: string
+            description: The OCID of the OciKey
+          oci_key_version:
+            type: string
+            description: The OCID of the OciKeyVersion
+        required:
+        - oci_key_id
+        - oci_key_version
+    ExternalKeyIdAzureKeyVault:
+      allOf:
+      - type: object
+        description: A key in Azure Key Vault.
+        properties:
+          version:
+            type: string
+            format: uuid
+            description: The version of the key.
+          label:
+            type: string
+            description: The name of the key.
+        required:
+        - version
+        - label
+    ExternalKeyIdAwsKms:
+      allOf:
+      - type: object
+        properties:
+          key_arn:
+            type: string
+            description: The Amazon Resource Name of the key.
+          key_id:
+            type: string
+            description: The key ID assigned to the key.
+        required:
+        - key_arn
+        - key_id
+      - $ref: '#/components/schemas/AwsKeyMaterialId'
+    MgfPolicyMgf1:
+      allOf:
+      - type: object
+        properties:
+          hash:
+            $ref: '#/components/schemas/DigestAlgorithm'
+    SobjectEncoding:
+      description: Response data encoding.
+      type: string
+      enum:
+      - json
+      - value
+    SobjectExportPolicy:
+      allOf:
+      - type: object
+        properties:
+          allow_weakening:
+            type: boolean
+            description: 'When set to `false`, the `export_policy` for the sobject can never be relaxed,
+
+              it can only be made more strict.
+
+              This means that
+
+              - If the export policy is set to `Wrapped`, it can never be set back to `Unrestricted`.
+
+              - If the export policy is set to `Wrapped` with a limited set of keys specified,
+
+              it can never bet set back to `Wrapped` with any key. Additionally, no new keys can
+
+              be added to the set of wrapping keys. Also note that if all the wrapping keys (specified
+
+              by key id) in the export policy have been deleted/destroyed/deactivated, the sobject
+
+              becomes effectively unexportable.
+
+
+              Note: these rules may change in the future.'
+        required:
+        - allow_weakening
+      - $ref: '#/components/schemas/ExportPolicy'
+    ExternalKeyIdFortanix:
+      allOf:
+      - type: object
+        description: An sobject in DSM.
+        properties:
+          id:
+            type: string
+            format: uuid
+            description: The UUID assigned to the sobject.
+        required:
+        - id
+    ExportPolicyVariantWrapped:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - Wrapped
+        required:
+        - $type
+      - $ref: '#/components/schemas/ExportPolicyWrapped'
+    CopySobjectRequest:
+      allOf:
+      - type: object
+        description: Request to copy a security object.
+        properties:
+          key:
+            $ref: '#/components/schemas/SobjectDescriptorPersisted'
+        required:
+        - key
+      - $ref: '#/components/schemas/SobjectRequest'
+    ExportPolicyVariantUnrestricted:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - Unrestricted
+        required:
+        - $type
+      - type: object
+        properties: {}
+    BlsOptions:
+      allOf:
+      - type: object
+        properties:
+          variant:
+            $ref: '#/components/schemas/BlsVariant'
+        required:
+        - variant
+    AwsMultiRegionKeyType:
+      description: 'Specifies the type of multi-Region keys.
+
+        https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html#multi-region-concepts'
+      type: string
+      enum:
+      - PRIMARY
+      - REPLICA
+    ExternalKeyId:
+      description: 'Identification information for an external key. There are multiple
+
+        variants of this type to represent the different kinds of keys DSM
+
+        supports (e.g., AWS, Azure, etc.).
+
+
+        This is not to be confused with the UUID assigned to a virtual key
+
+        in DSM, which is most likely different from the ID that the source
+
+        key (outside of DSM) has.'
+      oneOf:
+      - $ref: '#/components/schemas/ExternalKeyIdPkcs11'
+      - $ref: '#/components/schemas/ExternalKeyIdFortanix'
+      - $ref: '#/components/schemas/ExternalKeyIdAwsKms'
+      - $ref: '#/components/schemas/ExternalKeyIdAzureKeyVault'
+      - $ref: '#/components/schemas/ExternalKeyIdGcpKeyRing'
+      - $ref: '#/components/schemas/ExternalKeyIdOciVault'
+      - type: object
+        properties: {}
+    RotateCopiedKeys:
+      oneOf:
+      - title: RotateCopiedKeysVariantAllExternal
+        type: string
+        enum:
+        - all_external
+      - title: RotateCopiedKeysVariantSelect
+        type: object
+        properties:
+          select:
+            type: array
+            items:
+              type: string
+              format: uuid
+        required:
+        - select
+    Bip32Network:
+      description: 'The BIP32 network
+
+        The Testnet network is usually an actual network with nodes and miners, and
+
+        free cryptocurrency. This provides a testing environment for developers.'
+      type: string
+      enum:
+      - mainnet
+      - testnet
+    FpeChecksum:
+      type: string
+      enum:
+      - luhn
+    FpeGroup:
+      allOf:
+      - type: object
+        description: 'A concatenation of codes, that can be repeated an amount of times. An
+
+          amount of leading and trailing characters can be preserved, this is,
+
+          unmodified by tokenization.'
+        properties:
+          codes:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeCode'
+          min_repetitions:
+            type:
+            - integer
+            - 'null'
+            description: A group cannot be omitted, thus this field must be positive if present.
+          max_repetitions:
+            type:
+            - integer
+            - 'null'
+          preserve:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+            minItems: 2
+            maxItems: 2
+            description: 'Amount of leading and trailing characters to preserve in this group.
+
+              Preserved characters are the leading/trailing characters of the whole
+
+              group, not individual repetitions.'
+        required:
+        - codes
+    KeyCreationMethodVariantDerive:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - Derive
+        required:
+        - method
+      - type: object
+        properties: {}
+    CryptMode:
+      description: '`CipherMode` or `RsaEncryptionPadding`, depending on the encryption algorithm.'
+      oneOf:
+      - $ref: '#/components/schemas/CipherMode'
+      - $ref: '#/components/schemas/RsaEncryptionPadding'
+    FpeCharSet:
+      description: 'The alphabet to use for an encrypted portion of a complex tokenization data type.
+
+        Characters should be specified as a list of pairs, where each pair [a, b] represents the
+
+        range of Unicode code points from a to b, with both bounds being inclusive. A single
+
+        code point can be specified as [c, c].
+
+
+        Normally, each character is assigned a numeric value for FF1. The first character is
+
+        assigned a value of 0, and subsequent characters are assigned values of 1, 2, and so on,
+
+        up to the size of the alphabet. Note that the order of the ranges matters; characters
+
+        appearing in later ranges are assigned higher numerical values compared to earlier
+
+        characters. For instance, in the FpeCharSet [[''a'', ''z''], [''0'', ''9'']], the digits ''0'' to
+
+        ''9'' are assigned values from 26 to 35, since they are listed after the ''a'' to ''z'' range.
+
+
+        In any case, ranges should not overlap with each other, and should not contain surrogate
+
+        code points.'
+      allOf:
+      - type: array
+        items:
+          type: array
+          minItems: 2
+          maxItems: 2
+          items:
+            type: string
+            minLength: 1
+            maxLength: 1
+    EllipticCurve:
+      description: Identifies a standardized elliptic curve.
+      type: string
+      enum:
+      - X25519
+      - Ed25519
+      - Ed448
+      - X448
+      - SecP192K1
+      - SecP224K1
+      - SecP256K1
+      - NistP192
+      - NistP224
+      - NistP256
+      - NistP384
+      - NistP521
+      - Gost256A
+    MgfMgf1:
+      allOf:
+      - type: object
+        description: MGF1 algorithm
+        properties:
+          hash:
+            $ref: '#/components/schemas/DigestAlgorithm'
+        required:
+        - hash
+    KeyAttestationStatementFormat:
+      type: string
+      enum:
+      - x509_certificate
+    PersistTransientKeyRequest:
+      allOf:
+      - type: object
+        description: Request to persist a transient key.
+        properties:
+          activation_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Intended activation date of the security object.
+          deactivation_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Intended deactivation date of the security object.
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Name of the persisted security object. Security object names must be unique within an account.
+          description:
+            type:
+            - string
+            - 'null'
+            description: User-defined readable description
+          custom_metadata:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              type: string
+            description: User-defined metadata for the persisted key stored as key-value pairs.
+          enabled:
+            type:
+            - boolean
+            - 'null'
+            description: Whether the new security object should be enabled. Disabled security objects may not perform cryptographic operations.
+          group_id:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: 'Group ID of the security group that the persisted key should belong to. The user or
+
+              application creating this security object must be a member of this group. If no group is
+
+              specified, the default group for the requesting application will be used.'
+          state:
+            $ref: '#/components/schemas/SobjectState'
+          transient_key:
+            type: string
+            format: byte
+            description: Transient key to persist
+        required:
+        - name
+        - transient_key
+    XmssOptions:
+      allOf:
+      - type: object
+        description: XMSS specific options
+        properties:
+          height:
+            type:
+            - integer
+            - 'null'
+            description: The height of the Merkle tree (10, 16 or 20)
+          digest:
+            $ref: '#/components/schemas/DigestAlgorithm'
+          node_size:
+            type:
+            - integer
+            - 'null'
+            description: Amount of bytes associated to each node (24 or 32)
+    FpeFormatV2:
+      allOf:
+      - type: object
+        description: The second generation of Fortanix Tokenization scheme.
+        properties:
+          variants:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeVariant'
+            description: 'A token is accepted if it is accepted by any of these variants. Note
+
+              tokenization results depend on the order of this list.'
+          mode:
+            $ref: '#/components/schemas/FpeTokenizeMode'
+          input_processing:
+            $ref: '#/components/schemas/FpeInputProcessing'
+        required:
+        - variants
+    PrincipalUserViaApp:
+      allOf:
+      - type: object
+        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
+        properties:
+          user_id:
+            type: string
+            format: uuid
+          scopes:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/OauthScope'
+        required:
+        - user_id
+        - scopes
+    WrappingKeysVariantAny:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - Any
+        required:
+        - $type
+      - type: object
+        properties: {}
+    WrapKeyParams:
+      allOf:
+      - type: object
+        description: Wrapping key parameters
+        properties:
+          key:
+            $ref: '#/components/schemas/SobjectDescriptor'
+          alg:
+            $ref: '#/components/schemas/Algorithm'
+          mode:
+            $ref: '#/components/schemas/CryptMode'
+          iv:
+            type: string
+            format: byte
+            description: Initialization vector is required for symmetric algorithms.
+          ad:
+            type: string
+            format: byte
+            description: Authenticated data is only applicable if mode is GCM.
+          tag_len:
+            type:
+            - integer
+            - 'null'
+            description: Tag length is required when mode is GCM.
+        required:
+        - key
+        - alg
+    ExportComponentsResponse:
+      allOf:
+      - type: object
+        description: Export security object by components response.
+        properties:
+          components:
+            type: array
+            items:
+              $ref: '#/components/schemas/SobjectComponent'
+            description: Key components
+          iv:
+            type: string
+            format: byte
+            description: Initialization vector
+          tag:
+            type: string
+            format: byte
+            description: Tag, if required by the encryption mode.
+          key_kcv:
+            type: string
+            description: KCV for the exported key calculated by encryption
+          key_kcv_cmac:
+            type: string
+            description: KCV for the exported key calculated by CMAC
+          description:
+            type:
+            - string
+            - 'null'
+            description: Description of the exported key
+        required:
+        - components
+    SobjectRequest:
+      allOf:
+      - type: object
+        properties:
+          activation_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Activation date of security object in seconds since EPOCH.
+          aes:
+            $ref: '#/components/schemas/AesOptions'
+          allow_credential_use:
+            type:
+            - boolean
+            - 'null'
+            description: Whether this security object can be used/referenced by a credential object.
+          allow_sign_hash:
+            type:
+            - boolean
+            - 'null'
+            description: Whether the sign operation response contains hash or data as output.
+          aria:
+            $ref: '#/components/schemas/AriaOptions'
+          bip32:
+            $ref: '#/components/schemas/Bip32Options'
+          bls:
+            $ref: '#/components/schemas/BlsOptions'
+          custom_metadata:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              type: string
+            description: User managed field for adding custom metadata to the security object.
+          deactivation_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Deactivation date of security object in seconds since EPOCH.
+          des:
+            $ref: '#/components/schemas/DesOptions'
+          des3:
+            $ref: '#/components/schemas/Des3Options'
+          description:
+            type:
+            - string
+            - 'null'
+            description: Description of the security object.
+          deterministic_signatures:
+            type:
+            - boolean
+            - 'null'
+            description: Optionally get deterministic signatures, if algorithm is EC or RSA.
+          dsa:
+            $ref: '#/components/schemas/DsaOptions'
+          eckcdsa:
+            $ref: '#/components/schemas/EcKcdsaOptions'
+          elliptic_curve:
+            $ref: '#/components/schemas/EllipticCurve'
+          enabled:
+            type:
+            - boolean
+            - 'null'
+            description: Whether this security object has cryptographic operations enabled.
+          export_policy:
+            $ref: '#/components/schemas/SobjectExportPolicy'
+          external:
+            $ref: '#/components/schemas/ExternalKmsInfo'
+          fpe:
+            $ref: '#/components/schemas/FpeOptions'
+          google_access_reason_policy:
+            $ref: '#/components/schemas/RemovableGoogleAccessReasonPolicy'
+          kcdsa:
+            $ref: '#/components/schemas/KcdsaOptions'
+          kcv:
+            type: string
+            description: Key Checksum Value of the security object.
+          key_ops:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/KeyOperations'
+            description: Operations allowed to be performed by a given key.
+          key_size:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: Key size of the security object in bits.
+          links:
+            $ref: '#/components/schemas/KeyLinks'
+          lms:
+            $ref: '#/components/schemas/LmsOptions'
+          mldsa:
+            $ref: '#/components/schemas/MlDsaOptions'
+          mlkem:
+            $ref: '#/components/schemas/MlKemOptions'
+          name:
+            type:
+            - string
+            - 'null'
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Name of the security object.
+          obj_type:
+            $ref: '#/components/schemas/ObjectType'
+          pub_exponent:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: Public exponent
+          publish_public_key:
+            $ref: '#/components/schemas/PublishPublicKeyConfig'
+          rotation_policy:
+            $ref: '#/components/schemas/RotationPolicy'
+          rsa:
+            $ref: '#/components/schemas/RsaOptions'
+          seed:
+            $ref: '#/components/schemas/SeedOptions'
+          slip10:
+            $ref: '#/components/schemas/Slip10Options'
+          state:
+            $ref: '#/components/schemas/SobjectState'
+          transient:
+            type:
+            - boolean
+            - 'null'
+            description: If set to true, the security object will cease to exist after session ends.
+          value:
+            type: string
+            format: byte
+            description: Security object stored as byte array.
+          xmss:
+            $ref: '#/components/schemas/XmssOptions'
+          group_id:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: UUID of the group which the security object belongs to.
+    FpeWordsIntegerRanges:
+      allOf:
+      - type: object
+        description: 'A union of positive integer ranges.
+
+
+          ```plain
+
+          Examples: [[0, 400], [402, 1000]]
+
+          = {0000, 0001, ..., 0400, 0402, ..., 1000}
+
+
+          [[1,3], [49, 50]] with optional padding of length 8
+
+          = {00000001, 00000002, 00000003, 00000049, 00000050}
+
+          (accepts 1, 01, 00002, 49, 000050, etc)
+
+          ```'
+        properties:
+          ranges:
+            type: array
+            items:
+              type: array
+              items:
+                type: integer
+              minItems: 2
+              maxItems: 2
+          padding_required:
+            type: boolean
+            description: 'If this field is true, this set accepts only numeric strings
+
+              padded to the length given by the maximum integer in the range
+
+              set.'
+        required:
+        - ranges
+        - padding_required
+    DsaOptions:
+      allOf:
+      - type: object
+        properties:
+          subgroup_size:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+    KeyAttestationResponse:
+      allOf:
+      - type: object
+        description: Key attestation response.
+        properties:
+          authority_chain:
+            type: array
+            items:
+              type: string
+              format: byte
+            description: 'The DER-encoded certificate chain for the authority issuing the key
+
+              attestation statement.'
+          attestation_statement:
+            $ref: '#/components/schemas/KeyAttestationStatement'
+        required:
+        - authority_chain
+        - attestation_statement
+    ObjectDigestRequest:
+      allOf:
+      - type: object
+        description: Request to compute digest of a key.
+        properties:
+          key:
+            $ref: '#/components/schemas/SobjectDescriptor'
+          alg:
+            $ref: '#/components/schemas/DigestAlgorithm'
+        required:
+        - key
+        - alg
+    RsaSignaturePaddingPolicy:
+      description: RSA signature padding policy.
+      oneOf:
+      - title: RsaSignaturePaddingPolicyVariantPss
+        type: object
+        properties:
+          PSS:
+            $ref: '#/components/schemas/RsaSignaturePaddingPolicyPss'
+        required:
+        - PSS
+      - title: RsaSignaturePaddingPolicyVariantPkcs1V15
+        type: object
+        properties:
+          PKCS1_V15:
+            type: object
+            properties: {}
+        required:
+        - PKCS1_V15
+    SobjectDescriptorPersisted:
+      description: Uniquely identifies a persisted sobject.
+      oneOf:
+      - title: SobjectDescriptorPersistedVariantKid
+        type: object
+        properties:
+          kid:
+            type: string
+            format: uuid
+        required:
+        - kid
+      - title: SobjectDescriptorPersistedVariantName
+        type: object
+        properties:
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+        required:
+        - name
+    FpeOptionsV2:
+      allOf:
+      - type: object
+        properties:
+          format_v2:
+            $ref: '#/components/schemas/FpeFormatV2'
+          description:
+            type:
+            - string
+            - 'null'
+        required:
+        - format_v2
+    RsaOptions:
+      allOf:
+      - type: object
+        description: RSA-specific options.
+        properties:
+          key_size:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: Size in bits (not bytes) of the RSA key. Specify on Create only. Returned on Get.
+          public_exponent:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: Public exponent to use for generating the RSA key. Specify on Create only.
+          encryption_policy:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/RsaEncryptionPolicy'
+            description: 'Encryption policy for an RSA key. When doing an encryption or key wrapping operation, the
+
+              policies are evaluated against the specified parameters one by one. If one matches, the
+
+              operation is allowed. If none match, including if the policy list is empty, the operation
+
+              is disallowed. Missing optional parameters will have their defaults specified according to
+
+              the matched policy. The default for new keys is `[{"padding":{"OAEP":{}}]`.
+
+              If (part of) a constraint is not specified, anything is allowed for that constraint.
+
+              To impose no constraints, specify `[{}]`.'
+          signature_policy:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/RsaSignaturePolicy'
+            description: 'Signature policy for an RSA key. When doing a signature operation, the policies are
+
+              evaluated against the specified parameters one by one. If one matches, the operation is
+
+              allowed. If none match, including if the policy list is empty, the operation is disallowed.
+
+              Missing optional parameters will have their defaults specified according to the matched
+
+              policy. The default for new keys is `[{}]` (no constraints).
+
+              If (part of) a constraint is not specified, anything is allowed for that constraint.'
+          minimum_key_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: 'The minimum allowed key length. This is only relevant for group or account cryptographic
+
+              policies (and hence has no effect in an RSA policy on a specific key).'
+    FpeDatePart:
+      description: 'Possible date-related constraint types that do not form a complete date (by themselves) for a
+
+        complex tokenization data type.'
+      type: string
+      enum:
+      - month
+      - day
+      - year
+    KeyAttestationRequest:
+      allOf:
+      - type: object
+        description: Request to retrieve a key attestation certificate for a security object.
+        properties:
+          key:
+            $ref: '#/components/schemas/SobjectDescriptorPersisted'
+        required:
+        - key
+    GetSobjectParams:
+      allOf:
+      - type: object
+        description: Parameters to show sobject details.
+        properties:
+          view:
+            $ref: '#/components/schemas/SobjectEncoding'
+          show_destroyed:
+            type: boolean
+            description: Show destroyed security object(s).
+          show_deleted:
+            type: boolean
+            description: Show deleted security object(s).
+          show_value:
+            type: boolean
+            description: Show value of security object(s).
+          show_pub_key:
+            type: boolean
+            description: Show public key of security objects(s) if present.
+          show_effective_export_policy:
+            type: boolean
+            description: Whether to include the effective export policy in the response.
+    AwsKeyOrigin:
+      description: 'Origin of the AWS KMS key.
+
+
+        See the [AWS documentation](https://docs.aws.amazon.com/kms/latest/APIReference/API_KeyMetadata.html#KMS-Type-KeyMetadata-Origin)
+
+        for more information.'
+      type: string
+      enum:
+      - AwsKms
+      - External
+      - AwsCloudHsm
+      - ExternalKeyStore
+    KeyCreationMethodVariantEncapsulate:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - Encapsulate
+        required:
+        - method
+      - type: object
+        properties: {}
+    FpeCompoundPartConcat:
+      allOf:
+      - type: object
+        description: Represents a concatenation of multiple structures (in a particular order).
+        properties:
+          concat:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeDataPart'
+            description: The actual subparts that make up this compound part, in order.
+          constraints:
+            $ref: '#/components/schemas/FpeConstraints'
+          preserve:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the entire concat should be preserved as-is (i.e., not tokenized). If this is
+
+              set, any descendant subparts cannot contain any preserve-related fields set.'
+          mask:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the entire concat should be masked when doing masked decryption. If this is
+
+              set, any descendant subparts cannot contain any mask-related fields set.'
+          min_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The minimum allowed length for this part (in chars).
+          max_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The maximum allowed length for this part (in chars).
+        required:
+        - concat
+    FpeOptionsBasic:
+      allOf:
+      - type: object
+        description: 'Basic FPE-specific options. This is suitable for simple datatypes
+
+          that consist of ASCII digits, or ASCII digits and uppercase letters.'
+        properties:
+          radix:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: 'The FPE base for the input data (i.e., the size of the character
+
+              set of the datatype). This must be an integer from 2 to 36.
+
+
+              This also implicitly defines the alphabet of the datatype. A base
+
+              from 2 to 10 implies ASCII digits (e.g., a radix of 3 can be used
+
+              to represent a ternary string), and a base from 11 to 36 implies
+
+              ASCII digits and uppercase letters (e.g., a radix of 16 can be'
+          min_length:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The minimum allowed length for the input data.
+          max_length:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The maximum allowed length for the input data.
+          preserve:
+            type: array
+            items:
+              type: integer
+              format: int64
+            description: 'The list of indices of characters to be preserved while performing encryption/decryption.
+
+              Indices are Python-like; i.e., nonnegative indices index from the beginning of the input
+
+              (where 0 is the first character), and negative indices index from the end of the input.
+
+              (where -1 is the last character, -2 is second to last, and so on).
+
+
+              Any preserved characters will be concatenated together and used as an FF1 tweak. For example,
+
+              if the input data is "abcd", and the first and last characters are to be preserved, the FF1
+
+              tweak will be the ASCII bytes of the string "ad".'
+          mask:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+              format: int64
+            description: 'The list of indices of characters to be masked while performing masked decryption.
+
+              Indices are Python-like; i.e., nonnegative indices index from the beginning of the input
+
+              (where 0 is the first character), and negative indices index from the end of the input.
+
+              (where -1 is the last character, -2 is second to last, and so on).'
+          luhn_check:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the encrypted/decrypted data contains a checksum digit that satisfies the Luhn
+
+              formula. (The output ciphertext/plaintext will also contain a Luhn checksum digit.)'
+          name:
+            type:
+            - string
+            - 'null'
+            description: The user-provided name for the data type that represents the input data.
+        required:
+        - radix
+        - min_length
+        - max_length
+        - preserve
+    ListSobjectsParams:
+      allOf:
+      - type: object
+        description: Request parameters for filtering and listing security objects.
+        properties:
+          group_id:
+            type: string
+            format: uuid
+            description: Filter security object(s) by group ID.
+          creator:
+            type: string
+            format: uuid
+            description: Filter security object(s) by a particular creator.
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Filter security object(s) by name.
+          pkcs11_label:
+            type: string
+            description: Filter security object(s) by PKCS11 label.
+          pkcs11_id:
+            type: string
+            format: byte
+            description: Filter security object(s) by PKCS11 unique identifier.
+          obj_type:
+            $ref: '#/components/schemas/ObjectType'
+          limit:
+            type: integer
+            description: 'Set max security objects in returned in response (default: 1000).'
+          offset:
+            type: integer
+            description: Skip first n (offset) matches.
+          compliant_with_policies:
+            type: boolean
+            description: Only show security objects complying with group and account policies.
+          with_metadata:
+            type: boolean
+            description: 'Display query metadata in response, containing information on total objects
+
+              and number of objects skipped.'
+          show_destroyed:
+            type: boolean
+            description: Show destroyed security object(s).
+          show_deleted:
+            type: boolean
+            description: Show deleted security object(s).
+          show_value:
+            type: boolean
+            description: Show non-sensitive key material of security object(s).
+          show_pub_key:
+            type: boolean
+            description: Show public key of security objects(s) if present.
+          show_kcv:
+            type: boolean
+            description: Show key check value for security object(s).
+          filter:
+            type: string
+            description: 'Allows filtering Sobjects based on various attributes, including kid, key_size, and more.
+
+              The support portal section [2.8.1 Filtering Security Objects Using DSM REST API](https://support.fortanix.com/docs/users-guide-fortanix-data-security-manager-key-lifecycle-management#281-filtering-security-objects-using-dsm-rest-api) explains how to
+
+              compose various queries using the supported filter operations.
+
+
+              The following examples illustrate how to apply these filters when listing security objects:
+
+              - `filter: {"kid":{"$text":{"$search":"1e70c17a-78c3-4fd9-83f5-dbea8641147a"}}}`
+
+              - `filter: {"name":{"$text":{"$search":"13F977EE2B857998"}}}`
+
+              - `filter: {"state":{"$eq":"Deactivated"}}`
+
+              - `filter: {"key_ops":{"$any":{"$or":[{"$eq":"ENCRYPT"},{"$eq":"DECRYPT"},{"$eq":"WRAPKEY"},{"$eq":"UNWRAPKEY"}]}}}`
+
+              - `filter: {"group_name":{"$text":{"$search":"Test_Group"}}}`
+
+              - `filter: {"creator_name":{"$text":{"$search":"key creator"}}}`
+
+              - `filter: {"$and":[{"creator_type":{"$in":["App","User","Plugin"]}},{"obj_type":{"$eq":"RSA"}}, {"enabled":{"$eq":"false"}}]}`
+
+              - `filter: {"$and":[{"key_size":{"$gte":256}},{"obj_type":{"$eq":"AES"}}]}`
+
+              - `filter: {"custom_attributes.custom":{"$text":{"$search":"1"}}}`
+
+              - `filter: {"created_at":{"$lt":1739794080}}`
+
+              - `filter: {"key_ops":{"$all":{"$ne":"HIGHVOLUME"}}}`
+
+              - `filter: {"description":{"$text":{"$search":"BIPS32"}}}`
+
+              - `filter: {"$and": [{"expires":{"$lt":1739794200}},{"expires":{"$gte":1741001700}},{"obj_type":{"$nin":["OPAQUE","SECRET"]}},{"creator_type":{"$eq":"App"}}]}`
+
+              - `filter: {"$and":[{"obj_type":{"$eq":"AES"}},{"obj_type":{"$nin":["DES3","HMAC"]}},{"expires":{"$lt":1739794200}},{"state":{"$nin":["Compromise","Destroyed"]}}]}`
+
+              - `filter: {"$and": [{"key_size": 256}, {"state":{"$eq":"Deactivated"}}, {"name":{"$text":{"$search":"13F977EE2B857998"}}}]`
+
+              - `filter: {"$and":[{"obj_type":{"$in":["AES","DES3"]}},{"creator_type":{"$eq":"User"}}, {"state":{"$ne":"Compromised"}}, {"creator_id":{"$text":{"$search":"542c9eeb-333c-4b30-b0c6-b73260866cfb"}}}]}`
+
+              - `filter: {"wrapping_key":{"$text":{"$search":"3acc3178-b1df-42e9-83c1-0c667119a132"}}}`
+
+              - `filter: {"group_id":{"$text":{"$search":"fde289c5-55bd-48d5-b9b9-2fb2dc14388f"}}}`
+
+              - `filter: {"creator_id":{"$text":{"$search":"542c9eeb-333c-4b30-b0c6-b73260866cfb"}}}`
+
+              - `filter: {"enabled":{"$eq":"true"}}`'
+      - $ref: '#/components/schemas/SobjectSort'
+      - $ref: '#/components/schemas/CustomMetadata'
+    DesOptions:
+      allOf:
+      - type: object
+        properties:
+          cipher_mode:
+            $ref: '#/components/schemas/CipherMode'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+    KeyOperations:
+      description: "Operations allowed to be performed on a given key.\n\n\n\n          SIGN:\n            If this is set, the key can be used to for signing.\n\n\n          VERIFY:\n            If this is set, the key can used for verifying a signature.\n\n\n          ENCRYPT:\n            If this is set, the key can be used for encryption.\n\n\n          DECRYPT:\n            If this is set, the key can be used for decryption.\n\n\n          WRAPKEY:\n            If this is set, the key can be used wrapping other keys.\n            The key being wrapped must have the EXPORT operation enabled.\n\n\n          UNWRAPKEY:\n            If this is set, the key can be used to unwrap a wrapped key.\n\n\n          DERIVEKEY:\n            If this is set, the key can be used to derive another key.\n\n\n          TRANSFORM:\n            If this is set, the key can be transformed.\n\n\n          MACGENERATE:\n            If this is set, the key can be used to compute a cryptographic\n            Message Authentication Code (MAC) on a message.\n\n\n          MACVERIFY:\n            If they is set, the key can be used to verify a MAC.\n\n\n          EXPORT:\n            If this is set, the value of the key can be retrieved\n            with an authenticated request. This shouldn't be set unless\n            required. It is more secure to keep the key's value inside DSM only.\n\n\n          APPMANAGEABLE:\n            Without this operation, management operations like delete, destroy,\n            rotate, activate, restore, revoke, revert, update, remove_private, etc.\n            cannot be performed by a crypto App.\n            A user with access or admin app can still perform these operations.\n            This option is only relevant for crypto apps.\n\n\n          HIGHVOLUME:\n            If this is set, audit logs will not be recorded for the key.\n            High volume here tries to signify a key that is being used a lot\n            and will produce lots of logs. Setting this operation disables\n            audit logs for the key.\n\n\n          AGREEKEY:\n            If this is set, the key can be used for key agreement.\n            Both the private and public key should have this option enabled\n            to perform an agree operation.\n\n\n          ENCAPSULATE:\n            If this is set, the key can be used for key encapsulation. The\n            result is a new symmetric key and a ciphertext.\n\n\n          DECAPSULATE:\n            If this is set, the key can be used for key decapsulation. If\n            decapsulation succeeds, the result is a new symmetric key.\n\n"
+      type: string
+      enum:
+      - SIGN
+      - VERIFY
+      - ENCRYPT
+      - DECRYPT
+      - WRAPKEY
+      - UNWRAPKEY
+      - DERIVEKEY
+      - TRANSFORM
+      - MACGENERATE
+      - MACVERIFY
+      - EXPORT
+      - APPMANAGEABLE
+      - HIGHVOLUME
+      - AGREEKEY
+      - ENCAPSULATE
+      - DECAPSULATE
+    ExternalKeyIdPkcs11:
+      allOf:
+      - type: object
+        description: 'A key in a legacy HSM. (DSM uses HSM Gateway to interact with
+
+          such legacy HSMs using PKCS #11.)'
+        properties:
+          id:
+            type: string
+            format: byte
+            description: 'The PKCS #11 ID of the key.'
+          label:
+            type: string
+            format: byte
+            description: 'The PKCS #11 label of the key.'
+        required:
+        - id
+        - label
+    SobjectDescriptor:
+      description: Uniquely identifies a persisted or transient sobject.
+      oneOf:
+      - title: SobjectDescriptorVariantKid
+        type: object
+        properties:
+          kid:
+            type: string
+            format: uuid
+        required:
+        - kid
+      - title: SobjectDescriptorVariantName
+        type: object
+        properties:
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+        required:
+        - name
+      - title: SobjectDescriptorVariantTransientKey
+        type: object
+        properties:
+          transient_key:
+            type: string
+            format: byte
+        required:
+        - transient_key
+      - title: SobjectDescriptorVariantInline
+        type: object
+        properties:
+          inline:
+            $ref: '#/components/schemas/SobjectDescriptorInline'
+        required:
+        - inline
+    AwsKeyRotationStatusKeyRotationEnabled:
+      allOf:
+      - type: object
+        properties:
+          rotation_period_in_days:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 65535
+    RevocationReasonCode:
+      description: Reasons to revoke a security object.
+      type: string
+      enum:
+      - Unspecified
+      - KeyCompromise
+      - CACompromise
+      - AffiliationChanged
+      - Superseded
+      - CessationOfOperation
+      - PrivilegeWithdrawn
+    ExportPolicyWrapped:
+      allOf:
+      - type: object
+        description: 'The sobject can only be exported wrapped by a key as specified
+
+          by the `WrappingKeys`.'
+        properties:
+          by:
+            $ref: '#/components/schemas/WrappingKeys'
+        required:
+        - by
+    MlDsaOptions:
+      allOf:
+      - type: object
+        description: ML-DSA specific options
+        properties:
+          param_set:
+            $ref: '#/components/schemas/MlDsaParamSet'
+        required:
+        - param_set
+    PublishPublicKeyConfigVariantDisabled:
+      allOf:
+      - type: object
+        properties:
+          state:
+            type: string
+            enum:
+            - disabled
+        required:
+        - state
+      - type: object
+        properties: {}
+    FpeCode:
+      allOf:
+      - type: object
+        description: A set of words, repeated an amount of times.
+        properties:
+          words:
+            $ref: '#/components/schemas/FpeWords'
+          min_repetitions:
+            type:
+            - integer
+            - 'null'
+          max_repetitions:
+            type:
+            - integer
+            - 'null'
+        required:
+        - words
+    KeyCreationMethodVariantTransform:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - Transform
+        required:
+        - method
+      - type: object
+        properties: {}
+    KeyCreationMethodVariantDecapsulate:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - Decapsulate
+        required:
+        - method
+      - type: object
+        properties: {}
+    FpeConstraintsApplicability:
+      description: A structure indicating which subparts to which to apply a set of constraints.
+      oneOf:
+      - $ref: '#/components/schemas/All'
+      - type: object
+        additionalProperties:
+          $ref: '#/components/schemas/FpeConstraintsApplicability'
+        description: 'An object representing the individual subparts that the constraints should apply to. This
+
+          is a BTreeMap where for each key-value pair, the key represents the "index" of the subpart
+
+          (with the first subpart having index 0), and the value is an FpeConstraintsApplicability
+
+          instance. Note that a Multiple part only allows for one possible key-value pair, since it
+
+          only contains one subpart. For Concat parts, the key is the zero-based index of the subpart
+
+          in the `concat` field, and for Multiple parts, this is always 0 (due to a Multiple having
+
+          only one subpart).
+
+
+          This cannot be used with OR parts; instead, specify constraints individually on each
+
+          relevant subpart.'
+    RemovableGoogleAccessReasonPolicy:
+      oneOf:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/GoogleAccessReasonPolicy'
+    MlKemParamSet:
+      description: ML-KEM parameter sets
+      type: string
+      enum:
+      - MlKem512
+      - MlKem768
+      - MlKem1024
+    KeyAttestationStatement:
+      allOf:
+      - type: object
+        description: A key attestation statement
+        properties:
+          format:
+            $ref: '#/components/schemas/KeyAttestationStatementFormat'
+          statement:
+            type: string
+            format: byte
+            description: The key attestation statement formatted according to `format`
+        required:
+        - format
+        - statement
+    WrappingKeysVariantOnly:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - Only
+        required:
+        - $type
+      - $ref: '#/components/schemas/WrappingKeysOnly'
+    AwsKeyRotationStatusVariantKeyRotationDisabled:
+      allOf:
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - KeyRotationDisabled
+        required:
+        - type
+      - type: object
+        properties: {}
+    ExternalSobjectInfo:
+      allOf:
+      - type: object
+        description: 'This describes an external object -- specifically, information about its
+
+          source object.'
+        properties:
+          id:
+            $ref: '#/components/schemas/ExternalKeyId'
+          hsm_group_id:
+            type: string
+            format: uuid
+            description: The group which corresponds to the external HSM.
+          external_kms_info:
+            $ref: '#/components/schemas/ExternalKmsInfo'
+        required:
+        - id
+        - hsm_group_id
+    ExternalKeyIdGcpKeyRing:
+      allOf:
+      - type: object
+        description: A key in a GCP key ring.
+        properties:
+          version:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The version of the key.
+          label:
+            type: string
+            description: The label for the key.
+        required:
+        - version
+        - label
+    MlKemOptions:
+      allOf:
+      - type: object
+        description: ML-KEM specific options
+        properties:
+          param_set:
+            $ref: '#/components/schemas/MlKemParamSet'
+    SobjectRekeyRequest:
+      allOf:
+      - type: object
+        description: Request to rekey a security object.
+        properties:
+          deactivate_rotated_key:
+            type:
+            - boolean
+            - 'null'
+            description: If set to true, the old key is deactivated on rekey.
+      - $ref: '#/components/schemas/SobjectRequest'
+    Sobject:
+      allOf:
+      - type: object
+        properties:
+          acct_id:
+            type: string
+            format: uuid
+            description: UUID of the account which the security object belongs to.
+          activation_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Activation date of security object in seconds since EPOCH.
+          aes:
+            $ref: '#/components/schemas/AesOptions'
+          allow_credential_use:
+            type:
+            - boolean
+            - 'null'
+            description: Whether this security object can be used/referenced by a credential object.
+          allow_sign_hash:
+            type:
+            - boolean
+            - 'null'
+            description: Whether the sign operation response contains hash or data as output.
+          aria:
+            $ref: '#/components/schemas/AriaOptions'
+          bip32:
+            $ref: '#/components/schemas/Bip32Options'
+          bls:
+            $ref: '#/components/schemas/BlsOptions'
+          compliant_with_policies:
+            type:
+            - boolean
+            - 'null'
+            description: Whether this security object is compliant with cryptographic policies or not.
+          compromise_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Compromise date of security object in seconds since EPOCH.
+          created_at:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Timestamp at which the security object was created.
+          creator:
+            $ref: '#/components/schemas/Principal'
+          custom_metadata:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              type: string
+            description: User managed field for adding custom metadata to the security object.
+          deactivation_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Deactivation date of security object in seconds since EPOCH.
+          deletion_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Deletion date of security object in seconds since EPOCH.
+          des:
+            $ref: '#/components/schemas/DesOptions'
+          des3:
+            $ref: '#/components/schemas/Des3Options'
+          description:
+            type:
+            - string
+            - 'null'
+            description: Description of the security object.
+          destruction_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Destruction date of security object in seconds since EPOCH.
+          deterministic_signatures:
+            type:
+            - boolean
+            - 'null'
+            description: Optionally get deterministic signatures, if algorithm is EC or RSA.
+          dsa:
+            $ref: '#/components/schemas/DsaOptions'
+          eckcdsa:
+            $ref: '#/components/schemas/EcKcdsaOptions'
+          effective_key_policy:
+            $ref: '#/components/schemas/EffectiveKeyPolicy'
+          elliptic_curve:
+            $ref: '#/components/schemas/EllipticCurve'
+          enabled:
+            type: boolean
+            description: Whether this security object has cryptographic operations enabled.
+          export_policy:
+            $ref: '#/components/schemas/SobjectExportPolicy'
+          external:
+            $ref: '#/components/schemas/ExternalSobjectInfo'
+          fpe:
+            $ref: '#/components/schemas/FpeOptions'
+          google_access_reason_policy:
+            $ref: '#/components/schemas/GoogleAccessReasonPolicy'
+          history:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/HistoryItem'
+            description: 'When a Key Undo Policy is in place, a list of (non-expired) history items is returned.
+
+              Each history item represents a past key state that can be reverted to.'
+          kcdsa:
+            $ref: '#/components/schemas/KcdsaOptions'
+          kcv:
+            type: string
+            description: Key Checksum Value of the security object.
+          kcv_cmac:
+            type: string
+            description: Cmac Key Checksum Value of the security object.
+          key_creation_method:
+            $ref: '#/components/schemas/KeyCreationMethod'
+          key_ops:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyOperations'
+            description: Operations allowed to be performed by a given key.
+          key_size:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: Key size of the security object in bits.
+          kid:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: Unique identifier of the security object.
+          links:
+            $ref: '#/components/schemas/KeyLinks'
+          lms:
+            $ref: '#/components/schemas/LmsOptions'
+          mldsa:
+            $ref: '#/components/schemas/MlDsaOptions'
+          mlkem:
+            $ref: '#/components/schemas/MlKemOptions'
+          name:
+            type:
+            - string
+            - 'null'
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Name of the security object.
+          never_exportable:
+            type:
+            - boolean
+            - 'null'
+            description: Whether the security object was exportable at some point in its lifetime.
+          obj_type:
+            $ref: '#/components/schemas/ObjectType'
+          origin:
+            $ref: '#/components/schemas/ObjectOrigin'
+          original_key_ops:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/KeyOperations'
+            description: Key operations with which the key was created. This information is available for newly created DSM keys starting with version 5.1
+          pub_key:
+            type: string
+            format: byte
+            description: 'Public key material of the security object, if it exists.
+
+
+              For virtual keys, this field may not be available if the key is not backed by DSM.'
+          public_only:
+            type: boolean
+            description: Whether the security object only consists of public material.
+          publish_public_key:
+            $ref: '#/components/schemas/PublishPublicKeyConfig'
+          revocation_reason:
+            $ref: '#/components/schemas/RevocationReason'
+          rotation_policy:
+            $ref: '#/components/schemas/RotationPolicy'
+          rsa:
+            $ref: '#/components/schemas/RsaOptions'
+          scheduled_rotation:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: 'Timestamp at which security object will be rotated, if rotation policy exists.
+
+              This time will be clamped at 31 December 9999 11:59:59 pm UTC if the calculated
+
+              rotation time would exceed that date.'
+          seed:
+            $ref: '#/components/schemas/SeedOptions'
+          slip10:
+            $ref: '#/components/schemas/Slip10Options'
+          state:
+            $ref: '#/components/schemas/SobjectState'
+          transient_key:
+            type: string
+            format: byte
+            description: Transient key material.
+          value:
+            type: string
+            format: byte
+            description: Security object stored as byte array.
+          virtual_key_info:
+            $ref: '#/components/schemas/VirtualSobjectInfo'
+          wrapping_key_group_ids:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+              format: uuid
+            description: Group ids of groups that use this security object to encrypt the key material of their security objects
+          xmss:
+            $ref: '#/components/schemas/XmssOptions'
+          group_id:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: UUID of the group which the security object belongs to.
+        required:
+        - acct_id
+        - created_at
+        - creator
+        - enabled
+        - key_ops
+        - obj_type
+        - origin
+        - public_only
+    FpeDateConstraint:
+      description: Possible date-related constraint types for a portion of a complex tokenization data type.
+      oneOf:
+      - $ref: '#/components/schemas/FpeDate'
+      - $ref: '#/components/schemas/FpeDatePart'
+    FpeDataPartLiteral:
+      allOf:
+      - type: object
+        description: 'A section of the data type that is not to be tokenized (e.g., a delimiter).
+
+
+          Unlike preserved characters, literal characters are not used for FF1 tweaks.'
+        properties:
+          literal:
+            type: array
+            items:
+              type: string
+            description: 'The list of possible strings that make up this literal portion of the token.
+
+              For example, if a delimiter can either be a space or a dash, the list would
+
+              be `[" ", "-"]`.
+
+
+              Implementation note: the backend will pick the first choice that matches when
+
+              when parsing the input. If this results in an invalid parse of the rest of the
+
+              input, the backend ***will not backtrack*** and will simply return with an error.'
+        required:
+        - literal
+    BlsVariant:
+      description: Signature/public-key size trade-off for BLS.
+      type: string
+      enum:
+      - small_signatures
+      - small_public_keys
+    OauthScope:
+      description: OAuth scope.
+      type: string
+      enum:
+      - app
+      - openid
+      - email
+      - profile
+    RevocationReason:
+      allOf:
+      - type: object
+        description: Reason for revoking a key.
+        properties:
+          code:
+            $ref: '#/components/schemas/RevocationReasonCode'
+          message:
+            type:
+            - string
+            - 'null'
+            description: 'Message is used exclusively for audit trail/logging purposes and MAY contain additional
+
+              information about why the object was revoked.'
+          compromise_occurance_date:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+        required:
+        - code
+    ExportPolicy:
+      oneOf:
+      - $ref: '#/components/schemas/ExportPolicyVariantWrapped'
+      - $ref: '#/components/schemas/ExportPolicyVariantUnrestricted'
+      discriminator:
+        propertyName: $type
+        mapping:
+          Wrapped: ExportPolicyVariantWrapped
+          Unrestricted: ExportPolicyVariantUnrestricted
+    HistoryItem:
+      allOf:
+      - type: object
+        description: 'A particular entry in a security object''s history.
+
+          These entries are maintained as part of the key history
+
+          (aka key undo) policy feature, which allows otherwise-
+
+          irreversible operations on security objects to be reversible.
+
+
+          Each entry represents a particular "snapshot in time" to which
+
+          a security object can be reverted. Such entries are only
+
+          recorded when key history is disabled.'
+        properties:
+          id:
+            type: string
+            format: uuid
+            description: The ID identifying this particular entry.
+          state:
+            $ref: '#/components/schemas/HistoryItemState'
+          created_at:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: The time when this history entry was created.
+          expiry:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: 'The time when this entry is no longer available for
+
+              undo purposes.'
+        required:
+        - id
+        - state
+        - created_at
+        - expiry
+    RotationInterval:
+      oneOf:
+      - title: RotationIntervalVariantIntervalDays
+        type: object
+        properties:
+          interval_days:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+        required:
+        - interval_days
+      - title: RotationIntervalVariantIntervalMonths
+        type: object
+        properties:
+          interval_months:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+        required:
+        - interval_months
+    ExternalKmsInfo:
+      description: Information about a specific external KMS key object.
+      oneOf:
+      - $ref: '#/components/schemas/ExternalKmsInfoVariantAWS'
+      - $ref: '#/components/schemas/ExternalKmsInfoVariantOci'
+      discriminator:
+        propertyName: type
+        mapping:
+          AWS: ExternalKmsInfoVariantAWS
+          Oci: ExternalKmsInfoVariantOci
+    Bip32Options:
+      allOf:
+      - type: object
+        properties:
+          derivation_path:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+              minimum: 0
+              maximum: 4294967295
+            description: 'The BIP32 path, starting from master. Master key is Some([]).
+
+              Ex: m/42/42''/0 -> Some([42, 2**31 + 42, 0])'
+          network:
+            $ref: '#/components/schemas/Bip32Network'
+    FpeDateMonthDay:
+      allOf:
+      - type: object
+        description: 'Represents a date that consists of a Month subpart and a Day subpart. It is an error to
+
+          preserve only the Month part or the Day part.'
+        properties:
+          before:
+            $ref: '#/components/schemas/FpeDayMonthDate'
+          after:
+            $ref: '#/components/schemas/FpeDayMonthDate'
+    FpeWordsCustom:
+      allOf:
+      - type: object
+        properties:
+          list:
+            type: array
+            items:
+              type: string
+            description: 'Examples: {"john", "jane"}, {".", "-", "_", "@", " "}'
+        required:
+        - list
+    AwsKeyMaterialId:
+      allOf:
+      - type: object
+        properties:
+          key_material_id:
+            type: string
+            description: key material ID reported by AWS KMS
+          key_material_index:
+            type: integer
+            description: The index of the key material in the AWS ListKeyRotations response
+        required:
+        - key_material_id
+        - key_material_index
+    RsaEncryptionPolicy:
+      allOf:
+      - type: object
+        description: Constraints on RSA encryption parameters. In general, if a constraint is not specified, anything is allowed.
+        properties:
+          padding:
+            $ref: '#/components/schemas/RsaEncryptionPaddingPolicy'
+    SplittingMethod:
+      description: Method used to split the key into multiple components.
+      type: string
+      enum:
+      - XOR
+    FpeCompoundPart:
+      description: 'Structure of a compound portion of a complex tokenization data type, itself composed of
+
+        smaller parts.'
+      oneOf:
+      - $ref: '#/components/schemas/FpeCompoundPartOr'
+      - $ref: '#/components/schemas/FpeCompoundPartConcat'
+      - $ref: '#/components/schemas/FpeCompoundPartMultiple'
+    SeedOptions:
+      allOf:
+      - type: object
+        properties:
+          cipher_mode:
+            $ref: '#/components/schemas/CipherMode'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+    FpeDateMonthYear:
+      allOf:
+      - type: object
+        description: 'Represents a date that consists of a Month subpart and a Year subpart. The Year part is
+
+          allowed to be preserved; however, the Month part cannot be preserved by itself.'
+        properties:
+          before:
+            $ref: '#/components/schemas/FpeMonthYearDate'
+          after:
+            $ref: '#/components/schemas/FpeMonthYearDate'
+    FpeOptionsAdvanced:
+      allOf:
+      - type: object
+        description: 'Advanced FPE options. It is recommended to use this for
+
+          specifying any FPE options, as it is more expressive than
+
+          FpeOptionsBasic.'
+        properties:
+          format:
+            $ref: '#/components/schemas/FpeDataPart'
+          description:
+            type:
+            - string
+            - 'null'
+            description: The user-provided name for the data type.
+        required:
+        - format
+    Principal:
+      description: A security principal.
+      oneOf:
+      - title: PrincipalVariantApp
+        type: object
+        properties:
+          app:
+            type: string
+            format: uuid
+        required:
+        - app
+      - title: PrincipalVariantUser
+        type: object
+        properties:
+          user:
+            type: string
+            format: uuid
+        required:
+        - user
+      - title: PrincipalVariantPlugin
+        type: object
+        properties:
+          plugin:
+            type: string
+            format: uuid
+        required:
+        - plugin
+      - title: PrincipalVariantUserViaApp
+        type: object
+        properties:
+          userviaapp:
+            $ref: '#/components/schemas/PrincipalUserViaApp'
+        required:
+        - userviaapp
+      - title: PrincipalVariantSystem
+        type: string
+        enum:
+        - system
+      - title: PrincipalVariantUnregisteredUser
+        type: string
+        enum:
+        - unregistereduser
+    SobjectState:
+      description: Security object operational state.
+      type: string
+      enum:
+      - PreActive
+      - Active
+      - Deactivated
+      - Compromised
+      - Destroyed
+      - Deleted
+    ImportSobjectComponentsRequest:
+      allOf:
+      - type: object
+        description: Request to import a security object by components.
+        properties:
+          key:
+            $ref: '#/components/schemas/SobjectRequest'
+          unwrap_key_params:
+            $ref: '#/components/schemas/UnwrapKeyParams'
+          custodians:
+            type: array
+            items:
+              $ref: '#/components/schemas/Principal'
+            description: Key holder identifier
+          components:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/SobjectComponent'
+            description: Key material by parts
+          description:
+            type:
+            - string
+            - 'null'
+            description: Description of the imported security object
+          method:
+            $ref: '#/components/schemas/SplittingMethod'
+          auth_config:
+            $ref: '#/components/schemas/ApprovalAuthConfig'
+          kcv_method:
+            $ref: '#/components/schemas/KcvMethod'
+        required:
+        - key
+        - custodians
+    Algorithm:
+      description: A cryptographic algorithm.
+      type: string
+      enum:
+      - AES
+      - ARIA
+      - DES
+      - DES3
+      - SEED
+      - RSA
+      - DSA
+      - KCDSA
+      - EC
+      - ECKCDSA
+      - BIP32
+      - SLIP10
+      - BLS
+      - LMS
+      - XMSS
+      - MLDSA
+      - MLDSABETA
+      - MLKEM
+      - MLKEMBETA
+      - HMAC
+      - LEDABETA
+      - ROUND5BETA
+      - PBE
+    ObjectType:
+      description: Type of security object.
+      type: string
+      enum:
+      - AES
+      - ARIA
+      - DES
+      - DES3
+      - SEED
+      - RSA
+      - DSA
+      - EC
+      - KCDSA
+      - ECKCDSA
+      - BIP32
+      - SLIP10
+      - BLS
+      - OPAQUE
+      - HMAC
+      - LEDABETA
+      - ROUND5BETA
+      - SECRET
+      - LMS
+      - XMSS
+      - MLDSA
+      - MLDSABETA
+      - MLKEM
+      - MLKEMBETA
+      - CERTIFICATE
+      - PBE
+    RsaSignaturePolicy:
+      allOf:
+      - type: object
+        description: Constraints on RSA signature parameters. In general, if a constraint is not specified, anything is allowed.
+        properties:
+          padding:
+            $ref: '#/components/schemas/RsaSignaturePaddingPolicy'
+    DigestAlgorithm:
+      description: A hash algorithm.
+      type: string
+      enum:
+      - BLAKE2B256
+      - BLAKE2B384
+      - BLAKE2B512
+      - BLAKE2S256
+      - RIPEMD160
+      - SSL3
+      - SHA1
+      - SHA224
+      - SHA256
+      - SHA384
+      - SHA512
+      - STREEBOG256
+      - STREEBOG512
+      - SHA3_224
+      - SHA3_256
+      - SHA3_384
+      - SHA3_512
+    KcdsaOptions:
+      allOf:
+      - type: object
+        properties:
+          subgroup_size:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+          hash_alg:
+            $ref: '#/components/schemas/DigestAlgorithm'
+    KeyCreationMethodVariantAgree:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - Agree
+        required:
+        - method
+      - type: object
+        properties: {}
+    FpeTokenizeMode:
+      description: How to tokenize a given input. The most secure option is "PreserveFormat".
+      type: string
+      enum:
+      - preserve_format
+      - preserve_variant
+      - preserve_length
+    FpeInputDefaultProcessing:
+      type: string
+      enum:
+      - strip
+      - reject
+    Metadata:
+      allOf:
+      - type: object
+        properties:
+          total_count:
+            type:
+            - integer
+            - 'null'
+          filtered_count:
+            type:
+            - integer
+            - 'null'
+    VirtualSobjectInfo:
+      allOf:
+      - type: object
+        description: 'Information specific to a virtual key. Currently, this is only relevant
+
+          for virtual keys backed by DSM.'
+        properties:
+          cached_key_material:
+            type: boolean
+            description: Whether or not the source key material is cached within the key.
+        required:
+        - cached_key_material
+    ObjectDigestResponse:
+      allOf:
+      - type: object
+        description: Digest of a key.
+        properties:
+          kid:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: UUID, only displayed for persistent keys.
+          digest:
+            type: string
+            format: byte
+            description: Digest value
+        required:
+        - digest
+    CustomMetadata:
+      type: object
+    KeyLinks:
+      allOf:
+      - type: object
+        description: Linked security objects.
+        properties:
+          replacement:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: key id of the key that replaced this key (i.e., this key was rotated to the `replacement` key)
+          replaced:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: key id of the key that was replaced by this key (i.e., the `replaced` key was rotated to this key)
+          copiedFrom:
+            type:
+            - string
+            - 'null'
+            format: uuid
+          copiedTo:
+            type:
+            - array
+            - 'null'
+            items:
+              type: string
+              format: uuid
+          subkeys:
+            type:
+            - array
+            - 'null'
+            items:
+              type: string
+              format: uuid
+          parent:
+            type:
+            - string
+            - 'null'
+            format: uuid
+          wrappingKey:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: Wrapping key used to wrap this security object
+    SobjectSort:
+      oneOf:
+      - title: SobjectSortVariantByKid
+        type: object
+        description: Security object UUID
+        properties:
+          sort:
+            type: string
+            pattern: ^kid:(?:asc|desc)$
+            example: kid:asc
+          start:
+            type: string
+            format: uuid
+            description: Initial security object UUID
+        required:
+        - sort
+      - title: SobjectSortVariantByName
+        type: object
+        description: Security object name
+        properties:
+          sort:
+            type: string
+            pattern: ^name:(?:asc|desc)$
+            example: name:asc
+          start:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Initial security object Name
+        required:
+        - sort
+    FpeEncryptedPart:
+      allOf:
+      - type: object
+        description: 'Structure of a tokenized portion of a complex tokenization data type.
+
+
+          Implementation note: the backend parser is locally "greedy" and will attempt to match
+
+          as many characters as possible. If this later results in an invalid parse of the rest
+
+          of the input, the backend ***will not backtrack*** and will simply return with an error.'
+        properties:
+          min_length:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The minimum allowed length for this part (in chars).
+          max_length:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The maximum allowed length for this part (in chars).
+          char_set:
+            $ref: '#/components/schemas/FpeCharSet'
+          cipher_char_set:
+            $ref: '#/components/schemas/FpeCharSet'
+          constraints:
+            $ref: '#/components/schemas/FpeConstraints'
+          preserve:
+            $ref: '#/components/schemas/FpePreserveMask'
+          mask:
+            $ref: '#/components/schemas/FpePreserveMask'
+        required:
+        - min_length
+        - max_length
+        - char_set
+  parameters:
+    ListSobjectsParams:
+      in: query
+      name: ListSobjectsParams
+      schema:
+        $ref: '#/components/schemas/ListSobjectsParams'
+      explode: true
+    GetSobjectParams:
+      in: query
+      name: GetSobjectParams
+      schema:
+        $ref: '#/components/schemas/GetSobjectParams'
+      explode: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    apiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Please enter your token prefixed with 'Basic ' (e.g., 'Basic your_token_here')
+    bearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

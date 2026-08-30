@@ -1,0 +1,282 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Registry API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: Registry
+paths:
+  /v1/registry:
+    post:
+      tags:
+      - Registry
+      summary: Add a new registry to an account
+      description: Add a new registry to an account.
+      operationId: createRegistry
+      x-auth-resource: Writer,Manager,ActiveAccount
+      parameters:
+      - $ref: '#/components/parameters/RegistryRequest'
+      responses:
+        '200':
+          description: Registry information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registry'
+      security:
+      - bearerToken: []
+    get:
+      tags:
+      - Registry
+      summary: Get details of all registry in the account
+      description: Get details of all registry in the account.
+      operationId: getAllRegistries
+      x-auth-resource: Reader,Writer,Manager
+      responses:
+        '200':
+          description: Get details of all registry in the account.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Registry'
+      security:
+      - bearerToken: []
+  /v1/registry/{registry-id}:
+    get:
+      tags:
+      - Registry
+      summary: Get details of a particular registry
+      description: Details of a particular registry.
+      operationId: getRegistry
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/RegistryId'
+      responses:
+        '200':
+          description: Details of a registry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registry'
+      security:
+      - bearerToken: []
+    patch:
+      tags:
+      - Registry
+      summary: Update a particular registry details
+      description: Update a particular registry details. Description and credential are the only editable field of a registry.
+      operationId: updateRegistry
+      parameters:
+      - $ref: '#/components/parameters/RegistryId'
+      - $ref: '#/components/parameters/UpdateRegistryRequest'
+      x-auth-resource: Writer,Manager,ActiveAccount
+      responses:
+        '200':
+          description: Registry information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registry'
+      security:
+      - bearerToken: []
+    delete:
+      tags:
+      - Registry
+      summary: Delete registry
+      description: Delete registry.
+      operationId: deleteRegistry
+      parameters:
+      - $ref: '#/components/parameters/RegistryId'
+      x-auth-resource: Writer,Manager
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - bearerToken: []
+  /v1/registry/app/{app-id}:
+    get:
+      tags:
+      - Registry
+      summary: Get details of the registry that will be used for the particular app images
+      description: Get details of the registry that will be used for the particular app images.
+      operationId: getRegistryForApp
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/AppId'
+      responses:
+        '200':
+          description: Registry details that will be used from saved registry credentials for the particular app images.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppRegistryResponse'
+      security:
+      - bearerToken: []
+  /v1/image/registry:
+    get:
+      tags:
+      - Registry
+      summary: Get details of the registry that will be used for the particular image
+      description: Get details of the registry that will be used for the particular image.
+      operationId: getRegistryForImage
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - name: image_name
+        in: query
+        description: Docker image name.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Registry detail that will be used from saved registry credentials for the particular image.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageRegistryResponse'
+      security:
+      - bearerToken: []
+components:
+  parameters:
+    RegistryRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to add a registry to an account.
+      schema:
+        $ref: '#/components/schemas/RegistryRequest'
+    UpdateRegistryRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to update registry details.
+      schema:
+        $ref: '#/components/schemas/UpdateRegistryRequest'
+    AppId:
+      name: app-id
+      in: path
+      required: true
+      description: UUID of an app.
+      schema:
+        type: string
+        format: uuid
+    RegistryId:
+      name: registry-id
+      in: path
+      required: true
+      description: UUID of a registry.
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    Registry:
+      type: object
+      required:
+      - url
+      - registry_id
+      properties:
+        url:
+          type: string
+          description: URL of the registry.
+        registry_id:
+          type: string
+          format: uuid
+          description: UUID of the registry.
+        description:
+          type: string
+          description: Description of the registry.
+        username:
+          type: string
+          description: Username of the registry.
+    PatchRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchDocument'
+    PatchOperation:
+      type: string
+      description: The operation to be performed
+      enum:
+      - add
+      - remove
+      - replace
+    ImageRegistryResponse:
+      type: object
+      properties:
+        registry:
+          $ref: '#/components/schemas/Registry'
+    CredentialType:
+      type: object
+      minProperties: 1
+      maxProperties: 1
+      description: ''
+      properties:
+        default:
+          $ref: '#/components/schemas/AuthConfig'
+    UpdateRegistryRequest:
+      $ref: '#/components/schemas/PatchRequest'
+    RegistryRequest:
+      type: object
+      required:
+      - url
+      - credential
+      properties:
+        url:
+          type: string
+          description: URL of the registry.
+        credential:
+          $ref: '#/components/schemas/CredentialType'
+        description:
+          type: string
+          description: Description of the registry.
+    AppRegistryResponse:
+      type: object
+      properties:
+        input_image_registry:
+          $ref: '#/components/schemas/Registry'
+        output_image_registry:
+          $ref: '#/components/schemas/Registry'
+    PatchDocument:
+      type: object
+      description: A JSONPatch document as defined by RFC 6902. The patch operation is subset of what is supported by RFC 6902.
+      required:
+      - op
+      - path
+      properties:
+        op:
+          $ref: '#/components/schemas/PatchOperation'
+        path:
+          type: string
+          description: It is JSON pointer indicating a field to be updated
+        value:
+          type: object
+          description: It is the value to be used for the field as indicated by op and path
+    AuthConfig:
+      description: Credentials for authenticating to a docker registry
+      type: object
+      required:
+      - username
+      properties:
+        username:
+          type: string
+          description: User name for docker registry authentication
+        password:
+          type: string
+          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

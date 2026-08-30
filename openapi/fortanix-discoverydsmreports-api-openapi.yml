@@ -1,0 +1,115 @@
+openapi: 3.2.0
+info:
+  description: '**API of the Fortanix Unified Data and AI Security Platform**
+
+
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
+
+    '
+  title: Armor Discovery Dsm Reports API
+  version: 0.1.0
+servers:
+- url: https://api.armor.fortanix.com
+tags:
+- description: APIs regarding obtaining the reports related to DSM.
+  name: DiscoveryDsmReports
+paths:
+  /api/v1/discovery/scans/{id}/summary_report/dsm:
+    get:
+      description: Get DSM Summary report
+      operationId: GetDsmScanSummaryReport
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryDsmScanSummaryData'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get DSM Summary report
+      tags:
+      - DiscoveryDsmReports
+components:
+  schemas:
+    DiscoveryDsmScanSummaryData:
+      allOf:
+      - properties:
+          connection_correlation_data:
+            items:
+              $ref: '#/components/schemas/DiscoveryConnectionCorrelationData'
+            type: array
+          keys_by_status:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryDsmSummaryKeyStatusData'
+            type: object
+          keys_by_type:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryDsmKeyAlgorithmData'
+            type: object
+          keys_discovery:
+            $ref: '#/components/schemas/DiscoveryDsmKeysDiscoveryData'
+        required:
+        - keys_by_status
+        - keys_by_type
+        - connection_correlation_data
+        type: object
+    DiscoveryDsmSummaryKeyStatusData:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryDsmKeyAlgorithmData:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryDsmKeysDiscoveryData:
+      allOf:
+      - properties:
+          correlated_keys:
+            type: integer
+          total_keys:
+            type: integer
+        required:
+        - total_keys
+        - correlated_keys
+        type: object
+    DiscoveryConnectionCorrelationData:
+      allOf:
+      - properties:
+          connection_id:
+            format: uuid
+            type: string
+          connection_name:
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            type: string
+          correlated_keys_count:
+            type: integer
+        required:
+        - connection_id
+        - connection_name
+        - correlated_keys_count
+        type: object
+  securitySchemes:
+    Oauth2ClientCredentials:
+      description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+      type: oauth2

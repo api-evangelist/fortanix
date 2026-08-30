@@ -1,0 +1,252 @@
+openapi: 3.2.0
+info:
+  description: Fortanix Confidential Computing Manager Backend. These are APIs using which the frontend and other clients (compute node agents) interact with Fortanix Confidential Computing Manager functionalities, which include compute node and app enrollment, attestation and signing, and Certificate Authority.
+  version: 2.0.0
+  title: Confidential Computing Manager Auth API
+  termsOfService: https://www.fortanix.com/legal/terms/
+  contact:
+    name: Fortanix Support
+    url: https://support.fortanix.com/hc/en-us/categories/360003107511-Confidential-Computing-Manager
+    email: support@fortanix.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://ccm.fortanix.com
+tags:
+- name: Auth
+paths:
+  /v1/sys/auth:
+    post:
+      tags:
+      - Auth
+      summary: User authentication
+      description: User authentication.
+      operationId: authenticateUser
+      x-auth-resource: NoAuth
+      parameters:
+      - $ref: '#/components/parameters/AuthRequest'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /v1/sys/auth/discover:
+    post:
+      tags:
+      - Auth
+      summary: Discover the supported authentication methods for a user.
+      description: Discover the supported authentication methods for a user.
+      operationId: discover
+      x-auth-resource: NoAuth
+      parameters:
+      - name: acct_id
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthDiscoverResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthDiscoverRequest'
+        required: true
+  /v1/sys/session/refresh:
+    post:
+      tags:
+      - Auth
+      summary: Refreshes existing user session.
+      description: Refreshes an existing session, thus extending the expiration time of the existing session token.
+      operationId: refresh
+      x-auth-resource: NoAuth
+      responses:
+        '200':
+          description: Refreshed Session Info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshResponse'
+      security:
+      - bearerToken: []
+  /v1/sys/session/terminate:
+    post:
+      tags:
+      - Auth
+      summary: Terminate a session
+      description: Terminate an authenticated session. After this call, session cannot be refreshed.
+      operationId: terminate
+      x-auth-resource: UserAuth,Reader,Writer,Manager,ManagerInLockedAccount,WriterInLockedAccount
+      responses:
+        '204':
+          description: Nothing is returned on success
+      security:
+      - bearerToken: []
+  /v1/sys/session/select_account/{account-id}:
+    post:
+      summary: Select a user's account to work on.
+      description: '"Select one of the user''s account to proceed. This is applicable when a user is associated with one or more account."
+
+        '
+      tags:
+      - Auth
+      operationId: selectAccountBodrum
+      x-auth-resource: UserAuth,Reader,Writer,Manager,ManagerInLockedAccount,WriterInLockedAccount
+      parameters:
+      - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Session Info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectAccountResponse'
+      security:
+      - bearerToken: []
+components:
+  schemas:
+    AuthRequest:
+      type: object
+      required:
+      - oauth_auth_code
+      properties:
+        oauth_auth_code:
+          $ref: '#/components/schemas/OauthCodeData'
+    SelectAccountResponse:
+      type: object
+      required:
+      - session_info
+      properties:
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    OauthAuthCodeGrant:
+      type: object
+      required:
+      - name
+      - icon_url
+      - authorization_url
+      - client_id
+      - redirect_uri
+      - state
+      - idp_id
+      properties:
+        name:
+          type: string
+        icon_url:
+          type: string
+        authorization_url:
+          type: string
+        client_id:
+          type: string
+        redirect_uri:
+          type: string
+        state:
+          type: string
+        idp_id:
+          type: string
+          format: binary
+        cluster_idp_id:
+          type: string
+    AuthDiscoverRequest:
+      type: object
+      properties:
+        user_email:
+          type: string
+          description: User email.
+    AuthMethod:
+      type: object
+      properties:
+        password:
+          type: object
+        oauth_code_grant:
+          $ref: '#/components/schemas/OauthAuthCodeGrant'
+    OauthCodeData:
+      type: object
+      required:
+      - idp_id
+      - code
+      properties:
+        idp_id:
+          type: string
+          format: binary
+        code:
+          type: string
+        email:
+          type: string
+    AuthDiscoverResponse:
+      type: object
+      required:
+      - auth_methods
+      properties:
+        auth_methods:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthMethod'
+    AuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: Bearer token to be used to authenticate to other APIs.
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    RefreshResponse:
+      type: object
+      required:
+      - session_info
+      properties:
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    SessionInfo:
+      type: object
+      required:
+      - subject_id
+      - session_expires_at
+      - session_token_expires_at
+      properties:
+        subject_id:
+          type: string
+          format: uuid
+        session_expires_at:
+          type: integer
+          format: int64
+          description: Timestamp of when session will expire.
+        session_token_expires_at:
+          type: integer
+          format: int64
+          description: Timestamp of when session token will expire.
+        selected_account_id:
+          type: string
+          format: uuid
+          description: The selected account ID, if one is selected.
+  parameters:
+    AccountId:
+      name: account-id
+      in: path
+      required: true
+      description: UUID of an Account.
+      schema:
+        type: string
+        format: uuid
+    AuthRequest:
+      name: body
+      in: body
+      required: false
+      description: Request to authenticate.
+      schema:
+        $ref: '#/components/schemas/AuthRequest'
+  securitySchemes:
+    bearerToken:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: A JWT bearer token to be passed once authenticated.

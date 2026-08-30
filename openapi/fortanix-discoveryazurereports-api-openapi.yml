@@ -1,0 +1,1762 @@
+openapi: 3.2.0
+info:
+  description: '**API of the Fortanix Unified Data and AI Security Platform**
+
+
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
+
+    '
+  title: Armor Discovery Azure Reports API
+  version: 0.1.0
+servers:
+- url: https://api.armor.fortanix.com
+tags:
+- description: APIs regarding obtaining the reports related to Azure.
+  name: DiscoveryAzureReports
+paths:
+  /api/v1/discovery/scans/{id}/assessment_report/azure:
+    get:
+      description: Get Azure Scanned Assessment report
+      operationId: GetAzureScanAssessmentReport
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryAzureScanAssessmentReport'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Azure Scanned Assessment report
+      tags:
+      - DiscoveryAzureReports
+  /api/v1/discovery/scans/{id}/key_usage_report/azure:
+    get:
+      description: Get Scan Keys report.
+      operationId: GetAzureScanKeyUsageReport
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - $ref: '#/components/parameters/DiscoveryAzureKeyUsageParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryAzureKeyUsageResponse'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Scan Keys report.
+      tags:
+      - DiscoveryAzureReports
+  /api/v1/discovery/scans/{id}/subscriptions/azure:
+    get:
+      description: Get Azure Scanned Subscriptions
+      operationId: GetScannedAzureSubscriptions
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - $ref: '#/components/parameters/DiscoveryScannedAzureSubscriptionsParams'
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryScannedAzureSubscriptionsResponse'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Azure Scanned Subscriptions
+      tags:
+      - DiscoveryAzureReports
+  /api/v1/discovery/scans/{id}/summary_report/azure:
+    get:
+      description: Get Summary Report for Azure scan.
+      operationId: GetAzureScanSummaryReport
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        2XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryAzureSummaryData'
+          description: Success result
+      security:
+      - Oauth2ClientCredentials: []
+      summary: Get Summary Report for Azure scan.
+      tags:
+      - DiscoveryAzureReports
+components:
+  schemas:
+    DiscoveryAzureDatabaseAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_exportable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryAzureDatabaseDeploymentSqlManagedInstancePool:
+      allOf:
+      - properties:
+          properties:
+            $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentProperties'
+        required:
+        - properties
+        type: object
+    DiscoveryAzureContainerGroupEncryptionSourceVariantCustomerManagedKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - customer_managed_key
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureContainerGroupEncryptionSourceCustomerManagedKey'
+    DiscoveryAzureScanAssessmentReport:
+      allOf:
+      - properties:
+          risk_assessment:
+            $ref: '#/components/schemas/DiscoveryAzureRiskAssessment'
+          security_issues:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationMetrics'
+            description: We will be returning a count of SharedKeys, NoncompliantKeys, ExpiredKeys, ExportableKeys, and QuantumVulnerableKeys violations.
+            type: object
+          violations_by_service:
+            additionalProperties:
+              additionalProperties:
+                $ref: '#/components/schemas/DiscoveryViolationDetails'
+              type: object
+            description: 'We will be returning a count of ServicesEncryptedWithSharedKey, ServicesEncryptedWithNoncompliantKey, and UnencryptedServices violations.
+
+              These three counts will ve returned for all the Azure Services excluding the Key Vault.'
+            type: object
+        required:
+        - violations_by_service
+        - security_issues
+        - risk_assessment
+        type: object
+    DiscoveryAzureKeyAvailability:
+      discriminator:
+        mapping:
+          available: DiscoveryAzureKeyAvailabilityVariantAvailable
+          soft_deleted: DiscoveryAzureKeyAvailabilityVariantSoftDeleted
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureKeyAvailabilityVariantAvailable'
+      - $ref: '#/components/schemas/DiscoveryAzureKeyAvailabilityVariantSoftDeleted'
+    DiscoveryAzureKvKeyPolicyInfo:
+      allOf:
+      - properties:
+          principal_id:
+            type: string
+          role_assignment_id:
+            type: string
+          role_definition_id:
+            type: string
+        required:
+        - principal_id
+        - role_definition_id
+        - role_assignment_id
+        type: object
+    DiscoveryAzureKeyAvailabilityVariantSoftDeleted:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - soft_deleted
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureKeyAvailabilitySoftDeleted'
+    DiscoveryAzureManagedCluster:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAzureManagedClusterAnalysis'
+          disk_encryption_details:
+            $ref: '#/components/schemas/DiscoveryAzureManagedClusterDiskEncryptionDetails'
+          name:
+            type: string
+        required:
+        - name
+        - disk_encryption_details
+        - analysis
+        type: object
+    DiscoveryAzureStorageAccountBlobAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type: boolean
+          encrypted_with_exportable_key:
+            type: boolean
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type: boolean
+          encrypted_with_overly_permissive_usage_key:
+            type: boolean
+          encrypted_with_quantum_vulnerable_key:
+            type: boolean
+          encrypted_with_shared_key:
+            type: boolean
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        - encrypted_with_overly_permissive_usage_key
+        - encrypted_with_overly_permissive_management_key
+        - key_availability
+        - encrypted_with_shared_key
+        - encrypted_with_quantum_vulnerable_key
+        - encrypted_with_expired_key
+        - encrypted_with_exportable_key
+        type: object
+    DiscoveryAzureEncryptionSettings:
+      allOf:
+      - properties:
+          key_source:
+            $ref: '#/components/schemas/DiscoveryAzureStorageKeySource'
+        required:
+        - key_source
+        type: object
+    DiscoveryAzureCryptoPolicyCompliance:
+      allOf:
+      - properties:
+          is_compliant:
+            description: Represents if the crypto policy is compliant for the key.
+            type: boolean
+          violation_reason:
+            description: 'Represents the violation reason if the non-compliant against the
+
+              crypto policy, otherwise `None`.'
+            type:
+            - string
+            - 'null'
+        required:
+        - is_compliant
+        type: object
+    DiscoveryAzureDiskInstanceAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_exportable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryAzureKvKeyAnalysis:
+      allOf:
+      - properties:
+          crypto_policy_compliance:
+            $ref: '#/components/schemas/DiscoveryAzureCryptoPolicyCompliance'
+          is_shared:
+            description: 'Defaults to `false`. Will be `true` only if underlying key is used
+
+              to encrypt multiple services.'
+            type: boolean
+          overly_permissive_key_violations:
+            $ref: '#/components/schemas/DiscoveryAzureOverlyPermissiveKeyViolations'
+          usage_details:
+            $ref: '#/components/schemas/DiscoveryKeyUsageDetails'
+          usages:
+            items:
+              $ref: '#/components/schemas/DiscoveryKeyUsage'
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+        required:
+        - is_shared
+        type: object
+    DiscoveryAzureStorageAccount:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAzureStorageAnalysis'
+          blob_anonymous_access_enabled:
+            type: boolean
+          encryption_settings:
+            $ref: '#/components/schemas/DiscoveryAzureEncryptionSettings'
+          kind:
+            $ref: '#/components/schemas/DiscoveryAzureStorageAccountKind'
+          name:
+            type: string
+        required:
+        - name
+        - kind
+        - encryption_settings
+        - blob_anonymous_access_enabled
+        - analysis
+        type: object
+    DiscoveryAzureResourceGroup:
+      allOf:
+      - properties:
+          name:
+            type: string
+        required:
+        - name
+        type: object
+    DiscoveryAzureCloudDiscoveryData:
+      allOf:
+      - properties:
+          total_keys:
+            type: integer
+          total_regions:
+            type: integer
+          total_resource_groups:
+            type: integer
+          total_services:
+            type: integer
+          total_subscriptions:
+            type: integer
+        required:
+        - total_subscriptions
+        - total_resource_groups
+        - total_regions
+        - total_keys
+        - total_services
+        type: object
+    DiscoveryAzureManagedDiskEncryptionSettingsConfidentialVmEncryptedWithCustomerKey:
+      allOf:
+      - properties:
+          key_id:
+            type: string
+          key_rotation_enabled:
+            type: boolean
+        required:
+        - key_id
+        - key_rotation_enabled
+        type: object
+    DiscoveryAzureObjectDetailsVariantKvKeyVersion:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - kv_key_version
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureKvKeyVersion'
+    DiscoveryAzureManagedDiskEncryptionSettingsVariantConfidentialVmEncryptedWithAzureManagedKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - confidential_vm_encrypted_with_azure_managed_key
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryAzureKeyUsageResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureKeyUsageDetails'
+            type: array
+        required:
+        - items
+        type: object
+    DiscoveryAzureObjectDetailsVariantDatabase:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - database
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeployment'
+    DiscoveryAzureKeyUsageParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            type: string
+          previous_sort_value:
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryAzureDiskType:
+      description: 'Used to represent SKU of [AzureManagedDisk]. For reference:
+
+        [Documentation](https://learn.microsoft.com/en-us/rest/api/compute/disks/list-by-resource-group?view=rest-compute-2024-03-01&tabs=HTTP#diskstate)'
+      enum:
+      - premium_v2_lrs
+      - premium_lrs
+      - premium_zrs
+      - standard_ssd_lrs
+      - standard_ssd_zrs
+      - standard_lrs
+      - ultra_ssd_lrs
+      type: string
+    DiscoveryAzureObjectDetailsVariantManagedDisk:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - managed_disk
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDisk'
+    DiscoveryAzureManagedClusterDiskEncryptionDetailsVariantEncryptionAtRestWithPlatformKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - encryption_at_rest_with_platform_key
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryAzureSubscription:
+      allOf:
+      - properties:
+          id:
+            format: uuid
+            type: string
+          name:
+            type: string
+          tenant_id:
+            format: uuid
+            type: string
+        required:
+        - id
+        - name
+        - tenant_id
+        type: object
+    DiscoveryAzureDatabaseEncryptionKeySource:
+      description: Specifier for optional CMK Keys.
+      discriminator:
+        mapping:
+          database_level_customer_managed_key: DiscoveryAzureDatabaseEncryptionKeySourceVariantDatabaseLevelCustomerManagedKey
+          deployment_level_customer_managed_key: DiscoveryAzureDatabaseEncryptionKeySourceVariantDeploymentLevelCustomerManagedKey
+          deployment_level_microsoft_managed_key: DiscoveryAzureDatabaseEncryptionKeySourceVariantDeploymentLevelMicrosoftManagedKey
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseEncryptionKeySourceVariantDeploymentLevelCustomerManagedKey'
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseEncryptionKeySourceVariantDeploymentLevelMicrosoftManagedKey'
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseEncryptionKeySourceVariantDatabaseLevelCustomerManagedKey'
+    DiscoveryAzureOverlyPermissiveKeyViolations:
+      allOf:
+      - properties:
+          management_violations:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureKvKeyPolicyInfo'
+            type: array
+          usage_violations:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureKvKeyPolicyInfo'
+            type: array
+        required:
+        - usage_violations
+        - management_violations
+        type: object
+    DiscoveryAzureDatabaseDeploymentVariantSqlSingleServer:
+      allOf:
+      - properties:
+          $db_variant:
+            enum:
+            - sql_single_server
+            type: string
+        required:
+        - $db_variant
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentSqlSingleServer'
+    DiscoveryAzureDatabaseDeploymentSqlManagedInstance:
+      allOf:
+      - properties:
+          properties:
+            $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentProperties'
+        required:
+        - properties
+        type: object
+    DiscoveryAzureDatabaseDeploymentCosmosDb:
+      allOf:
+      - properties:
+          api:
+            description: 'The API a Cosmos databases exposes to applications.
+
+              Some possible values currently available in Azure are
+
+              "Sql", "MongoDB", "Cassandra", ...
+
+              This may be directly exposed in the frontend.'
+            type: string
+          properties:
+            $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentProperties'
+        required:
+        - api
+        - properties
+        type: object
+    DiscoveryAzureContainerGroupEncryptionSourceVariantMicrosoftManagedKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - microsoft_managed_key
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryAzureObjectDetails:
+      discriminator:
+        mapping:
+          container_group: DiscoveryAzureObjectDetailsVariantContainerGroup
+          database: DiscoveryAzureObjectDetailsVariantDatabase
+          kv_key_version: DiscoveryAzureObjectDetailsVariantKvKeyVersion
+          managed_cluster: DiscoveryAzureObjectDetailsVariantManagedCluster
+          managed_disk: DiscoveryAzureObjectDetailsVariantManagedDisk
+          storage_account: DiscoveryAzureObjectDetailsVariantStorageAccount
+          storage_account_blob: DiscoveryAzureObjectDetailsVariantStorageAccountBlob
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureObjectDetailsVariantDatabase'
+      - $ref: '#/components/schemas/DiscoveryAzureObjectDetailsVariantKvKeyVersion'
+      - $ref: '#/components/schemas/DiscoveryAzureObjectDetailsVariantStorageAccount'
+      - $ref: '#/components/schemas/DiscoveryAzureObjectDetailsVariantContainerGroup'
+      - $ref: '#/components/schemas/DiscoveryAzureObjectDetailsVariantManagedDisk'
+      - $ref: '#/components/schemas/DiscoveryAzureObjectDetailsVariantManagedCluster'
+      - $ref: '#/components/schemas/DiscoveryAzureObjectDetailsVariantStorageAccountBlob'
+    DiscoveryAzureKeySource:
+      enum:
+      - kv
+      - fortanix
+      - other
+      type: string
+    DiscoveryAzureDatabaseEncryptionKeySourceVariantDatabaseLevelCustomerManagedKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - database_level_customer_managed_key
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseEncryptionKeySourceDatabaseLevelCustomerManagedKey'
+    DiscoveryAzureKeyAvailabilitySoftDeleted:
+      allOf:
+      - properties:
+          deleted_on:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          scheduled_purge_on:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+        required:
+        - deleted_on
+        type: object
+    DiscoveryAzureDiskState:
+      description: 'Used to represent state of [AzureManagedDisk]. for reference:
+
+        [Documentation](https://learn.microsoft.com/en-us/rest/api/compute/disks/list-by-resource-group?view=rest-compute-2024-03-01&tabs=HTTP#diskstate)'
+      enum:
+      - active_sas
+      - active_sas_frozen
+      - active_upload
+      - attached
+      - frozen
+      - ready_to_upload
+      - reserved
+      - unattached
+      - other
+      type: string
+    DiscoveryAzureStorageKeySourceVariantKeyVault:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - key_vault
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureStorageKeySourceKeyVault'
+    DiscoveryAzureStorageKeySourceVariantStorage:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - storage
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryViolationMetrics:
+      allOf:
+      - description: A structure to store the violation metrics for each violation.
+        properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryAzureDatabaseDeploymentSqlSingleServer:
+      allOf:
+      - properties:
+          properties:
+            $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentProperties'
+          tier:
+            $ref: '#/components/schemas/DiscoveryAzureSqlSingleServerTier'
+        required:
+        - tier
+        - properties
+        type: object
+    DiscoveryAzureDatabaseProperties:
+      allOf:
+      - properties:
+          database_name:
+            type: string
+          is_tde_enabled:
+            description: 'If true, encryption is in place either with a CMK (customer managed key)
+
+              or MMK (microsoft managed key).'
+            type: boolean
+        required:
+        - database_name
+        - is_tde_enabled
+        type: object
+    DiscoveryScanInventoryObjectReference:
+      allOf:
+      - properties:
+          id:
+            format: uuid
+            type: string
+          scan_id:
+            format: uuid
+            type: string
+        required:
+        - id
+        - scan_id
+        type: object
+    DiscoveryAzureSqlSingleServerTier:
+      description: The service tiers for SQL Single Server.
+      enum:
+      - server
+      - serverless
+      type: string
+    DiscoveryAzureDatabaseDeploymentProperties:
+      allOf:
+      - properties:
+          deployment_name:
+            type: string
+          encryption_details:
+            $ref: '#/components/schemas/DiscoveryAzureDatabaseEncryptionDetails'
+          inner_databases_properties:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureDatabaseProperties'
+            type: array
+        required:
+        - deployment_name
+        - inner_databases_properties
+        - encryption_details
+        type: object
+    DiscoveryAzureRiskAssessment:
+      allOf:
+      - properties:
+          findings:
+            additionalProperties:
+              additionalProperties:
+                additionalProperties:
+                  $ref: '#/components/schemas/DiscoveryViolationMetrics'
+                type: object
+              type: object
+            type: object
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - findings
+        - overall_risk
+        type: object
+    DiscoveryAzureSummaryData:
+      allOf:
+      - properties:
+          cloud_discovery:
+            $ref: '#/components/schemas/DiscoveryAzureCloudDiscoveryData'
+          key_count_by_status:
+            $ref: '#/components/schemas/DiscoveryAzureKeyCountByStatus'
+          key_count_by_type:
+            additionalProperties:
+              type: integer
+            description: It returns the count of each key type.
+            type: object
+          key_vault_count_by_access_tier:
+            additionalProperties:
+              type: integer
+            description: Returns the count of standard and premium key vaults.
+            type: object
+          protected_services:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryAzureServicesKeyCount'
+            description: Gives an insight into the keys used for each service.
+            type: object
+          top_subscriptions:
+            description: List of subscriptions (Max of 3) with max number of total keys.
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureSubscriptionKeysCount'
+            type: array
+        required:
+        - cloud_discovery
+        - top_subscriptions
+        - protected_services
+        - key_count_by_status
+        - key_count_by_type
+        - key_vault_count_by_access_tier
+        type: object
+    DiscoveryAzureKvKeyAttributes:
+      allOf:
+      - properties:
+          activation_date:
+            description: 'The timestamp when the key will be activated. None,
+
+              if the activation date is not set for the key.'
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          created_at:
+            description: The timestamp of creation of the key.
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          expiry_date:
+            description: 'The timestamp when the key will expire. None, if the expiry date is
+
+              not scheduled for the key.'
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          is_enabled:
+            description: Represents true if the key is enabled, false otherwise.
+            type: boolean
+          is_exportable:
+            description: Represents true if the key is exportable, false otherwise.
+            type: boolean
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryAzureKeyAvailability'
+          recoverable_days:
+            description: 'Soft Delete data retention days. Value should be >=7 and <=90 when
+
+              soft delete is enabled, otherwise 0.'
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+          recovery_level:
+            $ref: '#/components/schemas/DiscoveryAzureKvRecoveryLevel'
+          updated_at:
+            description: 'The timestamp when the key was last updated. By default, it will
+
+              always have the key creation timestamp as the last updated time.'
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+        required:
+        - created_at
+        - updated_at
+        - recoverable_days
+        - recovery_level
+        - is_exportable
+        - is_enabled
+        type: object
+    DiscoveryKeyUsage:
+      enum:
+      - encrypt
+      - unused
+      type: string
+    DiscoveryAzureManagedDiskEncryptionSettingsEncryptionAtRestWithCustomerKey:
+      allOf:
+      - properties:
+          key_id:
+            type: string
+          key_rotation_enabled:
+            type: boolean
+        required:
+        - key_id
+        - key_rotation_enabled
+        type: object
+    DiscoveryAzureContainerGroup:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAzureContainerGroupAnalysis'
+          encryption_source:
+            $ref: '#/components/schemas/DiscoveryAzureContainerGroupEncryptionSource'
+          name:
+            type: string
+        required:
+        - name
+        - encryption_source
+        - analysis
+        type: object
+    DiscoveryKeyUsageDetails:
+      allOf:
+      - properties:
+          encrypt:
+            $ref: '#/components/schemas/DiscoveryKeyEncryptUsageDetails'
+        type: object
+    DiscoveryAzureKeyCountByStatus:
+      allOf:
+      - properties:
+          auto_rotation_disabled:
+            description: The total number of keys whose autorotation is not enabled.
+            type: integer
+          customer_managed_keys:
+            description: The total number of customer managed keys
+            type:
+            - integer
+            - 'null'
+          enabled_keys:
+            description: The total number of keys that are enabled.
+            type:
+            - integer
+            - 'null'
+          not_activated:
+            description: The total number of keys that are not activated.
+            type: integer
+          platform_managed_keys:
+            description: The total number of platform managed keys
+            type:
+            - integer
+            - 'null'
+          shared:
+            description: The total number of keys that are shared.
+            type: integer
+        required:
+        - shared
+        - auto_rotation_disabled
+        - not_activated
+        type: object
+    DiscoveryScannedAzureSubscriptionDetails:
+      allOf:
+      - properties:
+          name:
+            type: string
+        required:
+        - name
+        type: object
+    DiscoveryScannedAzureSubscription:
+      allOf:
+      - properties:
+          details:
+            $ref: '#/components/schemas/DiscoveryScannedAzureSubscriptionDetails'
+          id:
+            format: uuid
+            type: string
+          regions:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureRegion'
+            type: array
+            uniqueItems: true
+          resource_groups:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureResourceGroup'
+            type: array
+        required:
+        - id
+        - details
+        - resource_groups
+        - regions
+        type: object
+    DiscoveryAzureManagedDiskEncryptionSettingsEncryptionAtRestWithAzureAndCustomerKeys:
+      allOf:
+      - properties:
+          key_id:
+            type: string
+          key_rotation_enabled:
+            type: boolean
+        required:
+        - key_id
+        - key_rotation_enabled
+        type: object
+    DiscoveryKeyEncryptUsageDetails:
+      allOf:
+      - properties:
+          service_count:
+            type: integer
+        required:
+        - service_count
+        type: object
+    DiscoveryAzureKvKeyOperation:
+      enum:
+      - encrypt
+      - decrypt
+      - sign
+      - verify
+      - wrap_key
+      - unwrap_key
+      - import
+      type: string
+    DiscoveryAzureObject:
+      allOf:
+      - properties:
+          details:
+            $ref: '#/components/schemas/DiscoveryAzureObjectDetails'
+          region:
+            $ref: '#/components/schemas/DiscoveryAzureRegion'
+          resource_group:
+            $ref: '#/components/schemas/DiscoveryAzureResourceGroup'
+          resource_id:
+            type: string
+          subscription:
+            $ref: '#/components/schemas/DiscoveryAzureSubscription'
+        required:
+        - resource_id
+        - region
+        - subscription
+        - resource_group
+        - details
+        type: object
+    DiscoveryAzureDatabaseDeployment:
+      discriminator:
+        mapping:
+          cosmos_db: DiscoveryAzureDatabaseDeploymentVariantCosmosDb
+          sql_managed_instance: DiscoveryAzureDatabaseDeploymentVariantSqlManagedInstance
+          sql_managed_instance_pool: DiscoveryAzureDatabaseDeploymentVariantSqlManagedInstancePool
+          sql_single_server: DiscoveryAzureDatabaseDeploymentVariantSqlSingleServer
+        propertyName: $db_variant
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentVariantSqlSingleServer'
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentVariantSqlManagedInstance'
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentVariantSqlManagedInstancePool'
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentVariantCosmosDb'
+    DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithAzureManagedKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - encryption_at_rest_with_azure_managed_key
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryAzureDatabaseEncryptionKeySourceVariantDeploymentLevelMicrosoftManagedKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - deployment_level_microsoft_managed_key
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryViolationDetails:
+      allOf:
+      - properties:
+          count:
+            type: integer
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - count
+        type: object
+    DiscoveryAzureDatabaseDeploymentVariantSqlManagedInstance:
+      allOf:
+      - properties:
+          $db_variant:
+            enum:
+            - sql_managed_instance
+            type: string
+        required:
+        - $db_variant
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentSqlManagedInstance'
+    DiscoveryAzureContainerGroupEncryptionSource:
+      discriminator:
+        mapping:
+          customer_managed_key: DiscoveryAzureContainerGroupEncryptionSourceVariantCustomerManagedKey
+          microsoft_managed_key: DiscoveryAzureContainerGroupEncryptionSourceVariantMicrosoftManagedKey
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureContainerGroupEncryptionSourceVariantMicrosoftManagedKey'
+      - $ref: '#/components/schemas/DiscoveryAzureContainerGroupEncryptionSourceVariantCustomerManagedKey'
+    DiscoveryAzureContainerGroupEncryptionSourceCustomerManagedKey:
+      allOf:
+      - properties:
+          key_id:
+            type: string
+        required:
+        - key_id
+        type: object
+    DiscoveryAzureObjectDetailsVariantStorageAccountBlob:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - storage_account_blob
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureStorageAccountBlob'
+    DiscoveryScannedAzureSubscriptionsParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            format: uuid
+            type: string
+          previous_sort_value:
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryAzureDatabaseDeploymentVariantCosmosDb:
+      allOf:
+      - properties:
+          $db_variant:
+            enum:
+            - cosmos_db
+            type: string
+        required:
+        - $db_variant
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentCosmosDb'
+    DiscoveryAzureKeyUsageDetails:
+      allOf:
+      - properties:
+          key:
+            $ref: '#/components/schemas/DiscoveryAzureObject'
+          key_id:
+            type: string
+          protected_services:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureObject'
+            type: array
+        required:
+        - key_id
+        - key
+        - protected_services
+        type: object
+    DiscoveryAzureManagedDiskEncryptionSettings:
+      description: 'Used to describe [Server-side encryption][1] configuration of [AzureManagedDisks]
+
+        - This does not cover [Azure Disk Encryption][2] which is handled on a volume level on VM
+
+
+        [1]: https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption
+
+        [2]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-overview'
+      discriminator:
+        mapping:
+          confidential_vm_encrypted_with_azure_managed_key: DiscoveryAzureManagedDiskEncryptionSettingsVariantConfidentialVmEncryptedWithAzureManagedKey
+          confidential_vm_encrypted_with_customer_key: DiscoveryAzureManagedDiskEncryptionSettingsVariantConfidentialVmEncryptedWithCustomerKey
+          encryption_at_rest_with_azure_and_customer_keys: DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithAzureAndCustomerKeys
+          encryption_at_rest_with_azure_managed_key: DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithAzureManagedKey
+          encryption_at_rest_with_customer_key: DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithCustomerKey
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithAzureManagedKey'
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettingsVariantConfidentialVmEncryptedWithAzureManagedKey'
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettingsVariantConfidentialVmEncryptedWithCustomerKey'
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithCustomerKey'
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithAzureAndCustomerKeys'
+    DiscoveryAzureDatabaseEncryptionKeySourceDeploymentLevelCustomerManagedKey:
+      allOf:
+      - properties:
+          key_id:
+            type: string
+        required:
+        - key_id
+        type: object
+    DiscoveryAzureManagedDisk:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAzureDiskInstanceAnalysis'
+          disk_size_gb:
+            format: int32
+            type: integer
+          disk_state:
+            $ref: '#/components/schemas/DiscoveryAzureDiskState'
+          disk_type:
+            $ref: '#/components/schemas/DiscoveryAzureDiskType'
+          encryption_settings:
+            $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettings'
+          name:
+            type: string
+        required:
+        - name
+        - disk_size_gb
+        - disk_state
+        - disk_type
+        - encryption_settings
+        - analysis
+        type: object
+    DiscoveryAzureStorageKeySourceKeyVault:
+      allOf:
+      - description: AzureStorageAccountKvProps changed to String.
+        properties:
+          key_id:
+            type: string
+        required:
+        - key_id
+        type: object
+    DiscoveryKeyAvailability:
+      description: 'This enum will be used for denoting key availability for all services in all cloud providers.
+
+        Each variant corresponds to different states of key used to encrypt the service. If a service is
+
+        not encrypted, the key will me marked as Unknown'
+      enum:
+      - available
+      - soft_deleted
+      - purged
+      - cross_account
+      - unknown
+      type: string
+    DiscoveryAzureStorageAccountKind:
+      enum:
+      - blob_storage
+      - block_blob_storage
+      - file_storage
+      - storage
+      - storage_v2
+      - unknown
+      type: string
+    DiscoveryAzureDatabaseDeploymentVariantSqlManagedInstancePool:
+      allOf:
+      - properties:
+          $db_variant:
+            enum:
+            - sql_managed_instance_pool
+            type: string
+        required:
+        - $db_variant
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseDeploymentSqlManagedInstancePool'
+    DiscoveryAzureObjectDetailsVariantStorageAccount:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - storage_account
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureStorageAccount'
+    DiscoveryAzureRegion:
+      enum:
+      - asia
+      - asia_pacific
+      - australia
+      - australia_central
+      - australia_central2
+      - australia_east
+      - australia_south_east
+      - brazil
+      - brazil_south
+      - brazil_south_east
+      - brazil_us
+      - canada
+      - canada_central
+      - canada_east
+      - central_india
+      - central_us
+      - central_us_euap
+      - central_us_stage
+      - east_asia
+      - east_asia_stage
+      - east_us
+      - east_us_stage
+      - east_us_stg
+      - east_us2
+      - east_us2_stage
+      - east_us2_euap
+      - europe
+      - france
+      - france_central
+      - france_south
+      - germany
+      - germany_north
+      - germany_west_central
+      - global
+      - india
+      - israel
+      - israel_central
+      - italy
+      - italy_north
+      - japan
+      - japan_east
+      - japan_west
+      - jio_india_central
+      - jio_india_west
+      - korea
+      - korea_central
+      - korea_south
+      - new_zealand
+      - north_central_us
+      - north_central_us_stage
+      - north_europe
+      - norway
+      - norway_east
+      - norway_west
+      - poland
+      - poland_central
+      - qatar
+      - qatar_central
+      - singapore
+      - south_africa
+      - south_africa_north
+      - south_africa_west
+      - south_central_us
+      - south_central_us_stage
+      - south_east_asia
+      - south_east_asia_stage
+      - south_india
+      - sweden
+      - sweden_central
+      - switzerland
+      - switzerland_north
+      - switzerland_west
+      - uae
+      - uae_central
+      - uae_north
+      - uk
+      - uk_south
+      - uk_west
+      - united_states
+      - united_states_euap
+      - west_central_us
+      - west_europe
+      - west_india
+      - west_us
+      - west_us_stage
+      - west_us2
+      - west_us2_stage
+      - west_us3
+      - other
+      type: string
+    DiscoveryAzureDatabaseEncryptionKeySourceDatabaseLevelCustomerManagedKey:
+      allOf:
+      - properties:
+          key_id:
+            type: string
+        required:
+        - key_id
+        type: object
+    DiscoveryAzureKeyAvailabilityVariantAvailable:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - available
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryAzureContainerGroupAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_exportable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type: boolean
+          encrypted_with_overly_permissive_usage_key:
+            type: boolean
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type: boolean
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        - encrypted_with_overly_permissive_usage_key
+        - encrypted_with_overly_permissive_management_key
+        - key_availability
+        - encrypted_with_shared_key
+        type: object
+    DiscoveryAzureManagedClusterDiskEncryptionDetails:
+      discriminator:
+        mapping:
+          encryption_at_rest_with_customer_key: DiscoveryAzureManagedClusterDiskEncryptionDetailsVariantEncryptionAtRestWithCustomerKey
+          encryption_at_rest_with_platform_key: DiscoveryAzureManagedClusterDiskEncryptionDetailsVariantEncryptionAtRestWithPlatformKey
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureManagedClusterDiskEncryptionDetailsVariantEncryptionAtRestWithCustomerKey'
+      - $ref: '#/components/schemas/DiscoveryAzureManagedClusterDiskEncryptionDetailsVariantEncryptionAtRestWithPlatformKey'
+    DiscoveryAzureManagedClusterDiskEncryptionDetailsVariantEncryptionAtRestWithCustomerKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - encryption_at_rest_with_customer_key
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureManagedClusterDiskEncryptionDetailsEncryptionAtRestWithCustomerKey'
+    DiscoveryAzureDatabaseEncryptionDetails:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAzureDatabaseAnalysis'
+          key_source:
+            $ref: '#/components/schemas/DiscoveryAzureDatabaseEncryptionKeySource'
+        required:
+        - key_source
+        - analysis
+        type: object
+    DiscoveryAzureManagedDiskEncryptionSettingsVariantConfidentialVmEncryptedWithCustomerKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - confidential_vm_encrypted_with_customer_key
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettingsConfidentialVmEncryptedWithCustomerKey'
+    DiscoveryAzureStorageAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_exportable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_overly_permissive_usage_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type:
+            - boolean
+            - 'null'
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        type: object
+    DiscoveryAzureStorageAccountBlob:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAzureStorageAccountBlobAnalysis'
+          container_name:
+            type: string
+          encryption_settings:
+            $ref: '#/components/schemas/DiscoveryAzureEncryptionSettings'
+          name:
+            type: string
+          storage_account_name:
+            type: string
+        required:
+        - name
+        - container_name
+        - storage_account_name
+        - encryption_settings
+        - analysis
+        type: object
+    DiscoveryScannedAzureSubscriptionsResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryScannedAzureSubscription'
+            type: array
+        required:
+        - items
+        type: object
+    DiscoveryRiskLevel:
+      enum:
+      - critical
+      - high
+      - medium
+      - low
+      - good
+      type: string
+    DiscoveryAzureDatabaseEncryptionKeySourceVariantDeploymentLevelCustomerManagedKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - deployment_level_customer_managed_key
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureDatabaseEncryptionKeySourceDeploymentLevelCustomerManagedKey'
+    DiscoveryAzureObjectDetailsVariantContainerGroup:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - container_group
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureContainerGroup'
+    DiscoveryAzureSubscriptionKeysCount:
+      allOf:
+      - properties:
+          enabled_keys:
+            description: Total number of keys that have been enabled and present in the subscription.
+            type: integer
+          subscription:
+            $ref: '#/components/schemas/DiscoveryAzureSubscription'
+          total_keys:
+            description: Total number of keys present in the subscription.
+            type: integer
+        required:
+        - subscription
+        - total_keys
+        - enabled_keys
+        type: object
+    DiscoveryAzureKvAccessTier:
+      enum:
+      - standard
+      - premium
+      type: string
+    DiscoveryAzureKvKeyVersion:
+      allOf:
+      - properties:
+          analysis:
+            $ref: '#/components/schemas/DiscoveryAzureKvKeyAnalysis'
+          is_current_version:
+            description: True if this is the latest key version, False otherwise.
+            type: boolean
+          is_key_managed:
+            description: 'True if the key version''s lifetime is managed by key vault,
+
+              False otherwise.'
+            type: boolean
+          key_attributes:
+            $ref: '#/components/schemas/DiscoveryAzureKvKeyAttributes'
+          key_name:
+            description: The name associated with the key version.
+            type: string
+          key_ops:
+            description: Allowed key operations on the key version.
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureKvKeyOperation'
+            type: array
+          key_rotation_date:
+            description: 'Returns the date when the key will be rotated. None, when the auto
+
+              key rotation is not enabled for the key.'
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          key_source:
+            $ref: '#/components/schemas/DiscoveryAzureKeySource'
+          key_type:
+            $ref: '#/components/schemas/DiscoveryAzureKvKeyType'
+          key_vault_access_tier:
+            $ref: '#/components/schemas/DiscoveryAzureKvAccessTier'
+          key_vault_name:
+            description: Represents the Azure Key Vault Name.
+            type: string
+          key_vault_uri:
+            description: Represents the Azure key vault URI.
+            type: string
+          key_version:
+            description: The key version of the scanned key.
+            type: string
+          source_scan_inventory_object:
+            $ref: '#/components/schemas/DiscoveryScanInventoryObjectReference'
+          tags:
+            additionalProperties:
+              type: string
+            description: The tags associated with the key version.
+            type: object
+        required:
+        - key_name
+        - key_version
+        - is_current_version
+        - key_vault_uri
+        - key_vault_name
+        - key_vault_access_tier
+        - key_attributes
+        - key_type
+        - key_ops
+        - tags
+        - is_key_managed
+        - analysis
+        type: object
+    DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithAzureAndCustomerKeys:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - encryption_at_rest_with_azure_and_customer_keys
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettingsEncryptionAtRestWithAzureAndCustomerKeys'
+    DiscoveryAzureKvRecoveryLevel:
+      enum:
+      - customized_recoverable
+      - customized_recoverable_and_protected_subscription
+      - customized_recoverable_and_purgeable
+      - purgeable
+      - recoverable
+      - recoverable_and_protected_subscription
+      - recoverable_and_purgeable
+      - unknown
+      type: string
+    DiscoveryAzureManagedClusterDiskEncryptionDetailsEncryptionAtRestWithCustomerKey:
+      allOf:
+      - properties:
+          key_id:
+            type: string
+          key_rotation_enabled:
+            type: boolean
+        required:
+        - key_id
+        - key_rotation_enabled
+        type: object
+    DiscoveryAzureKvKeyType:
+      enum:
+      - rsa2048
+      - rsa3072
+      - rsa4096
+      - rsa_hsm2048
+      - rsa_hsm3072
+      - rsa_hsm4096
+      - ecc_nist_p256
+      - ecc_nist_p384
+      - ecc_nist_p521
+      - ecc_secg_p256k1
+      - ecc_nist_hsm_p256
+      - ecc_nist_hsm_p384
+      - ecc_nist_hsm_p521
+      - ecc_secg_hsm_p256k1
+      - oct
+      - oct_hsm
+      - unknown
+      type: string
+    DiscoveryAzureObjectDetailsVariantManagedCluster:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - managed_cluster
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureManagedCluster'
+    DiscoveryAzureManagedDiskEncryptionSettingsVariantEncryptionAtRestWithCustomerKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - encryption_at_rest_with_customer_key
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureManagedDiskEncryptionSettingsEncryptionAtRestWithCustomerKey'
+    DiscoveryAzureManagedClusterAnalysis:
+      allOf:
+      - properties:
+          encrypted_with_expired_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_exportable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_noncompliant_key:
+            type: boolean
+          encrypted_with_overly_permissive_management_key:
+            type: boolean
+          encrypted_with_overly_permissive_usage_key:
+            type: boolean
+          encrypted_with_quantum_vulnerable_key:
+            type:
+            - boolean
+            - 'null'
+          encrypted_with_shared_key:
+            type: boolean
+          key_availability:
+            $ref: '#/components/schemas/DiscoveryKeyAvailability'
+        required:
+        - encrypted_with_noncompliant_key
+        - encrypted_with_overly_permissive_usage_key
+        - encrypted_with_overly_permissive_management_key
+        - key_availability
+        - encrypted_with_shared_key
+        type: object
+    DiscoveryAzureStorageKeySource:
+      description: The encryption key source (provider).
+      discriminator:
+        mapping:
+          key_vault: DiscoveryAzureStorageKeySourceVariantKeyVault
+          storage: DiscoveryAzureStorageKeySourceVariantStorage
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureStorageKeySourceVariantKeyVault'
+      - $ref: '#/components/schemas/DiscoveryAzureStorageKeySourceVariantStorage'
+    DiscoveryAzureServicesKeyCount:
+      allOf:
+      - properties:
+          azure_managed_key_encrypted:
+            description: Corresponds to the number of services encrypted with a Microsoft Managed Key or the Service Managed Key.
+            type: integer
+          customer_managed_key_encrypted:
+            description: Corresponds to the number of services encrypted with a CMK that is stored in the Azure Key Vault.
+            type: integer
+          total_services:
+            description: The total number of services.
+            type: integer
+        required:
+        - total_services
+        - azure_managed_key_encrypted
+        - customer_managed_key_encrypted
+        type: object
+  parameters:
+    DiscoveryScannedAzureSubscriptionsParams:
+      explode: true
+      in: query
+      name: DiscoveryScannedAzureSubscriptionsParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryScannedAzureSubscriptionsParams'
+    DiscoveryAzureKeyUsageParams:
+      explode: true
+      in: query
+      name: DiscoveryAzureKeyUsageParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryAzureKeyUsageParams'
+  securitySchemes:
+    Oauth2ClientCredentials:
+      description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: https://api.armor.fortanix.com/api/v1/iam/session/oauth2/token
+      type: oauth2
