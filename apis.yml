@@ -192,26 +192,6 @@ apis:
     url: https://support.fortanix.com/apidocs/armor-ki-introduction
   - type: Documentation
     url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
-- aid: fortanix:fortanix-approvalrequests-api
-  name: Fortanix Approval Requests API
-  description: The ApprovalRequests API from Fortanix — 5 operation(s) for approvalrequests.
-  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
-  baseURL: https://amer.smartkey.io
-  tags:
-  - Approval Requests
-  tags_raw:
-  - ApprovalRequests
-  properties:
-  - type: OpenAPI
-    url: openapi/fortanix-approvalrequests-api-openapi.yml
-  - type: Documentation
-    url: https://support.fortanix.com/docs/dsm-rest-apis
-  - type: APIReference
-    url: https://support.fortanix.com/apidocs/dsm-introduction
-  - type: APIReference
-    url: https://support.fortanix.com/apidocs/armor-ki-introduction
-  - type: Documentation
-    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
 - aid: fortanix:fortanix-apps-api
   name: Fortanix Apps API
   description: The Apps API from Fortanix — 7 operation(s) for apps.
@@ -318,26 +298,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/fortanix-certificate-api-openapi.yml
-  - type: Documentation
-    url: https://support.fortanix.com/docs/dsm-rest-apis
-  - type: APIReference
-    url: https://support.fortanix.com/apidocs/dsm-introduction
-  - type: APIReference
-    url: https://support.fortanix.com/apidocs/armor-ki-introduction
-  - type: Documentation
-    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
-- aid: fortanix:fortanix-computeclusters-api
-  name: Fortanix Compute Clusters API
-  description: The ComputeClusters API from Fortanix — 2 operation(s) for computeclusters.
-  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
-  baseURL: https://amer.smartkey.io
-  tags:
-  - Compute Clusters
-  tags_raw:
-  - ComputeClusters
-  properties:
-  - type: OpenAPI
-    url: openapi/fortanix-computeclusters-api-openapi.yml
   - type: Documentation
     url: https://support.fortanix.com/docs/dsm-rest-apis
   - type: APIReference
@@ -969,26 +929,6 @@ apis:
     url: https://support.fortanix.com/apidocs/armor-ki-introduction
   - type: Documentation
     url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
-- aid: fortanix:fortanix-workflowruns-api
-  name: Fortanix Workflow Runs API
-  description: The WorkflowRuns API from Fortanix — 5 operation(s) for workflowruns.
-  humanURL: https://support.fortanix.com/apidocs/dsm-introduction
-  baseURL: https://amer.smartkey.io
-  tags:
-  - Workflow Runs
-  tags_raw:
-  - WorkflowRuns
-  properties:
-  - type: OpenAPI
-    url: openapi/fortanix-workflowruns-api-openapi.yml
-  - type: Documentation
-    url: https://support.fortanix.com/docs/dsm-rest-apis
-  - type: APIReference
-    url: https://support.fortanix.com/apidocs/dsm-introduction
-  - type: APIReference
-    url: https://support.fortanix.com/apidocs/armor-ki-introduction
-  - type: Documentation
-    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
 - aid: fortanix:fortanix-zone-api
   name: Fortanix Zone API
   description: The Zone API from Fortanix — 5 operation(s) for zone.
@@ -999,6 +939,42 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/fortanix-zone-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-compute-clusters-api
+  name: Fortanix Compute Clusters API
+  description: The Compute Clusters API from Fortanix — 2 operation(s) for compute clusters.
+  humanURL: https://support.fortanix.com/apidocs/ccm-introduction
+  baseURL: https://ccm.fortanix.com
+  tags:
+  - Compute Clusters
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-compute-clusters-api-openapi.yml
+  - type: Documentation
+    url: https://support.fortanix.com/docs/dsm-rest-apis
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/dsm-introduction
+  - type: APIReference
+    url: https://support.fortanix.com/apidocs/armor-ki-introduction
+  - type: Documentation
+    url: https://support.fortanix.com/docs/fortanix-armor-rest-apis
+- aid: fortanix:fortanix-workflow-runs-api
+  name: Fortanix Workflow Runs API
+  description: The Workflow Runs API from Fortanix — 5 operation(s) for workflow runs.
+  humanURL: https://support.fortanix.com/apidocs/ccm-introduction
+  baseURL: https://ccm.fortanix.com
+  tags:
+  - Workflow Runs
+  properties:
+  - type: OpenAPI
+    url: openapi/fortanix-workflow-runs-api-openapi.yml
   - type: Documentation
     url: https://support.fortanix.com/docs/dsm-rest-apis
   - type: APIReference
