@@ -73,7 +73,7 @@ apis:
   - Certificates
   properties:
   - type: Swagger
-    url: openapi/fortanix-ccm-openapi-original.json
+    url: openapi/_original/fortanix-ccm-openapi-original.json
   - type: APIReference
     url: https://support.fortanix.com/apidocs/ccm-introduction
   - type: Documentation
@@ -348,6 +348,8 @@ apis:
   humanURL: https://support.fortanix.com/apidocs/dsm-introduction
   baseURL: https://amer.smartkey.io
   tags:
+  - Datasets
+  tags_raw:
   - Dataset
   properties:
   - type: OpenAPI
@@ -769,6 +771,8 @@ apis:
   humanURL: https://support.fortanix.com/apidocs/dsm-introduction
   baseURL: https://amer.smartkey.io
   tags:
+  - Sessions
+  tags_raw:
   - Session
   properties:
   - type: OpenAPI
