@@ -151,7 +151,8 @@ edges:
     violation type with risk levels — security posture reporting, so Cybersecurity Management at L1 without
     a confidently named sub-capability.
 - tag: ComputeClusters
-  spec_file: fortanix-computeclusters-api-openapi.yml
+  spec_file: fortanix-compute-clusters-api-openapi.yml
+  reanchored_from: fortanix-computeclusters-api-openapi.yml
   capability_id: BC-600.50
   capability_id_l1: BC-600
   capability_name: IT Infrastructure Management
