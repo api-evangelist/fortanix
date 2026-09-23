@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST Fido API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -29,7 +29,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Completes a pending authentication using a FIDO2 key.
+      summary: Completes a pending authentication using a FIDO2 key
       description: Completes a pending authentication using a FIDO2 key.
       requestBody:
         required: true
@@ -48,7 +48,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get credential creation options as per the given request.
+      summary: Get credential creation options as per the given request
       description: 'The response of this API needs to be used with relevant API
 
         for the protocol.
@@ -67,315 +67,47 @@ paths:
                 $ref: '#/components/schemas/MfaChallengeResponse'
 components:
   schemas:
-    U2fRegisteredKey:
-      allOf:
-      - type: object
-        description: Description of a registered U2F device.
-        properties:
-          keyHandle:
-            type: string
-          version:
-            type: string
-        required:
-        - keyHandle
-        - version
-    COSEAlgorithmIdentifier:
-      description: 'https://www.w3.org/TR/webauthn-2/#typedefdef-cosealgorithmidentifier
-
-
-        Signing algorithms from [IANA COSE Algorithms registry]
-
-        that are supported on DSM side for verifying signed messages
-
-        from authenticator.
-
-
-        [IANA COSE Algorithms registry]: https://www.iana.org/assignments/cose/cose.xhtml#algorithms'
-      type: string
-      enum:
-      - Es256
-    PublicKeyCredentialEntityForRp:
-      allOf:
-      - description: https://www.w3.org/TR/webauthn-2/#dictionary-pkcredentialentity
-        type: object
-        properties:
-          name:
-            type: string
-            description: Name of the entity.
-          entity:
-            $ref: '#/components/schemas/PublicKeyCredentialRpEntity'
-    UserVerificationRequirement:
-      description: 'https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement
-
-        https://www.w3.org/TR/webauthn-2/#user-verification'
-      type: string
-      enum:
-      - required
-      - preferred
-      - discouraged
-    PublicKeyCredentialUserEntity:
-      allOf:
-      - type: object
-        description: <https://www.w3.org/TR/webauthn-2/#dictionary-user-credential-params>
-        properties:
-          id:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          displayName:
-            type: string
-            description: Human friendly name intended only for display.
-        required:
-        - id
-        - displayName
-    Fido2MfaChallengeResponse:
-      description: Fido2 options when requesting assertion or attestation to a device
+    MfaChallengeResponse:
       oneOf:
-      - $ref: '#/components/schemas/PublicKeyCredentialCreationOptions'
-      - $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
-    Base64UrlSafe:
-      type: string
-      format: byte
-    MfaProtocol:
-      description: Protocols for MFA.
-      type: string
-      enum:
-      - u2f
-      - fido2
-    PublicKeyCredentialAuthenticatorAssertionResponse:
+      - $ref: '#/components/schemas/U2fMfaChallengeResponse'
+      - $ref: '#/components/schemas/Fido2MfaChallengeResponse'
+    AuthenticationExtensionsClientInputs:
       allOf:
       - type: object
-        description: 'Contains the attributes that are returned to the caller when a new
+        description: 'Extensions for webauthn. For every extension input, an
 
-          credential is created, or a new assertion is requested.'
-        properties:
-          id:
-            $ref: '#/components/schemas/Base64UrlSafe'
-            description: Credential's identifier.
-          type:
-            $ref: '#/components/schemas/PublicKeyCredentialType'
-            description: Type of credential.
-          response:
-            $ref: '#/components/schemas/AuthenticatorAssertionResponse'
-          get_client_extension_results:
-            $ref: '#/components/schemas/AuthenticationExtensionsClientOutputs'
-            description: 'This field contains client extension output entries produced
-
-              by the extension’s client extension processing.'
-    PublicKeyCredentialDescriptor:
-      allOf:
-      - type: object
-        description: 'Used to in registration response (telling about existing creds) to prevent
-
-          creation of duplicate creds on the same authenticator.
-
-          Used in authentication as the allowed creds.'
-        properties:
-          type:
-            $ref: '#/components/schemas/PublicKeyCredentialType'
-          id:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          transports:
-            type:
-            - array
-            - 'null'
-            items:
-              $ref: '#/components/schemas/AuthenticatorTransport'
-            description: 'Hints by relying party on what transport client should
-
-              use to communicate with authenticator.'
-        required:
-        - type
-        - id
-    PublicKeyCredentialRpEntity:
-      allOf:
-      - type: object
-        description: <https://www.w3.org/TR/webauthn-2/#dictionary-rp-credential-params>
-        properties:
-          id:
-            type:
-            - string
-            - 'null'
-            description: 'A unique identifier for the Relying Party entity, which sets the RP ID.
+          output must be returned if the input was considered.
 
 
-              <https://www.w3.org/TR/webauthn-2/#CreateCred-DetermineRpId>'
-    AuthenticatorTransportInner:
-      description: See [AuthenticatorTransport] type.
-      type: string
-      enum:
-      - usb
-      - nfc
-      - ble
-      - internal
-    ResidentKeyRequirement:
-      description: '<https://www.w3.org/TR/webauthn-2/#enum-residentKeyRequirement>
-
-
-        Tells Relying Party''s requirement about client side discoverable
-
-        creds (formely known as resident keys).
-
-        If client side discoverable creds are there, it means that the
-
-        authenticator is self-sufficient in identifying the user. If this
-
-        isn''t the case, the user needs to login first so that the server
-
-        can identify the user and help send `allowCredentials` to authenticator.
-
-
-        This is mostly meant for [username-less] authentication (which we don''t
-
-        support in DSM). We support 2FA where we already know about the logged
-
-        in user.
-
-
-        [username-less]: <https://groups.google.com/a/fidoalliance.org/g/fido-dev/c/ALQj3JXuyhs>'
-      type: string
-      enum:
-      - discouraged
-      - preferred
-      - required
-    PublicKeyCredentialEntityForUser:
-      allOf:
-      - description: https://www.w3.org/TR/webauthn-2/#dictionary-pkcredentialentity
-        type: object
-        properties:
-          name:
-            type: string
-            description: Name of the entity.
-          entity:
-            $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
-    PublicKeyCredentialType:
-      description: 'https://www.w3.org/TR/webauthn-2/#enum-credentialType
-
-
-        This enum defines valid cred types.'
-      type: string
-      enum:
-      - public-key
-    AuthenticatorAttachment:
-      description: <https://www.w3.org/TR/webauthn-2/#enumdef-authenticatorattachment>
-      type: string
-      enum:
-      - platform
-      - cross-platform
-    AuthenticationExtensionsClientOutputs:
-      allOf:
-      - type: object
-        description: 'This is the response of extension inputs. For every input,
-
-          an output must be returned if the input was considered.
-
-
-          <https://www.w3.org/TR/webauthn-2/#iface-authentication-extensions-client-outputs>'
+          https://www.w3.org/TR/webauthn-2/#dictdef-authenticationextensionsclientinputs'
         properties:
           appidExclude:
             type:
-            - boolean
+            - string
             - 'null'
-            description: 'Response of `appidExclude` extension.
+            description: 'This extension excludes authenticators during registration
 
-              See [AuthenticationExtensionsClientInputs::appid_exclude].'
+              based on legacy u2f key handles specified in "excludeCredentials".
+
+              If that key handle was created with that device, it is excluded.
+
+
+              https://www.w3.org/TR/webauthn-2/#sctn-appid-exclude-extension'
           appid:
+            type:
+            - string
+            - 'null'
+            description: 'This extension allows RPs that have previously registered a cred
+
+              using legacy U2F APIs to request an assertion.
+
+
+              https://www.w3.org/TR/webauthn-2/#sctn-appid-extension'
+          example.extension.bool:
             type:
             - boolean
             - 'null'
-            description: 'Response of `appid` extension.
-
-              See [AuthenticationExtensionsClientInputs::appid].'
-    U2fMfaChallengeResponse:
-      allOf:
-      - type: object
-        description: A challenge used for multi-factor authentication.
-        properties:
-          u2f_challenge:
-            type: string
-          u2f_keys:
-            type: array
-            items:
-              $ref: '#/components/schemas/U2fRegisteredKey'
-        required:
-        - u2f_challenge
-        - u2f_keys
-    AuthenticatorTransport:
-      description: 'Hints by relying party on how client should communicate
-
-        with the authenticator.
-
-
-        https://www.w3.org/TR/webauthn-2/#enum-transport'
-      oneOf:
-      - $ref: '#/components/schemas/AuthenticatorTransportInner'
-      - type: string
-        description: 'Unknown values are stored as spec asks to do so.
-
-          As per the spec level 3 (which is draft):
-
-          "The values SHOULD be members of AuthenticatorTransport
-
-          but Relying Parties SHOULD accept and store unknown values."
-
-          See `[[transports]]` in https://w3c.github.io/webauthn/#iface-authenticatorattestationresponse
-
-
-          Level 2 also says that but comparitively unclear.
-
-          "The values SHOULD be members of AuthenticatorTransport but
-
-          Relying Parties MUST ignore unknown values."
-
-          See `[[transports]]` in https://www.w3.org/TR/webauthn-2/#iface-authenticatorattestationresponse'
-    AttestationConveyancePreference:
-      description: '<https://www.w3.org/TR/webauthn-2/#enum-attestation-convey>
-
-        <https://www.w3.org/TR/webauthn-2/#sctn-attestation>
-
-
-        If you really want to understand attestation, read the following:
-
-        <https://fidoalliance.org/fido-technotes-the-truth-about-attestation/>
-
-        <https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651>
-
-
-        This enum just specified how the attestation should be conveyed
-
-        to the RP. You can see doc of the individual variants to understand
-
-        various ways.'
-      type: string
-      enum:
-      - none
-      - indirect
-      - direct
-      - enterprise
-    AuthenticatorAssertionResponse:
-      allOf:
-      - type: object
-        description: <https://www.w3.org/TR/webauthn-2/#iface-authenticatorassertionresponse>
-        properties:
-          clientDataJSON:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          authenticatorData:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          signature:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          userHandle:
-            $ref: '#/components/schemas/Base64UrlSafe'
-        required:
-        - clientDataJSON
-        - authenticatorData
-        - signature
-    MfaChallengeParams:
-      allOf:
-      - type: object
-        description: Params for Mfa challenge.
-        properties:
-          protocol:
-            $ref: '#/components/schemas/MfaProtocol'
-        required:
-        - protocol
+            description: Dummy extension used by conformance tests
     PublicKeyCredentialRequestOptions:
       allOf:
       - type: object
@@ -422,6 +154,45 @@ components:
             $ref: '#/components/schemas/AuthenticationExtensionsClientInputs'
         required:
         - challenge
+    PublicKeyCredentialDescriptor:
+      allOf:
+      - type: object
+        description: 'Used to in registration response (telling about existing creds) to prevent
+
+          creation of duplicate creds on the same authenticator.
+
+          Used in authentication as the allowed creds.'
+        properties:
+          type:
+            $ref: '#/components/schemas/PublicKeyCredentialType'
+          id:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          transports:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/AuthenticatorTransport'
+            description: 'Hints by relying party on what transport client should
+
+              use to communicate with authenticator.'
+        required:
+        - type
+        - id
+    U2fMfaChallengeResponse:
+      allOf:
+      - type: object
+        description: A challenge used for multi-factor authentication.
+        properties:
+          u2f_challenge:
+            type: string
+          u2f_keys:
+            type: array
+            items:
+              $ref: '#/components/schemas/U2fRegisteredKey'
+        required:
+        - u2f_challenge
+        - u2f_keys
     AuthenticatorSelectionCriteria:
       allOf:
       - type: object
@@ -445,22 +216,238 @@ components:
               if `residentKey` is set to `required`.'
           userVerification:
             $ref: '#/components/schemas/UserVerificationRequirement'
-    PublicKeyCredentialParameters:
+    PublicKeyCredentialAuthenticatorAssertionResponse:
       allOf:
       - type: object
-        description: https://www.w3.org/TR/webauthn-2/#dictionary-credential-params
+        description: 'Contains the attributes that are returned to the caller when a new
+
+          credential is created, or a new assertion is requested.'
         properties:
+          id:
+            $ref: '#/components/schemas/Base64UrlSafe'
+            description: Credential's identifier.
           type:
             $ref: '#/components/schemas/PublicKeyCredentialType'
-          alg:
-            $ref: '#/components/schemas/COSEAlgorithmIdentifier'
+            description: Type of credential.
+          response:
+            $ref: '#/components/schemas/AuthenticatorAssertionResponse'
+          get_client_extension_results:
+            $ref: '#/components/schemas/AuthenticationExtensionsClientOutputs'
+            description: 'This field contains client extension output entries produced
+
+              by the extension’s client extension processing.'
+    AttestationConveyancePreference:
+      description: '<https://www.w3.org/TR/webauthn-2/#enum-attestation-convey>
+
+        <https://www.w3.org/TR/webauthn-2/#sctn-attestation>
+
+
+        If you really want to understand attestation, read the following:
+
+        <https://fidoalliance.org/fido-technotes-the-truth-about-attestation/>
+
+        <https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651>
+
+
+        This enum just specified how the attestation should be conveyed
+
+        to the RP. You can see doc of the individual variants to understand
+
+        various ways.'
+      type: string
+      enum:
+      - none
+      - indirect
+      - direct
+      - enterprise
+    PublicKeyCredentialRpEntity:
+      allOf:
+      - type: object
+        description: <https://www.w3.org/TR/webauthn-2/#dictionary-rp-credential-params>
+        properties:
+          id:
+            type:
+            - string
+            - 'null'
+            description: 'A unique identifier for the Relying Party entity, which sets the RP ID.
+
+
+              <https://www.w3.org/TR/webauthn-2/#CreateCred-DetermineRpId>'
+    PublicKeyCredentialType:
+      description: 'https://www.w3.org/TR/webauthn-2/#enum-credentialType
+
+
+        This enum defines valid cred types.'
+      type: string
+      enum:
+      - public-key
+    Base64UrlSafe:
+      type: string
+      format: byte
+    COSEAlgorithmIdentifier:
+      description: 'https://www.w3.org/TR/webauthn-2/#typedefdef-cosealgorithmidentifier
+
+
+        Signing algorithms from [IANA COSE Algorithms registry]
+
+        that are supported on DSM side for verifying signed messages
+
+        from authenticator.
+
+
+        [IANA COSE Algorithms registry]: https://www.iana.org/assignments/cose/cose.xhtml#algorithms'
+      type: string
+      enum:
+      - Es256
+    UserVerificationRequirement:
+      description: 'https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement
+
+        https://www.w3.org/TR/webauthn-2/#user-verification'
+      type: string
+      enum:
+      - required
+      - preferred
+      - discouraged
+    ResidentKeyRequirement:
+      description: '<https://www.w3.org/TR/webauthn-2/#enum-residentKeyRequirement>
+
+
+        Tells Relying Party''s requirement about client side discoverable
+
+        creds (formely known as resident keys).
+
+        If client side discoverable creds are there, it means that the
+
+        authenticator is self-sufficient in identifying the user. If this
+
+        isn''t the case, the user needs to login first so that the server
+
+        can identify the user and help send `allowCredentials` to authenticator.
+
+
+        This is mostly meant for [username-less] authentication (which we don''t
+
+        support in DSM). We support 2FA where we already know about the logged
+
+        in user.
+
+
+        [username-less]: <https://groups.google.com/a/fidoalliance.org/g/fido-dev/c/ALQj3JXuyhs>'
+      type: string
+      enum:
+      - discouraged
+      - preferred
+      - required
+    AuthenticatorAttachment:
+      description: <https://www.w3.org/TR/webauthn-2/#enumdef-authenticatorattachment>
+      type: string
+      enum:
+      - platform
+      - cross-platform
+    PublicKeyCredentialUserEntity:
+      allOf:
+      - type: object
+        description: <https://www.w3.org/TR/webauthn-2/#dictionary-user-credential-params>
+        properties:
+          id:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          displayName:
+            type: string
+            description: Human friendly name intended only for display.
         required:
-        - type
-        - alg
-    MfaChallengeResponse:
+        - id
+        - displayName
+    U2fRegisteredKey:
+      allOf:
+      - type: object
+        description: Description of a registered U2F device.
+        properties:
+          keyHandle:
+            type: string
+          version:
+            type: string
+        required:
+        - keyHandle
+        - version
+    AuthenticationExtensionsClientOutputs:
+      allOf:
+      - type: object
+        description: 'This is the response of extension inputs. For every input,
+
+          an output must be returned if the input was considered.
+
+
+          <https://www.w3.org/TR/webauthn-2/#iface-authentication-extensions-client-outputs>'
+        properties:
+          appidExclude:
+            type:
+            - boolean
+            - 'null'
+            description: 'Response of `appidExclude` extension.
+
+              See [AuthenticationExtensionsClientInputs::appid_exclude].'
+          appid:
+            type:
+            - boolean
+            - 'null'
+            description: 'Response of `appid` extension.
+
+              See [AuthenticationExtensionsClientInputs::appid].'
+    Fido2MfaChallengeResponse:
+      description: Fido2 options when requesting assertion or attestation to a device
       oneOf:
-      - $ref: '#/components/schemas/U2fMfaChallengeResponse'
-      - $ref: '#/components/schemas/Fido2MfaChallengeResponse'
+      - $ref: '#/components/schemas/PublicKeyCredentialCreationOptions'
+      - $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
+    AuthenticatorTransportInner:
+      description: See [AuthenticatorTransport] type.
+      type: string
+      enum:
+      - usb
+      - nfc
+      - ble
+      - internal
+    MfaChallengeParams:
+      allOf:
+      - type: object
+        description: Params for Mfa challenge.
+        properties:
+          protocol:
+            $ref: '#/components/schemas/MfaProtocol'
+        required:
+        - protocol
+    PublicKeyCredentialEntityForRp:
+      allOf:
+      - description: https://www.w3.org/TR/webauthn-2/#dictionary-pkcredentialentity
+        type: object
+        properties:
+          name:
+            type: string
+            description: Name of the entity.
+          entity:
+            $ref: '#/components/schemas/PublicKeyCredentialRpEntity'
+    AuthenticatorAssertionResponse:
+      allOf:
+      - type: object
+        description: <https://www.w3.org/TR/webauthn-2/#iface-authenticatorassertionresponse>
+        properties:
+          clientDataJSON:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          authenticatorData:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          signature:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          userHandle:
+            $ref: '#/components/schemas/Base64UrlSafe'
+        required:
+        - clientDataJSON
+        - authenticatorData
+        - signature
+    MfaProtocol:
+      description: Protocols for MFA.
+      type: string
+      enum:
+      - u2f
+      - fido2
     PublicKeyCredentialCreationOptions:
       allOf:
       - type: object
@@ -516,43 +503,56 @@ components:
         - pubKeyCredParams
         - excludeCredentials
         - attestation
-    AuthenticationExtensionsClientInputs:
+    AuthenticatorTransport:
+      description: 'Hints by relying party on how client should communicate
+
+        with the authenticator.
+
+
+        https://www.w3.org/TR/webauthn-2/#enum-transport'
+      oneOf:
+      - $ref: '#/components/schemas/AuthenticatorTransportInner'
+      - type: string
+        description: 'Unknown values are stored as spec asks to do so.
+
+          As per the spec level 3 (which is draft):
+
+          "The values SHOULD be members of AuthenticatorTransport
+
+          but Relying Parties SHOULD accept and store unknown values."
+
+          See `[[transports]]` in https://w3c.github.io/webauthn/#iface-authenticatorattestationresponse
+
+
+          Level 2 also says that but comparitively unclear.
+
+          "The values SHOULD be members of AuthenticatorTransport but
+
+          Relying Parties MUST ignore unknown values."
+
+          See `[[transports]]` in https://www.w3.org/TR/webauthn-2/#iface-authenticatorattestationresponse'
+    PublicKeyCredentialEntityForUser:
+      allOf:
+      - description: https://www.w3.org/TR/webauthn-2/#dictionary-pkcredentialentity
+        type: object
+        properties:
+          name:
+            type: string
+            description: Name of the entity.
+          entity:
+            $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
+    PublicKeyCredentialParameters:
       allOf:
       - type: object
-        description: 'Extensions for webauthn. For every extension input, an
-
-          output must be returned if the input was considered.
-
-
-          https://www.w3.org/TR/webauthn-2/#dictdef-authenticationextensionsclientinputs'
+        description: https://www.w3.org/TR/webauthn-2/#dictionary-credential-params
         properties:
-          appidExclude:
-            type:
-            - string
-            - 'null'
-            description: 'This extension excludes authenticators during registration
-
-              based on legacy u2f key handles specified in "excludeCredentials".
-
-              If that key handle was created with that device, it is excluded.
-
-
-              https://www.w3.org/TR/webauthn-2/#sctn-appid-exclude-extension'
-          appid:
-            type:
-            - string
-            - 'null'
-            description: 'This extension allows RPs that have previously registered a cred
-
-              using legacy U2F APIs to request an assertion.
-
-
-              https://www.w3.org/TR/webauthn-2/#sctn-appid-extension'
-          example.extension.bool:
-            type:
-            - boolean
-            - 'null'
-            description: Dummy extension used by conformance tests
+          type:
+            $ref: '#/components/schemas/PublicKeyCredentialType'
+          alg:
+            $ref: '#/components/schemas/COSEAlgorithmIdentifier'
+        required:
+        - type
+        - alg
   parameters:
     MfaChallengeParams:
       in: query

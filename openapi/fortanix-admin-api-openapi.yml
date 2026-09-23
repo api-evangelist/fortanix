@@ -71,40 +71,31 @@ components:
           $ref: '#/components/schemas/AciConfig'
         eks_config:
           $ref: '#/components/schemas/EksConfig'
-    EksConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - access_key_id
-      properties:
-        access_key_id:
-          type: string
-          description: AWS access key ID
-        secret_access_key:
-          type: string
-          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
-    NitroEnclavesConverterConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - converter_url
-      properties:
-        converter_url:
-          type: string
-          description: URL to use for contacting the Nitro Enclaves Converter microservice.
-    ConversionRequestImageInfo:
+    DsmCluster:
       type: object
       required:
-      - name
+      - app_id
+      - url
       properties:
-        name:
+        app_id:
           type: string
-          description: Docker image name
-        auth_config:
-          $ref: '#/components/schemas/AuthConfig'
-          description: Docker credentials
+          format: uuid
+          description: SDKMS administrative app id.
+        url:
+          type: string
+          description: SDKMS URL to use for storing datasets.
+    AuthConfig:
+      description: Credentials for authenticating to a docker registry
+      type: object
+      required:
+      - username
+      properties:
+        username:
+          type: string
+          description: User name for docker registry authentication
+        password:
+          type: string
+          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
     AciConfig:
       type:
       - object
@@ -132,19 +123,29 @@ components:
         nras_url:
           type: string
           description: Nvidia Remote Attestation Service (NRAS) url.
-    DsmCluster:
-      type: object
+    EksConfig:
+      type:
+      - object
+      - 'null'
       required:
-      - app_id
-      - url
+      - access_key_id
       properties:
-        app_id:
+        access_key_id:
           type: string
-          format: uuid
-          description: SDKMS administrative app id.
-        url:
+          description: AWS access key ID
+        secret_access_key:
           type: string
-          description: SDKMS URL to use for storing datasets.
+          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
+    NitroEnclavesConverterConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - converter_url
+      properties:
+        converter_url:
+          type: string
+          description: URL to use for contacting the Nitro Enclaves Converter microservice.
     MicrosoftAttestationServiceConfig:
       type:
       - object
@@ -161,18 +162,17 @@ components:
           items:
             type: string
           description: Array of Microsoft Azure Attestation Service (MAA) expected MRSigner value (hex string).
-    AuthConfig:
-      description: Credentials for authenticating to a docker registry
+    ConversionRequestImageInfo:
       type: object
       required:
-      - username
+      - name
       properties:
-        username:
+        name:
           type: string
-          description: User name for docker registry authentication
-        password:
-          type: string
-          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
+          description: Docker image name
+        auth_config:
+          $ref: '#/components/schemas/AuthConfig'
+          description: Docker credentials
     DsmClusterConfig:
       type:
       - object

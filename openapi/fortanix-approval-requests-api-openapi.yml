@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST Approval Requests API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -19,17 +19,17 @@ servers:
       default: https://amer.smartkey.io
       description: Type your DSM server URL here (include https://)
 tags:
-- name: Approval_requests
+- name: Approval Requests
 paths:
   /sys/v1/approval_requests/{req_id}/approve:
     post:
       operationId: ApproveRequest
       tags:
-      - Approval_requests
+      - Approval Requests
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Approve an approval request.
+      summary: Approve an approval request
       description: 'If the quorum policy was configured to require extra things
 
         like 2FA, then, relevant info needs to be added to the request.'
@@ -57,11 +57,11 @@ paths:
     post:
       operationId: CreateApprovalRequest
       tags:
-      - Approval_requests
+      - Approval Requests
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Create a new approval request.
+      summary: Create a new approval request
       description: Create a new approval request.
       requestBody:
         required: true
@@ -79,11 +79,11 @@ paths:
     get:
       operationId: ListApprovalRequests
       tags:
-      - Approval_requests
+      - Approval Requests
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get all approval requests.
+      summary: Get all approval requests
       description: Get all approval requests.
       parameters:
       - $ref: '#/components/parameters/ListApprovalRequestsParams'
@@ -100,11 +100,11 @@ paths:
     delete:
       operationId: DeleteApprovalRequest
       tags:
-      - Approval_requests
+      - Approval Requests
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Delete an approval request.
+      summary: Delete an approval request
       description: Delete an approval request.
       parameters:
       - name: req_id
@@ -119,11 +119,11 @@ paths:
     get:
       operationId: GetApprovalRequest
       tags:
-      - Approval_requests
+      - Approval Requests
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Lookup a specific approval request.
+      summary: Lookup a specific approval request
       description: Lookup a specific approval request.
       parameters:
       - name: req_id
@@ -143,11 +143,11 @@ paths:
     post:
       operationId: DenyRequest
       tags:
-      - Approval_requests
+      - Approval Requests
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Deny an approval request.
+      summary: Deny an approval request
       description: Deny an approval request.
       parameters:
       - name: req_id
@@ -173,11 +173,11 @@ paths:
     post:
       operationId: GetApprovalRequestResult
       tags:
-      - Approval_requests
+      - Approval Requests
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get the result for an approved or failed request.
+      summary: Get the result for an approved or failed request
       description: Get the result for an approved or failed request.
       parameters:
       - name: req_id
@@ -197,11 +197,11 @@ paths:
     post:
       operationId: MfaChallenge
       tags:
-      - Approval_requests
+      - Approval Requests
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Creates a challenge for the FIDO2/U2F device to sign.
+      summary: Creates a challenge for the FIDO2/U2F device to sign
       description: 'If the quorum policy is configured to require 2FA, then a call to this API
 
         produces a challenge that needs to be signed by the respective FIDO2/U2F device.
@@ -226,217 +226,197 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MfaChallengeResponse'
+  /v1/approval_requests:
+    get:
+      tags:
+      - Approval Requests
+      summary: Get all approval requests
+      description: Get detailed information of all approval requests that the current user has access to.
+      operationId: getAllApprovalRequests
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - name: requester
+        in: query
+        description: Only retrieve approval requests with the specified requester ID
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: reviewer
+        in: query
+        description: Only retrieve approval requests with the specified reviewer ID
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: subject
+        in: query
+        description: Only retrieve approval requests with the specified subject ID
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: status
+        in: query
+        description: Only retrieve approval requests with the specified approval status
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - APPROVED
+          - DENIED
+          - FAILED
+      - name: all_search
+        in: query
+        description: Search on name or description.
+        required: false
+        schema:
+          type: string
+      - name: sort_by
+        in: query
+        description: Sort fields. In the format of key1:ASC,key2:DESC,key3:DESC
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum numbers of app configs to return.
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of app configs to skip from start.
+        required: false
+        schema:
+          type: integer
+      - name: filter
+        in: query
+        description: Filter items based on groups or labels.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Search result for approval request objects.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllApprovalRequests'
+      security:
+      - bearerToken: []
+    post:
+      tags:
+      - Approval Requests
+      summary: Create approval request
+      operationId: createApprovalRequest
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/ApprovalRequestRequest'
+      responses:
+        '201':
+          description: A newly created approval request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequest'
+      security:
+      - bearerToken: []
+  /v1/approval_requests/{request-id}:
+    get:
+      tags:
+      - Approval Requests
+      summary: Get an approval request
+      description: Get the details and status of a particular approval request.
+      operationId: getApprovalRequest
+      x-auth-resource: Reader,Writer,Manager
+      parameters:
+      - $ref: '#/components/parameters/RequestId'
+      responses:
+        '200':
+          description: Details about the specified approval request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequest'
+      security:
+      - bearerToken: []
+    delete:
+      tags:
+      - Approval Requests
+      summary: Delete an approval request
+      parameters:
+      - $ref: '#/components/parameters/RequestId'
+      operationId: deleteApprovalRequest
+      x-auth-resource: Reader,Writer,Manager
+      responses:
+        '204':
+          description: Nothing is returned on success.
+      security:
+      - bearerToken: []
+  /v1/approval_requests/{request-id}/approve:
+    post:
+      tags:
+      - Approval Requests
+      summary: Approve a request
+      parameters:
+      - $ref: '#/components/parameters/RequestId'
+      - $ref: '#/components/parameters/ApproveRequest'
+      operationId: approveApprovalRequest
+      x-auth-resource: Reader,Writer,Manager
+      responses:
+        '200':
+          description: Details about the specified approval request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequest'
+      security:
+      - bearerToken: []
+  /v1/approval_requests/{request-id}/deny:
+    post:
+      tags:
+      - Approval Requests
+      summary: Deny a request
+      parameters:
+      - $ref: '#/components/parameters/RequestId'
+      - $ref: '#/components/parameters/DenyRequest'
+      operationId: denyApprovalRequest
+      x-auth-resource: Reader,Writer,Manager
+      responses:
+        '200':
+          description: Details about the specified approval request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequest'
+      security:
+      - bearerToken: []
+  /v1/approval_requests/{request-id}/result:
+    post:
+      tags:
+      - Approval Requests
+      summary: Get the result for an approved or failed request
+      parameters:
+      - $ref: '#/components/parameters/RequestId'
+      operationId: getApprovalRequestResult
+      x-auth-resource: Reader,Writer,Manager
+      responses:
+        '200':
+          description: Details about the specified approval request result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovableResult'
+      security:
+      - bearerToken: []
 components:
   schemas:
-    U2fRegisteredKey:
-      allOf:
-      - type: object
-        description: Description of a registered U2F device.
-        properties:
-          keyHandle:
-            type: string
-          version:
-            type: string
-        required:
-        - keyHandle
-        - version
-    COSEAlgorithmIdentifier:
-      description: 'https://www.w3.org/TR/webauthn-2/#typedefdef-cosealgorithmidentifier
-
-
-        Signing algorithms from [IANA COSE Algorithms registry]
-
-        that are supported on DSM side for verifying signed messages
-
-        from authenticator.
-
-
-        [IANA COSE Algorithms registry]: https://www.iana.org/assignments/cose/cose.xhtml#algorithms'
-      type: string
-      enum:
-      - Es256
-    PublicKeyCredentialEntityForRp:
-      allOf:
-      - description: https://www.w3.org/TR/webauthn-2/#dictionary-pkcredentialentity
-        type: object
-        properties:
-          name:
-            type: string
-            description: Name of the entity.
-          entity:
-            $ref: '#/components/schemas/PublicKeyCredentialRpEntity'
-    PrincipalUserViaApp:
-      allOf:
-      - type: object
-        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
-        properties:
-          user_id:
-            type: string
-            format: uuid
-          scopes:
-            type: array
-            uniqueItems: true
-            items:
-              $ref: '#/components/schemas/OauthScope'
-        required:
-        - user_id
-        - scopes
-    UserVerificationRequirement:
-      description: 'https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement
-
-        https://www.w3.org/TR/webauthn-2/#user-verification'
-      type: string
-      enum:
-      - required
-      - preferred
-      - discouraged
-    PublicKeyCredentialUserEntity:
-      allOf:
-      - type: object
-        description: <https://www.w3.org/TR/webauthn-2/#dictionary-user-credential-params>
-        properties:
-          id:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          displayName:
-            type: string
-            description: Human friendly name intended only for display.
-        required:
-        - id
-        - displayName
-    ListApprovalRequestsParams:
-      allOf:
-      - type: object
-        properties:
-          requester:
-            type: string
-            format: uuid
-          reviewer:
-            type: string
-            format: uuid
-          subject:
-            type: string
-            format: uuid
-          status:
-            $ref: '#/components/schemas/ApprovalStatus'
-    DenyRequest:
-      allOf:
-      - type: object
-        properties:
-          reason:
-            type:
-            - string
-            - 'null'
-    Fido2MfaChallengeResponse:
-      description: Fido2 options when requesting assertion or attestation to a device
+    MfaChallengeResponse:
       oneOf:
-      - $ref: '#/components/schemas/PublicKeyCredentialCreationOptions'
-      - $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
-    ApprovableResult:
-      type: object
-      properties:
-        status:
-          type: integer
-          minimum: 0
-          maximum: 65535
-        body:
-          type: object
-      required:
-      - status
-      - body
-    Base64UrlSafe:
-      type: string
-      format: byte
-    U2fAuthRequest:
-      allOf:
-      - type: object
-        description: Use of U2F is deprecated, use FIDO2 for second factor authentication.
-        properties:
-          keyHandle:
-            type: string
-            format: byte
-          signatureData:
-            type: string
-            format: byte
-          clientData:
-            type: string
-            format: byte
-        required:
-        - keyHandle
-        - signatureData
-        - clientData
-    OauthScope:
-      description: OAuth scope.
-      type: string
-      enum:
-      - app
-      - openid
-      - email
-      - profile
-    MfaProtocol:
-      description: Protocols for MFA.
-      type: string
-      enum:
-      - u2f
-      - fido2
-    PublicKeyCredentialAuthenticatorAssertionResponse:
-      allOf:
-      - type: object
-        description: 'Contains the attributes that are returned to the caller when a new
-
-          credential is created, or a new assertion is requested.'
-        properties:
-          id:
-            $ref: '#/components/schemas/Base64UrlSafe'
-            description: Credential's identifier.
-          type:
-            $ref: '#/components/schemas/PublicKeyCredentialType'
-            description: Type of credential.
-          response:
-            $ref: '#/components/schemas/AuthenticatorAssertionResponse'
-          get_client_extension_results:
-            $ref: '#/components/schemas/AuthenticationExtensionsClientOutputs'
-            description: 'This field contains client extension output entries produced
-
-              by the extension’s client extension processing.'
-    PublicKeyCredentialDescriptor:
-      allOf:
-      - type: object
-        description: 'Used to in registration response (telling about existing creds) to prevent
-
-          creation of duplicate creds on the same authenticator.
-
-          Used in authentication as the allowed creds.'
-        properties:
-          type:
-            $ref: '#/components/schemas/PublicKeyCredentialType'
-          id:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          transports:
-            type:
-            - array
-            - 'null'
-            items:
-              $ref: '#/components/schemas/AuthenticatorTransport'
-            description: 'Hints by relying party on what transport client should
-
-              use to communicate with authenticator.'
-        required:
-        - type
-        - id
-    Reviewer:
-      allOf:
-      - type: object
-        description: Reviewer of an approval request.
-        properties:
-          requires_password:
-            type:
-            - boolean
-            - 'null'
-          requires_2fa:
-            type:
-            - boolean
-            - 'null'
-      - $ref: '#/components/schemas/ReviewerPrincipal'
+      - $ref: '#/components/schemas/U2fMfaChallengeResponse'
+      - $ref: '#/components/schemas/Fido2MfaChallengeResponse'
     ApprovalStatus:
       description: Approval request status.
       type: string
@@ -445,328 +425,43 @@ components:
       - APPROVED
       - DENIED
       - FAILED
-    PublicKeyCredentialRpEntity:
+    AuthenticationExtensionsClientInputs:
       allOf:
       - type: object
-        description: <https://www.w3.org/TR/webauthn-2/#dictionary-rp-credential-params>
-        properties:
-          id:
-            type:
-            - string
-            - 'null'
-            description: 'A unique identifier for the Relying Party entity, which sets the RP ID.
+        description: 'Extensions for webauthn. For every extension input, an
+
+          output must be returned if the input was considered.
 
 
-              <https://www.w3.org/TR/webauthn-2/#CreateCred-DetermineRpId>'
-    ApprovalSubject:
-      description: Identifies an object acted upon by an approval request.
-      oneOf:
-      - title: ApprovalSubjectVariantGroup
-        type: object
-        properties:
-          group:
-            type: string
-            format: uuid
-        required:
-        - group
-      - title: ApprovalSubjectVariantSobject
-        type: object
-        properties:
-          sobject:
-            type: string
-            format: uuid
-        required:
-        - sobject
-      - title: ApprovalSubjectVariantApp
-        type: object
-        properties:
-          app:
-            type: string
-            format: uuid
-        required:
-        - app
-      - title: ApprovalSubjectVariantPlugin
-        type: object
-        properties:
-          plugin:
-            type: string
-            format: uuid
-        required:
-        - plugin
-      - title: ApprovalSubjectVariantAccount
-        type: object
-        properties:
-          account:
-            type: string
-            format: uuid
-        required:
-        - account
-      - title: ApprovalSubjectVariantNewAccount
-        type: string
-        enum:
-        - newaccount
-      - title: ApprovalSubjectVariantRole
-        type: object
-        properties:
-          role:
-            type: string
-            format: uuid
-        required:
-        - role
-      - title: ApprovalSubjectVariantClusterConfig
-        type: string
-        enum:
-        - clusterconfig
-    AuthenticatorTransportInner:
-      description: See [AuthenticatorTransport] type.
-      type: string
-      enum:
-      - usb
-      - nfc
-      - ble
-      - internal
-    ResidentKeyRequirement:
-      description: '<https://www.w3.org/TR/webauthn-2/#enum-residentKeyRequirement>
-
-
-        Tells Relying Party''s requirement about client side discoverable
-
-        creds (formely known as resident keys).
-
-        If client side discoverable creds are there, it means that the
-
-        authenticator is self-sufficient in identifying the user. If this
-
-        isn''t the case, the user needs to login first so that the server
-
-        can identify the user and help send `allowCredentials` to authenticator.
-
-
-        This is mostly meant for [username-less] authentication (which we don''t
-
-        support in DSM). We support 2FA where we already know about the logged
-
-        in user.
-
-
-        [username-less]: <https://groups.google.com/a/fidoalliance.org/g/fido-dev/c/ALQj3JXuyhs>'
-      type: string
-      enum:
-      - discouraged
-      - preferred
-      - required
-    PublicKeyCredentialEntityForUser:
-      allOf:
-      - description: https://www.w3.org/TR/webauthn-2/#dictionary-pkcredentialentity
-        type: object
-        properties:
-          name:
-            type: string
-            description: Name of the entity.
-          entity:
-            $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
-    PublicKeyCredentialType:
-      description: 'https://www.w3.org/TR/webauthn-2/#enum-credentialType
-
-
-        This enum defines valid cred types.'
-      type: string
-      enum:
-      - public-key
-    AuthenticatorAttachment:
-      description: <https://www.w3.org/TR/webauthn-2/#enumdef-authenticatorattachment>
-      type: string
-      enum:
-      - platform
-      - cross-platform
-    Principal:
-      description: A security principal.
-      oneOf:
-      - title: PrincipalVariantApp
-        type: object
-        properties:
-          app:
-            type: string
-            format: uuid
-        required:
-        - app
-      - title: PrincipalVariantUser
-        type: object
-        properties:
-          user:
-            type: string
-            format: uuid
-        required:
-        - user
-      - title: PrincipalVariantPlugin
-        type: object
-        properties:
-          plugin:
-            type: string
-            format: uuid
-        required:
-        - plugin
-      - title: PrincipalVariantUserViaApp
-        type: object
-        properties:
-          userviaapp:
-            $ref: '#/components/schemas/PrincipalUserViaApp'
-        required:
-        - userviaapp
-      - title: PrincipalVariantSystem
-        type: string
-        enum:
-        - system
-      - title: PrincipalVariantUnregisteredUser
-        type: string
-        enum:
-        - unregistereduser
-    AuthenticationExtensionsClientOutputs:
-      allOf:
-      - type: object
-        description: 'This is the response of extension inputs. For every input,
-
-          an output must be returned if the input was considered.
-
-
-          <https://www.w3.org/TR/webauthn-2/#iface-authentication-extensions-client-outputs>'
+          https://www.w3.org/TR/webauthn-2/#dictdef-authenticationextensionsclientinputs'
         properties:
           appidExclude:
             type:
-            - boolean
+            - string
             - 'null'
-            description: 'Response of `appidExclude` extension.
+            description: 'This extension excludes authenticators during registration
 
-              See [AuthenticationExtensionsClientInputs::appid_exclude].'
+              based on legacy u2f key handles specified in "excludeCredentials".
+
+              If that key handle was created with that device, it is excluded.
+
+
+              https://www.w3.org/TR/webauthn-2/#sctn-appid-exclude-extension'
           appid:
             type:
+            - string
+            - 'null'
+            description: 'This extension allows RPs that have previously registered a cred
+
+              using legacy U2F APIs to request an assertion.
+
+
+              https://www.w3.org/TR/webauthn-2/#sctn-appid-extension'
+          example.extension.bool:
+            type:
             - boolean
             - 'null'
-            description: 'Response of `appid` extension.
-
-              See [AuthenticationExtensionsClientInputs::appid].'
-    U2fMfaChallengeResponse:
-      allOf:
-      - type: object
-        description: A challenge used for multi-factor authentication.
-        properties:
-          u2f_challenge:
-            type: string
-          u2f_keys:
-            type: array
-            items:
-              $ref: '#/components/schemas/U2fRegisteredKey'
-        required:
-        - u2f_challenge
-        - u2f_keys
-    AttestationConveyancePreference:
-      description: '<https://www.w3.org/TR/webauthn-2/#enum-attestation-convey>
-
-        <https://www.w3.org/TR/webauthn-2/#sctn-attestation>
-
-
-        If you really want to understand attestation, read the following:
-
-        <https://fidoalliance.org/fido-technotes-the-truth-about-attestation/>
-
-        <https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651>
-
-
-        This enum just specified how the attestation should be conveyed
-
-        to the RP. You can see doc of the individual variants to understand
-
-        various ways.'
-      type: string
-      enum:
-      - none
-      - indirect
-      - direct
-      - enterprise
-    AuthenticatorTransport:
-      description: 'Hints by relying party on how client should communicate
-
-        with the authenticator.
-
-
-        https://www.w3.org/TR/webauthn-2/#enum-transport'
-      oneOf:
-      - $ref: '#/components/schemas/AuthenticatorTransportInner'
-      - type: string
-        description: 'Unknown values are stored as spec asks to do so.
-
-          As per the spec level 3 (which is draft):
-
-          "The values SHOULD be members of AuthenticatorTransport
-
-          but Relying Parties SHOULD accept and store unknown values."
-
-          See `[[transports]]` in https://w3c.github.io/webauthn/#iface-authenticatorattestationresponse
-
-
-          Level 2 also says that but comparitively unclear.
-
-          "The values SHOULD be members of AuthenticatorTransport but
-
-          Relying Parties MUST ignore unknown values."
-
-          See `[[transports]]` in https://www.w3.org/TR/webauthn-2/#iface-authenticatorattestationresponse'
-    AuthenticatorAssertionResponse:
-      allOf:
-      - type: object
-        description: <https://www.w3.org/TR/webauthn-2/#iface-authenticatorassertionresponse>
-        properties:
-          clientDataJSON:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          authenticatorData:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          signature:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          userHandle:
-            $ref: '#/components/schemas/Base64UrlSafe'
-        required:
-        - clientDataJSON
-        - authenticatorData
-        - signature
-    ApprovalRequestRequest:
-      allOf:
-      - type: object
-        properties:
-          body: {}
-          description:
-            type:
-            - string
-            - 'null'
-          method:
-            type:
-            - string
-            - 'null'
-          operation:
-            type:
-            - string
-            - 'null'
-    MfaChallengeParams:
-      allOf:
-      - type: object
-        description: Params for Mfa challenge.
-        properties:
-          protocol:
-            $ref: '#/components/schemas/MfaProtocol'
-        required:
-        - protocol
-    ApproveRequest:
-      allOf:
-      - type: object
-        properties:
-          password:
-            type: string
-            description: Password is required if the approval policy requires password authentication.
-          u2f:
-            $ref: '#/components/schemas/U2fAuthRequest'
-          fido2_auth_request:
-            $ref: '#/components/schemas/PublicKeyCredentialAuthenticatorAssertionResponse'
-          body:
-            description: Data associated with the approval
+            description: Dummy extension used by conformance tests
     PublicKeyCredentialRequestOptions:
       allOf:
       - type: object
@@ -813,6 +508,106 @@ components:
             $ref: '#/components/schemas/AuthenticationExtensionsClientInputs'
         required:
         - challenge
+    ReviewerPrincipal:
+      description: A Principal who can approve or deny an approval request.
+      oneOf:
+      - title: ReviewerPrincipalVariantApp
+        type: object
+        properties:
+          app:
+            type: string
+            format: uuid
+        required:
+        - app
+      - title: ReviewerPrincipalVariantUser
+        type: object
+        properties:
+          user:
+            type: string
+            format: uuid
+        required:
+        - user
+    PublicKeyCredentialDescriptor:
+      allOf:
+      - type: object
+        description: 'Used to in registration response (telling about existing creds) to prevent
+
+          creation of duplicate creds on the same authenticator.
+
+          Used in authentication as the allowed creds.'
+        properties:
+          type:
+            $ref: '#/components/schemas/PublicKeyCredentialType'
+          id:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          transports:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/AuthenticatorTransport'
+            description: 'Hints by relying party on what transport client should
+
+              use to communicate with authenticator.'
+        required:
+        - type
+        - id
+    Principal:
+      description: A security principal.
+      oneOf:
+      - title: PrincipalVariantApp
+        type: object
+        properties:
+          app:
+            type: string
+            format: uuid
+        required:
+        - app
+      - title: PrincipalVariantUser
+        type: object
+        properties:
+          user:
+            type: string
+            format: uuid
+        required:
+        - user
+      - title: PrincipalVariantPlugin
+        type: object
+        properties:
+          plugin:
+            type: string
+            format: uuid
+        required:
+        - plugin
+      - title: PrincipalVariantUserViaApp
+        type: object
+        properties:
+          userviaapp:
+            $ref: '#/components/schemas/PrincipalUserViaApp'
+        required:
+        - userviaapp
+      - title: PrincipalVariantSystem
+        type: string
+        enum:
+        - system
+      - title: PrincipalVariantUnregisteredUser
+        type: string
+        enum:
+        - unregistereduser
+    U2fMfaChallengeResponse:
+      allOf:
+      - type: object
+        description: A challenge used for multi-factor authentication.
+        properties:
+          u2f_challenge:
+            type: string
+          u2f_keys:
+            type: array
+            items:
+              $ref: '#/components/schemas/U2fRegisteredKey'
+        required:
+        - u2f_challenge
+        - u2f_keys
     AuthenticatorSelectionCriteria:
       allOf:
       - type: object
@@ -836,133 +631,6 @@ components:
               if `residentKey` is set to `required`.'
           userVerification:
             $ref: '#/components/schemas/UserVerificationRequirement'
-    PublicKeyCredentialParameters:
-      allOf:
-      - type: object
-        description: https://www.w3.org/TR/webauthn-2/#dictionary-credential-params
-        properties:
-          type:
-            $ref: '#/components/schemas/PublicKeyCredentialType'
-          alg:
-            $ref: '#/components/schemas/COSEAlgorithmIdentifier'
-        required:
-        - type
-        - alg
-    MfaChallengeResponse:
-      oneOf:
-      - $ref: '#/components/schemas/U2fMfaChallengeResponse'
-      - $ref: '#/components/schemas/Fido2MfaChallengeResponse'
-    PublicKeyCredentialCreationOptions:
-      allOf:
-      - type: object
-        description: <https://www.w3.org/TR/webauthn-2/#dictionary-makecredentialoptions>
-        properties:
-          rp:
-            $ref: '#/components/schemas/PublicKeyCredentialEntityForRp'
-          user:
-            $ref: '#/components/schemas/PublicKeyCredentialEntityForUser'
-          challenge:
-            $ref: '#/components/schemas/Base64UrlSafe'
-          pubKeyCredParams:
-            type: array
-            items:
-              $ref: '#/components/schemas/PublicKeyCredentialParameters'
-            description: 'This member contains information about the desired properties of the
-
-              credential to be created. The sequence is ordered from most preferred
-
-              to least preferred.'
-          timeout:
-            type:
-            - integer
-            - 'null'
-            description: 'The time for which response from the authenticator
-
-              would be awaited. This should only be a hint as per the spec.
-
-              This is in milliseconds.'
-          excludeCredentials:
-            type: array
-            items:
-              $ref: '#/components/schemas/PublicKeyCredentialDescriptor'
-            description: 'The existing creds mapped to the current user. This tells
-
-              the authenticator to not create multiple creds for the same
-
-              user.
-
-              NOTE: This isn''t for U2F authenticators. For that, `appidExclude`
-
-              needs to be set instead.'
-          authenticatorSelection:
-            $ref: '#/components/schemas/AuthenticatorSelectionCriteria'
-          attestation:
-            $ref: '#/components/schemas/AttestationConveyancePreference'
-          extensions:
-            $ref: '#/components/schemas/AuthenticationExtensionsClientInputs'
-        required:
-        - rp
-        - user
-        - challenge
-        - pubKeyCredParams
-        - excludeCredentials
-        - attestation
-    AuthenticationExtensionsClientInputs:
-      allOf:
-      - type: object
-        description: 'Extensions for webauthn. For every extension input, an
-
-          output must be returned if the input was considered.
-
-
-          https://www.w3.org/TR/webauthn-2/#dictdef-authenticationextensionsclientinputs'
-        properties:
-          appidExclude:
-            type:
-            - string
-            - 'null'
-            description: 'This extension excludes authenticators during registration
-
-              based on legacy u2f key handles specified in "excludeCredentials".
-
-              If that key handle was created with that device, it is excluded.
-
-
-              https://www.w3.org/TR/webauthn-2/#sctn-appid-exclude-extension'
-          appid:
-            type:
-            - string
-            - 'null'
-            description: 'This extension allows RPs that have previously registered a cred
-
-              using legacy U2F APIs to request an assertion.
-
-
-              https://www.w3.org/TR/webauthn-2/#sctn-appid-extension'
-          example.extension.bool:
-            type:
-            - boolean
-            - 'null'
-            description: Dummy extension used by conformance tests
-    ReviewerPrincipal:
-      description: A Principal who can approve or deny an approval request.
-      oneOf:
-      - title: ReviewerPrincipalVariantApp
-        type: object
-        properties:
-          app:
-            type: string
-            format: uuid
-        required:
-        - app
-      - title: ReviewerPrincipalVariantUser
-        type: object
-        properties:
-          user:
-            type: string
-            format: uuid
-        required:
-        - user
     ApprovalRequest:
       allOf:
       - type: object
@@ -1030,6 +698,577 @@ components:
         - requester
         - result_viewed
         - status
+    PublicKeyCredentialAuthenticatorAssertionResponse:
+      allOf:
+      - type: object
+        description: 'Contains the attributes that are returned to the caller when a new
+
+          credential is created, or a new assertion is requested.'
+        properties:
+          id:
+            $ref: '#/components/schemas/Base64UrlSafe'
+            description: Credential's identifier.
+          type:
+            $ref: '#/components/schemas/PublicKeyCredentialType'
+            description: Type of credential.
+          response:
+            $ref: '#/components/schemas/AuthenticatorAssertionResponse'
+          get_client_extension_results:
+            $ref: '#/components/schemas/AuthenticationExtensionsClientOutputs'
+            description: 'This field contains client extension output entries produced
+
+              by the extension’s client extension processing.'
+    AttestationConveyancePreference:
+      description: '<https://www.w3.org/TR/webauthn-2/#enum-attestation-convey>
+
+        <https://www.w3.org/TR/webauthn-2/#sctn-attestation>
+
+
+        If you really want to understand attestation, read the following:
+
+        <https://fidoalliance.org/fido-technotes-the-truth-about-attestation/>
+
+        <https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651>
+
+
+        This enum just specified how the attestation should be conveyed
+
+        to the RP. You can see doc of the individual variants to understand
+
+        various ways.'
+      type: string
+      enum:
+      - none
+      - indirect
+      - direct
+      - enterprise
+    PublicKeyCredentialRpEntity:
+      allOf:
+      - type: object
+        description: <https://www.w3.org/TR/webauthn-2/#dictionary-rp-credential-params>
+        properties:
+          id:
+            type:
+            - string
+            - 'null'
+            description: 'A unique identifier for the Relying Party entity, which sets the RP ID.
+
+
+              <https://www.w3.org/TR/webauthn-2/#CreateCred-DetermineRpId>'
+    PublicKeyCredentialType:
+      description: 'https://www.w3.org/TR/webauthn-2/#enum-credentialType
+
+
+        This enum defines valid cred types.'
+      type: string
+      enum:
+      - public-key
+    Base64UrlSafe:
+      type: string
+      format: byte
+    COSEAlgorithmIdentifier:
+      description: 'https://www.w3.org/TR/webauthn-2/#typedefdef-cosealgorithmidentifier
+
+
+        Signing algorithms from [IANA COSE Algorithms registry]
+
+        that are supported on DSM side for verifying signed messages
+
+        from authenticator.
+
+
+        [IANA COSE Algorithms registry]: https://www.iana.org/assignments/cose/cose.xhtml#algorithms'
+      type: string
+      enum:
+      - Es256
+    ListApprovalRequestsParams:
+      allOf:
+      - type: object
+        properties:
+          requester:
+            type: string
+            format: uuid
+          reviewer:
+            type: string
+            format: uuid
+          subject:
+            type: string
+            format: uuid
+          status:
+            $ref: '#/components/schemas/ApprovalStatus'
+    UserVerificationRequirement:
+      description: 'https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement
+
+        https://www.w3.org/TR/webauthn-2/#user-verification'
+      type: string
+      enum:
+      - required
+      - preferred
+      - discouraged
+    ResidentKeyRequirement:
+      description: '<https://www.w3.org/TR/webauthn-2/#enum-residentKeyRequirement>
+
+
+        Tells Relying Party''s requirement about client side discoverable
+
+        creds (formely known as resident keys).
+
+        If client side discoverable creds are there, it means that the
+
+        authenticator is self-sufficient in identifying the user. If this
+
+        isn''t the case, the user needs to login first so that the server
+
+        can identify the user and help send `allowCredentials` to authenticator.
+
+
+        This is mostly meant for [username-less] authentication (which we don''t
+
+        support in DSM). We support 2FA where we already know about the logged
+
+        in user.
+
+
+        [username-less]: <https://groups.google.com/a/fidoalliance.org/g/fido-dev/c/ALQj3JXuyhs>'
+      type: string
+      enum:
+      - discouraged
+      - preferred
+      - required
+    AuthenticatorAttachment:
+      description: <https://www.w3.org/TR/webauthn-2/#enumdef-authenticatorattachment>
+      type: string
+      enum:
+      - platform
+      - cross-platform
+    PublicKeyCredentialUserEntity:
+      allOf:
+      - type: object
+        description: <https://www.w3.org/TR/webauthn-2/#dictionary-user-credential-params>
+        properties:
+          id:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          displayName:
+            type: string
+            description: Human friendly name intended only for display.
+        required:
+        - id
+        - displayName
+    U2fRegisteredKey:
+      allOf:
+      - type: object
+        description: Description of a registered U2F device.
+        properties:
+          keyHandle:
+            type: string
+          version:
+            type: string
+        required:
+        - keyHandle
+        - version
+    U2fAuthRequest:
+      allOf:
+      - type: object
+        description: Use of U2F is deprecated, use FIDO2 for second factor authentication.
+        properties:
+          keyHandle:
+            type: string
+            format: byte
+          signatureData:
+            type: string
+            format: byte
+          clientData:
+            type: string
+            format: byte
+        required:
+        - keyHandle
+        - signatureData
+        - clientData
+    AuthenticationExtensionsClientOutputs:
+      allOf:
+      - type: object
+        description: 'This is the response of extension inputs. For every input,
+
+          an output must be returned if the input was considered.
+
+
+          <https://www.w3.org/TR/webauthn-2/#iface-authentication-extensions-client-outputs>'
+        properties:
+          appidExclude:
+            type:
+            - boolean
+            - 'null'
+            description: 'Response of `appidExclude` extension.
+
+              See [AuthenticationExtensionsClientInputs::appid_exclude].'
+          appid:
+            type:
+            - boolean
+            - 'null'
+            description: 'Response of `appid` extension.
+
+              See [AuthenticationExtensionsClientInputs::appid].'
+    Reviewer:
+      allOf:
+      - type: object
+        description: Reviewer of an approval request.
+        properties:
+          requires_password:
+            type:
+            - boolean
+            - 'null'
+          requires_2fa:
+            type:
+            - boolean
+            - 'null'
+      - $ref: '#/components/schemas/ReviewerPrincipal'
+    Fido2MfaChallengeResponse:
+      description: Fido2 options when requesting assertion or attestation to a device
+      oneOf:
+      - $ref: '#/components/schemas/PublicKeyCredentialCreationOptions'
+      - $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
+    ApprovalSubject:
+      description: Identifies an object acted upon by an approval request.
+      oneOf:
+      - title: ApprovalSubjectVariantGroup
+        type: object
+        properties:
+          group:
+            type: string
+            format: uuid
+        required:
+        - group
+      - title: ApprovalSubjectVariantSobject
+        type: object
+        properties:
+          sobject:
+            type: string
+            format: uuid
+        required:
+        - sobject
+      - title: ApprovalSubjectVariantApp
+        type: object
+        properties:
+          app:
+            type: string
+            format: uuid
+        required:
+        - app
+      - title: ApprovalSubjectVariantPlugin
+        type: object
+        properties:
+          plugin:
+            type: string
+            format: uuid
+        required:
+        - plugin
+      - title: ApprovalSubjectVariantAccount
+        type: object
+        properties:
+          account:
+            type: string
+            format: uuid
+        required:
+        - account
+      - title: ApprovalSubjectVariantNewAccount
+        type: string
+        enum:
+        - newaccount
+      - title: ApprovalSubjectVariantRole
+        type: object
+        properties:
+          role:
+            type: string
+            format: uuid
+        required:
+        - role
+      - title: ApprovalSubjectVariantClusterConfig
+        type: string
+        enum:
+        - clusterconfig
+    ApproveRequest:
+      allOf:
+      - type: object
+        properties:
+          password:
+            type: string
+            description: Password is required if the approval policy requires password authentication.
+          u2f:
+            $ref: '#/components/schemas/U2fAuthRequest'
+          fido2_auth_request:
+            $ref: '#/components/schemas/PublicKeyCredentialAuthenticatorAssertionResponse'
+          body:
+            description: Data associated with the approval
+    DenyRequest:
+      allOf:
+      - type: object
+        properties:
+          reason:
+            type:
+            - string
+            - 'null'
+    AuthenticatorTransportInner:
+      description: See [AuthenticatorTransport] type.
+      type: string
+      enum:
+      - usb
+      - nfc
+      - ble
+      - internal
+    MfaChallengeParams:
+      allOf:
+      - type: object
+        description: Params for Mfa challenge.
+        properties:
+          protocol:
+            $ref: '#/components/schemas/MfaProtocol'
+        required:
+        - protocol
+    PublicKeyCredentialEntityForRp:
+      allOf:
+      - description: https://www.w3.org/TR/webauthn-2/#dictionary-pkcredentialentity
+        type: object
+        properties:
+          name:
+            type: string
+            description: Name of the entity.
+          entity:
+            $ref: '#/components/schemas/PublicKeyCredentialRpEntity'
+    PrincipalUserViaApp:
+      allOf:
+      - type: object
+        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
+        properties:
+          user_id:
+            type: string
+            format: uuid
+          scopes:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/OauthScope'
+        required:
+        - user_id
+        - scopes
+    AuthenticatorAssertionResponse:
+      allOf:
+      - type: object
+        description: <https://www.w3.org/TR/webauthn-2/#iface-authenticatorassertionresponse>
+        properties:
+          clientDataJSON:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          authenticatorData:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          signature:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          userHandle:
+            $ref: '#/components/schemas/Base64UrlSafe'
+        required:
+        - clientDataJSON
+        - authenticatorData
+        - signature
+    ApprovableResult:
+      type: object
+      properties:
+        status:
+          type: integer
+          minimum: 0
+          maximum: 65535
+        body:
+          type: object
+      required:
+      - status
+      - body
+    MfaProtocol:
+      description: Protocols for MFA.
+      type: string
+      enum:
+      - u2f
+      - fido2
+    PublicKeyCredentialCreationOptions:
+      allOf:
+      - type: object
+        description: <https://www.w3.org/TR/webauthn-2/#dictionary-makecredentialoptions>
+        properties:
+          rp:
+            $ref: '#/components/schemas/PublicKeyCredentialEntityForRp'
+          user:
+            $ref: '#/components/schemas/PublicKeyCredentialEntityForUser'
+          challenge:
+            $ref: '#/components/schemas/Base64UrlSafe'
+          pubKeyCredParams:
+            type: array
+            items:
+              $ref: '#/components/schemas/PublicKeyCredentialParameters'
+            description: 'This member contains information about the desired properties of the
+
+              credential to be created. The sequence is ordered from most preferred
+
+              to least preferred.'
+          timeout:
+            type:
+            - integer
+            - 'null'
+            description: 'The time for which response from the authenticator
+
+              would be awaited. This should only be a hint as per the spec.
+
+              This is in milliseconds.'
+          excludeCredentials:
+            type: array
+            items:
+              $ref: '#/components/schemas/PublicKeyCredentialDescriptor'
+            description: 'The existing creds mapped to the current user. This tells
+
+              the authenticator to not create multiple creds for the same
+
+              user.
+
+              NOTE: This isn''t for U2F authenticators. For that, `appidExclude`
+
+              needs to be set instead.'
+          authenticatorSelection:
+            $ref: '#/components/schemas/AuthenticatorSelectionCriteria'
+          attestation:
+            $ref: '#/components/schemas/AttestationConveyancePreference'
+          extensions:
+            $ref: '#/components/schemas/AuthenticationExtensionsClientInputs'
+        required:
+        - rp
+        - user
+        - challenge
+        - pubKeyCredParams
+        - excludeCredentials
+        - attestation
+    AuthenticatorTransport:
+      description: 'Hints by relying party on how client should communicate
+
+        with the authenticator.
+
+
+        https://www.w3.org/TR/webauthn-2/#enum-transport'
+      oneOf:
+      - $ref: '#/components/schemas/AuthenticatorTransportInner'
+      - type: string
+        description: 'Unknown values are stored as spec asks to do so.
+
+          As per the spec level 3 (which is draft):
+
+          "The values SHOULD be members of AuthenticatorTransport
+
+          but Relying Parties SHOULD accept and store unknown values."
+
+          See `[[transports]]` in https://w3c.github.io/webauthn/#iface-authenticatorattestationresponse
+
+
+          Level 2 also says that but comparitively unclear.
+
+          "The values SHOULD be members of AuthenticatorTransport but
+
+          Relying Parties MUST ignore unknown values."
+
+          See `[[transports]]` in https://www.w3.org/TR/webauthn-2/#iface-authenticatorattestationresponse'
+    ApprovalRequestRequest:
+      allOf:
+      - type: object
+        properties:
+          body: {}
+          description:
+            type:
+            - string
+            - 'null'
+          method:
+            type:
+            - string
+            - 'null'
+          operation:
+            type:
+            - string
+            - 'null'
+    PublicKeyCredentialEntityForUser:
+      allOf:
+      - description: https://www.w3.org/TR/webauthn-2/#dictionary-pkcredentialentity
+        type: object
+        properties:
+          name:
+            type: string
+            description: Name of the entity.
+          entity:
+            $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
+    OauthScope:
+      description: OAuth scope.
+      type: string
+      enum:
+      - app
+      - openid
+      - email
+      - profile
+    PublicKeyCredentialParameters:
+      allOf:
+      - type: object
+        description: https://www.w3.org/TR/webauthn-2/#dictionary-credential-params
+        properties:
+          type:
+            $ref: '#/components/schemas/PublicKeyCredentialType'
+          alg:
+            $ref: '#/components/schemas/COSEAlgorithmIdentifier'
+        required:
+        - type
+        - alg
+    ApprovalRequestStatus:
+      type: string
+      description: Approval request status.
+      enum:
+      - PENDING
+      - APPROVED
+      - DENIED
+      - FAILED
+      - DENIED_OTHER
+      - PENDING_CHILD
+      - PENDING_OTHER
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    GetAllApprovalRequests:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApprovalRequest'
+    Entity:
+      type: object
+      description: An app, user, or plugin ID.
+      properties:
+        user:
+          type: string
+          format: uuid
+          description: The user ID of the user who created this entity, if this entity was created by a user.
   parameters:
     MfaChallengeParams:
       in: query
@@ -1043,6 +1282,35 @@ components:
       schema:
         $ref: '#/components/schemas/ListApprovalRequestsParams'
       explode: true
+    DenyRequest:
+      name: body
+      in: body
+      required: false
+      description: Optional parameters for deny request
+      schema:
+        $ref: '#/components/schemas/DenyRequest'
+    ApproveRequest:
+      name: body
+      in: body
+      required: false
+      description: Optional parameters for approval request
+      schema:
+        $ref: '#/components/schemas/ApproveRequest'
+    ApprovalRequestRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to create an approval request.
+      schema:
+        $ref: '#/components/schemas/ApprovalRequestRequest'
+    RequestId:
+      name: request-id
+      in: path
+      required: true
+      description: Approval Request Identifier
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     basicAuth:
       type: http

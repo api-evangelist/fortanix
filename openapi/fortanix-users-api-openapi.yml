@@ -21,7 +21,7 @@ paths:
     get:
       tags:
       - Users
-      summary: Get details of the current logged in user.
+      summary: Get details of the current logged in user
       description: Get details of the current logged in user.
       operationId: getLoggedInUser
       x-auth-resource: UserAuth,Reader,Writer,Manager
@@ -40,7 +40,7 @@ paths:
     get:
       tags:
       - Users
-      summary: Get all user's information.
+      summary: Get all user's information
       description: Get user's information with status.
       operationId: getAllUsers
       x-auth-resource: Reader,Writer,Manager
@@ -81,7 +81,7 @@ paths:
     post:
       tags:
       - Users
-      summary: Create a new user.
+      summary: Create a new user
       description: Sign up a new user.
       operationId: createUser
       x-auth-resource: NoAuth
@@ -100,7 +100,7 @@ paths:
     post:
       tags:
       - Users
-      summary: Invite a user.
+      summary: Invite a user
       description: Invite an existing user or a new user to join an existing account.
       operationId: inviteUser
       x-auth-resource: Manager,ManagerInLockedAccount
@@ -121,7 +121,7 @@ paths:
     get:
       tags:
       - Users
-      summary: Get details of a particular user.
+      summary: Get details of a particular user
       description: Get details of a user.
       operationId: getUser
       x-auth-resource: UserAuth,Reader,Writer,Manager
@@ -139,7 +139,7 @@ paths:
     patch:
       tags:
       - Users
-      summary: Update status, name, and the role of a user. User with MANAGER access role can only update another user.
+      summary: Update status, name, and the role of a user.
       description: Update status, name, and the role of a user. User with MANAGER access role can only update another users.
       operationId: UpdateUser
       x-auth-resource: UserAuth,Reader,Writer,Manager,ManagerInLockedAccount,WriterInLockedAccount
@@ -193,7 +193,7 @@ paths:
     delete:
       tags:
       - Users
-      summary: Remove user's association with an account.
+      summary: Remove user's association with an account
       operationId: deleteUserFromAccount
       x-auth-resource: Reader,Writer,Manager,ManagerInLockedAccount,WriterInLockedAccount
       parameters:
@@ -213,7 +213,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Change user's password.
+      summary: Change user's password
       description: Change user's password.
       requestBody:
         required: true
@@ -239,7 +239,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Confirms user's email address.
+      summary: Confirms user's email address
       description: Confirms user's email address.
       parameters:
       - name: user_id
@@ -276,7 +276,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Delete a stale user (for sysadmins).
+      summary: Delete a stale user (for sysadmins)
       description: Delete a stale user (for sysadmins).
       parameters:
       - name: user_id
@@ -295,7 +295,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Lookup a user.
+      summary: Lookup a user
       description: Lookup a user.
       parameters:
       - name: user_id
@@ -319,9 +319,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: 'Change a user''s properties like first_name, last_name,
-
-        description, etc.'
+      summary: Change a user's properties like first_name, last_name, description, etc
       description: 'Change a user''s properties like first_name, last_name,
 
         description, etc.'
@@ -360,7 +358,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Delete the currently logged-in user.
+      summary: Delete the currently logged-in user
       description: Delete the currently logged-in user.
       responses:
         '204':
@@ -372,7 +370,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get all users accessible to the requester.
+      summary: Get all users accessible to the requester
       description: Get all users accessible to the requester.
       parameters:
       - $ref: '#/components/parameters/ListUsersParams'
@@ -392,7 +390,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Create a new user with the given properties.
+      summary: Create a new user with the given properties
       description: Create a new user with the given properties.
       requestBody:
         required: true
@@ -422,7 +420,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Remove user's association with an account.
+      summary: Remove user's association with an account
       description: Remove user's association with an account.
       parameters:
       - name: user_id
@@ -449,7 +447,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Initiate password reset sequence for a user.
+      summary: Initiate password reset sequence for a user
       description: Initiate password reset sequence for a user.
       requestBody:
         required: true
@@ -475,7 +473,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Generate recovery codes for two factor authentication.
+      summary: Generate recovery codes for two factor authentication
       description: 'Generate backup recovery codes that may be used to complete two
 
         factor authentication. Two factor configuration must be unlocked
@@ -503,7 +501,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get user's accounts.
+      summary: Get user's accounts
       description: Get user's accounts.
       responses:
         2XX:
@@ -530,7 +528,6 @@ paths:
       - bearerToken: []
       - apiKeyAuth: []
       summary: Returns the caller's permissions
-      description: Returns the caller's permissions
       parameters:
       - $ref: '#/components/parameters/GetUserPermissionsParams'
       responses:
@@ -555,7 +552,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Invite an existing user or new user to join an existing account.
+      summary: Invite an existing user or new user to join an existing account
       description: Invite an existing user or new user to join an existing account.
       requestBody:
         required: true
@@ -585,7 +582,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Accept or reject pending account invitations.
+      summary: Accept or reject pending account invitations
       description: Accept or reject pending account invitations.
       requestBody:
         required: true
@@ -611,7 +608,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Resend email with link to confirm user's email address.
+      summary: Resend email with link to confirm user's email address
       description: Resend email with link to confirm user's email address.
       responses:
         '204':
@@ -631,7 +628,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Resend invite to the user to join a specific account.
+      summary: Resend invite to the user to join a specific account
       description: Resend invite to the user to join a specific account.
       parameters:
       - name: user_id
@@ -658,7 +655,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Reset a user's password. Requires a valid password reset token.
+      summary: Reset a user's password. Requires a valid password reset token
       description: Reset a user's password. Requires a valid password reset token.
       parameters:
       - name: user_id
@@ -691,7 +688,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Validates password reset token for the user.
+      summary: Validates password reset token for the user
       description: Validates password reset token for the user.
       parameters:
       - name: user_id
@@ -722,6 +719,37 @@ paths:
           description: Type your DSM server URL here (include https://)
 components:
   schemas:
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    UserStatus:
+      type: string
+      description: Status of a user.
+      enum:
+      - ACTIVE
+      - PENDING
+      - DISABLED
     User:
       type: object
       required:
@@ -766,6 +794,35 @@ components:
         new_email:
           type: string
           description: User’s new email address before it has been confirmed.
+    GetAllUsersResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    UpdateUserRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: First name.
+        last_name:
+          type: string
+          description: Last name.
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessRoles'
+        user_account_status:
+          $ref: '#/components/schemas/UserAccountStatus'
+        user_email:
+          type: string
+          description: User's new email address.
     UserAccountStatus:
       type: string
       description: Status of an Account for a user.
@@ -773,6 +830,24 @@ components:
       - ACTIVE
       - PENDING
       - DISABLED
+    GetUserAccountsResponse:
+      type: object
+      description: Application configurations attached to the image.
+      additionalProperties:
+        $ref: '#/components/schemas/UserAccountInfo'
+    UserAccountInfo:
+      type: object
+      required:
+      - roles
+      - status
+      properties:
+        roles:
+          type: array
+          description: Role of the current user in the account.
+          items:
+            $ref: '#/components/schemas/AccessRoles'
+        status:
+          $ref: '#/components/schemas/UserAccountStatus'
     SignupRequest:
       type: object
       required:
@@ -792,13 +867,6 @@ components:
           type: string
         recaptcha_response:
           type: string
-    AccessRoles:
-      type: string
-      description: Roles of a user.
-      enum:
-      - READER
-      - WRITER
-      - MANAGER
     InviteUserRequest:
       type: object
       required:
@@ -816,201 +884,13 @@ components:
           type: string
         last_name:
           type: string
-    UpdateUserRequest:
-      type: object
-      properties:
-        first_name:
-          type: string
-          description: First name.
-        last_name:
-          type: string
-          description: Last name.
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccessRoles'
-        user_account_status:
-          $ref: '#/components/schemas/UserAccountStatus'
-        user_email:
-          type: string
-          description: User's new email address.
-    UserAccountInfo:
-      type: object
-      required:
-      - roles
-      - status
-      properties:
-        roles:
-          type: array
-          description: Role of the current user in the account.
-          items:
-            $ref: '#/components/schemas/AccessRoles'
-        status:
-          $ref: '#/components/schemas/UserAccountStatus'
-    UserStatus:
+    AccessRoles:
       type: string
-      description: Status of a user.
+      description: Roles of a user.
       enum:
-      - ACTIVE
-      - PENDING
-      - DISABLED
-    SearchMetadata:
-      type: object
-      required:
-      - total_count
-      - filtered_count
-      - page
-      - pages
-      - limit
-      properties:
-        page:
-          type: integer
-          description: Current page number
-        pages:
-          type: integer
-          description: Total pages as per the item counts and page limit.
-        limit:
-          type: integer
-          description: Number of items to limit in a page.
-        total_count:
-          type: integer
-          description: Total number of unfiltered items.
-        filtered_count:
-          type: integer
-          description: Total number of items as per the current filter.
-    GetAllUsersResponse:
-      type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-    GetUserAccountsResponse:
-      type: object
-      description: Application configurations attached to the image.
-      additionalProperties:
-        $ref: '#/components/schemas/UserAccountInfo'
-    GetUserPermissionsResponse:
-      allOf:
-      - type: object
-        properties:
-          account:
-            type: array
-            items:
-              $ref: '#/components/schemas/AccountPermissions'
-            description: User's permissions in the account.
-          all_groups:
-            type:
-            - array
-            - 'null'
-            items:
-              $ref: '#/components/schemas/GroupPermissions'
-            description: 'User''s permissions in all groups. Note that this will only be returned
-
-              if the user has one or more all-groups roles.'
-          groups:
-            type: object
-            additionalProperties:
-              type: array
-              items:
-                $ref: '#/components/schemas/GroupPermissions'
-            description: User's permissions in groups.
-        required:
-        - account
-        - groups
-    MfaRenameDeviceRequest:
-      allOf:
-      - type: object
-        description: Request to rename a FIDO device.
-        properties:
-          old_name:
-            type: string
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-            description: Old name of FIDO device.
-          new_name:
-            type: string
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-            description: New name of FIDO device.
-        required:
-        - old_name
-        - new_name
-    UserSort:
-      oneOf:
-      - title: UserSortVariantByUserId
-        type: object
-        properties:
-          sort:
-            type: string
-            pattern: ^user_id:(?:asc|desc)$
-            example: user_id:asc
-          start:
-            type: string
-            format: uuid
-        required:
-        - sort
-    GetUserPermissionsParams:
-      allOf:
-      - type: object
-        properties:
-          with_implied:
-            type: boolean
-            description: 'If `true`, implied permissions are added in the output. For example, if
-
-              permission A implies permission B, and the user has permission A, the
-
-              output will include both A and B if this is set to `true`. If this is
-
-              set to `false`, B will only be returned if it was assigned to the user
-
-              directly.'
-    UserGroupRole:
-      description: User's role(s) in a group.
-      allOf:
-      - type: array
-        uniqueItems: true
-        items:
-          $ref: '#/components/schemas/LegacyUserGroupRoleOrRoleId'
-    PasswordResetRequest:
-      allOf:
-      - type: object
-        description: Request to perform a password reset.
-        properties:
-          reset_token:
-            type: string
-          new_password:
-            type: string
-        required:
-        - reset_token
-        - new_password
-    WithGroups:
-      type: string
-      enum:
-      - all
-      - explicit_only
-      - none
-    ForgotPasswordRequest:
-      allOf:
-      - type: object
-        description: Initiate password reset sequence.
-        properties:
-          user_email:
-            type: string
-            format: email
-          recaptcha_response:
-            type:
-            - string
-            - 'null'
-        required:
-        - user_email
-    Base64UrlSafe:
-      type: string
-      format: byte
+      - READER
+      - WRITER
+      - MANAGER
     User_2:
       allOf:
       - type: object
@@ -1110,50 +990,21 @@ components:
         - u2f_devices
         - user_email
         - user_id
-    UserAccountFlags:
-      description: User's role(s) and state in an account.
-      allOf:
-      - type: array
-        uniqueItems: true
-        items:
-          $ref: '#/components/schemas/UserAccountFlagOrRole'
-    PublicKeyCredentialAuthenticatorAttestationResponse:
-      allOf:
-      - type: object
-        description: 'Contains the attributes that are returned to the caller when a new
-
-          credential is created, or a new assertion is requested.'
-        properties:
-          id:
-            $ref: '#/components/schemas/Base64UrlSafe'
-            description: Credential's identifier.
-          type:
-            $ref: '#/components/schemas/PublicKeyCredentialType'
-            description: Type of credential.
-          response:
-            $ref: '#/components/schemas/AuthenticatorAttestationResponse'
-          get_client_extension_results:
-            $ref: '#/components/schemas/AuthenticationExtensionsClientOutputs'
-            description: 'This field contains client extension output entries produced
-
-              by the extension’s client extension processing.'
-    ListUsersParams:
+    ValidateTokenResponse:
       allOf:
       - type: object
         properties:
-          group_id:
+          user_email:
             type: string
-            format: uuid
-          acct_id:
-            type: string
-            format: uuid
-          limit:
-            type: integer
-          offset:
-            type: integer
-          with_groups:
-            $ref: '#/components/schemas/WithGroups'
-      - $ref: '#/components/schemas/UserSort'
+            format: email
+        required:
+        - user_email
+    LegacyUserGroupRoleOrRoleId:
+      description: Legacy user group role name or custom role id
+      oneOf:
+      - $ref: '#/components/schemas/LegacyUserGroupRole'
+      - type: string
+        format: uuid
     AuthenticatorAttestationResponse:
       allOf:
       - type: object
@@ -1193,14 +1044,126 @@ components:
         required:
         - clientDataJSON
         - attestationObject
-    AuthenticatorTransportInner:
-      description: See [AuthenticatorTransport] type.
+    RecoveryCodes:
+      allOf:
+      - type: object
+        description: U2F recovery codes.
+        properties:
+          recovery_codes:
+            type: array
+            items:
+              type: string
+        required:
+        - recovery_codes
+    UserAccountFlags:
+      description: User's role(s) and state in an account.
+      allOf:
+      - type: array
+        uniqueItems: true
+        items:
+          $ref: '#/components/schemas/UserAccountFlagOrRole'
+    PasswordResetRequest:
+      allOf:
+      - type: object
+        description: Request to perform a password reset.
+        properties:
+          reset_token:
+            type: string
+          new_password:
+            type: string
+        required:
+        - reset_token
+        - new_password
+    MfaRenameDeviceRequest:
+      allOf:
+      - type: object
+        description: Request to rename a FIDO device.
+        properties:
+          old_name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Old name of FIDO device.
+          new_name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: New name of FIDO device.
+        required:
+        - old_name
+        - new_name
+    ProcessInviteRequest:
+      allOf:
+      - type: object
+        description: Accept/reject invitations to join account.
+        properties:
+          accepts:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+              format: uuid
+            description: Optional list of account IDs to accept.
+          rejects:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+              format: uuid
+            description: Optional list of account IDs to reject.
+    UserSort:
+      oneOf:
+      - title: UserSortVariantByUserId
+        type: object
+        properties:
+          sort:
+            type: string
+            pattern: ^user_id:(?:asc|desc)$
+            example: user_id:asc
+          start:
+            type: string
+            format: uuid
+        required:
+        - sort
+    U2fAddDeviceRequest:
+      allOf:
+      - type: object
+        description: Description of a U2F device to add for two factor authentication.
+        properties:
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+          registrationData:
+            type: string
+            format: byte
+          clientData:
+            type: string
+            format: byte
+          version:
+            type: string
+        required:
+        - name
+        - registrationData
+        - clientData
+        - version
+    LegacyUserAccountRole:
+      description: Legacy user account role
       type: string
       enum:
-      - usb
-      - nfc
-      - ble
-      - internal
+      - ACCOUNTADMINISTRATOR
+      - ACCOUNTMEMBER
+      - ACCOUNTAUDITOR
+    MfaDeviceType:
+      description: Type of MFA device
+      type: string
+      enum:
+      - U2f
+      - Fido2
     PublicKeyCredentialType:
       description: 'https://www.w3.org/TR/webauthn-2/#enum-credentialType
 
@@ -1209,14 +1172,96 @@ components:
       type: string
       enum:
       - public-key
-    ValidateTokenRequest:
+    Base64UrlSafe:
+      type: string
+      format: byte
+    GroupPermissions:
+      description: "\n\n\n          CREATE_GROUP_APPROVAL_POLICY:\n            Permission to create group-level approval policy. Note that\n            updating/deleting the approval policy is protected by the approval\n            policy itself. Implies `GET_GROUP`.\n\n\n          UPDATE_GROUP_EXTERNAL_LINKS:\n            Permission to update external HSM/KMS configurations. Note that this\n            is only useful for groups backed by external HSM/KMS. Implies\n            `GET_GROUP`.\n\n\n          MANAGE_GROUP_CLIENT_CONFIGS:\n            Permission to manage group-level client configurations. Implies\n            `GET_GROUP`.\n\n\n          UPDATE_GROUP_PROFILE:\n            Permission to update name, description and custom metadata of the\n            group. Implies `GET_GROUP`.\n\n\n          DELETE_GROUP:\n            Permission to delete the group. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES_FOR_APPS:\n            Permission to map external roles to DSM groups for apps authorized\n            through LDAP. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES_FOR_USERS:\n            Permission to map external roles to DSM groups for users authorized\n            through LDAP. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES:\n            Currently implies `MAP_EXTERNAL_ROLES_FOR_APPS`,\n            `MAP_EXTERNAL_ROLES_FOR_USERS`, and `GET_GROUP` permissions.\n\n\n          ADD_USERS_TO_GROUP:\n            Permission to add users to the group.\n\n\n          DELETE_USERS_FROM_GROUP:\n            Permission to remove users from the group.\n\n\n          UPDATE_USERS_GROUP_ROLE:\n            Permission to change users' role in the group.\n\n\n          MANAGE_GROUP_USERS:\n            Currently implies `ADD_USERS_TO_GROUP`, `DELETE_USERS_FROM_GROUP`,\n            and `UPDATE_USERS_GROUP_ROLE` permissions.\n\n\n          CREATE_GROUP_SOBJECT_POLICIES:\n            Permission to create various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          UPDATE_GROUP_SOBJECT_POLICIES:\n            Permission to update various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          DELETE_GROUP_SOBJECT_POLICIES:\n            Permission to delete various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          MANAGE_GROUP_SOBJECT_POLICIES:\n            Currently implies `CREATE_GROUP_SOBJECT_POLICIES`,\n            `UPDATE_GROUP_SOBJECT_POLICIES`, `DELETE_GROUP_SOBJECT_POLICIES`,\n            and `GET_GROUP` permissions.\n\n\n          CREATE_GROUP_CUSTODIAN_POLICY:\n            Permission to create key custodian policy for the group. Implies\n            `GET_GROUP`.\n\n\n          UPDATE_GROUP_CUSTODIAN_POLICY:\n            Permission to update group's key custodian policy. Implies\n            `GET_GROUP`.\n\n\n          DELETE_GROUP_CUSTODIAN_POLICY:\n            Permission to delete group's key custodian policy. Implies\n            `GET_GROUP`.\n\n\n          MANAGE_GROUP_CUSTODIAN_POLICY:\n            Currently implies `CREATE_GROUP_CUSTODIAN_POLICY`,\n            `UPDATE_GROUP_CUSTODIAN_POLICY`, `DELETE_GROUP_CUSTODIAN_POLICY`,\n            and `GET_GROUP` permissions.\n\n\n          CREATE_APPS:\n            Permission to create cryptographic apps. Implies `GET_APPS`.\n\n\n          UPDATE_APPS:\n            Permission to update cryptographic apps. Implies `GET_APPS`.\n\n\n          RETRIEVE_APP_SECRETS:\n            Permission to retrieve cryptographic apps' secrets. Note that not\n            all cryptographic app credentials contain secrets. If a\n            cryptographic app's credential does not contain any secrets,\n            `GET_APPS` permission is sufficient to call the `GetAppCredential`\n            API. Implies `GET_APPS`.\n\n\n          DELETE_APPS:\n            Permission to delete cryptographic apps. Implies `GET_APPS`.\n\n\n          MANAGE_APPS:\n            Currently implies `CREATE_APPS`, `UPDATE_APPS`,\n            `RETRIEVE_APP_SECRETS`, `DELETE_APPS`, and `GET_APPS` permissions.\n\n\n          CREATE_PLUGINS:\n            Permission to create plugins. Implies `GET_PLUGINS`.\n            For creating a plugin, following group permissions are also required\n            in each group plugin is being added, to prevent privilege escalation:\n            `CREATE_SOBJECTS`, `EXPORT_SOBJECTS`, `COPY_SOBJECTS`,\n            `WRAP_SOBJECTS`, `UNWRAP_SOBJECTS`, `ENCAPSULATE_SOBJECTS`, `DECAPSULATE_SOBJECTS`,\n            `DERIVE_SOBJECTS`, `TRANSFORM_SOBJECTS`, `UPDATE_SOBJECTS_ENABLED_STATE`,\n            `ROTATE_SOBJECTS`, `DELETE_SOBJECTS`, `REVOKE_SOBJECTS`, `ACTIVATE_SOBJECTS`,\n            `MOVE_SOBJECTS`, `UPDATE_KEY_OPS`, `UPDATE_SOBJECT_POLICIES`, `UPDATE_SOBJECTS_PROFILE`,\n            `GET_GROUP`, `GET_SOBJECTS`, `GET_APPS`, `GET_PLUGINS`, `GET_AUDIT_LOGS`\n            Following account permissions are required as well:\n            `GET_ALL_USERS`\n\n\n          UPDATE_PLUGINS:\n            Permission to update plugins. Implies `GET_PLUGINS`.\n            For updating a plugin, following group permissions are also required\n            in each group plugin is being added, to prevent privilege escalation:\n            `CREATE_SOBJECTS`, `EXPORT_SOBJECTS`, `COPY_SOBJECTS`, `WRAP_SOBJECTS`, `UNWRAP_SOBJECTS`,\n            `ENCAPSULATE_SOBJECTS`, `DECAPSULATE_SOBJECTS`, `UPDATE_SOBJECTS_ENABLED_STATE`,\n            `ROTATE_SOBJECTS`, `DELETE_SOBJECTS`, `REVOKE_SOBJECTS`, `ACTIVATE_SOBJECTS`,\n            `MOVE_SOBJECTS`, `UPDATE_KEY_OPS`, `UPDATE_SOBJECT_POLICIES`, `UPDATE_SOBJECTS_PROFILE`,\n            `GET_GROUP`, `GET_SOBJECTS`, `GET_APPS`, `GET_PLUGINS`, `GET_AUDIT_LOGS`\n            Following account permissions are required as well while adding\n            new groups:\n            `GET_ALL_USERS`\n\n\n          INVOKE_PLUGINS:\n            Permission to invoke plugins. Implies `GET_PLUGINS`.\n\n\n          DELETE_PLUGINS:\n            Permission to delete plugins. Implies `GET_PLUGINS`.\n\n\n          MANAGE_PLUGINS:\n            Currently implies `CREATE_PLUGINS`, `UPDATE_PLUGINS`,\n            `INVOKE_PLUGINS`, `DELETE_PLUGINS`, and `GET_PLUGINS` permissions.\n\n\n          CREATE_SOBJECTS:\n            Permission to create security objects. This permission is required\n            for APIs that result in creation of a new security object including:\n            Generate, Import, Unwrap. Also required in destination group when\n            moving a key to a different group or when copying a key. Implies\n            `GET_SOBJECTS`.\n\n\n          EXPORT_SOBJECTS:\n            Permission to export security objects. This permission is required\n            for Export, ExportByComponents, Copy (depending on destination\n            group), Restore, and Wrap (for wrapped security object) APIs.\n            Implies `GET_SOBJECTS`.\n\n\n          COPY_SOBJECTS:\n            Permission to copy security objects. This permission is required in\n            the source group when calling the Copy API. Implies `GET_SOBJECTS`.\n\n\n          WRAP_SOBJECTS:\n            Permission to wrap security objects. This permission is required in\n            the wrapping security object's group. Implies `GET_SOBJECTS`.\n\n\n          UNWRAP_SOBJECTS:\n            Permission to unwrap security objects. This permission is required\n            in the unwrapping security object's group. Implies `GET_SOBJECTS`.\n\n\n          DERIVE_SOBJECTS:\n            Permission to derive other security objects. Implies `GET_SOBJECTS`.\n\n\n          TRANSFORM_SOBJECTS:\n            Permission to transform security objects. Implies `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECTS_ENABLED_STATE:\n            Permission to enable/disable security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          ROTATE_SOBJECTS:\n            Permission to rotate (a.k.a. \"rekey\") security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          DELETE_SOBJECTS:\n            Permission to delete security objects. Implies `GET_SOBJECTS`.\n\n\n          DESTROY_SOBJECTS:\n            Permission to destroy security objects. Implies `GET_SOBJECTS`.\n\n\n          REVOKE_SOBJECTS:\n            Permission to revoke security objects, i.e. mark security objects as\n            deactivated or compromised. Implies `GET_SOBJECTS`.\n\n\n          ACTIVATE_SOBJECTS:\n            Permission to activate security objects. Implies `GET_SOBJECTS`.\n\n\n          REVERT_SOBJECTS:\n            Permission to revert changes to security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          DELETE_KEY_MATERIAL:\n            Permission to delete key material including removing the private key\n            part of an asymmetric key pair and removing key material of security\n            objects backed by external HSM/KMS. Implies `GET_SOBJECTS`.\n\n\n          MOVE_SOBJECTS:\n            Permission to move security objects. This permission is required for\n            changing the group of a security object in the source group. Note\n            that changing the group of a security object also requires\n            `CREATE_SOBJECTS` permission in the destination group. Implies\n            `GET_SOBJECTS`.\n\n\n          UPDATE_KEY_OPS:\n            Permission to update key operations of security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECT_POLICIES:\n            Permission to update individual security objects' policies. This\n            permission allows updating RSA options, as well as Google access\n            reason policy (for use with Google EKM APIs) defined on the security\n            object itself. Implies `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECTS_PROFILE:\n            Permission to update name, description, custom metadata, key links\n            (currently only create parent link), and publish public key settings\n            of security objects. Implies `GET_SOBJECTS`.\n\n\n          SCAN_EXTERNAL_SOBJECTS:\n            Permission to scan for security objects in external HSM/KMS. Implies\n            `GET_SOBJECTS`.\n\n\n          RESTORE_EXTERNAL_SOBJECTS:\n            Permission to restore key material of security objects backed by\n            external HSM/KMS. Note that calling the Restore API needs this\n            permission in the destination group as well as `EXPORT_SOBJECTS`\n            permission in the source group (where the object was copied from\n            originally). Implies `GET_SOBJECTS`.\n\n\n          WRAP_WORKSPACE_CSE:\n            Permission to call Workspace CSE Wrap API.\n\n\n          UNWRAP_WORKSPACE_CSE:\n            Permission to call Workspace CSE Unwrap API.\n\n\n          WORKSPACE_CSE:\n\n\n          GET_GROUP:\n            Permission to get information about the group.\n\n\n          GET_SOBJECTS:\n            Permission to get security objects stored in the group.\n\n\n          GET_APPS:\n            Permission to get cryptographic apps in the group.\n\n\n          GET_PLUGINS:\n            Permission to get plugin in the group.\n\n\n          GET_GROUP_APPROVAL_REQUESTS:\n            Permission to get approval requests related to the group.\n\n\n          GET_AUDIT_LOGS:\n            Permission to get audit logs related to the group.\n\n\n          MANAGE_GROUP_WRAPPING_KEY:\n            Permission to update or remove wrapping key of the  group\n\n\n          ENCAPSULATE_SOBJECTS:\n            Permission to encapsulate security objects. Implies `CREATE_SOBJECTS`.\n\n\n          DECAPSULATE_SOBJECTS:\n            Permission to decapsulate security objects. Implies `CREATE_SOBJECTS`.\n\n\n          GET_CREDENTIALS:\n            Permission to lookup a credential object\n\n\n          CREATE_CREDENTIALS:\n            Permission to create a credential object (Implies GET_CREDENTIALS)\n\n\n          UPDATE_CREDENTIALS:\n            Permission to update a credential object (Implies GET_CREDENTIALS)\n\n\n          DELETE_CREDENTIALS:\n            Permission to delete a credential object (Implies GET_CREDENTIALS)\n\n\n          ASSIGN_CREDENTIALS:\n            Permission to assign credential objects to integration points (Implies GET_CREDENTIALS)\n\n\n          MANAGE_CREDENTIALS:\n            Permission to manage credential objects (Currently implies `GET_CREDENTIALS`,\n            `CREATE_CREDENTIALS`, `UPDATE_CREDENTIALS`, `DELETE_CREDENTIALS`, and\n            `ASSIGN_CREDENTIALS`).\n\n"
+      type: string
+      enum:
+      - CREATE_GROUP_APPROVAL_POLICY
+      - UPDATE_GROUP_EXTERNAL_LINKS
+      - MANAGE_GROUP_CLIENT_CONFIGS
+      - UPDATE_GROUP_PROFILE
+      - DELETE_GROUP
+      - MAP_EXTERNAL_ROLES_FOR_APPS
+      - MAP_EXTERNAL_ROLES_FOR_USERS
+      - MAP_EXTERNAL_ROLES
+      - ADD_USERS_TO_GROUP
+      - DELETE_USERS_FROM_GROUP
+      - UPDATE_USERS_GROUP_ROLE
+      - MANAGE_GROUP_USERS
+      - CREATE_GROUP_SOBJECT_POLICIES
+      - UPDATE_GROUP_SOBJECT_POLICIES
+      - DELETE_GROUP_SOBJECT_POLICIES
+      - MANAGE_GROUP_SOBJECT_POLICIES
+      - CREATE_GROUP_CUSTODIAN_POLICY
+      - UPDATE_GROUP_CUSTODIAN_POLICY
+      - DELETE_GROUP_CUSTODIAN_POLICY
+      - MANAGE_GROUP_CUSTODIAN_POLICY
+      - CREATE_APPS
+      - UPDATE_APPS
+      - RETRIEVE_APP_SECRETS
+      - DELETE_APPS
+      - MANAGE_APPS
+      - CREATE_PLUGINS
+      - UPDATE_PLUGINS
+      - INVOKE_PLUGINS
+      - DELETE_PLUGINS
+      - MANAGE_PLUGINS
+      - CREATE_SOBJECTS
+      - EXPORT_SOBJECTS
+      - COPY_SOBJECTS
+      - WRAP_SOBJECTS
+      - UNWRAP_SOBJECTS
+      - DERIVE_SOBJECTS
+      - TRANSFORM_SOBJECTS
+      - UPDATE_SOBJECTS_ENABLED_STATE
+      - ROTATE_SOBJECTS
+      - DELETE_SOBJECTS
+      - DESTROY_SOBJECTS
+      - REVOKE_SOBJECTS
+      - ACTIVATE_SOBJECTS
+      - REVERT_SOBJECTS
+      - DELETE_KEY_MATERIAL
+      - MOVE_SOBJECTS
+      - UPDATE_KEY_OPS
+      - UPDATE_SOBJECT_POLICIES
+      - UPDATE_SOBJECTS_PROFILE
+      - SCAN_EXTERNAL_SOBJECTS
+      - RESTORE_EXTERNAL_SOBJECTS
+      - WRAP_WORKSPACE_CSE
+      - UNWRAP_WORKSPACE_CSE
+      - WORKSPACE_CSE
+      - GET_GROUP
+      - GET_SOBJECTS
+      - GET_APPS
+      - GET_PLUGINS
+      - GET_GROUP_APPROVAL_REQUESTS
+      - GET_AUDIT_LOGS
+      - MANAGE_GROUP_WRAPPING_KEY
+      - ENCAPSULATE_SOBJECTS
+      - DECAPSULATE_SOBJECTS
+      - GET_CREDENTIALS
+      - CREATE_CREDENTIALS
+      - UPDATE_CREDENTIALS
+      - DELETE_CREDENTIALS
+      - ASSIGN_CREDENTIALS
+      - MANAGE_CREDENTIALS
+    UserAccountFlag:
+      description: User account flag
+      type: string
+      enum:
+      - STATEENABLED
+      - PENDINGINVITE
+    ConfirmEmailRequest:
       allOf:
       - type: object
         properties:
-          reset_token:
+          confirm_token:
             type: string
         required:
-        - reset_token
+        - confirm_token
     UserRequest:
       allOf:
       - type: object
@@ -1306,6 +1351,175 @@ components:
             format: email
           user_password:
             type: string
+    ValidateTokenRequest:
+      allOf:
+      - type: object
+        properties:
+          reset_token:
+            type: string
+        required:
+        - reset_token
+    GetUserParams:
+      allOf:
+      - type: object
+        properties:
+          with_groups:
+            $ref: '#/components/schemas/WithGroups'
+    MfaDelDeviceRequest:
+      allOf:
+      - type: object
+        description: Request to delete a FIDO device.
+        properties:
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Name of the FIDO device to delete.
+        required:
+        - name
+    GetUserPermissionsParams:
+      allOf:
+      - type: object
+        properties:
+          with_implied:
+            type: boolean
+            description: 'If `true`, implied permissions are added in the output. For example, if
+
+              permission A implies permission B, and the user has permission A, the
+
+              output will include both A and B if this is set to `true`. If this is
+
+              set to `false`, B will only be returned if it was assigned to the user
+
+              directly.'
+    PublicKeyCredentialAuthenticatorAttestationResponse:
+      allOf:
+      - type: object
+        description: 'Contains the attributes that are returned to the caller when a new
+
+          credential is created, or a new assertion is requested.'
+        properties:
+          id:
+            $ref: '#/components/schemas/Base64UrlSafe'
+            description: Credential's identifier.
+          type:
+            $ref: '#/components/schemas/PublicKeyCredentialType'
+            description: Type of credential.
+          response:
+            $ref: '#/components/schemas/AuthenticatorAttestationResponse'
+          get_client_extension_results:
+            $ref: '#/components/schemas/AuthenticationExtensionsClientOutputs'
+            description: 'This field contains client extension output entries produced
+
+              by the extension’s client extension processing.'
+    AuthenticationExtensionsClientOutputs:
+      allOf:
+      - type: object
+        description: 'This is the response of extension inputs. For every input,
+
+          an output must be returned if the input was considered.
+
+
+          <https://www.w3.org/TR/webauthn-2/#iface-authentication-extensions-client-outputs>'
+        properties:
+          appidExclude:
+            type:
+            - boolean
+            - 'null'
+            description: 'Response of `appidExclude` extension.
+
+              See [AuthenticationExtensionsClientInputs::appid_exclude].'
+          appid:
+            type:
+            - boolean
+            - 'null'
+            description: 'Response of `appid` extension.
+
+              See [AuthenticationExtensionsClientInputs::appid].'
+    GetUserPermissionsResponse:
+      allOf:
+      - type: object
+        properties:
+          account:
+            type: array
+            items:
+              $ref: '#/components/schemas/AccountPermissions'
+            description: User's permissions in the account.
+          all_groups:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/GroupPermissions'
+            description: 'User''s permissions in all groups. Note that this will only be returned
+
+              if the user has one or more all-groups roles.'
+          groups:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/GroupPermissions'
+            description: User's permissions in groups.
+        required:
+        - account
+        - groups
+    FidoAddDeviceRequest:
+      allOf:
+      - type: object
+        description: 'This contains the request for adding a FIDO device
+
+          to user''s data.
+
+          Initially, `POST /sys/v1/session/config_2fa/new_challenge` needs
+
+          to be called with protocol set to `fido2` and using that data,
+
+          `navigator.credentials.create()` is called in the frontend.
+
+          The data returned by `create` is sent in this request. The data
+
+          sent back here creates a new FIDO2 device for the user after
+
+          the payload is verified as per the rules stated in webauthn doc.'
+        properties:
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: A user friendly name for the device.
+          attestationResult:
+            $ref: '#/components/schemas/PublicKeyCredentialAuthenticatorAttestationResponse'
+        required:
+        - name
+        - attestationResult
+    MfaDevice:
+      allOf:
+      - type: object
+        description: A FIDO device that may be used for second factor authentication.
+        properties:
+          name:
+            type: string
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Name given to the FIDO device.
+          type:
+            $ref: '#/components/schemas/MfaDeviceType'
+          origin:
+            type:
+            - string
+            - 'null'
+            description: Origin of the FIDO device.
+        required:
+        - name
+        - type
+    UserAccountFlagOrRole:
+      description: User account flag or legacy user account role name or custom role id
+      oneOf:
+      - $ref: '#/components/schemas/UserAccountFlag'
+      - $ref: '#/components/schemas/LegacyUserAccountRole'
+      - type: string
+        format: uuid
     SignupRequest_2:
       allOf:
       - type: object
@@ -1335,69 +1549,70 @@ components:
         required:
         - user_email
         - user_password
-    LegacyUserGroupRole:
-      description: Legacy user group role
+    AuthenticatorTransportInner:
+      description: See [AuthenticatorTransport] type.
       type: string
       enum:
-      - GROUPAUDITOR
-      - GROUPADMINISTRATOR
-    AuthenticationExtensionsClientOutputs:
+      - usb
+      - nfc
+      - ble
+      - internal
+    UserGroupRole:
+      description: User's role(s) in a group.
+      allOf:
+      - type: array
+        uniqueItems: true
+        items:
+          $ref: '#/components/schemas/LegacyUserGroupRoleOrRoleId'
+    ForgotPasswordRequest:
       allOf:
       - type: object
-        description: 'This is the response of extension inputs. For every input,
-
-          an output must be returned if the input was considered.
-
-
-          <https://www.w3.org/TR/webauthn-2/#iface-authentication-extensions-client-outputs>'
+        description: Initiate password reset sequence.
         properties:
-          appidExclude:
-            type:
-            - boolean
-            - 'null'
-            description: 'Response of `appidExclude` extension.
-
-              See [AuthenticationExtensionsClientInputs::appid_exclude].'
-          appid:
-            type:
-            - boolean
-            - 'null'
-            description: 'Response of `appid` extension.
-
-              See [AuthenticationExtensionsClientInputs::appid].'
-    UserAccountFlagOrRole:
-      description: User account flag or legacy user account role name or custom role id
-      oneOf:
-      - $ref: '#/components/schemas/UserAccountFlag'
-      - $ref: '#/components/schemas/LegacyUserAccountRole'
-      - type: string
-        format: uuid
-    LegacyUserGroupRoleOrRoleId:
-      description: Legacy user group role name or custom role id
-      oneOf:
-      - $ref: '#/components/schemas/LegacyUserGroupRole'
-      - type: string
-        format: uuid
-    MfaDevice:
-      allOf:
-      - type: object
-        description: A FIDO device that may be used for second factor authentication.
-        properties:
-          name:
+          user_email:
             type: string
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-            description: Name given to the FIDO device.
-          type:
-            $ref: '#/components/schemas/MfaDeviceType'
-          origin:
+            format: email
+          recaptcha_response:
             type:
             - string
             - 'null'
-            description: Origin of the FIDO device.
         required:
-        - name
-        - type
+        - user_email
+    PasswordChangeRequest:
+      allOf:
+      - type: object
+        description: Request to change user's password.
+        properties:
+          current_password:
+            type: string
+          new_password:
+            type: string
+        required:
+        - current_password
+        - new_password
+    WithGroups:
+      type: string
+      enum:
+      - all
+      - explicit_only
+      - none
+    ListUsersParams:
+      allOf:
+      - type: object
+        properties:
+          group_id:
+            type: string
+            format: uuid
+          acct_id:
+            type: string
+            format: uuid
+          limit:
+            type: integer
+          offset:
+            type: integer
+          with_groups:
+            $ref: '#/components/schemas/WithGroups'
+      - $ref: '#/components/schemas/UserSort'
     ConfirmEmailResponse:
       allOf:
       - type: object
@@ -1407,28 +1622,6 @@ components:
             format: email
         required:
         - user_email
-    U2fAddDeviceRequest:
-      allOf:
-      - type: object
-        description: Description of a U2F device to add for two factor authentication.
-        properties:
-          name:
-            type: string
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-          registrationData:
-            type: string
-            format: byte
-          clientData:
-            type: string
-            format: byte
-          version:
-            type: string
-        required:
-        - name
-        - registrationData
-        - clientData
-        - version
     AuthenticatorTransport:
       description: 'Hints by relying party on how client should communicate
 
@@ -1457,79 +1650,12 @@ components:
           Relying Parties MUST ignore unknown values."
 
           See `[[transports]]` in https://www.w3.org/TR/webauthn-2/#iface-authenticatorattestationresponse'
-    GroupPermissions:
-      description: "\n\n\n          CREATE_GROUP_APPROVAL_POLICY:\n            Permission to create group-level approval policy. Note that\n            updating/deleting the approval policy is protected by the approval\n            policy itself. Implies `GET_GROUP`.\n\n\n          UPDATE_GROUP_EXTERNAL_LINKS:\n            Permission to update external HSM/KMS configurations. Note that this\n            is only useful for groups backed by external HSM/KMS. Implies\n            `GET_GROUP`.\n\n\n          MANAGE_GROUP_CLIENT_CONFIGS:\n            Permission to manage group-level client configurations. Implies\n            `GET_GROUP`.\n\n\n          UPDATE_GROUP_PROFILE:\n            Permission to update name, description and custom metadata of the\n            group. Implies `GET_GROUP`.\n\n\n          DELETE_GROUP:\n            Permission to delete the group. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES_FOR_APPS:\n            Permission to map external roles to DSM groups for apps authorized\n            through LDAP. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES_FOR_USERS:\n            Permission to map external roles to DSM groups for users authorized\n            through LDAP. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES:\n            Currently implies `MAP_EXTERNAL_ROLES_FOR_APPS`,\n            `MAP_EXTERNAL_ROLES_FOR_USERS`, and `GET_GROUP` permissions.\n\n\n          ADD_USERS_TO_GROUP:\n            Permission to add users to the group.\n\n\n          DELETE_USERS_FROM_GROUP:\n            Permission to remove users from the group.\n\n\n          UPDATE_USERS_GROUP_ROLE:\n            Permission to change users' role in the group.\n\n\n          MANAGE_GROUP_USERS:\n            Currently implies `ADD_USERS_TO_GROUP`, `DELETE_USERS_FROM_GROUP`,\n            and `UPDATE_USERS_GROUP_ROLE` permissions.\n\n\n          CREATE_GROUP_SOBJECT_POLICIES:\n            Permission to create various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          UPDATE_GROUP_SOBJECT_POLICIES:\n            Permission to update various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          DELETE_GROUP_SOBJECT_POLICIES:\n            Permission to delete various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          MANAGE_GROUP_SOBJECT_POLICIES:\n            Currently implies `CREATE_GROUP_SOBJECT_POLICIES`,\n            `UPDATE_GROUP_SOBJECT_POLICIES`, `DELETE_GROUP_SOBJECT_POLICIES`,\n            and `GET_GROUP` permissions.\n\n\n          CREATE_GROUP_CUSTODIAN_POLICY:\n            Permission to create key custodian policy for the group. Implies\n            `GET_GROUP`.\n\n\n          UPDATE_GROUP_CUSTODIAN_POLICY:\n            Permission to update group's key custodian policy. Implies\n            `GET_GROUP`.\n\n\n          DELETE_GROUP_CUSTODIAN_POLICY:\n            Permission to delete group's key custodian policy. Implies\n            `GET_GROUP`.\n\n\n          MANAGE_GROUP_CUSTODIAN_POLICY:\n            Currently implies `CREATE_GROUP_CUSTODIAN_POLICY`,\n            `UPDATE_GROUP_CUSTODIAN_POLICY`, `DELETE_GROUP_CUSTODIAN_POLICY`,\n            and `GET_GROUP` permissions.\n\n\n          CREATE_APPS:\n            Permission to create cryptographic apps. Implies `GET_APPS`.\n\n\n          UPDATE_APPS:\n            Permission to update cryptographic apps. Implies `GET_APPS`.\n\n\n          RETRIEVE_APP_SECRETS:\n            Permission to retrieve cryptographic apps' secrets. Note that not\n            all cryptographic app credentials contain secrets. If a\n            cryptographic app's credential does not contain any secrets,\n            `GET_APPS` permission is sufficient to call the `GetAppCredential`\n            API. Implies `GET_APPS`.\n\n\n          DELETE_APPS:\n            Permission to delete cryptographic apps. Implies `GET_APPS`.\n\n\n          MANAGE_APPS:\n            Currently implies `CREATE_APPS`, `UPDATE_APPS`,\n            `RETRIEVE_APP_SECRETS`, `DELETE_APPS`, and `GET_APPS` permissions.\n\n\n          CREATE_PLUGINS:\n            Permission to create plugins. Implies `GET_PLUGINS`.\n            For creating a plugin, following group permissions are also required\n            in each group plugin is being added, to prevent privilege escalation:\n            `CREATE_SOBJECTS`, `EXPORT_SOBJECTS`, `COPY_SOBJECTS`,\n            `WRAP_SOBJECTS`, `UNWRAP_SOBJECTS`, `ENCAPSULATE_SOBJECTS`, `DECAPSULATE_SOBJECTS`,\n            `DERIVE_SOBJECTS`, `TRANSFORM_SOBJECTS`, `UPDATE_SOBJECTS_ENABLED_STATE`,\n            `ROTATE_SOBJECTS`, `DELETE_SOBJECTS`, `REVOKE_SOBJECTS`, `ACTIVATE_SOBJECTS`,\n            `MOVE_SOBJECTS`, `UPDATE_KEY_OPS`, `UPDATE_SOBJECT_POLICIES`, `UPDATE_SOBJECTS_PROFILE`,\n            `GET_GROUP`, `GET_SOBJECTS`, `GET_APPS`, `GET_PLUGINS`, `GET_AUDIT_LOGS`\n            Following account permissions are required as well:\n            `GET_ALL_USERS`\n\n\n          UPDATE_PLUGINS:\n            Permission to update plugins. Implies `GET_PLUGINS`.\n            For updating a plugin, following group permissions are also required\n            in each group plugin is being added, to prevent privilege escalation:\n            `CREATE_SOBJECTS`, `EXPORT_SOBJECTS`, `COPY_SOBJECTS`, `WRAP_SOBJECTS`, `UNWRAP_SOBJECTS`,\n            `ENCAPSULATE_SOBJECTS`, `DECAPSULATE_SOBJECTS`, `UPDATE_SOBJECTS_ENABLED_STATE`,\n            `ROTATE_SOBJECTS`, `DELETE_SOBJECTS`, `REVOKE_SOBJECTS`, `ACTIVATE_SOBJECTS`,\n            `MOVE_SOBJECTS`, `UPDATE_KEY_OPS`, `UPDATE_SOBJECT_POLICIES`, `UPDATE_SOBJECTS_PROFILE`,\n            `GET_GROUP`, `GET_SOBJECTS`, `GET_APPS`, `GET_PLUGINS`, `GET_AUDIT_LOGS`\n            Following account permissions are required as well while adding\n            new groups:\n            `GET_ALL_USERS`\n\n\n          INVOKE_PLUGINS:\n            Permission to invoke plugins. Implies `GET_PLUGINS`.\n\n\n          DELETE_PLUGINS:\n            Permission to delete plugins. Implies `GET_PLUGINS`.\n\n\n          MANAGE_PLUGINS:\n            Currently implies `CREATE_PLUGINS`, `UPDATE_PLUGINS`,\n            `INVOKE_PLUGINS`, `DELETE_PLUGINS`, and `GET_PLUGINS` permissions.\n\n\n          CREATE_SOBJECTS:\n            Permission to create security objects. This permission is required\n            for APIs that result in creation of a new security object including:\n            Generate, Import, Unwrap. Also required in destination group when\n            moving a key to a different group or when copying a key. Implies\n            `GET_SOBJECTS`.\n\n\n          EXPORT_SOBJECTS:\n            Permission to export security objects. This permission is required\n            for Export, ExportByComponents, Copy (depending on destination\n            group), Restore, and Wrap (for wrapped security object) APIs.\n            Implies `GET_SOBJECTS`.\n\n\n          COPY_SOBJECTS:\n            Permission to copy security objects. This permission is required in\n            the source group when calling the Copy API. Implies `GET_SOBJECTS`.\n\n\n          WRAP_SOBJECTS:\n            Permission to wrap security objects. This permission is required in\n            the wrapping security object's group. Implies `GET_SOBJECTS`.\n\n\n          UNWRAP_SOBJECTS:\n            Permission to unwrap security objects. This permission is required\n            in the unwrapping security object's group. Implies `GET_SOBJECTS`.\n\n\n          DERIVE_SOBJECTS:\n            Permission to derive other security objects. Implies `GET_SOBJECTS`.\n\n\n          TRANSFORM_SOBJECTS:\n            Permission to transform security objects. Implies `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECTS_ENABLED_STATE:\n            Permission to enable/disable security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          ROTATE_SOBJECTS:\n            Permission to rotate (a.k.a. \"rekey\") security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          DELETE_SOBJECTS:\n            Permission to delete security objects. Implies `GET_SOBJECTS`.\n\n\n          DESTROY_SOBJECTS:\n            Permission to destroy security objects. Implies `GET_SOBJECTS`.\n\n\n          REVOKE_SOBJECTS:\n            Permission to revoke security objects, i.e. mark security objects as\n            deactivated or compromised. Implies `GET_SOBJECTS`.\n\n\n          ACTIVATE_SOBJECTS:\n            Permission to activate security objects. Implies `GET_SOBJECTS`.\n\n\n          REVERT_SOBJECTS:\n            Permission to revert changes to security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          DELETE_KEY_MATERIAL:\n            Permission to delete key material including removing the private key\n            part of an asymmetric key pair and removing key material of security\n            objects backed by external HSM/KMS. Implies `GET_SOBJECTS`.\n\n\n          MOVE_SOBJECTS:\n            Permission to move security objects. This permission is required for\n            changing the group of a security object in the source group. Note\n            that changing the group of a security object also requires\n            `CREATE_SOBJECTS` permission in the destination group. Implies\n            `GET_SOBJECTS`.\n\n\n          UPDATE_KEY_OPS:\n            Permission to update key operations of security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECT_POLICIES:\n            Permission to update individual security objects' policies. This\n            permission allows updating RSA options, as well as Google access\n            reason policy (for use with Google EKM APIs) defined on the security\n            object itself. Implies `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECTS_PROFILE:\n            Permission to update name, description, custom metadata, key links\n            (currently only create parent link), and publish public key settings\n            of security objects. Implies `GET_SOBJECTS`.\n\n\n          SCAN_EXTERNAL_SOBJECTS:\n            Permission to scan for security objects in external HSM/KMS. Implies\n            `GET_SOBJECTS`.\n\n\n          RESTORE_EXTERNAL_SOBJECTS:\n            Permission to restore key material of security objects backed by\n            external HSM/KMS. Note that calling the Restore API needs this\n            permission in the destination group as well as `EXPORT_SOBJECTS`\n            permission in the source group (where the object was copied from\n            originally). Implies `GET_SOBJECTS`.\n\n\n          WRAP_WORKSPACE_CSE:\n            Permission to call Workspace CSE Wrap API.\n\n\n          UNWRAP_WORKSPACE_CSE:\n            Permission to call Workspace CSE Unwrap API.\n\n\n          WORKSPACE_CSE:\n\n\n          GET_GROUP:\n            Permission to get information about the group.\n\n\n          GET_SOBJECTS:\n            Permission to get security objects stored in the group.\n\n\n          GET_APPS:\n            Permission to get cryptographic apps in the group.\n\n\n          GET_PLUGINS:\n            Permission to get plugin in the group.\n\n\n          GET_GROUP_APPROVAL_REQUESTS:\n            Permission to get approval requests related to the group.\n\n\n          GET_AUDIT_LOGS:\n            Permission to get audit logs related to the group.\n\n\n          MANAGE_GROUP_WRAPPING_KEY:\n            Permission to update or remove wrapping key of the  group\n\n\n          ENCAPSULATE_SOBJECTS:\n            Permission to encapsulate security objects. Implies `CREATE_SOBJECTS`.\n\n\n          DECAPSULATE_SOBJECTS:\n            Permission to decapsulate security objects. Implies `CREATE_SOBJECTS`.\n\n\n          GET_CREDENTIALS:\n            Permission to lookup a credential object\n\n\n          CREATE_CREDENTIALS:\n            Permission to create a credential object (Implies GET_CREDENTIALS)\n\n\n          UPDATE_CREDENTIALS:\n            Permission to update a credential object (Implies GET_CREDENTIALS)\n\n\n          DELETE_CREDENTIALS:\n            Permission to delete a credential object (Implies GET_CREDENTIALS)\n\n\n          ASSIGN_CREDENTIALS:\n            Permission to assign credential objects to integration points (Implies GET_CREDENTIALS)\n\n\n          MANAGE_CREDENTIALS:\n            Permission to manage credential objects (Currently implies `GET_CREDENTIALS`,\n            `CREATE_CREDENTIALS`, `UPDATE_CREDENTIALS`, `DELETE_CREDENTIALS`, and\n            `ASSIGN_CREDENTIALS`).\n\n"
+    LegacyUserGroupRole:
+      description: Legacy user group role
       type: string
       enum:
-      - CREATE_GROUP_APPROVAL_POLICY
-      - UPDATE_GROUP_EXTERNAL_LINKS
-      - MANAGE_GROUP_CLIENT_CONFIGS
-      - UPDATE_GROUP_PROFILE
-      - DELETE_GROUP
-      - MAP_EXTERNAL_ROLES_FOR_APPS
-      - MAP_EXTERNAL_ROLES_FOR_USERS
-      - MAP_EXTERNAL_ROLES
-      - ADD_USERS_TO_GROUP
-      - DELETE_USERS_FROM_GROUP
-      - UPDATE_USERS_GROUP_ROLE
-      - MANAGE_GROUP_USERS
-      - CREATE_GROUP_SOBJECT_POLICIES
-      - UPDATE_GROUP_SOBJECT_POLICIES
-      - DELETE_GROUP_SOBJECT_POLICIES
-      - MANAGE_GROUP_SOBJECT_POLICIES
-      - CREATE_GROUP_CUSTODIAN_POLICY
-      - UPDATE_GROUP_CUSTODIAN_POLICY
-      - DELETE_GROUP_CUSTODIAN_POLICY
-      - MANAGE_GROUP_CUSTODIAN_POLICY
-      - CREATE_APPS
-      - UPDATE_APPS
-      - RETRIEVE_APP_SECRETS
-      - DELETE_APPS
-      - MANAGE_APPS
-      - CREATE_PLUGINS
-      - UPDATE_PLUGINS
-      - INVOKE_PLUGINS
-      - DELETE_PLUGINS
-      - MANAGE_PLUGINS
-      - CREATE_SOBJECTS
-      - EXPORT_SOBJECTS
-      - COPY_SOBJECTS
-      - WRAP_SOBJECTS
-      - UNWRAP_SOBJECTS
-      - DERIVE_SOBJECTS
-      - TRANSFORM_SOBJECTS
-      - UPDATE_SOBJECTS_ENABLED_STATE
-      - ROTATE_SOBJECTS
-      - DELETE_SOBJECTS
-      - DESTROY_SOBJECTS
-      - REVOKE_SOBJECTS
-      - ACTIVATE_SOBJECTS
-      - REVERT_SOBJECTS
-      - DELETE_KEY_MATERIAL
-      - MOVE_SOBJECTS
-      - UPDATE_KEY_OPS
-      - UPDATE_SOBJECT_POLICIES
-      - UPDATE_SOBJECTS_PROFILE
-      - SCAN_EXTERNAL_SOBJECTS
-      - RESTORE_EXTERNAL_SOBJECTS
-      - WRAP_WORKSPACE_CSE
-      - UNWRAP_WORKSPACE_CSE
-      - WORKSPACE_CSE
-      - GET_GROUP
-      - GET_SOBJECTS
-      - GET_APPS
-      - GET_PLUGINS
-      - GET_GROUP_APPROVAL_REQUESTS
-      - GET_AUDIT_LOGS
-      - MANAGE_GROUP_WRAPPING_KEY
-      - ENCAPSULATE_SOBJECTS
-      - DECAPSULATE_SOBJECTS
-      - GET_CREDENTIALS
-      - CREATE_CREDENTIALS
-      - UPDATE_CREDENTIALS
-      - DELETE_CREDENTIALS
-      - ASSIGN_CREDENTIALS
-      - MANAGE_CREDENTIALS
+      - GROUPAUDITOR
+      - GROUPADMINISTRATOR
     AccountPermissions:
       description: "\n\n\n          MANAGE_LOGGING:\n            Permission to manage logging integrations, and enable/disable error\n            logging.\n\n\n          MANAGE_AUTH:\n            Permission to manage SSO and password policy.\n\n\n          MANAGE_WORKSPACE_CSE:\n            Permission to manage Workspace CSE configuration.\n\n\n          UNWRAP_WORKSPACE_CSE_PRIVILEGED:\n            Permission required for Workspace CSE PrivilegedUnwrap API. Note\n            that `UNWRAP_WORKSPACE_CSE` permission in the group where the key is\n            stored is also required.\n\n\n          MANAGE_ACCOUNT_CLIENT_CONFIGS:\n            Permission to manage account level client configurations.\n\n\n          MANAGE_PLUGIN_CODE_SIGNING_POLICY:\n            Permission to manage plugin code signing policy.\n\n\n          CREATE_ACCOUNT_APPROVAL_POLICY:\n            Permission to create account-level approval policy. Note that\n            updating/deleting the approval policy is protected by the approval\n            policy itself.\n\n\n          SET_APPROVAL_REQUEST_EXPIRY:\n            Permission to set approval request expiry for all approval requests\n            created in the account.\n\n\n          MANAGE_APPROVAL_REQUEST_SETTINGS:\n            Permission to manage all approval request settings including\n            approval request expiry. Implies `SET_APPROVAL_REQUEST_EXPIRY`.\n\n\n          UPDATE_ACCOUNT_CUSTOM_METADATA_ATTRIBUTES:\n            Permission to update account's custom metadata attributes.\n\n\n          MANAGE_ACCOUNT_SUBSCRIPTION:\n            Permission to manage account subscription (only relevant for SaaS\n            accounts).\n\n\n          MANAGE_ACCOUNT_PROFILE:\n            Permission to update account name, custom logo, and other profile\n            information.\n\n\n          DELETE_ACCOUNT:\n            Permission to delete the account.\n\n\n          CREATE_ADMIN_APPS:\n            Permission to create administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          UPDATE_ADMIN_APPS:\n            Permission to update administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          DELETE_ADMIN_APPS:\n            Permission to delete administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          RETRIEVE_ADMIN_APP_SECRETS:\n            Permission to retrieve administrative apps' secrets. Note that not\n            all admin app credentials contain secrets. If an admin app's\n            credential does not contain any secrets, `GET_ADMIN_APPS` permission\n            is sufficient to call the `GetAppCredential` API. Implies\n            `GET_ADMIN_APPS`.\n\n\n          MANAGE_ADMIN_APPS:\n            Currently implies `CREATE_ADMIN_APPS`, `UPDATE_ADMIN_APPS`,\n            `DELETE_ADMIN_APPS`, `RETRIEVE_ADMIN_APP_SECRETS` and\n            `GET_ADMIN_APPS` permissions.\n\n\n          CREATE_CUSTOM_ROLES:\n            Permission to create custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          UPDATE_CUSTOM_ROLES:\n            Permission to update custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          DELETE_CUSTOM_ROLES:\n            Permission to delete custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          MANAGE_CUSTOM_ROLES:\n            Currently implies `CREATE_CUSTOM_ROLES`, `UPDATE_CUSTOM_ROLES`,\n            `DELETE_CUSTOM_ROLES` and `GET_CUSTOM_ROLES` permissions.\n\n\n          INVITE_USERS_TO_ACCOUNT:\n            Permission to invite users to the account. Implies `GET_ALL_USERS`.\n\n\n          DELETE_USERS_FROM_ACCOUNT:\n            Permission to remove users from the account. Implies\n            `GET_ALL_USERS`.\n\n\n          UPDATE_USERS_ACCOUNT_ROLE:\n            Permission to change users' role in the account. Implies\n            `GET_ALL_USERS`.\n\n\n          UPDATE_USERS_ACCOUNT_ENABLED_STATE:\n            Permission to enable/disable users in the account. Implies\n            `GET_ALL_USERS`.\n\n\n          MANAGE_ACCOUNT_USERS:\n            Currently implies `INVITE_USERS_TO_ACCOUNT`,\n            `DELETE_USERS_FROM_ACCOUNT`, `UPDATE_USERS_ACCOUNT_ROLE`,\n            `UPDATE_USERS_ACCOUNT_ENABLED_STATE` and `GET_ALL_USERS`\n            permissions.\n\n\n          CREATE_EXTERNAL_ROLES:\n            Permission to create external roles. Implies `GET_EXTERNAL_ROLES`.\n\n\n          SYNC_EXTERNAL_ROLES:\n            Permission to synchronize external roles. Implies\n            `GET_EXTERNAL_ROLES`.\n\n\n          DELETE_EXTERNAL_ROLES:\n            Permission to delete external roles. Implies `GET_EXTERNAL_ROLES`.\n\n\n          MANAGE_EXTERNAL_ROLES:\n            Currently implies `CREATE_EXTERNAL_ROLES`, `SYNC_EXTERNAL_ROLES`,\n            `DELETE_EXTERNAL_ROLES` and `GET_EXTERNAL_ROLES` permissions.\n\n\n          CREATE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to create various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          UPDATE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to update various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          DELETE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to delete various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          MANAGE_ACCOUNT_SOBJECT_POLICIES:\n            Currently implies `CREATE_ACCOUNT_SOBJECT_POLICIES`,\n            `UPDATE_ACCOUNT_SOBJECT_POLICIES`, and\n            `DELETE_ACCOUNT_SOBJECT_POLICIES` permissions.\n\n\n          CREATE_CHILD_ACCOUNTS:\n            Permission to create child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          UPDATE_CHILD_ACCOUNTS:\n            Permission to update child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          DELETE_CHILD_ACCOUNTS:\n            Permission to delete child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          CREATE_CHILD_ACCOUNT_USERS:\n            Permission to create users in child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS` and `GET_CHILD_ACCOUNT_USERS`.\n\n\n          GET_CHILD_ACCOUNTS:\n            Permission to get child accounts. Note that this is only applicable\n            to SaaS accounts with reseller subscription.\n\n\n          GET_CHILD_ACCOUNT_USERS:\n            Permission to get child account users. Note that this is only\n            applicable to SaaS accounts with reseller subscription.\n\n\n          MANAGE_CHILD_ACCOUNTS:\n            Currently implies `CREATE_CHILD_ACCOUNTS`, `UPDATE_CHILD_ACCOUNTS`,\n            `DELETE_CHILD_ACCOUNTS`, `CREATE_CHILD_ACCOUNT_USERS`,\n            `GET_CHILD_ACCOUNTS`, and `GET_CHILD_ACCOUNT_USERS` permissions.\n\n\n          CREATE_LOCAL_GROUPS:\n            Permission to create new local groups.\n\n\n          CREATE_EXTERNAL_GROUPS:\n            Permission to create new group backed by external HSM/KMS.\n\n\n          ALLOW_QUORUM_REVIEWER:\n            Controls if the user can act as an approval policy reviewer.\n\n\n          ALLOW_KEY_CUSTODIAN:\n            Controls if the user can act as a key custodian.\n\n\n          GET_ALL_APPROVAL_REQUESTS:\n            Grants read access to **all** approval requests in the account. Note\n            that there is a related group-level permission that is restricted to\n            approval requests related to one group.\n\n\n          GET_ADMIN_APPS:\n            Permission to get administrative apps.\n\n\n          GET_CUSTOM_ROLES:\n            Permission to get custom user roles.\n\n\n          GET_EXTERNAL_ROLES:\n            Permission to get external roles.\n\n\n          GET_ALL_USERS:\n            Permission to get all users. Note that users can always get\n            themselves.\n\n\n          GET_ACCOUNT_USAGE:\n            Grants access to accounts::GetAccountUsage API.\n\n\n          MANAGE_KEY_EXPIRY_ALERTS:\n            Permission to manage key expiry alert configurations.\n\n\n          MANAGE_REPLICATION:\n            Permission to modify an account's `purpose` field (e.g., changing a\n            replication account's settings), or to call any APIs involving\n            replication credentials. If the account is not a replication account,\n            this permission has no effect.\n\n"
       type: string
@@ -1588,135 +1714,6 @@ components:
       - GET_ACCOUNT_USAGE
       - MANAGE_KEY_EXPIRY_ALERTS
       - MANAGE_REPLICATION
-    ValidateTokenResponse:
-      allOf:
-      - type: object
-        properties:
-          user_email:
-            type: string
-            format: email
-        required:
-        - user_email
-    GetUserParams:
-      allOf:
-      - type: object
-        properties:
-          with_groups:
-            $ref: '#/components/schemas/WithGroups'
-    ConfirmEmailRequest:
-      allOf:
-      - type: object
-        properties:
-          confirm_token:
-            type: string
-        required:
-        - confirm_token
-    ProcessInviteRequest:
-      allOf:
-      - type: object
-        description: Accept/reject invitations to join account.
-        properties:
-          accepts:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              type: string
-              format: uuid
-            description: Optional list of account IDs to accept.
-          rejects:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              type: string
-              format: uuid
-            description: Optional list of account IDs to reject.
-    FidoAddDeviceRequest:
-      allOf:
-      - type: object
-        description: 'This contains the request for adding a FIDO device
-
-          to user''s data.
-
-          Initially, `POST /sys/v1/session/config_2fa/new_challenge` needs
-
-          to be called with protocol set to `fido2` and using that data,
-
-          `navigator.credentials.create()` is called in the frontend.
-
-          The data returned by `create` is sent in this request. The data
-
-          sent back here creates a new FIDO2 device for the user after
-
-          the payload is verified as per the rules stated in webauthn doc.'
-        properties:
-          name:
-            type: string
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-            description: A user friendly name for the device.
-          attestationResult:
-            $ref: '#/components/schemas/PublicKeyCredentialAuthenticatorAttestationResponse'
-        required:
-        - name
-        - attestationResult
-    PasswordChangeRequest:
-      allOf:
-      - type: object
-        description: Request to change user's password.
-        properties:
-          current_password:
-            type: string
-          new_password:
-            type: string
-        required:
-        - current_password
-        - new_password
-    MfaDelDeviceRequest:
-      allOf:
-      - type: object
-        description: Request to delete a FIDO device.
-        properties:
-          name:
-            type: string
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-            description: Name of the FIDO device to delete.
-        required:
-        - name
-    RecoveryCodes:
-      allOf:
-      - type: object
-        description: U2F recovery codes.
-        properties:
-          recovery_codes:
-            type: array
-            items:
-              type: string
-        required:
-        - recovery_codes
-    LegacyUserAccountRole:
-      description: Legacy user account role
-      type: string
-      enum:
-      - ACCOUNTADMINISTRATOR
-      - ACCOUNTMEMBER
-      - ACCOUNTAUDITOR
-    MfaDeviceType:
-      description: Type of MFA device
-      type: string
-      enum:
-      - U2f
-      - Fido2
-    UserAccountFlag:
-      description: User account flag
-      type: string
-      enum:
-      - STATEENABLED
-      - PENDINGINVITE
   parameters:
     SignupRequest:
       name: body
@@ -1725,6 +1722,20 @@ components:
       description: Request to create a new user.
       schema:
         $ref: '#/components/schemas/SignupRequest'
+    InviteUserRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to invite a user.
+      schema:
+        $ref: '#/components/schemas/InviteUserRequest'
+    UpdateUserRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/UpdateUserRequest'
     UserId:
       name: user-id
       in: path
@@ -1733,31 +1744,17 @@ components:
       schema:
         type: string
         format: uuid
-    UpdateUserRequest:
-      name: body
-      in: body
-      required: true
-      description: ''
-      schema:
-        $ref: '#/components/schemas/UpdateUserRequest'
-    InviteUserRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to invite a user.
-      schema:
-        $ref: '#/components/schemas/InviteUserRequest'
-    ListUsersParams:
-      in: query
-      name: ListUsersParams
-      schema:
-        $ref: '#/components/schemas/ListUsersParams'
-      explode: true
     GetUserPermissionsParams:
       in: query
       name: GetUserPermissionsParams
       schema:
         $ref: '#/components/schemas/GetUserPermissionsParams'
+      explode: true
+    ListUsersParams:
+      in: query
+      name: ListUsersParams
+      schema:
+        $ref: '#/components/schemas/ListUsersParams'
       explode: true
     GetUserParams:
       in: query

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST External Roles API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -19,17 +19,17 @@ servers:
       default: https://amer.smartkey.io
       description: Type your DSM server URL here (include https://)
 tags:
-- name: External_roles
+- name: External Roles
 paths:
   /sys/v1/external_roles:
     post:
       operationId: CreateExternalRole
       tags:
-      - External_roles
+      - External Roles
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Create a new external role.
+      summary: Create a new external role
       description: Create a new external role.
       requestBody:
         required: true
@@ -47,11 +47,11 @@ paths:
     get:
       operationId: ListExternalRoles
       tags:
-      - External_roles
+      - External Roles
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get all external roles.
+      summary: Get all external roles
       description: Get all external roles.
       parameters:
       - $ref: '#/components/parameters/ListExternalRolesParams'
@@ -68,11 +68,11 @@ paths:
     delete:
       operationId: DeleteExternalRole
       tags:
-      - External_roles
+      - External Roles
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Delete an external role.
+      summary: Delete an external role
       description: Delete an external role.
       parameters:
       - name: external_role_id
@@ -87,11 +87,11 @@ paths:
     get:
       operationId: GetExternalRole
       tags:
-      - External_roles
+      - External Roles
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Lookup a particular external role by its ID.
+      summary: Lookup a particular external role by its ID
       description: Lookup a particular external role by its ID.
       parameters:
       - name: external_role_id
@@ -110,11 +110,11 @@ paths:
     patch:
       operationId: UpdateExternalRole
       tags:
-      - External_roles
+      - External Roles
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Update an external role.
+      summary: Update an external role
       description: Update an external role.
       parameters:
       - name: external_role_id
@@ -140,11 +140,11 @@ paths:
     post:
       operationId: SyncExternalRole
       tags:
-      - External_roles
+      - External Roles
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Synchronize information about the external role by retrieving it from external source.
+      summary: Synchronize information about the external role by retrieving it from external…
       description: Synchronize information about the external role by retrieving it from external source.
       parameters:
       - name: external_role_id
@@ -162,6 +162,43 @@ paths:
                 $ref: '#/components/schemas/ExternalRole'
 components:
   schemas:
+    UserGroupRole:
+      description: User's role(s) in a group.
+      allOf:
+      - type: array
+        uniqueItems: true
+        items:
+          $ref: '#/components/schemas/LegacyUserGroupRoleOrRoleId'
+    ExternalRoleMapping:
+      allOf:
+      - type: object
+        properties:
+          users:
+            $ref: '#/components/schemas/UserGroupRole'
+          apps:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/AppPermissions'
+    ExternalRoleKind:
+      description: Type of an external role.
+      type: string
+      enum:
+      - ldap-group
+    LegacyUserGroupRoleOrRoleId:
+      description: Legacy user group role name or custom role id
+      oneOf:
+      - $ref: '#/components/schemas/LegacyUserGroupRole'
+      - type: string
+        format: uuid
+    ListExternalRolesParams:
+      allOf:
+      - type: object
+        properties:
+          group_id:
+            type: string
+            format: uuid
     ExternalRole:
       allOf:
       - type: object
@@ -195,72 +232,6 @@ components:
         - name
         - source_id
         - acct_id
-    ExternalRoleMapping:
-      allOf:
-      - type: object
-        properties:
-          users:
-            $ref: '#/components/schemas/UserGroupRole'
-          apps:
-            type:
-            - array
-            - 'null'
-            items:
-              $ref: '#/components/schemas/AppPermissions'
-    ExternalRoleRequest:
-      allOf:
-      - type: object
-        properties:
-          add_groups:
-            type:
-            - object
-            - 'null'
-            additionalProperties:
-              $ref: '#/components/schemas/ExternalRoleMapping'
-          del_groups:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              type: string
-              format: uuid
-          kind:
-            $ref: '#/components/schemas/ExternalRoleKind'
-          mod_groups:
-            type:
-            - object
-            - 'null'
-            additionalProperties:
-              $ref: '#/components/schemas/ExternalRoleMapping'
-          name:
-            type:
-            - string
-            - 'null'
-          source_id:
-            type:
-            - string
-            - 'null'
-            format: uuid
-    LegacyUserGroupRole:
-      description: Legacy user group role
-      type: string
-      enum:
-      - GROUPAUDITOR
-      - GROUPADMINISTRATOR
-    UserGroupRole:
-      description: User's role(s) in a group.
-      allOf:
-      - type: array
-        uniqueItems: true
-        items:
-          $ref: '#/components/schemas/LegacyUserGroupRoleOrRoleId'
-    LegacyUserGroupRoleOrRoleId:
-      description: Legacy user group role name or custom role id
-      oneOf:
-      - $ref: '#/components/schemas/LegacyUserGroupRole'
-      - type: string
-        format: uuid
     AppPermissions:
       description: "Operations allowed to be performed by an app.\n\n\n\n          SIGN:\n\n\n          VERIFY:\n\n\n          ENCRYPT:\n\n\n          DECRYPT:\n\n\n          WRAPKEY:\n\n\n          UNWRAPKEY:\n\n\n          DERIVEKEY:\n\n\n          MACGENERATE:\n\n\n          MACVERIFY:\n\n\n          EXPORT:\n\n\n          MANAGE:\n\n\n          AGREEKEY:\n\n\n          MASKDECRYPT:\n\n\n          AUDIT:\n\n\n          TRANSFORM:\n\n\n          CREATE_SOBJECTS:\n\n\n          COPY_SOBJECTS:\n\n\n          ROTATE_SOBJECTS:\n\n\n          ACTIVATE_SOBJECTS:\n\n\n          REVOKE_SOBJECTS:\n\n\n          REVERT_SOBJECTS:\n\n\n          MOVE_SOBJECTS:\n\n\n          UPDATE_SOBJECTS_PROFILE:\n\n\n          UPDATE_SOBJECTS_ENABLED_STATE:\n\n\n          UPDATE_SOBJECT_POLICIES:\n\n\n          UPDATE_KEY_OPS:\n\n\n          DELETE_KEY_MATERIAL:\n\n\n          DELETE_SOBJECTS:\n\n\n          DESTROY_SOBJECTS:\n\n\n          RESTORE_EXTERNAL_SOBJECTS:\n\n\n          CALCULATE_DIGEST:\n\n\n          ENCAPSULATE:\n\n\n          DECAPSULATE:\n\n"
       type: string
@@ -298,17 +269,46 @@ components:
       - CALCULATE_DIGEST
       - ENCAPSULATE
       - DECAPSULATE
-    ExternalRoleKind:
-      description: Type of an external role.
+    LegacyUserGroupRole:
+      description: Legacy user group role
       type: string
       enum:
-      - ldap-group
-    ListExternalRolesParams:
+      - GROUPAUDITOR
+      - GROUPADMINISTRATOR
+    ExternalRoleRequest:
       allOf:
       - type: object
         properties:
-          group_id:
-            type: string
+          add_groups:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              $ref: '#/components/schemas/ExternalRoleMapping'
+          del_groups:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+              format: uuid
+          kind:
+            $ref: '#/components/schemas/ExternalRoleKind'
+          mod_groups:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              $ref: '#/components/schemas/ExternalRoleMapping'
+          name:
+            type:
+            - string
+            - 'null'
+          source_id:
+            type:
+            - string
+            - 'null'
             format: uuid
   parameters:
     ListExternalRolesParams:

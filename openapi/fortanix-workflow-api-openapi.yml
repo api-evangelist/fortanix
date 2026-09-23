@@ -109,7 +109,6 @@ paths:
       tags:
       - Workflow
       summary: Get details of a particular draft workflow
-      description: Get details of a particular draft workflow
       operationId: getWorkflowGraph
       x-auth-resource: Reader,Writer,Manager
       parameters:
@@ -131,7 +130,7 @@ paths:
       security:
       - bearerToken: []
     put:
-      summary: Update a particular workflow graph.
+      summary: Update a particular workflow graph
       tags:
       - Workflow
       operationId: updateWorkflowGraph
@@ -159,7 +158,6 @@ paths:
       tags:
       - Workflow
       summary: Delete a particular draft workflow
-      description: Delete a particular draft workflow
       operationId: deleteWorkflowGraph
       x-auth-resource: Writer,Manager
       parameters:
@@ -171,24 +169,6 @@ paths:
       - bearerToken: []
 components:
   schemas:
-    WorkflowLinkMetadata:
-      type: object
-      description: The final workflow from which this draft was derived. This field may point to a deleted final workflow in which you should treat it as if it's not present.
-      required:
-      - graph_id
-      - source_version
-      properties:
-        graph_id:
-          type: string
-          format: uuid
-        source_version:
-          type: integer
-    WorkflowType:
-      type: string
-      description: Workflow is owned or Shared
-      enum:
-      - OWNED
-      - SHARED
     WorkflowObjectRefDataset:
       type: object
       description: ''
@@ -204,6 +184,127 @@ components:
         group_id:
           type: string
           format: uuid
+    WorkflowObjectRefPlaceholder:
+      type: object
+      description: ''
+      required:
+      - kind
+      properties:
+        kind:
+          type: string
+          enum:
+          - dataset
+          - app
+          - script
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    WorkflowType:
+      type: string
+      description: Workflow is owned or Shared
+      enum:
+      - OWNED
+      - SHARED
+    WorkflowEdge:
+      type: object
+      description: ''
+      required:
+      - source
+      - target
+      properties:
+        source:
+          $ref: '#/components/schemas/WorkflowEdgeLink'
+        target:
+          $ref: '#/components/schemas/WorkflowEdgeLink'
+    WorkflowObjectRefApp:
+      type: object
+      description: ''
+      required:
+      - image_id
+      - config_id
+      properties:
+        image_id:
+          type: string
+          format: uuid
+        config_id:
+          type: string
+        acct_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+    UpdateWorkflowGraph:
+      type: object
+      description: ''
+      required:
+      - name
+      - description
+      - version
+      - objects
+      - edges
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        version:
+          type: integer
+        objects:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowObject'
+        edges:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowEdge'
+        metadata:
+          $ref: '#/components/schemas/WorkflowMetadata'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+    GetAllWorkflowGraphsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowGraph'
     WorkflowGraph:
       type: object
       description: ''
@@ -266,110 +367,6 @@ components:
             type: string
         type:
           $ref: '#/components/schemas/WorkflowType'
-    WorkflowEdge:
-      type: object
-      description: ''
-      required:
-      - source
-      - target
-      properties:
-        source:
-          $ref: '#/components/schemas/WorkflowEdgeLink'
-        target:
-          $ref: '#/components/schemas/WorkflowEdgeLink'
-    GetAllWorkflowGraphsResponse:
-      type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkflowGraph'
-    WorkflowEdgeLink:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-        port:
-          type: string
-    WorkflowObjectRef:
-      type: object
-      description: ''
-      properties:
-        placeholder:
-          $ref: '#/components/schemas/WorkflowObjectRefPlaceholder'
-        dataset:
-          $ref: '#/components/schemas/WorkflowObjectRefDataset'
-        app:
-          $ref: '#/components/schemas/WorkflowObjectRefApp'
-    UpdateWorkflowGraph:
-      type: object
-      description: ''
-      required:
-      - name
-      - description
-      - version
-      - objects
-      - edges
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        version:
-          type: integer
-        objects:
-          type: object
-          x-sorted: true
-          additionalProperties:
-            $ref: '#/components/schemas/WorkflowObject'
-        edges:
-          type: object
-          x-sorted: true
-          additionalProperties:
-            $ref: '#/components/schemas/WorkflowEdge'
-        metadata:
-          $ref: '#/components/schemas/WorkflowMetadata'
-        labels:
-          type: object
-          x-sorted: true
-          additionalProperties:
-            type: string
-    WorkflowMetadata:
-      type: object
-      description: ''
-      required:
-      - nodes
-      properties:
-        nodes:
-          type: object
-          additionalProperties:
-            type: object
-        parent:
-          $ref: '#/components/schemas/WorkflowLinkMetadata'
-        project:
-          type: string
-    WorkflowObject:
-      type: object
-      description: ''
-      required:
-      - name
-      - ref
-      properties:
-        name:
-          type: string
-        user_id:
-          type: string
-          format: uuid
-        description:
-          type: string
-        ref:
-          $ref: '#/components/schemas/WorkflowObjectRef'
     CreateWorkflowGraph:
       type: object
       description: Request to create a workflow graph.
@@ -403,74 +400,75 @@ components:
           x-sorted: true
           additionalProperties:
             type: string
-    SearchMetadata:
+    WorkflowLinkMetadata:
+      type: object
+      description: The final workflow from which this draft was derived. This field may point to a deleted final workflow in which you should treat it as if it's not present.
+      required:
+      - graph_id
+      - source_version
+      properties:
+        graph_id:
+          type: string
+          format: uuid
+        source_version:
+          type: integer
+    WorkflowEdgeLink:
       type: object
       required:
-      - total_count
-      - filtered_count
-      - page
-      - pages
-      - limit
+      - id
       properties:
-        page:
-          type: integer
-          description: Current page number
-        pages:
-          type: integer
-          description: Total pages as per the item counts and page limit.
-        limit:
-          type: integer
-          description: Number of items to limit in a page.
-        total_count:
-          type: integer
-          description: Total number of unfiltered items.
-        filtered_count:
-          type: integer
-          description: Total number of items as per the current filter.
-    WorkflowObjectRefApp:
+        id:
+          type: string
+        port:
+          type: string
+    WorkflowObject:
       type: object
       description: ''
       required:
-      - image_id
-      - config_id
+      - name
+      - ref
       properties:
-        image_id:
+        name:
+          type: string
+        user_id:
           type: string
           format: uuid
-        config_id:
+        description:
           type: string
-        acct_id:
-          type: string
-          format: uuid
-        group_id:
-          type: string
-          format: uuid
-    WorkflowObjectRefPlaceholder:
+        ref:
+          $ref: '#/components/schemas/WorkflowObjectRef'
+    WorkflowObjectRef:
+      type: object
+      description: ''
+      properties:
+        placeholder:
+          $ref: '#/components/schemas/WorkflowObjectRefPlaceholder'
+        dataset:
+          $ref: '#/components/schemas/WorkflowObjectRefDataset'
+        app:
+          $ref: '#/components/schemas/WorkflowObjectRefApp'
+    WorkflowMetadata:
       type: object
       description: ''
       required:
-      - kind
+      - nodes
       properties:
-        kind:
+        nodes:
+          type: object
+          additionalProperties:
+            type: object
+        parent:
+          $ref: '#/components/schemas/WorkflowLinkMetadata'
+        project:
           type: string
-          enum:
-          - dataset
-          - app
-          - script
-        acct_id:
-          type: string
-          format: uuid
-        group_id:
-          type: string
-          format: uuid
   parameters:
-    CreateWorkflowGraphRequest:
+    UpdateWorkflowGraphRequest:
       name: body
       in: body
       required: true
       description: ''
       schema:
-        $ref: '#/components/schemas/CreateWorkflowGraph'
+        $ref: '#/components/schemas/UpdateWorkflowGraph'
     WorkflowGraphId:
       name: graph-id
       in: path
@@ -479,13 +477,13 @@ components:
       schema:
         type: string
         format: uuid
-    UpdateWorkflowGraphRequest:
+    CreateWorkflowGraphRequest:
       name: body
       in: body
       required: true
       description: ''
       schema:
-        $ref: '#/components/schemas/UpdateWorkflowGraph'
+        $ref: '#/components/schemas/CreateWorkflowGraph'
   securitySchemes:
     bearerToken:
       type: apiKey

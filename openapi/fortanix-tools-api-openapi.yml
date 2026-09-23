@@ -20,7 +20,7 @@ paths:
     post:
       tags:
       - Tools
-      summary: Convert an application to run in Nitro Enclaves.
+      summary: Convert an application to run in Nitro Enclaves
       description: ''
       operationId: convertAppNitroEnclaves
       x-auth-resource: Writer,Manager,ActiveAccount
@@ -41,7 +41,7 @@ paths:
     post:
       tags:
       - Tools
-      summary: Convert an application to run in ACI.
+      summary: Convert an application to run in ACI
       description: ''
       operationId: convertAppAci
       x-auth-resource: Writer,Manager,ActiveAccount
@@ -73,18 +73,25 @@ components:
             $ref: '#/components/schemas/NitroEnclaveAttributes'
         pcr8:
           type: string
-    ConverterSvcAciConversionResponse:
+    NitroEnclaveAttributes:
       type: object
       required:
-      - converted_image
-      - config
+      - hash_algorithm
+      - pcr0
+      - pcr1
+      - pcr2
       properties:
-        converted_image:
-          $ref: '#/components/schemas/ConverterSvcConvertedImageInfo'
-          description: Converted Image
-        config:
-          $ref: '#/components/schemas/ConverterSvcAciConfig'
-          description: ACI Configuration in converted image
+        hash_algorithm:
+          $ref: '#/components/schemas/NitroEnclaveHashAlgorithm'
+        pcr0:
+          type: string
+          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
+        pcr1:
+          type: string
+          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
+        pcr2:
+          type: string
+          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
     ConverterSvcAciConfig:
       type: object
       required:
@@ -99,84 +106,6 @@ components:
           items:
             $ref: '#/components/schemas/DockerNetworkPort'
           type: array
-    ConverterSvcNitroEnclavesConversionResponse:
-      type: object
-      required:
-      - converted_image
-      - config
-      properties:
-        converted_image:
-          $ref: '#/components/schemas/ConverterSvcConvertedImageInfo'
-          description: Converted Image
-        config:
-          $ref: '#/components/schemas/ConverterSvcNitroEnclavesConfig'
-          description: Sgx Configuration in converted image
-    ConversionRequestImageInfo:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Docker image name
-        auth_config:
-          $ref: '#/components/schemas/AuthConfig'
-          description: Docker credentials
-    CertificateConfig:
-      type: object
-      properties:
-        issuer:
-          type: string
-          description: Certificate issuance strategy
-          default: MANAGER_CA
-          enum:
-          - MANAGER_CA
-          - NODE
-          - SELF_IAS
-        subject:
-          type: string
-          description: Certificate subject common name, typically a DNS name
-        keyType:
-          type: string
-          description: Type of key to generate
-          default: RSA
-          enum:
-          - RSA
-        keyParam:
-          type: object
-          description: 'Key parameters. Currently must be an instance of RsaKeyParam, but other types may be supported in the future.
-
-            '
-        keyPath:
-          type: string
-          description: Path to expose the key in the application filesystem
-        certPath:
-          type: string
-          description: Path to expose the certificate in the application filesystem
-    DockerNetworkPort:
-      type: object
-      description: A port exposed by a docker container.
-      required:
-      - port
-      - protocol
-      properties:
-        port:
-          type: integer
-          description: A valid, specific port number from 1..65535 (inclusive).
-        protocol:
-          $ref: '#/components/schemas/DockerNetworkProtocol'
-    ConverterSvcAciConversionRequest:
-      type: object
-      required:
-      - request
-      - aci_options
-      properties:
-        request:
-          $ref: '#/components/schemas/ConverterSvcConversionRequest'
-          description: Conversion request information
-        aci_options:
-          $ref: '#/components/schemas/AciConversionRequestOptions'
-          description: ACI conversion options
     AciConversionRequestOptions:
       type: object
       properties:
@@ -199,6 +128,66 @@ components:
           description: 'Inserts a loop waiting for /opt/fortanix/agent.ready into your application''s entrypoint; ensures app startup occurs after confidential compute verifications. Don''t touch this unless there''s good reason.
 
             '
+    ConverterSvcAciConversionRequest:
+      type: object
+      required:
+      - request
+      - aci_options
+      properties:
+        request:
+          $ref: '#/components/schemas/ConverterSvcConversionRequest'
+          description: Conversion request information
+        aci_options:
+          $ref: '#/components/schemas/AciConversionRequestOptions'
+          description: ACI conversion options
+    ConverterSvcNitroEnclavesConversionResponse:
+      type: object
+      required:
+      - converted_image
+      - config
+      properties:
+        converted_image:
+          $ref: '#/components/schemas/ConverterSvcConvertedImageInfo'
+          description: Converted Image
+        config:
+          $ref: '#/components/schemas/ConverterSvcNitroEnclavesConfig'
+          description: Sgx Configuration in converted image
+    ConverterSvcAciConversionResponse:
+      type: object
+      required:
+      - converted_image
+      - config
+      properties:
+        converted_image:
+          $ref: '#/components/schemas/ConverterSvcConvertedImageInfo'
+          description: Converted Image
+        config:
+          $ref: '#/components/schemas/ConverterSvcAciConfig'
+          description: ACI Configuration in converted image
+    ConverterSvcNitroEnclavesConversionRequest:
+      type: object
+      required:
+      - request
+      - nitro_enclaves_options
+      properties:
+        request:
+          $ref: '#/components/schemas/ConverterSvcConversionRequest'
+          description: Conversion request information
+        nitro_enclaves_options:
+          $ref: '#/components/schemas/ConverterSvcNitroEnclavesConversionRequestOptions'
+          description: Nitro enclaves conversion options
+    DockerNetworkPort:
+      type: object
+      description: A port exposed by a docker container.
+      required:
+      - port
+      - protocol
+      properties:
+        port:
+          type: integer
+          description: A valid, specific port number from 1..65535 (inclusive).
+        protocol:
+          $ref: '#/components/schemas/DockerNetworkProtocol'
     ConverterSvcConverterOptions:
       type: object
       properties:
@@ -249,18 +238,18 @@ components:
         java_mode:
           type: string
           description: Type of the Java JVM used
-    ConverterSvcNitroEnclavesConversionRequest:
+    AuthConfig:
+      description: Credentials for authenticating to a docker registry
       type: object
       required:
-      - request
-      - nitro_enclaves_options
+      - username
       properties:
-        request:
-          $ref: '#/components/schemas/ConverterSvcConversionRequest'
-          description: Conversion request information
-        nitro_enclaves_options:
-          $ref: '#/components/schemas/ConverterSvcNitroEnclavesConversionRequestOptions'
-          description: Nitro enclaves conversion options
+        username:
+          type: string
+          description: User name for docker registry authentication
+        password:
+          type: string
+          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
     ConverterSvcNitroEnclavesConversionRequestOptions:
       type: object
       properties:
@@ -292,6 +281,28 @@ components:
           type: integer
           format: int64
           description: Converted image size
+    NitroEnclaveHashAlgorithm:
+      type: string
+      description: Nitro enclave hash algorithm
+      enum:
+      - Sha384
+    ConversionRequestImageInfo:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Docker image name
+        auth_config:
+          $ref: '#/components/schemas/AuthConfig'
+          description: Docker credentials
+    DockerNetworkProtocol:
+      type: string
+      description: Protocol Associated with a Port exposed by a docker container.
+      enum:
+      - Tcp
+      - Udp
     ConverterSvcConversionRequest:
       type: object
       required:
@@ -308,48 +319,37 @@ components:
         converter_options:
           $ref: '#/components/schemas/ConverterSvcConverterOptions'
           description: Converter options
-    NitroEnclaveAttributes:
+    CertificateConfig:
       type: object
-      required:
-      - hash_algorithm
-      - pcr0
-      - pcr1
-      - pcr2
       properties:
-        hash_algorithm:
-          $ref: '#/components/schemas/NitroEnclaveHashAlgorithm'
-        pcr0:
+        issuer:
           type: string
-          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
-        pcr1:
+          description: Certificate issuance strategy
+          default: MANAGER_CA
+          enum:
+          - MANAGER_CA
+          - NODE
+          - SELF_IAS
+        subject:
           type: string
-          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
-        pcr2:
+          description: Certificate subject common name, typically a DNS name
+        keyType:
           type: string
-          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
-    DockerNetworkProtocol:
-      type: string
-      description: Protocol Associated with a Port exposed by a docker container.
-      enum:
-      - Tcp
-      - Udp
-    NitroEnclaveHashAlgorithm:
-      type: string
-      description: Nitro enclave hash algorithm
-      enum:
-      - Sha384
-    AuthConfig:
-      description: Credentials for authenticating to a docker registry
-      type: object
-      required:
-      - username
-      properties:
-        username:
+          description: Type of key to generate
+          default: RSA
+          enum:
+          - RSA
+        keyParam:
+          type: object
+          description: 'Key parameters. Currently must be an instance of RsaKeyParam, but other types may be supported in the future.
+
+            '
+        keyPath:
           type: string
-          description: User name for docker registry authentication
-        password:
+          description: Path to expose the key in the application filesystem
+        certPath:
           type: string
-          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
+          description: Path to expose the certificate in the application filesystem
   securitySchemes:
     bearerToken:
       type: apiKey

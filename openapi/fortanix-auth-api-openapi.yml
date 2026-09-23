@@ -37,7 +37,7 @@ paths:
     post:
       tags:
       - Auth
-      summary: Discover the supported authentication methods for a user.
+      summary: Discover the supported authentication methods for a user
       description: Discover the supported authentication methods for a user.
       operationId: discover
       x-auth-resource: NoAuth
@@ -65,7 +65,7 @@ paths:
     post:
       tags:
       - Auth
-      summary: Refreshes existing user session.
+      summary: Refreshes existing user session
       description: Refreshes an existing session, thus extending the expiration time of the existing session token.
       operationId: refresh
       x-auth-resource: NoAuth
@@ -93,10 +93,8 @@ paths:
       - bearerToken: []
   /v1/sys/session/select_account/{account-id}:
     post:
-      summary: Select a user's account to work on.
-      description: '"Select one of the user''s account to proceed. This is applicable when a user is associated with one or more account."
-
-        '
+      summary: Select a user's account to work on
+      description: '"Select one of the user''s account to proceed. This is applicable when a user is associated with one or more account."'
       tags:
       - Auth
       operationId: selectAccountBodrum
@@ -114,6 +112,27 @@ paths:
       - bearerToken: []
 components:
   schemas:
+    RefreshResponse:
+      type: object
+      required:
+      - session_info
+      properties:
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    AuthDiscoverRequest:
+      type: object
+      properties:
+        user_email:
+          type: string
+          description: User email.
+    AuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: Bearer token to be used to authenticate to other APIs.
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
     AuthRequest:
       type: object
       required:
@@ -121,13 +140,19 @@ components:
       properties:
         oauth_auth_code:
           $ref: '#/components/schemas/OauthCodeData'
-    SelectAccountResponse:
+    OauthCodeData:
       type: object
       required:
-      - session_info
+      - idp_id
+      - code
       properties:
-        session_info:
-          $ref: '#/components/schemas/SessionInfo'
+        idp_id:
+          type: string
+          format: binary
+        code:
+          type: string
+        email:
+          type: string
     OauthAuthCodeGrant:
       type: object
       required:
@@ -156,56 +181,6 @@ components:
           format: binary
         cluster_idp_id:
           type: string
-    AuthDiscoverRequest:
-      type: object
-      properties:
-        user_email:
-          type: string
-          description: User email.
-    AuthMethod:
-      type: object
-      properties:
-        password:
-          type: object
-        oauth_code_grant:
-          $ref: '#/components/schemas/OauthAuthCodeGrant'
-    OauthCodeData:
-      type: object
-      required:
-      - idp_id
-      - code
-      properties:
-        idp_id:
-          type: string
-          format: binary
-        code:
-          type: string
-        email:
-          type: string
-    AuthDiscoverResponse:
-      type: object
-      required:
-      - auth_methods
-      properties:
-        auth_methods:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthMethod'
-    AuthResponse:
-      type: object
-      properties:
-        access_token:
-          type: string
-          description: Bearer token to be used to authenticate to other APIs.
-        session_info:
-          $ref: '#/components/schemas/SessionInfo'
-    RefreshResponse:
-      type: object
-      required:
-      - session_info
-      properties:
-        session_info:
-          $ref: '#/components/schemas/SessionInfo'
     SessionInfo:
       type: object
       required:
@@ -228,7 +203,37 @@ components:
           type: string
           format: uuid
           description: The selected account ID, if one is selected.
+    SelectAccountResponse:
+      type: object
+      required:
+      - session_info
+      properties:
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    AuthMethod:
+      type: object
+      properties:
+        password:
+          type: object
+        oauth_code_grant:
+          $ref: '#/components/schemas/OauthAuthCodeGrant'
+    AuthDiscoverResponse:
+      type: object
+      required:
+      - auth_methods
+      properties:
+        auth_methods:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthMethod'
   parameters:
+    AuthRequest:
+      name: body
+      in: body
+      required: false
+      description: Request to authenticate.
+      schema:
+        $ref: '#/components/schemas/AuthRequest'
     AccountId:
       name: account-id
       in: path
@@ -237,13 +242,6 @@ components:
       schema:
         type: string
         format: uuid
-    AuthRequest:
-      name: body
-      in: body
-      required: false
-      description: Request to authenticate.
-      schema:
-        $ref: '#/components/schemas/AuthRequest'
   securitySchemes:
     bearerToken:
       type: apiKey

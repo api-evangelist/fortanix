@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST Stats API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -29,7 +29,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get app aggregate transaction statistics.
+      summary: Get app aggregate transaction statistics
       description: Get app aggregate transaction statistics.
       parameters:
       - $ref: '#/components/parameters/StatsParams'
@@ -48,7 +48,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get transaction statistics for a specific application.
+      summary: Get transaction statistics for a specific application
       description: Get transaction statistics for a specific application.
       parameters:
       - name: app_id
@@ -73,7 +73,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get group aggregate transaction statistics.
+      summary: Get group aggregate transaction statistics
       description: Get group aggregate transaction statistics.
       parameters:
       - $ref: '#/components/parameters/StatsParams'
@@ -92,7 +92,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get transaction statistics for a specific group.
+      summary: Get transaction statistics for a specific group
       description: Get transaction statistics for a specific group.
       parameters:
       - name: group_id
@@ -117,7 +117,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get transaction statistics for a specific security object.
+      summary: Get transaction statistics for a specific security object
       description: Get transaction statistics for a specific security object.
       parameters:
       - name: key_id
@@ -136,16 +136,14 @@ paths:
                 $ref: '#/components/schemas/EsStatsCountQueryResponse'
 components:
   schemas:
-    EsTotalTxn:
+    EsStatsCountQueryResponse:
       allOf:
       - type: object
         properties:
-          buckets:
-            type: array
-            items:
-              $ref: '#/components/schemas/InnerEsBucket'
+          time:
+            $ref: '#/components/schemas/EsCountStatsLog'
         required:
-        - buckets
+        - time
     UniqueOperationsCount:
       allOf:
       - type: object
@@ -154,23 +152,6 @@ components:
             type: integer
         required:
         - value
-    OuterEsBucket:
-      allOf:
-      - type: object
-        properties:
-          doc_count:
-            type: integer
-          key:
-            type: integer
-          key_as_string:
-            type: string
-          total_txn:
-            $ref: '#/components/schemas/EsTotalTxn'
-        required:
-        - doc_count
-        - key
-        - key_as_string
-        - total_txn
     InnerEsBucket:
       allOf:
       - type: object
@@ -189,24 +170,6 @@ components:
         required:
         - doc_count
         - key
-    EsStatsCountQueryResponse:
-      allOf:
-      - type: object
-        properties:
-          time:
-            $ref: '#/components/schemas/EsCountStatsLog'
-        required:
-        - time
-    EsCountStatsLog:
-      allOf:
-      - type: object
-        properties:
-          buckets:
-            type: array
-            items:
-              $ref: '#/components/schemas/OuterEsBucket'
-        required:
-        - buckets
     StatsParams:
       allOf:
       - type: object
@@ -221,6 +184,43 @@ components:
             type: integer
           range_to:
             type: integer
+    EsTotalTxn:
+      allOf:
+      - type: object
+        properties:
+          buckets:
+            type: array
+            items:
+              $ref: '#/components/schemas/InnerEsBucket'
+        required:
+        - buckets
+    OuterEsBucket:
+      allOf:
+      - type: object
+        properties:
+          doc_count:
+            type: integer
+          key:
+            type: integer
+          key_as_string:
+            type: string
+          total_txn:
+            $ref: '#/components/schemas/EsTotalTxn'
+        required:
+        - doc_count
+        - key
+        - key_as_string
+        - total_txn
+    EsCountStatsLog:
+      allOf:
+      - type: object
+        properties:
+          buckets:
+            type: array
+            items:
+              $ref: '#/components/schemas/OuterEsBucket'
+        required:
+        - buckets
   parameters:
     StatsParams:
       in: query

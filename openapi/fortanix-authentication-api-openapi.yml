@@ -3,9 +3,7 @@ info:
   description: '**API of the Fortanix Unified Data and AI Security Platform**
 
 
-    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
-
-    '
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.'
   title: Armor Authentication API
   version: 0.1.0
 servers:
@@ -19,9 +17,7 @@ paths:
       description: 'Authenticate using the Oauth 2.0 Client Credentials flow.
 
 
-        To call this you must provide the form url encoded app ID and the form url encoded API key in the form of a Basic auth header.
-
-        '
+        To call this you must provide the form url encoded app ID and the form url encoded API key in the form of a Basic auth header.'
       operationId: OauthToken
       requestBody:
         content:
@@ -47,7 +43,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/OauthTokenError'
           description: Invalid credentials.
-      summary: Authenticate with a token.
+      summary: Authenticate with a token
       tags:
       - Authentication
   /api/v1/iam/session/terminate:
@@ -59,7 +55,7 @@ paths:
           description: Nothing is returned on success.
       security:
       - Oauth2ClientCredentials: []
-      summary: Terminate the current session.
+      summary: Terminate the current session
       tags:
       - Authentication
 components:

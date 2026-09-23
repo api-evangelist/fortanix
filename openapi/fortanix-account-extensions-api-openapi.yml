@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST Account Extensions API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -29,7 +29,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Create a new account extension.
+      summary: Create a new account extension
       description: Create a new account extension.
       parameters:
       - name: acct_id
@@ -58,7 +58,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get info for a specific account extension.
+      summary: Get info for a specific account extension
       description: Get info for a specific account extension.
       parameters:
       - name: acct_id
@@ -81,7 +81,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Update specific account extension.
+      summary: Update specific account extension
       description: Update specific account extension.
       parameters:
       - name: acct_id
@@ -105,126 +105,6 @@ paths:
                 $ref: '#/components/schemas/AccountExtension'
 components:
   schemas:
-    FpeDate:
-      description: 'A structure for specifying a token part representing a date that occurs after a specified date
-
-        and/or occurs before a specified date. Depending on the subparts that make up the date, one of
-
-        the three options is used.'
-      oneOf:
-      - title: FpeDateVariantDayMonthYear
-        type: object
-        properties:
-          dmy_date:
-            $ref: '#/components/schemas/FpeDateDayMonthYear'
-        required:
-        - dmy_date
-      - title: FpeDateVariantMonthDay
-        type: object
-        properties:
-          month_day_date:
-            $ref: '#/components/schemas/FpeDateMonthDay'
-        required:
-        - month_day_date
-      - title: FpeDateVariantMonthYear
-        type: object
-        properties:
-          month_year_date:
-            $ref: '#/components/schemas/FpeDateMonthYear'
-        required:
-        - month_year_date
-    SigningKeysVariantStored:
-      allOf:
-      - type: object
-        properties:
-          kind:
-            type: string
-            enum:
-            - stored
-        required:
-        - kind
-      - $ref: '#/components/schemas/SigningKeysStored'
-    FpeDataPart:
-      description: Structure for specifying (part of) a complex tokenization data type.
-      oneOf:
-      - $ref: '#/components/schemas/FpeEncryptedPart'
-      - $ref: '#/components/schemas/FpeDataPartLiteral'
-      - $ref: '#/components/schemas/FpeCompoundPart'
-    FpeDayMonthDate:
-      allOf:
-      - type: object
-        description: 'A structure for specifying a particular date consisting of a day and a month, for use in an
-
-          FpeDate structure.'
-        properties:
-          month:
-            type: integer
-            minimum: 0
-            maximum: 255
-            description: The month, which should be an integer from 1 to 12.
-          day:
-            type: integer
-            minimum: 0
-            maximum: 255
-            description: 'The day, which should be an integer from 1 to either 29, 30, or 31, depending on the month
-
-              and year. Here, February is treated as having 29 days.'
-        required:
-        - month
-        - day
-    FpeInputProcessing:
-      description: Options to apply some pre- and post-processing to the input.
-      oneOf:
-      - title: FpeInputProcessingVariantStripUnknown
-        type: string
-        enum:
-        - strip_unknown
-      - title: FpeInputProcessingVariantPassthroughUnknown
-        type: string
-        enum:
-        - passthrough_unknown
-      - title: FpeInputProcessingVariantPassthroughSpecific
-        type: object
-        properties:
-          passthrough_specific:
-            $ref: '#/components/schemas/FpeInputProcessingPassthroughSpecific'
-        required:
-        - passthrough_specific
-    CertificateOptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
-    SigningKeysStored:
-      allOf:
-      - type: object
-        properties:
-          keys:
-            type: object
-            additionalProperties:
-              type: string
-              format: byte
-            description: Mapping key ids to DER-encoded public key.
-        required:
-        - keys
-    Des3OptionsPolicy:
-      allOf:
-      - type: object
-        description: 'Cryptographic policy for triple DES objects. Setting `key_sizes: [168]`
-
-          forbids two-key triple DES.'
-        properties:
-          key_sizes:
-            type:
-            - array
-            - 'null'
-            items:
-              type: integer
-              minimum: 0
-              maximum: 4294967295
-          random_iv:
-            type:
-            - boolean
-            - 'null'
     FpeInputProcessingPassthroughSpecific:
       allOf:
       - type: object
@@ -241,10 +121,55 @@ components:
         required:
         - passthrough
         - other
-    LmsOptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
+    RsaEncryptionPaddingPolicy:
+      description: RSA encryption padding policy.
+      oneOf:
+      - title: RsaEncryptionPaddingPolicyVariantOaep
+        type: object
+        properties:
+          OAEP:
+            $ref: '#/components/schemas/RsaEncryptionPaddingPolicyOaep'
+        required:
+        - OAEP
+      - title: RsaEncryptionPaddingPolicyVariantPkcs1V15
+        type: object
+        properties:
+          PKCS1_V15:
+            type: object
+            properties: {}
+        required:
+        - PKCS1_V15
+      - title: RsaEncryptionPaddingPolicyVariantRawDecrypt
+        type: object
+        properties:
+          RAW_DECRYPT:
+            type: object
+            properties: {}
+        required:
+        - RAW_DECRYPT
+    LegacyKeyPolicy:
+      type: string
+      enum:
+      - allowed
+      - prohibited
+      - unprotect_only
+    MetadataDurationConstraint:
+      oneOf:
+      - title: MetadataDurationConstraintVariantForbidden
+        type: object
+        properties:
+          forbidden:
+            type: object
+            properties: {}
+        required:
+        - forbidden
+      - title: MetadataDurationConstraintVariantRequired
+        type: object
+        properties:
+          required:
+            $ref: '#/components/schemas/MetadataDurationConstraintRequired'
+        required:
+        - required
     FpeConstraints:
       allOf:
       - type: object
@@ -312,6 +237,262 @@ components:
             $ref: '#/components/schemas/FpeDateConstraint'
           applies_to:
             $ref: '#/components/schemas/FpeConstraintsApplicability'
+    FpeWordsIntegerRanges:
+      allOf:
+      - type: object
+        description: 'A union of positive integer ranges.
+
+
+          ```plain
+
+          Examples: [[0, 400], [402, 1000]]
+
+          = {0000, 0001, ..., 0400, 0402, ..., 1000}
+
+
+          [[1,3], [49, 50]] with optional padding of length 8
+
+          = {00000001, 00000002, 00000003, 00000049, 00000050}
+
+          (accepts 1, 01, 00002, 49, 000050, etc)
+
+          ```'
+        properties:
+          ranges:
+            type: array
+            items:
+              type: array
+              items:
+                type: integer
+              minItems: 2
+              maxItems: 2
+          padding_required:
+            type: boolean
+            description: 'If this field is true, this set accepts only numeric strings
+
+              padded to the length given by the maximum integer in the range
+
+              set.'
+        required:
+        - ranges
+        - padding_required
+    AccountExtension:
+      allOf:
+      - type: object
+        properties:
+          acct_id:
+            type: string
+            format: uuid
+          cryptographic_policy:
+            $ref: '#/components/schemas/CryptographicPolicy'
+          key_history_policy:
+            $ref: '#/components/schemas/KeyHistoryPolicy'
+          key_metadata_policy:
+            $ref: '#/components/schemas/KeyMetadataPolicy'
+          custom_metadata:
+            type: object
+            additionalProperties:
+              type: string
+          custom_metadata_attributes:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/CustomAttributeSearchMetadata'
+          plugin_code_signing_policy:
+            $ref: '#/components/schemas/PluginCodeSigningPolicy'
+          mark_key_disabled_when_deactivated:
+            type: boolean
+        required:
+        - acct_id
+        - custom_metadata
+        - custom_metadata_attributes
+        - mark_key_disabled_when_deactivated
+    PluginCodeSigningPolicy:
+      allOf:
+      - type: object
+        description: 'Plugin code signing policy.
+
+
+          When a code signing policy is set, all requests to create new plugins or
+
+          update existing plugins (if updating the code) would need to provide a valid
+
+          signature.'
+        properties:
+          signing_keys:
+            $ref: '#/components/schemas/SigningKeys'
+        required:
+        - signing_keys
+    MetadataDurationConstraintRequired:
+      allOf:
+      - type: object
+        properties:
+          allowed_values:
+            $ref: '#/components/schemas/RestrictedDuration'
+    FpeCharSet:
+      description: 'The alphabet to use for an encrypted portion of a complex tokenization data type.
+
+        Characters should be specified as a list of pairs, where each pair [a, b] represents the
+
+        range of Unicode code points from a to b, with both bounds being inclusive. A single
+
+        code point can be specified as [c, c].
+
+
+        Normally, each character is assigned a numeric value for FF1. The first character is
+
+        assigned a value of 0, and subsequent characters are assigned values of 1, 2, and so on,
+
+        up to the size of the alphabet. Note that the order of the ranges matters; characters
+
+        appearing in later ranges are assigned higher numerical values compared to earlier
+
+        characters. For instance, in the FpeCharSet [[''a'', ''z''], [''0'', ''9'']], the digits ''0'' to
+
+        ''9'' are assigned values from 26 to 35, since they are listed after the ''a'' to ''z'' range.
+
+
+        In any case, ranges should not overlap with each other, and should not contain surrogate
+
+        code points.'
+      allOf:
+      - type: array
+        items:
+          type: array
+          minItems: 2
+          maxItems: 2
+          items:
+            type: string
+            minLength: 1
+            maxLength: 1
+    Bip32OptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    MlDsaOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    MgfPolicy:
+      description: MGF policy.
+      oneOf:
+      - title: MgfPolicyVariantMgf1
+        type: object
+        properties:
+          mgf1:
+            $ref: '#/components/schemas/MgfPolicyMgf1'
+        required:
+        - mgf1
+    All:
+      description: 'A helper enum with a single variant, All, which indicates that something should apply to an
+
+        entire part. (This is here mainly to allow other untagged enums to work properly.)'
+      type: string
+      enum:
+      - all
+    FpeDataPartLiteral:
+      allOf:
+      - type: object
+        description: 'A section of the data type that is not to be tokenized (e.g., a delimiter).
+
+
+          Unlike preserved characters, literal characters are not used for FF1 tweaks.'
+        properties:
+          literal:
+            type: array
+            items:
+              type: string
+            description: 'The list of possible strings that make up this literal portion of the token.
+
+              For example, if a delimiter can either be a space or a dash, the list would
+
+              be `[" ", "-"]`.
+
+
+              Implementation note: the backend will pick the first choice that matches when
+
+              when parsing the input. If this results in an invalid parse of the rest of the
+
+              input, the backend ***will not backtrack*** and will simply return with an error.'
+        required:
+        - literal
+    AriaOptionsPolicy:
+      allOf:
+      - type: object
+        properties:
+          key_sizes:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+              minimum: 0
+              maximum: 4294967295
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+    FpeChecksum:
+      type: string
+      enum:
+      - luhn
+    RestrictedDuration:
+      allOf:
+      - type: object
+        properties:
+          min:
+            $ref: '#/components/schemas/TimeSpan'
+          max:
+            $ref: '#/components/schemas/TimeSpan'
+          default:
+            $ref: '#/components/schemas/TimeSpan'
+    DsaOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    FpeConstraintsApplicability:
+      description: A structure indicating which subparts to which to apply a set of constraints.
+      oneOf:
+      - $ref: '#/components/schemas/All'
+      - type: object
+        additionalProperties:
+          $ref: '#/components/schemas/FpeConstraintsApplicability'
+        description: 'An object representing the individual subparts that the constraints should apply to. This
+
+          is a BTreeMap where for each key-value pair, the key represents the "index" of the subpart
+
+          (with the first subpart having index 0), and the value is an FpeConstraintsApplicability
+
+          instance. Note that a Multiple part only allows for one possible key-value pair, since it
+
+          only contains one subpart. For Concat parts, the key is the zero-based index of the subpart
+
+          in the `concat` field, and for Multiple parts, this is always 0 (due to a Multiple having
+
+          only one subpart).
+
+
+          This cannot be used with OR parts; instead, specify constraints individually on each
+
+          relevant subpart.'
+    MlKemOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    RemovableKeyMetadataPolicy:
+      oneOf:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/KeyMetadataPolicy'
+    FpeDatePart:
+      description: 'Possible date-related constraint types that do not form a complete date (by themselves) for a
+
+        complex tokenization data type.'
+      type: string
+      enum:
+      - month
+      - day
+      - year
     FpeCompoundPartOr:
       allOf:
       - type: object
@@ -365,101 +546,78 @@ components:
             description: The maximum allowed length for this part (in chars).
         required:
         - or
-    EcKcdsaOptionsPolicy:
+    RemovableKeyHistoryPolicy:
+      oneOf:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/KeyHistoryPolicy'
+    RsaEncryptionPolicy:
       allOf:
       - type: object
-        properties: {}
-    LegacyKeyPolicy:
+        description: Constraints on RSA encryption parameters. In general, if a constraint is not specified, anything is allowed.
+        properties:
+          padding:
+            $ref: '#/components/schemas/RsaEncryptionPaddingPolicy'
+    RsaSignaturePaddingPolicyPss:
+      allOf:
+      - type: object
+        properties:
+          mgf:
+            $ref: '#/components/schemas/MgfPolicy'
+    EllipticCurve:
+      description: Identifies a standardized elliptic curve.
       type: string
       enum:
-      - allowed
-      - prohibited
-      - unprotect_only
-    MetadataStringConstraintRequired:
-      allOf:
-      - type: object
-        properties:
-          non_empty_after_trim:
-            type:
-            - boolean
-            - 'null'
-            description: 'If set to `true`, the value must have a length > 0 after trimming
-
-              leading and trailing whitespace characters.'
-          allowed_values:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              type: string
-            description: If not specified or empty, it will not impose any restrictions on the value.
-    FpeDayMonthYearDate:
-      allOf:
-      - type: object
-        description: 'A structure for specifying a particular date consisting of a day, month, and year, for use in
-
-          an FpeDate structure.'
-        properties:
-          year:
-            type: integer
-            minimum: 0
-            maximum: 4294967295
-            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
-          month:
-            type: integer
-            minimum: 0
-            maximum: 255
-            description: The month, which should be an integer from 1 to 12.
-          day:
-            type: integer
-            minimum: 0
-            maximum: 255
-            description: 'The day, which should be an integer from 1 to either 28, 29, 30, or 31, depending on the
-
-              month and year.'
-        required:
-        - year
-        - month
-        - day
-    MlDsaOptionsPolicy:
+      - X25519
+      - Ed25519
+      - Ed448
+      - X448
+      - SecP192K1
+      - SecP224K1
+      - SecP256K1
+      - NistP192
+      - NistP224
+      - NistP256
+      - NistP384
+      - NistP521
+      - Gost256A
+    XmssOptionsPolicy:
       allOf:
       - type: object
         properties: {}
-    FpeOptions:
-      description: 'FPE-specific options (for specifying the format of the
-
-        data to be encrypted)'
+    FpeInputDefaultProcessing:
+      type: string
+      enum:
+      - strip
+      - reject
+    RsaSignaturePaddingPolicy:
+      description: RSA signature padding policy.
       oneOf:
-      - $ref: '#/components/schemas/FpeOptionsBasic'
-      - $ref: '#/components/schemas/FpeOptionsAdvanced'
-      - $ref: '#/components/schemas/FpeOptionsV2'
-    DsaOptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
-    KeyHistoryPolicy:
-      allOf:
-      - type: object
-        description: Configuration for a key history (aka key undo) policy.
+      - title: RsaSignaturePaddingPolicyVariantPss
+        type: object
         properties:
-          undo_time_window:
-            $ref: '#/components/schemas/Secs'
+          PSS:
+            $ref: '#/components/schemas/RsaSignaturePaddingPolicyPss'
         required:
-        - undo_time_window
-    FpeSection:
+        - PSS
+      - title: RsaSignaturePaddingPolicyVariantPkcs1V15
+        type: object
+        properties:
+          PKCS1_V15:
+            type: object
+            properties: {}
+        required:
+        - PKCS1_V15
+    RsaEncryptionPaddingPolicyOaep:
       allOf:
       - type: object
-        description: A concatenation of groups, optionally including a checksum.
+        description: 'The Optional Asymmetric Encryption Padding scheme, as defined
+
+          in RFC 8017 (PKCS #1 version 2.2)'
         properties:
-          groups:
-            type: array
-            items:
-              $ref: '#/components/schemas/FpeGroup'
-          checksum:
-            $ref: '#/components/schemas/FpeChecksum'
-        required:
-        - groups
+          mgf:
+            $ref: '#/components/schemas/MgfPolicy'
     CryptographicPolicy:
       allOf:
       - type: object
@@ -514,56 +672,49 @@ components:
             $ref: '#/components/schemas/SecretOptionsPolicy'
           certificate:
             $ref: '#/components/schemas/CertificateOptionsPolicy'
-    FpeMonthYearDate:
+    RemovablePluginCodeSigningPolicy:
+      oneOf:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/PluginCodeSigningPolicy'
+    EcOptionsPolicy:
       allOf:
       - type: object
-        description: 'A structure for specifying a particular date consisting of a month and a year, for use in an
-
-          FpeDate structure.'
         properties:
-          year:
-            type: integer
-            minimum: 0
-            maximum: 4294967295
-            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
-          month:
-            type: integer
-            minimum: 0
-            maximum: 255
-            description: The month, which should be an integer from 1 to 12.
-        required:
-        - year
-        - month
-    FpeVariant:
-      allOf:
-      - type: object
-        description: A concatenation of sections.
-        properties:
-          sections:
-            type: array
+          elliptic_curves:
+            type:
+            - array
+            - 'null'
             items:
-              $ref: '#/components/schemas/FpeSection'
-        required:
-        - sections
-    Bip32OptionsPolicy:
+              $ref: '#/components/schemas/EllipticCurve'
+    DesOptionsPolicy:
       allOf:
       - type: object
-        properties: {}
-    FpeDateDayMonthYear:
-      allOf:
-      - type: object
-        description: 'Represents a date that consists of a Month subpart, a Day subpart, and a Year subpart. The
-
-          Year part is allowed to be preserved, and the Day and Month parts are allowed to be
-
-          preserved together. (The Day part cannot be preserved if the Month part is not, and vice
-
-          versa.)'
         properties:
-          before:
-            $ref: '#/components/schemas/FpeDayMonthYearDate'
-          after:
-            $ref: '#/components/schemas/FpeDayMonthYearDate'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+    Des3OptionsPolicy:
+      allOf:
+      - type: object
+        description: 'Cryptographic policy for triple DES objects. Setting `key_sizes: [168]`
+
+          forbids two-key triple DES.'
+        properties:
+          key_sizes:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+              minimum: 0
+              maximum: 4294967295
+          random_iv:
+            type:
+            - boolean
+            - 'null'
     FpeCompoundPartMultiple:
       allOf:
       - type: object
@@ -628,340 +779,11 @@ components:
             description: The maximum allowed length for this part (in chars).
         required:
         - multiple
-    All:
-      description: 'A helper enum with a single variant, All, which indicates that something should apply to an
-
-        entire part. (This is here mainly to allow other untagged enums to work properly.)'
-      type: string
-      enum:
-      - all
-    HmacOptionsPolicy:
+    AccountExtensionCreateRequest:
       allOf:
       - type: object
+        description: The model used to create a new account extension.
         properties:
-          minimum_key_length:
-            type:
-            - integer
-            - 'null'
-            minimum: 0
-            maximum: 4294967295
-    FpeWords:
-      description: A set of fixed-length strings.
-      oneOf:
-      - title: FpeWordsVariantIntegerRanges
-        type: object
-        properties:
-          integer_ranges:
-            $ref: '#/components/schemas/FpeWordsIntegerRanges'
-        required:
-        - integer_ranges
-      - title: FpeWordsVariantAlphabet
-        type: object
-        properties:
-          alphabet:
-            $ref: '#/components/schemas/FpeCharSet'
-        required:
-        - alphabet
-      - title: FpeWordsVariantCustom
-        type: object
-        properties:
-          custom:
-            $ref: '#/components/schemas/FpeWordsCustom'
-        required:
-        - custom
-    Secs:
-      allOf:
-      - type: integer
-    RestrictedDuration:
-      allOf:
-      - type: object
-        properties:
-          min:
-            $ref: '#/components/schemas/TimeSpan'
-          max:
-            $ref: '#/components/schemas/TimeSpan'
-          default:
-            $ref: '#/components/schemas/TimeSpan'
-    MetadataDurationConstraint:
-      oneOf:
-      - title: MetadataDurationConstraintVariantForbidden
-        type: object
-        properties:
-          forbidden:
-            type: object
-            properties: {}
-        required:
-        - forbidden
-      - title: MetadataDurationConstraintVariantRequired
-        type: object
-        properties:
-          required:
-            $ref: '#/components/schemas/MetadataDurationConstraintRequired'
-        required:
-        - required
-    SeedOptionsPolicy:
-      allOf:
-      - type: object
-        properties:
-          random_iv:
-            type:
-            - boolean
-            - 'null'
-    RsaEncryptionPaddingPolicy:
-      description: RSA encryption padding policy.
-      oneOf:
-      - title: RsaEncryptionPaddingPolicyVariantOaep
-        type: object
-        properties:
-          OAEP:
-            $ref: '#/components/schemas/RsaEncryptionPaddingPolicyOaep'
-        required:
-        - OAEP
-      - title: RsaEncryptionPaddingPolicyVariantPkcs1V15
-        type: object
-        properties:
-          PKCS1_V15:
-            type: object
-            properties: {}
-        required:
-        - PKCS1_V15
-      - title: RsaEncryptionPaddingPolicyVariantRawDecrypt
-        type: object
-        properties:
-          RAW_DECRYPT:
-            type: object
-            properties: {}
-        required:
-        - RAW_DECRYPT
-    MgfPolicy:
-      description: MGF policy.
-      oneOf:
-      - title: MgfPolicyVariantMgf1
-        type: object
-        properties:
-          mgf1:
-            $ref: '#/components/schemas/MgfPolicyMgf1'
-        required:
-        - mgf1
-    RsaSignaturePaddingPolicyPss:
-      allOf:
-      - type: object
-        properties:
-          mgf:
-            $ref: '#/components/schemas/MgfPolicy'
-    SigningKeys:
-      description: 'Signing keys used to validate JSON Web Signature objects including signed
-
-        JSON Web Tokens.'
-      oneOf:
-      - $ref: '#/components/schemas/SigningKeysVariantStored'
-      - $ref: '#/components/schemas/SigningKeysVariantFetched'
-      discriminator:
-        propertyName: kind
-        mapping:
-          stored: SigningKeysVariantStored
-          fetched: SigningKeysVariantFetched
-    FpePreserveMask:
-      description: A structure indicating which indices in an encrypted part to mask or preserve.
-      oneOf:
-      - $ref: '#/components/schemas/All'
-      - type: array
-        items:
-          type: integer
-          format: int64
-        description: 'Indicates that only certain characters are to be preserved or masked. Indices are
-
-          Python-like; i.e., negative indices index from the end of the token portion, with
-
-          index -1 denoting the last character. (Indicating that nothing should be preserved
-
-          or masked can be done via an empty list, which is the default value for this enum.)'
-    RsaEncryptionPaddingPolicyOaep:
-      allOf:
-      - type: object
-        description: 'The Optional Asymmetric Encryption Padding scheme, as defined
-
-          in RFC 8017 (PKCS #1 version 2.2)'
-        properties:
-          mgf:
-            $ref: '#/components/schemas/MgfPolicy'
-    MlKemOptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
-    OpaqueOptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
-    MgfPolicyMgf1:
-      allOf:
-      - type: object
-        properties:
-          hash:
-            $ref: '#/components/schemas/DigestAlgorithm'
-    AccountExtensionRequest:
-      allOf:
-      - type: object
-        properties:
-          cryptographic_policy:
-            $ref: '#/components/schemas/RemovableCryptographicPolicy'
-          key_history_policy:
-            $ref: '#/components/schemas/RemovableKeyHistoryPolicy'
-          key_metadata_policy:
-            $ref: '#/components/schemas/RemovableKeyMetadataPolicy'
-          custom_metadata:
-            type:
-            - object
-            - 'null'
-            additionalProperties:
-              type: string
-          custom_metadata_attributes:
-            type:
-            - object
-            - 'null'
-            additionalProperties:
-              $ref: '#/components/schemas/CustomAttributeSearchMetadata'
-          plugin_code_signing_policy:
-            $ref: '#/components/schemas/RemovablePluginCodeSigningPolicy'
-          mark_key_disabled_when_deactivated:
-            type:
-            - boolean
-            - 'null'
-    MetadataPolicyItem:
-      allOf:
-      - type: object
-        properties:
-          custom_metadata:
-            type: object
-            additionalProperties:
-              $ref: '#/components/schemas/MetadataStringConstraint'
-          description:
-            $ref: '#/components/schemas/MetadataStringConstraint'
-          deactivation_date:
-            $ref: '#/components/schemas/MetadataDurationConstraint'
-          activation_date:
-            $ref: '#/components/schemas/MetadataDurationConstraint'
-        required:
-        - custom_metadata
-    FpeGroup:
-      allOf:
-      - type: object
-        description: 'A concatenation of codes, that can be repeated an amount of times. An
-
-          amount of leading and trailing characters can be preserved, this is,
-
-          unmodified by tokenization.'
-        properties:
-          codes:
-            type: array
-            items:
-              $ref: '#/components/schemas/FpeCode'
-          min_repetitions:
-            type:
-            - integer
-            - 'null'
-            description: A group cannot be omitted, thus this field must be positive if present.
-          max_repetitions:
-            type:
-            - integer
-            - 'null'
-          preserve:
-            type:
-            - array
-            - 'null'
-            items:
-              type: integer
-            minItems: 2
-            maxItems: 2
-            description: 'Amount of leading and trailing characters to preserve in this group.
-
-              Preserved characters are the leading/trailing characters of the whole
-
-              group, not individual repetitions.'
-        required:
-        - codes
-    FpeChecksum:
-      type: string
-      enum:
-      - luhn
-    FpeCharSet:
-      description: 'The alphabet to use for an encrypted portion of a complex tokenization data type.
-
-        Characters should be specified as a list of pairs, where each pair [a, b] represents the
-
-        range of Unicode code points from a to b, with both bounds being inclusive. A single
-
-        code point can be specified as [c, c].
-
-
-        Normally, each character is assigned a numeric value for FF1. The first character is
-
-        assigned a value of 0, and subsequent characters are assigned values of 1, 2, and so on,
-
-        up to the size of the alphabet. Note that the order of the ranges matters; characters
-
-        appearing in later ranges are assigned higher numerical values compared to earlier
-
-        characters. For instance, in the FpeCharSet [[''a'', ''z''], [''0'', ''9'']], the digits ''0'' to
-
-        ''9'' are assigned values from 26 to 35, since they are listed after the ''a'' to ''z'' range.
-
-
-        In any case, ranges should not overlap with each other, and should not contain surrogate
-
-        code points.'
-      allOf:
-      - type: array
-        items:
-          type: array
-          minItems: 2
-          maxItems: 2
-          items:
-            type: string
-            minLength: 1
-            maxLength: 1
-    EllipticCurve:
-      description: Identifies a standardized elliptic curve.
-      type: string
-      enum:
-      - X25519
-      - Ed25519
-      - Ed448
-      - X448
-      - SecP192K1
-      - SecP224K1
-      - SecP256K1
-      - NistP192
-      - NistP224
-      - NistP256
-      - NistP384
-      - NistP521
-      - Gost256A
-    FpeFormatV2:
-      allOf:
-      - type: object
-        description: The second generation of Fortanix Tokenization scheme.
-        properties:
-          variants:
-            type: array
-            items:
-              $ref: '#/components/schemas/FpeVariant'
-            description: 'A token is accepted if it is accepted by any of these variants. Note
-
-              tokenization results depend on the order of this list.'
-          mode:
-            $ref: '#/components/schemas/FpeTokenizeMode'
-          input_processing:
-            $ref: '#/components/schemas/FpeInputProcessing'
-        required:
-        - variants
-    AccountExtension:
-      allOf:
-      - type: object
-        properties:
-          acct_id:
-            type: string
-            format: uuid
           cryptographic_policy:
             $ref: '#/components/schemas/CryptographicPolicy'
           key_history_policy:
@@ -981,146 +803,13 @@ components:
           mark_key_disabled_when_deactivated:
             type: boolean
         required:
-        - acct_id
         - custom_metadata
         - custom_metadata_attributes
         - mark_key_disabled_when_deactivated
-    DesOptionsPolicy:
+    EcKcdsaOptionsPolicy:
       allOf:
       - type: object
-        properties:
-          random_iv:
-            type:
-            - boolean
-            - 'null'
-    FpeWordsIntegerRanges:
-      allOf:
-      - type: object
-        description: 'A union of positive integer ranges.
-
-
-          ```plain
-
-          Examples: [[0, 400], [402, 1000]]
-
-          = {0000, 0001, ..., 0400, 0402, ..., 1000}
-
-
-          [[1,3], [49, 50]] with optional padding of length 8
-
-          = {00000001, 00000002, 00000003, 00000049, 00000050}
-
-          (accepts 1, 01, 00002, 49, 000050, etc)
-
-          ```'
-        properties:
-          ranges:
-            type: array
-            items:
-              type: array
-              items:
-                type: integer
-              minItems: 2
-              maxItems: 2
-          padding_required:
-            type: boolean
-            description: 'If this field is true, this set accepts only numeric strings
-
-              padded to the length given by the maximum integer in the range
-
-              set.'
-        required:
-        - ranges
-        - padding_required
-    RsaSignaturePaddingPolicy:
-      description: RSA signature padding policy.
-      oneOf:
-      - title: RsaSignaturePaddingPolicyVariantPss
-        type: object
-        properties:
-          PSS:
-            $ref: '#/components/schemas/RsaSignaturePaddingPolicyPss'
-        required:
-        - PSS
-      - title: RsaSignaturePaddingPolicyVariantPkcs1V15
-        type: object
-        properties:
-          PKCS1_V15:
-            type: object
-            properties: {}
-        required:
-        - PKCS1_V15
-    FpeOptionsV2:
-      allOf:
-      - type: object
-        properties:
-          format_v2:
-            $ref: '#/components/schemas/FpeFormatV2'
-          description:
-            type:
-            - string
-            - 'null'
-        required:
-        - format_v2
-    FpeDatePart:
-      description: 'Possible date-related constraint types that do not form a complete date (by themselves) for a
-
-        complex tokenization data type.'
-      type: string
-      enum:
-      - month
-      - day
-      - year
-    CustomAttributeSearchMetadata:
-      allOf:
-      - type: object
-        properties:
-          suggest:
-            type:
-            - boolean
-            - 'null'
-    FpeCompoundPartConcat:
-      allOf:
-      - type: object
-        description: Represents a concatenation of multiple structures (in a particular order).
-        properties:
-          concat:
-            type: array
-            items:
-              $ref: '#/components/schemas/FpeDataPart'
-            description: The actual subparts that make up this compound part, in order.
-          constraints:
-            $ref: '#/components/schemas/FpeConstraints'
-          preserve:
-            type:
-            - boolean
-            - 'null'
-            description: 'Whether the entire concat should be preserved as-is (i.e., not tokenized). If this is
-
-              set, any descendant subparts cannot contain any preserve-related fields set.'
-          mask:
-            type:
-            - boolean
-            - 'null'
-            description: 'Whether the entire concat should be masked when doing masked decryption. If this is
-
-              set, any descendant subparts cannot contain any mask-related fields set.'
-          min_length:
-            type:
-            - integer
-            - 'null'
-            minimum: 0
-            maximum: 4294967295
-            description: The minimum allowed length for this part (in chars).
-          max_length:
-            type:
-            - integer
-            - 'null'
-            minimum: 0
-            maximum: 4294967295
-            description: The maximum allowed length for this part (in chars).
-        required:
-        - concat
+        properties: {}
     FpeOptionsBasic:
       allOf:
       - type: object
@@ -1204,6 +893,347 @@ components:
         - min_length
         - max_length
         - preserve
+    RemovableCryptographicPolicy:
+      oneOf:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/CryptographicPolicy'
+    FpeDateDayMonthYear:
+      allOf:
+      - type: object
+        description: 'Represents a date that consists of a Month subpart, a Day subpart, and a Year subpart. The
+
+          Year part is allowed to be preserved, and the Day and Month parts are allowed to be
+
+          preserved together. (The Day part cannot be preserved if the Month part is not, and vice
+
+          versa.)'
+        properties:
+          before:
+            $ref: '#/components/schemas/FpeDayMonthYearDate'
+          after:
+            $ref: '#/components/schemas/FpeDayMonthYearDate'
+    RsaOptionsPolicy:
+      allOf:
+      - type: object
+        properties:
+          encryption_policy:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/RsaEncryptionPolicy'
+          signature_policy:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/RsaSignaturePolicy'
+            description: 'Signature policy for an RSA key. When doing a signature operation, the policies are
+
+              evaluated against the specified parameters one by one. If one matches, the operation is
+
+              allowed. If none match, including if the policy list is empty, the operation is disallowed.
+
+              Missing optional parameters will have their defaults specified according to the matched
+
+              policy. The default for new keys is `[{}]` (no constraints).
+
+              If (part of) a constraint is not specified, anything is allowed for that constraint.'
+          minimum_key_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: 'The minimum allowed key length. This is only relevant for group or account cryptographic
+
+              policies (and hence has no effect in an RSA policy on a specific key).'
+    SigningKeys:
+      description: 'Signing keys used to validate JSON Web Signature objects including signed
+
+        JSON Web Tokens.'
+      oneOf:
+      - $ref: '#/components/schemas/SigningKeysVariantStored'
+      - $ref: '#/components/schemas/SigningKeysVariantFetched'
+      discriminator:
+        propertyName: kind
+        mapping:
+          stored: SigningKeysVariantStored
+          fetched: SigningKeysVariantFetched
+    Secs:
+      allOf:
+      - type: integer
+    HmacOptionsPolicy:
+      allOf:
+      - type: object
+        properties:
+          minimum_key_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+    FpeDateMonthYear:
+      allOf:
+      - type: object
+        description: 'Represents a date that consists of a Month subpart and a Year subpart. The Year part is
+
+          allowed to be preserved; however, the Month part cannot be preserved by itself.'
+        properties:
+          before:
+            $ref: '#/components/schemas/FpeMonthYearDate'
+          after:
+            $ref: '#/components/schemas/FpeMonthYearDate'
+    MgfPolicyMgf1:
+      allOf:
+      - type: object
+        properties:
+          hash:
+            $ref: '#/components/schemas/DigestAlgorithm'
+    KeyHistoryPolicy:
+      allOf:
+      - type: object
+        description: Configuration for a key history (aka key undo) policy.
+        properties:
+          undo_time_window:
+            $ref: '#/components/schemas/Secs'
+        required:
+        - undo_time_window
+    FpeSection:
+      allOf:
+      - type: object
+        description: A concatenation of groups, optionally including a checksum.
+        properties:
+          groups:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeGroup'
+          checksum:
+            $ref: '#/components/schemas/FpeChecksum'
+        required:
+        - groups
+    FpeDateConstraint:
+      description: Possible date-related constraint types for a portion of a complex tokenization data type.
+      oneOf:
+      - $ref: '#/components/schemas/FpeDate'
+      - $ref: '#/components/schemas/FpeDatePart'
+    RsaSignaturePolicy:
+      allOf:
+      - type: object
+        description: Constraints on RSA signature parameters. In general, if a constraint is not specified, anything is allowed.
+        properties:
+          padding:
+            $ref: '#/components/schemas/RsaSignaturePaddingPolicy'
+    SigningKeysVariantFetched:
+      allOf:
+      - type: object
+        properties:
+          kind:
+            type: string
+            enum:
+            - fetched
+        required:
+        - kind
+      - $ref: '#/components/schemas/SigningKeysFetched'
+    FpeGroup:
+      allOf:
+      - type: object
+        description: 'A concatenation of codes, that can be repeated an amount of times. An
+
+          amount of leading and trailing characters can be preserved, this is,
+
+          unmodified by tokenization.'
+        properties:
+          codes:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeCode'
+          min_repetitions:
+            type:
+            - integer
+            - 'null'
+            description: A group cannot be omitted, thus this field must be positive if present.
+          max_repetitions:
+            type:
+            - integer
+            - 'null'
+          preserve:
+            type:
+            - array
+            - 'null'
+            items:
+              type: integer
+            minItems: 2
+            maxItems: 2
+            description: 'Amount of leading and trailing characters to preserve in this group.
+
+              Preserved characters are the leading/trailing characters of the whole
+
+              group, not individual repetitions.'
+        required:
+        - codes
+    Slip10OptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    AccountExtensionRequest:
+      allOf:
+      - type: object
+        properties:
+          cryptographic_policy:
+            $ref: '#/components/schemas/RemovableCryptographicPolicy'
+          key_history_policy:
+            $ref: '#/components/schemas/RemovableKeyHistoryPolicy'
+          key_metadata_policy:
+            $ref: '#/components/schemas/RemovableKeyMetadataPolicy'
+          custom_metadata:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              type: string
+          custom_metadata_attributes:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              $ref: '#/components/schemas/CustomAttributeSearchMetadata'
+          plugin_code_signing_policy:
+            $ref: '#/components/schemas/RemovablePluginCodeSigningPolicy'
+          mark_key_disabled_when_deactivated:
+            type:
+            - boolean
+            - 'null'
+    FpeOptions:
+      description: 'FPE-specific options (for specifying the format of the
+
+        data to be encrypted)'
+      oneOf:
+      - $ref: '#/components/schemas/FpeOptionsBasic'
+      - $ref: '#/components/schemas/FpeOptionsAdvanced'
+      - $ref: '#/components/schemas/FpeOptionsV2'
+    OpaqueOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    KeyMetadataPolicy:
+      allOf:
+      - type: object
+        properties:
+          base:
+            $ref: '#/components/schemas/MetadataPolicyItem'
+          for_obj_type:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/MetadataPolicyItem'
+            description: Each entry in this map fully overrides `base` for a particular object type.
+          legacy_objects:
+            $ref: '#/components/schemas/LegacyKeyPolicy'
+        required:
+        - base
+        - for_obj_type
+        - legacy_objects
+    CustomAttributeSearchMetadata:
+      allOf:
+      - type: object
+        properties:
+          suggest:
+            type:
+            - boolean
+            - 'null'
+    SeedOptionsPolicy:
+      allOf:
+      - type: object
+        properties:
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+    DigestAlgorithm:
+      description: A hash algorithm.
+      type: string
+      enum:
+      - BLAKE2B256
+      - BLAKE2B384
+      - BLAKE2B512
+      - BLAKE2S256
+      - RIPEMD160
+      - SSL3
+      - SHA1
+      - SHA224
+      - SHA256
+      - SHA384
+      - SHA512
+      - STREEBOG256
+      - STREEBOG512
+      - SHA3_224
+      - SHA3_256
+      - SHA3_384
+      - SHA3_512
+    FpeVariant:
+      allOf:
+      - type: object
+        description: A concatenation of sections.
+        properties:
+          sections:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeSection'
+        required:
+        - sections
+    FpeDateMonthDay:
+      allOf:
+      - type: object
+        description: 'Represents a date that consists of a Month subpart and a Day subpart. It is an error to
+
+          preserve only the Month part or the Day part.'
+        properties:
+          before:
+            $ref: '#/components/schemas/FpeDayMonthDate'
+          after:
+            $ref: '#/components/schemas/FpeDayMonthDate'
+    FpeCompoundPart:
+      description: 'Structure of a compound portion of a complex tokenization data type, itself composed of
+
+        smaller parts.'
+      oneOf:
+      - $ref: '#/components/schemas/FpeCompoundPartOr'
+      - $ref: '#/components/schemas/FpeCompoundPartConcat'
+      - $ref: '#/components/schemas/FpeCompoundPartMultiple'
+    MetadataStringConstraint:
+      oneOf:
+      - title: MetadataStringConstraintVariantForbidden
+        type: object
+        properties:
+          forbidden:
+            type: object
+            properties: {}
+        required:
+        - forbidden
+      - title: MetadataStringConstraintVariantRequired
+        type: object
+        properties:
+          required:
+            $ref: '#/components/schemas/MetadataStringConstraintRequired'
+        required:
+        - required
+    FpePreserveMask:
+      description: A structure indicating which indices in an encrypted part to mask or preserve.
+      oneOf:
+      - $ref: '#/components/schemas/All'
+      - type: array
+        items:
+          type: integer
+          format: int64
+        description: 'Indicates that only certain characters are to be preserved or masked. Indices are
+
+          Python-like; i.e., negative indices index from the end of the token portion, with
+
+          index -1 denoting the last character. (Indicating that nothing should be preserved
+
+          or masked can be done via an empty list, which is the default value for this enum.)'
     KeyOperations:
       description: "Operations allowed to be performed on a given key.\n\n\n\n          SIGN:\n            If this is set, the key can be used to for signing.\n\n\n          VERIFY:\n            If this is set, the key can used for verifying a signature.\n\n\n          ENCRYPT:\n            If this is set, the key can be used for encryption.\n\n\n          DECRYPT:\n            If this is set, the key can be used for decryption.\n\n\n          WRAPKEY:\n            If this is set, the key can be used wrapping other keys.\n            The key being wrapped must have the EXPORT operation enabled.\n\n\n          UNWRAPKEY:\n            If this is set, the key can be used to unwrap a wrapped key.\n\n\n          DERIVEKEY:\n            If this is set, the key can be used to derive another key.\n\n\n          TRANSFORM:\n            If this is set, the key can be transformed.\n\n\n          MACGENERATE:\n            If this is set, the key can be used to compute a cryptographic\n            Message Authentication Code (MAC) on a message.\n\n\n          MACVERIFY:\n            If they is set, the key can be used to verify a MAC.\n\n\n          EXPORT:\n            If this is set, the value of the key can be retrieved\n            with an authenticated request. This shouldn't be set unless\n            required. It is more secure to keep the key's value inside DSM only.\n\n\n          APPMANAGEABLE:\n            Without this operation, management operations like delete, destroy,\n            rotate, activate, restore, revoke, revert, update, remove_private, etc.\n            cannot be performed by a crypto App.\n            A user with access or admin app can still perform these operations.\n            This option is only relevant for crypto apps.\n\n\n          HIGHVOLUME:\n            If this is set, audit logs will not be recorded for the key.\n            High volume here tries to signify a key that is being used a lot\n            and will produce lots of logs. Setting this operation disables\n            audit logs for the key.\n\n\n          AGREEKEY:\n            If this is set, the key can be used for key agreement.\n            Both the private and public key should have this option enabled\n            to perform an agree operation.\n\n\n          ENCAPSULATE:\n            If this is set, the key can be used for key encapsulation. The\n            result is a new symmetric key and a ciphertext.\n\n\n          DECAPSULATE:\n            If this is set, the key can be used for key decapsulation. If\n            decapsulation succeeds, the result is a new symmetric key.\n\n"
       type: string
@@ -1224,44 +1254,24 @@ components:
       - AGREEKEY
       - ENCAPSULATE
       - DECAPSULATE
-    SigningKeysVariantFetched:
+    FpeOptionsAdvanced:
       allOf:
       - type: object
+        description: 'Advanced FPE options. It is recommended to use this for
+
+          specifying any FPE options, as it is more expressive than
+
+          FpeOptionsBasic.'
         properties:
-          kind:
-            type: string
-            enum:
-            - fetched
+          format:
+            $ref: '#/components/schemas/FpeDataPart'
+          description:
+            type:
+            - string
+            - 'null'
+            description: The user-provided name for the data type.
         required:
-        - kind
-      - $ref: '#/components/schemas/SigningKeysFetched'
-    SecretOptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
-    RemovablePluginCodeSigningPolicy:
-      oneOf:
-      - type: string
-        enum:
-        - remove
-      - $ref: '#/components/schemas/PluginCodeSigningPolicy'
-    KeyMetadataPolicy:
-      allOf:
-      - type: object
-        properties:
-          base:
-            $ref: '#/components/schemas/MetadataPolicyItem'
-          for_obj_type:
-            type: object
-            additionalProperties:
-              $ref: '#/components/schemas/MetadataPolicyItem'
-            description: Each entry in this map fully overrides `base` for a particular object type.
-          legacy_objects:
-            $ref: '#/components/schemas/LegacyKeyPolicy'
-        required:
-        - base
-        - for_obj_type
-        - legacy_objects
+        - format
     FpeCode:
       allOf:
       - type: object
@@ -1279,6 +1289,42 @@ components:
             - 'null'
         required:
         - words
+    FpeEncryptedPart:
+      allOf:
+      - type: object
+        description: 'Structure of a tokenized portion of a complex tokenization data type.
+
+
+          Implementation note: the backend parser is locally "greedy" and will attempt to match
+
+          as many characters as possible. If this later results in an invalid parse of the rest
+
+          of the input, the backend ***will not backtrack*** and will simply return with an error.'
+        properties:
+          min_length:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The minimum allowed length for this part (in chars).
+          max_length:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The maximum allowed length for this part (in chars).
+          char_set:
+            $ref: '#/components/schemas/FpeCharSet'
+          cipher_char_set:
+            $ref: '#/components/schemas/FpeCharSet'
+          constraints:
+            $ref: '#/components/schemas/FpeConstraints'
+          preserve:
+            $ref: '#/components/schemas/FpePreserveMask'
+          mask:
+            $ref: '#/components/schemas/FpePreserveMask'
+        required:
+        - min_length
+        - max_length
+        - char_set
     SigningKeysFetched:
       allOf:
       - type: object
@@ -1291,31 +1337,6 @@ components:
         required:
         - url
         - cache_duration
-    FpeConstraintsApplicability:
-      description: A structure indicating which subparts to which to apply a set of constraints.
-      oneOf:
-      - $ref: '#/components/schemas/All'
-      - type: object
-        additionalProperties:
-          $ref: '#/components/schemas/FpeConstraintsApplicability'
-        description: 'An object representing the individual subparts that the constraints should apply to. This
-
-          is a BTreeMap where for each key-value pair, the key represents the "index" of the subpart
-
-          (with the first subpart having index 0), and the value is an FpeConstraintsApplicability
-
-          instance. Note that a Multiple part only allows for one possible key-value pair, since it
-
-          only contains one subpart. For Concat parts, the key is the zero-based index of the subpart
-
-          in the `concat` field, and for Multiple parts, this is always 0 (due to a Multiple having
-
-          only one subpart).
-
-
-          This cannot be used with OR parts; instead, specify constraints individually on each
-
-          relevant subpart.'
     TimeSpan:
       oneOf:
       - title: TimeSpanVariantSeconds
@@ -1354,113 +1375,18 @@ components:
             maximum: 4294967295
         required:
         - days
-    FpeDateConstraint:
-      description: Possible date-related constraint types for a portion of a complex tokenization data type.
-      oneOf:
-      - $ref: '#/components/schemas/FpeDate'
-      - $ref: '#/components/schemas/FpeDatePart'
-    AriaOptionsPolicy:
+    SigningKeysStored:
       allOf:
       - type: object
         properties:
-          key_sizes:
-            type:
-            - array
-            - 'null'
-            items:
-              type: integer
-              minimum: 0
-              maximum: 4294967295
-          random_iv:
-            type:
-            - boolean
-            - 'null'
-    RemovableCryptographicPolicy:
-      oneOf:
-      - type: string
-        enum:
-        - remove
-      - $ref: '#/components/schemas/CryptographicPolicy'
-    FpeDataPartLiteral:
-      allOf:
-      - type: object
-        description: 'A section of the data type that is not to be tokenized (e.g., a delimiter).
-
-
-          Unlike preserved characters, literal characters are not used for FF1 tweaks.'
-        properties:
-          literal:
-            type: array
-            items:
-              type: string
-            description: 'The list of possible strings that make up this literal portion of the token.
-
-              For example, if a delimiter can either be a space or a dash, the list would
-
-              be `[" ", "-"]`.
-
-
-              Implementation note: the backend will pick the first choice that matches when
-
-              when parsing the input. If this results in an invalid parse of the rest of the
-
-              input, the backend ***will not backtrack*** and will simply return with an error.'
-        required:
-        - literal
-    PluginCodeSigningPolicy:
-      allOf:
-      - type: object
-        description: 'Plugin code signing policy.
-
-
-          When a code signing policy is set, all requests to create new plugins or
-
-          update existing plugins (if updating the code) would need to provide a valid
-
-          signature.'
-        properties:
-          signing_keys:
-            $ref: '#/components/schemas/SigningKeys'
-        required:
-        - signing_keys
-    AccountExtensionCreateRequest:
-      allOf:
-      - type: object
-        description: The model used to create a new account extension.
-        properties:
-          cryptographic_policy:
-            $ref: '#/components/schemas/CryptographicPolicy'
-          key_history_policy:
-            $ref: '#/components/schemas/KeyHistoryPolicy'
-          key_metadata_policy:
-            $ref: '#/components/schemas/KeyMetadataPolicy'
-          custom_metadata:
+          keys:
             type: object
             additionalProperties:
               type: string
-          custom_metadata_attributes:
-            type: object
-            additionalProperties:
-              $ref: '#/components/schemas/CustomAttributeSearchMetadata'
-          plugin_code_signing_policy:
-            $ref: '#/components/schemas/PluginCodeSigningPolicy'
-          mark_key_disabled_when_deactivated:
-            type: boolean
+              format: byte
+            description: Mapping key ids to DER-encoded public key.
         required:
-        - custom_metadata
-        - custom_metadata_attributes
-        - mark_key_disabled_when_deactivated
-    FpeDateMonthDay:
-      allOf:
-      - type: object
-        description: 'Represents a date that consists of a Month subpart and a Day subpart. It is an error to
-
-          preserve only the Month part or the Day part.'
-        properties:
-          before:
-            $ref: '#/components/schemas/FpeDayMonthDate'
-          after:
-            $ref: '#/components/schemas/FpeDayMonthDate'
+        - keys
     FpeWordsCustom:
       allOf:
       - type: object
@@ -1472,149 +1398,74 @@ components:
             description: 'Examples: {"john", "jane"}, {".", "-", "_", "@", " "}'
         required:
         - list
-    KcdsaOptionsPolicy:
+    FpeMonthYearDate:
       allOf:
       - type: object
-        properties: {}
-    RsaEncryptionPolicy:
-      allOf:
-      - type: object
-        description: Constraints on RSA encryption parameters. In general, if a constraint is not specified, anything is allowed.
+        description: 'A structure for specifying a particular date consisting of a month and a year, for use in an
+
+          FpeDate structure.'
         properties:
-          padding:
-            $ref: '#/components/schemas/RsaEncryptionPaddingPolicy'
-    FpeCompoundPart:
-      description: 'Structure of a compound portion of a complex tokenization data type, itself composed of
-
-        smaller parts.'
-      oneOf:
-      - $ref: '#/components/schemas/FpeCompoundPartOr'
-      - $ref: '#/components/schemas/FpeCompoundPartConcat'
-      - $ref: '#/components/schemas/FpeCompoundPartMultiple'
-    BlsOptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
-    FpeDateMonthYear:
-      allOf:
-      - type: object
-        description: 'Represents a date that consists of a Month subpart and a Year subpart. The Year part is
-
-          allowed to be preserved; however, the Month part cannot be preserved by itself.'
-        properties:
-          before:
-            $ref: '#/components/schemas/FpeMonthYearDate'
-          after:
-            $ref: '#/components/schemas/FpeMonthYearDate'
-    FpeOptionsAdvanced:
-      allOf:
-      - type: object
-        description: 'Advanced FPE options. It is recommended to use this for
-
-          specifying any FPE options, as it is more expressive than
-
-          FpeOptionsBasic.'
-        properties:
-          format:
-            $ref: '#/components/schemas/FpeDataPart'
-          description:
-            type:
-            - string
-            - 'null'
-            description: The user-provided name for the data type.
-        required:
-        - format
-    RsaOptionsPolicy:
-      allOf:
-      - type: object
-        properties:
-          encryption_policy:
-            type:
-            - array
-            - 'null'
-            items:
-              $ref: '#/components/schemas/RsaEncryptionPolicy'
-          signature_policy:
-            type:
-            - array
-            - 'null'
-            items:
-              $ref: '#/components/schemas/RsaSignaturePolicy'
-            description: 'Signature policy for an RSA key. When doing a signature operation, the policies are
-
-              evaluated against the specified parameters one by one. If one matches, the operation is
-
-              allowed. If none match, including if the policy list is empty, the operation is disallowed.
-
-              Missing optional parameters will have their defaults specified according to the matched
-
-              policy. The default for new keys is `[{}]` (no constraints).
-
-              If (part of) a constraint is not specified, anything is allowed for that constraint.'
-          minimum_key_length:
-            type:
-            - integer
-            - 'null'
+          year:
+            type: integer
             minimum: 0
             maximum: 4294967295
-            description: 'The minimum allowed key length. This is only relevant for group or account cryptographic
-
-              policies (and hence has no effect in an RSA policy on a specific key).'
-    MetadataStringConstraint:
+            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
+          month:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: The month, which should be an integer from 1 to 12.
+        required:
+        - year
+        - month
+    FpeDataPart:
+      description: Structure for specifying (part of) a complex tokenization data type.
       oneOf:
-      - title: MetadataStringConstraintVariantForbidden
-        type: object
-        properties:
-          forbidden:
-            type: object
-            properties: {}
-        required:
-        - forbidden
-      - title: MetadataStringConstraintVariantRequired
-        type: object
-        properties:
-          required:
-            $ref: '#/components/schemas/MetadataStringConstraintRequired'
-        required:
-        - required
-    RsaSignaturePolicy:
+      - $ref: '#/components/schemas/FpeEncryptedPart'
+      - $ref: '#/components/schemas/FpeDataPartLiteral'
+      - $ref: '#/components/schemas/FpeCompoundPart'
+    FpeFormatV2:
       allOf:
       - type: object
-        description: Constraints on RSA signature parameters. In general, if a constraint is not specified, anything is allowed.
+        description: The second generation of Fortanix Tokenization scheme.
         properties:
-          padding:
-            $ref: '#/components/schemas/RsaSignaturePaddingPolicy'
-    DigestAlgorithm:
-      description: A hash algorithm.
-      type: string
-      enum:
-      - BLAKE2B256
-      - BLAKE2B384
-      - BLAKE2B512
-      - BLAKE2S256
-      - RIPEMD160
-      - SSL3
-      - SHA1
-      - SHA224
-      - SHA256
-      - SHA384
-      - SHA512
-      - STREEBOG256
-      - STREEBOG512
-      - SHA3_224
-      - SHA3_256
-      - SHA3_384
-      - SHA3_512
-    EcOptionsPolicy:
-      allOf:
-      - type: object
-        properties:
-          elliptic_curves:
-            type:
-            - array
-            - 'null'
+          variants:
+            type: array
             items:
-              $ref: '#/components/schemas/EllipticCurve'
+              $ref: '#/components/schemas/FpeVariant'
+            description: 'A token is accepted if it is accepted by any of these variants. Note
+
+              tokenization results depend on the order of this list.'
+          mode:
+            $ref: '#/components/schemas/FpeTokenizeMode'
+          input_processing:
+            $ref: '#/components/schemas/FpeInputProcessing'
+        required:
+        - variants
+    FpeWords:
+      description: A set of fixed-length strings.
+      oneOf:
+      - title: FpeWordsVariantIntegerRanges
+        type: object
+        properties:
+          integer_ranges:
+            $ref: '#/components/schemas/FpeWordsIntegerRanges'
+        required:
+        - integer_ranges
+      - title: FpeWordsVariantAlphabet
+        type: object
+        properties:
+          alphabet:
+            $ref: '#/components/schemas/FpeCharSet'
+        required:
+        - alphabet
+      - title: FpeWordsVariantCustom
+        type: object
+        properties:
+          custom:
+            $ref: '#/components/schemas/FpeWordsCustom'
+        required:
+        - custom
     FpeTokenizeMode:
       description: How to tokenize a given input. The most secure option is "PreserveFormat".
       type: string
@@ -1622,17 +1473,222 @@ components:
       - preserve_format
       - preserve_variant
       - preserve_length
-    FpeInputDefaultProcessing:
-      type: string
-      enum:
-      - strip
-      - reject
-    RemovableKeyHistoryPolicy:
+    SigningKeysVariantStored:
+      allOf:
+      - type: object
+        properties:
+          kind:
+            type: string
+            enum:
+            - stored
+        required:
+        - kind
+      - $ref: '#/components/schemas/SigningKeysStored'
+    MetadataStringConstraintRequired:
+      allOf:
+      - type: object
+        properties:
+          non_empty_after_trim:
+            type:
+            - boolean
+            - 'null'
+            description: 'If set to `true`, the value must have a length > 0 after trimming
+
+              leading and trailing whitespace characters.'
+          allowed_values:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+            description: If not specified or empty, it will not impose any restrictions on the value.
+    FpeDayMonthDate:
+      allOf:
+      - type: object
+        description: 'A structure for specifying a particular date consisting of a day and a month, for use in an
+
+          FpeDate structure.'
+        properties:
+          month:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: The month, which should be an integer from 1 to 12.
+          day:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: 'The day, which should be an integer from 1 to either 29, 30, or 31, depending on the month
+
+              and year. Here, February is treated as having 29 days.'
+        required:
+        - month
+        - day
+    CertificateOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    SecretOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    FpeInputProcessing:
+      description: Options to apply some pre- and post-processing to the input.
       oneOf:
-      - type: string
+      - title: FpeInputProcessingVariantStripUnknown
+        type: string
         enum:
-        - remove
-      - $ref: '#/components/schemas/KeyHistoryPolicy'
+        - strip_unknown
+      - title: FpeInputProcessingVariantPassthroughUnknown
+        type: string
+        enum:
+        - passthrough_unknown
+      - title: FpeInputProcessingVariantPassthroughSpecific
+        type: object
+        properties:
+          passthrough_specific:
+            $ref: '#/components/schemas/FpeInputProcessingPassthroughSpecific'
+        required:
+        - passthrough_specific
+    FpeOptionsV2:
+      allOf:
+      - type: object
+        properties:
+          format_v2:
+            $ref: '#/components/schemas/FpeFormatV2'
+          description:
+            type:
+            - string
+            - 'null'
+        required:
+        - format_v2
+    BlsOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    FpeCompoundPartConcat:
+      allOf:
+      - type: object
+        description: Represents a concatenation of multiple structures (in a particular order).
+        properties:
+          concat:
+            type: array
+            items:
+              $ref: '#/components/schemas/FpeDataPart'
+            description: The actual subparts that make up this compound part, in order.
+          constraints:
+            $ref: '#/components/schemas/FpeConstraints'
+          preserve:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the entire concat should be preserved as-is (i.e., not tokenized). If this is
+
+              set, any descendant subparts cannot contain any preserve-related fields set.'
+          mask:
+            type:
+            - boolean
+            - 'null'
+            description: 'Whether the entire concat should be masked when doing masked decryption. If this is
+
+              set, any descendant subparts cannot contain any mask-related fields set.'
+          min_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The minimum allowed length for this part (in chars).
+          max_length:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: The maximum allowed length for this part (in chars).
+        required:
+        - concat
+    MetadataPolicyItem:
+      allOf:
+      - type: object
+        properties:
+          custom_metadata:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/MetadataStringConstraint'
+          description:
+            $ref: '#/components/schemas/MetadataStringConstraint'
+          deactivation_date:
+            $ref: '#/components/schemas/MetadataDurationConstraint'
+          activation_date:
+            $ref: '#/components/schemas/MetadataDurationConstraint'
+        required:
+        - custom_metadata
+    LmsOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
+    FpeDate:
+      description: 'A structure for specifying a token part representing a date that occurs after a specified date
+
+        and/or occurs before a specified date. Depending on the subparts that make up the date, one of
+
+        the three options is used.'
+      oneOf:
+      - title: FpeDateVariantDayMonthYear
+        type: object
+        properties:
+          dmy_date:
+            $ref: '#/components/schemas/FpeDateDayMonthYear'
+        required:
+        - dmy_date
+      - title: FpeDateVariantMonthDay
+        type: object
+        properties:
+          month_day_date:
+            $ref: '#/components/schemas/FpeDateMonthDay'
+        required:
+        - month_day_date
+      - title: FpeDateVariantMonthYear
+        type: object
+        properties:
+          month_year_date:
+            $ref: '#/components/schemas/FpeDateMonthYear'
+        required:
+        - month_year_date
+    FpeDayMonthYearDate:
+      allOf:
+      - type: object
+        description: 'A structure for specifying a particular date consisting of a day, month, and year, for use in
+
+          an FpeDate structure.'
+        properties:
+          year:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
+          month:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: The month, which should be an integer from 1 to 12.
+          day:
+            type: integer
+            minimum: 0
+            maximum: 255
+            description: 'The day, which should be an integer from 1 to either 28, 29, 30, or 31, depending on the
+
+              month and year.'
+        required:
+        - year
+        - month
+        - day
+    KcdsaOptionsPolicy:
+      allOf:
+      - type: object
+        properties: {}
     AesOptionsPolicy:
       allOf:
       - type: object
@@ -1651,62 +1707,6 @@ components:
             - 'null'
           fpe:
             $ref: '#/components/schemas/FpeOptions'
-    MetadataDurationConstraintRequired:
-      allOf:
-      - type: object
-        properties:
-          allowed_values:
-            $ref: '#/components/schemas/RestrictedDuration'
-    Slip10OptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
-    XmssOptionsPolicy:
-      allOf:
-      - type: object
-        properties: {}
-    RemovableKeyMetadataPolicy:
-      oneOf:
-      - type: string
-        enum:
-        - remove
-      - $ref: '#/components/schemas/KeyMetadataPolicy'
-    FpeEncryptedPart:
-      allOf:
-      - type: object
-        description: 'Structure of a tokenized portion of a complex tokenization data type.
-
-
-          Implementation note: the backend parser is locally "greedy" and will attempt to match
-
-          as many characters as possible. If this later results in an invalid parse of the rest
-
-          of the input, the backend ***will not backtrack*** and will simply return with an error.'
-        properties:
-          min_length:
-            type: integer
-            minimum: 0
-            maximum: 4294967295
-            description: The minimum allowed length for this part (in chars).
-          max_length:
-            type: integer
-            minimum: 0
-            maximum: 4294967295
-            description: The maximum allowed length for this part (in chars).
-          char_set:
-            $ref: '#/components/schemas/FpeCharSet'
-          cipher_char_set:
-            $ref: '#/components/schemas/FpeCharSet'
-          constraints:
-            $ref: '#/components/schemas/FpeConstraints'
-          preserve:
-            $ref: '#/components/schemas/FpePreserveMask'
-          mask:
-            $ref: '#/components/schemas/FpePreserveMask'
-        required:
-        - min_length
-        - max_length
-        - char_set
   securitySchemes:
     basicAuth:
       type: http

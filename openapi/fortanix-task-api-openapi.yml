@@ -20,7 +20,7 @@ paths:
     get:
       tags:
       - Task
-      summary: Get all the tasks.
+      summary: Get all the tasks
       description: Get all the tasks in the system.
       operationId: getAllTasks
       x-auth-resource: Reader,Writer,Manager
@@ -100,7 +100,7 @@ paths:
     get:
       tags:
       - Task
-      summary: Get details of a particular task.
+      summary: Get details of a particular task
       description: Get the details of a task.
       operationId: getTask
       x-auth-resource: Reader,Writer,Manager
@@ -118,7 +118,7 @@ paths:
     patch:
       tags:
       - Task
-      summary: Update status of approver and task.
+      summary: Update status of approver and task
       description: Update status of approver and task.
       operationId: UpdateTask
       x-auth-resource: Writer,Manager,ActiveAccount
@@ -137,7 +137,7 @@ paths:
     delete:
       tags:
       - Task
-      summary: Delete a particular task.
+      summary: Delete a particular task
       description: Delete a particular task if not in pending state.
       operationId: deleteTask
       x-auth-resource: Writer,Manager
@@ -152,7 +152,7 @@ paths:
     get:
       tags:
       - Task
-      summary: Get status and result of a particular task.
+      summary: Get status and result of a particular task
       description: Get status of a task. If the task is completed, it also returns the result values, if any.
       operationId: getTaskStatus
       x-auth-resource: Reader,Writer,Manager,AgentAuth,JoinTokenAuth
@@ -167,61 +167,6 @@ paths:
                 $ref: '#/components/schemas/TaskResult'
 components:
   schemas:
-    ApprovalInfo:
-      type: object
-      required:
-      - user_id
-      properties:
-        user_id:
-          type: string
-          format: uuid
-          description: User Id.
-        user_name:
-          type: string
-          description: User Name.
-        status:
-          $ref: '#/components/schemas/ApprovalStatus'
-        denial_reason:
-          type: string
-          description: Reason associated with the denial.
-    RequesterInfo:
-      required:
-      - requester_type
-      type: object
-      properties:
-        user_id:
-          type: string
-          format: uuid
-          description: User Id.
-        user_name:
-          type: string
-          description: User Name.
-        app_id:
-          type: string
-          format: uuid
-          description: App Id.
-        app_name:
-          type: string
-          description: App Name.
-        requester_type:
-          $ref: '#/components/schemas/RequesterType'
-    RequesterType:
-      type: string
-      description: Type of requester.
-      enum:
-      - USER
-      - APP
-      - SYSTEM
-    TaskUpdateRequest:
-      type: object
-      required:
-      - status
-      properties:
-        status:
-          $ref: '#/components/schemas/ApprovalStatus'
-        denial_reason:
-          type: string
-          description: Reason associated with the denial.
     TaskResult:
       type: object
       properties:
@@ -245,52 +190,6 @@ components:
           type: string
           format: uuid
           description: Build Id.
-    TaskStatusType:
-      type: string
-      description: Status string for a task.
-      enum:
-      - INPROGRESS
-      - FAILED
-      - SUCCESS
-      - DENIED
-    SearchMetadata:
-      type: object
-      required:
-      - total_count
-      - filtered_count
-      - page
-      - pages
-      - limit
-      properties:
-        page:
-          type: integer
-          description: Current page number
-        pages:
-          type: integer
-          description: Total pages as per the item counts and page limit.
-        limit:
-          type: integer
-          description: Number of items to limit in a page.
-        total_count:
-          type: integer
-          description: Total number of unfiltered items.
-        filtered_count:
-          type: integer
-          description: Total number of items as per the current filter.
-    ApprovalStatus:
-      type: string
-      description: Approval status.
-      enum:
-      - APPROVED
-      - DENIED
-    TaskType:
-      type: string
-      description: The types of tasks supported.
-      enum:
-      - NODE_ATTESTATION
-      - CERTIFICATE_ISSUANCE
-      - BUILD_WHITELIST
-      - DOMAIN_WHITELIST
     Task:
       type: object
       required:
@@ -334,6 +233,69 @@ components:
           type: string
           format: uuid
           description: Group Id
+    ApprovalStatus:
+      type: string
+      description: Approval status.
+      enum:
+      - APPROVED
+      - DENIED
+    TaskStatusType:
+      type: string
+      description: Status string for a task.
+      enum:
+      - INPROGRESS
+      - FAILED
+      - SUCCESS
+      - DENIED
+    ApprovalInfo:
+      type: object
+      required:
+      - user_id
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: User Id.
+        user_name:
+          type: string
+          description: User Name.
+        status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        denial_reason:
+          type: string
+          description: Reason associated with the denial.
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    TaskType:
+      type: string
+      description: The types of tasks supported.
+      enum:
+      - NODE_ATTESTATION
+      - CERTIFICATE_ISSUANCE
+      - BUILD_WHITELIST
+      - DOMAIN_WHITELIST
     GetAllTasksResponse:
       type: object
       required:
@@ -345,6 +307,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Task'
+    RequesterType:
+      type: string
+      description: Type of requester.
+      enum:
+      - USER
+      - APP
+      - SYSTEM
     TaskStatus:
       required:
       - created_at
@@ -363,14 +332,38 @@ components:
           description: Time since the status change.
         status:
           $ref: '#/components/schemas/TaskStatusType'
-  parameters:
     TaskUpdateRequest:
-      name: body
-      in: body
-      required: true
-      description: ''
-      schema:
-        $ref: '#/components/schemas/TaskUpdateRequest'
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        denial_reason:
+          type: string
+          description: Reason associated with the denial.
+    RequesterInfo:
+      required:
+      - requester_type
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: User Id.
+        user_name:
+          type: string
+          description: User Name.
+        app_id:
+          type: string
+          format: uuid
+          description: App Id.
+        app_name:
+          type: string
+          description: App Name.
+        requester_type:
+          $ref: '#/components/schemas/RequesterType'
+  parameters:
     TaskId:
       name: task-id
       in: path
@@ -379,6 +372,13 @@ components:
       schema:
         type: string
         format: uuid
+    TaskUpdateRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/TaskUpdateRequest'
   securitySchemes:
     bearerToken:
       type: apiKey

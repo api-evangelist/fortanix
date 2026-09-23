@@ -3,9 +3,7 @@ info:
   description: '**API of the Fortanix Unified Data and AI Security Platform**
 
 
-    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
-
-    '
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.'
   title: Armor Discovery Scan API
   version: 0.1.0
 servers:
@@ -29,7 +27,7 @@ paths:
           description: Success result
       security:
       - Oauth2ClientCredentials: []
-      summary: Get all scans.
+      summary: Get all scans
       tags:
       - DiscoveryScan
   /api/v1/discovery/scans/{id}:
@@ -52,18 +50,21 @@ paths:
           description: Success result
       security:
       - Oauth2ClientCredentials: []
-      summary: Get a scan.
+      summary: Get a scan
       tags:
       - DiscoveryScan
 components:
-  parameters:
-    DiscoveryScanParams:
-      explode: true
-      in: query
-      name: DiscoveryScanParams
-      schema:
-        $ref: '#/components/schemas/DiscoveryScanParams'
   schemas:
+    DiscoveryGetAllScansResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryScan'
+            type: array
+        required:
+        - items
+        type: object
     DiscoveryScan:
       allOf:
       - description: Scan in Predjama.
@@ -130,16 +131,13 @@ components:
       - pending
       - failed
       type: string
-    DiscoveryGetAllScansResponse:
-      allOf:
-      - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryScan'
-            type: array
-        required:
-        - items
-        type: object
+  parameters:
+    DiscoveryScanParams:
+      explode: true
+      in: query
+      name: DiscoveryScanParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryScanParams'
   securitySchemes:
     Oauth2ClientCredentials:
       description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.

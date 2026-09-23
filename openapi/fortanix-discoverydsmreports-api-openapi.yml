@@ -3,9 +3,7 @@ info:
   description: '**API of the Fortanix Unified Data and AI Security Platform**
 
 
-    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
-
-    '
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.'
   title: Armor Discovery Dsm Reports API
   version: 0.1.0
 servers:
@@ -16,7 +14,6 @@ tags:
 paths:
   /api/v1/discovery/scans/{id}/summary_report/dsm:
     get:
-      description: Get DSM Summary report
       operationId: GetDsmScanSummaryReport
       parameters:
       - in: path
@@ -39,6 +36,39 @@ paths:
       - DiscoveryDsmReports
 components:
   schemas:
+    DiscoveryDsmKeyAlgorithmData:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryConnectionCorrelationData:
+      allOf:
+      - properties:
+          connection_id:
+            format: uuid
+            type: string
+          connection_name:
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            type: string
+          correlated_keys_count:
+            type: integer
+        required:
+        - connection_id
+        - connection_name
+        - correlated_keys_count
+        type: object
+    DiscoveryDsmSummaryKeyStatusData:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
     DiscoveryDsmScanSummaryData:
       allOf:
       - properties:
@@ -61,22 +91,6 @@ components:
         - keys_by_type
         - connection_correlation_data
         type: object
-    DiscoveryDsmSummaryKeyStatusData:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
-    DiscoveryDsmKeyAlgorithmData:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
     DiscoveryDsmKeysDiscoveryData:
       allOf:
       - properties:
@@ -87,23 +101,6 @@ components:
         required:
         - total_keys
         - correlated_keys
-        type: object
-    DiscoveryConnectionCorrelationData:
-      allOf:
-      - properties:
-          connection_id:
-            format: uuid
-            type: string
-          connection_name:
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-            type: string
-          correlated_keys_count:
-            type: integer
-        required:
-        - connection_id
-        - connection_name
-        - correlated_keys_count
         type: object
   securitySchemes:
     Oauth2ClientCredentials:

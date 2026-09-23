@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST Version API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -26,9 +26,7 @@ paths:
       operationId: Version
       tags:
       - Version
-      summary: 'Returns information about the DSM server version and the client
-
-        API version that it supports.'
+      summary: Returns information about the DSM server version and the client API version…
       description: 'Returns information about the DSM server version and the client
 
         API version that it supports.'
@@ -43,22 +41,6 @@ paths:
                 $ref: '#/components/schemas/VersionResponse'
 components:
   schemas:
-    ServerMode:
-      description: Server execution mode.
-      type: string
-      enum:
-      - Software
-      - Sgx
-    VersionParams:
-      allOf:
-      - type: object
-        properties:
-          detailed_fips_info:
-            type: boolean
-            description: 'Include FIPS-relevant info in the response. Currently that is `plugins_digest`.
-
-
-              Only applicable to FIPS builds.'
     VersionResponse:
       allOf:
       - type: object
@@ -92,6 +74,22 @@ components:
         - version
         - api_version
         - server_mode
+    ServerMode:
+      description: Server execution mode.
+      type: string
+      enum:
+      - Software
+      - Sgx
+    VersionParams:
+      allOf:
+      - type: object
+        properties:
+          detailed_fips_info:
+            type: boolean
+            description: 'Include FIPS-relevant info in the response. Currently that is `plugins_digest`.
+
+
+              Only applicable to FIPS builds.'
   parameters:
     VersionParams:
       in: query

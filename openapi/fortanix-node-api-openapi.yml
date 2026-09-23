@@ -20,7 +20,7 @@ paths:
     get:
       tags:
       - Node
-      summary: Get all compute nodes information.
+      summary: Get all compute nodes information
       description: Get compute nodes information with status.
       operationId: getAllNodes
       x-auth-resource: Reader,Writer,Manager
@@ -92,7 +92,7 @@ paths:
     post:
       tags:
       - Node
-      summary: Provision a new compute node.
+      summary: Provision a new compute node
       description: Provision a new compute node.
       operationId: provisionNode
       x-auth-resource: Manager,JoinTokenAuth
@@ -109,7 +109,7 @@ paths:
     get:
       tags:
       - Node
-      summary: Get details of a particular compute node.
+      summary: Get details of a particular compute node
       description: Details of a particular compute node.
       operationId: getNode
       x-auth-resource: Reader,Writer,Manager,AgentAuth
@@ -127,7 +127,7 @@ paths:
     patch:
       tags:
       - Node
-      summary: Update details of a particular compute node.
+      summary: Update details of a particular compute node
       description: Update details of a particular compute node.
       operationId: updateNode
       x-auth-resource: Writer,Manager,ActiveAccount
@@ -147,7 +147,7 @@ paths:
     get:
       tags:
       - Node
-      summary: Get an attested compute node's certificate.
+      summary: Get an attested compute node's certificate
       description: Get certificate for the compute node, only if the compute node is attested.
       operationId: getNodeCertificate
       x-auth-resource: Reader,Writer,Manager,JoinTokenAuth,AgentAuth
@@ -166,7 +166,7 @@ paths:
     get:
       tags:
       - Node
-      summary: Get a compute node's certificate.
+      summary: Get a compute node's certificate
       description: Get certificate for the compute node.
       x-auth-resource: Reader,Writer,Manager
       operationId: getNodeCertificateDetails
@@ -185,7 +185,7 @@ paths:
     post:
       tags:
       - Node
-      summary: Deactivate a particular compute node.
+      summary: Deactivate a particular compute node
       description: Deactivate a particular compute node.
       operationId: deactivateNode
       x-auth-resource: Manager,ActiveAccount
@@ -197,219 +197,45 @@ paths:
       security:
       - bearerToken: []
 components:
-  parameters:
-    NodeId:
-      name: node-id
-      in: path
-      required: true
-      description: UUID of a compute node.
-      schema:
-        type: string
-        format: uuid
-    NodeUpdateRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to update a compute node.
-      schema:
-        $ref: '#/components/schemas/NodeUpdateRequest'
-    NodeStatusType:
-      name: status
-      in: query
-      description: Status string for the compute node.
-      schema:
-        type: string
-        enum:
-        - RUNNING
-        - STOPPED
-        - FAILED
-        - UNKNOWN
-    NodeProvisionRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to provision a compute node.
-      schema:
-        $ref: '#/components/schemas/NodeProvisionRequest'
   schemas:
-    BuildStatusType:
+    JavaRuntime:
       type: string
-      description: Status string for the image.
+      description: Java runtime mode for conversion.
       enum:
-      - REJECTED
-      - WHITELISTED
-      - PENDING
-    BaremetalTdxAttributes:
+      - JAVA-ORACLE
+      - OPENJDK
+      - OPENJ9
+      - LIBERTY-JRE
+    GpuVendor:
+      type: string
+      description: An enum for GPU Vendor
+      enum:
+      - Nvidia
+    DockerInfo:
       type: object
+      description: Docker info of an image.
       required:
-      - mrtd
-      - rtmr0
-      - rtmr1
-      - rtmr2
-      - rtmr3
-      - coprocessors
+      - docker_image_name
+      - docker_version
       properties:
-        mrtd:
+        docker_image_name:
           type: string
-          description: TD firmware binary (OVMF.fd) measurement as a hex string.
-        rtmr0:
+          description: Image docker image name.
+        docker_version:
           type: string
-          description: Firmware and platform runtime measurements as hex string
-        rtmr1:
+          description: Image docker version.
+        docker_image_sha:
           type: string
-          description: Runtime measurement for kernel for direct boot and bootchain for indirect boot as hex string
-        rtmr2:
-          type: string
-          description: Runtime measurement of kernel cmdline and initrd as hex string
-        rtmr3:
-          type: string
-          description: Runtime extendable measurement register 3 as hex string
-        coprocessors:
-          type: array
+          description: Build docker image sha.
+        docker_image_size:
+          type: integer
+          format: int64
+          description: Docker image size in MiB (units of 2**20 bytes).
+        exposed_ports:
+          description: List of ports exposed by the Docker image.
           items:
-            $ref: '#/components/schemas/Coprocessor'
-    BuildStatus:
-      type: object
-      required:
-      - status
-      - status_updated_at
-      properties:
-        status:
-          $ref: '#/components/schemas/BuildStatusType'
-        status_updated_at:
-          type: integer
-          format: int64
-          description: Time since the status change.
-    NodeStatus:
-      type: object
-      required:
-      - status
-      - created_at
-      - status_updated_at
-      properties:
-        status:
-          $ref: '#/components/schemas/NodeStatusType'
-        created_at:
-          type: integer
-          format: int64
-          description: Compute node creation time.
-        status_updated_at:
-          type: integer
-          format: int64
-          description: Time since the status changed.
-        last_seen_at:
-          type: integer
-          format: int64
-          description: Time the node was last seen.
-        last_seen_version:
-          type: string
-          description: Version of the node when it was last seen.
-    AmdSevSnpVmpl:
-      type: string
-      description: Virtual Machine Privilege Level
-      enum:
-      - vmpl0
-      - vmpl1
-      - vmpl2
-      - vmpl3
-    CertificateDetails:
-      type: object
-      required:
-      - subject_name
-      - issuer_name
-      - valid_from
-      - valid_until
-      - cpusvn
-      - ias_quote_status
-      properties:
-        enclave_info:
-          $ref: '#/components/schemas/EnclaveInfo'
-        subject_name:
-          type: string
-          description: Name of the subject.
-        issuer_name:
-          type: string
-          description: Name of the issuer.
-        valid_until:
-          type: integer
-          format: int64
-          description: Certificate expiry date.
-        valid_from:
-          type: integer
-          format: int64
-          description: Certificate valid from.
-        cpusvn:
-          type: string
-          description: CPUSVN, as a hex string.
-        ias_quote_status:
-          type: string
-          description: IAS quote status.
-    NodeProvisionRequest:
-      type: object
-      required:
-      - name
-      - ipaddress
-      - sgx_version
-      properties:
-        name:
-          type: string
-          description: Name of the compute node.
-        description:
-          type: string
-          description: Description of the compute node.
-        ipaddress:
-          type: string
-          description: IP Address of the compute node.
-        sys_info:
-          $ref: '#/components/schemas/NodeSysInfo'
-        sgx_version:
-          type: string
-          description: Version of the Intel SGX Platform Software running on the compute node.
-        attestation_request:
-          $ref: '#/components/schemas/AttestationRequest'
-        error_report:
-          $ref: '#/components/schemas/NodeErrorReport'
-    TaskType:
-      type: string
-      description: The types of tasks supported.
-      enum:
-      - NODE_ATTESTATION
-      - CERTIFICATE_ISSUANCE
-      - BUILD_WHITELIST
-      - DOMAIN_WHITELIST
-    DockerNetworkProtocol:
-      type: string
-      description: Protocol Associated with a Port exposed by a docker container.
-      enum:
-      - Tcp
-      - Udp
-    PatchOperation:
-      type: string
-      description: The operation to be performed
-      enum:
-      - add
-      - remove
-      - replace
-    SgxInfo:
-      type: object
-      description: SGX Related details of a compute node.
-      properties:
-        version:
-          type: string
-          description: Version of the Intel SGX Platform Software running on the compute node.
-    PatchRequest:
-      type: array
-      items:
-        $ref: '#/components/schemas/PatchDocument'
-    Coprocessor:
-      type: object
-      required:
-      - attestation
-      properties:
-        attestation:
-          $ref: '#/components/schemas/Attestation'
-        gpu_vendor:
-          $ref: '#/components/schemas/GpuVendor'
+            $ref: '#/components/schemas/DockerNetworkPort'
+          type: array
     DockerNetworkPort:
       type: object
       description: A port exposed by a docker container.
@@ -422,167 +248,28 @@ components:
           description: A valid, specific port number from 1..65535 (inclusive).
         protocol:
           $ref: '#/components/schemas/DockerNetworkProtocol'
-    SearchMetadata:
+    SgxInfo:
       type: object
-      required:
-      - total_count
-      - filtered_count
-      - page
-      - pages
-      - limit
+      description: SGX Related details of a compute node.
       properties:
-        page:
-          type: integer
-          description: Current page number
-        pages:
-          type: integer
-          description: Total pages as per the item counts and page limit.
-        limit:
-          type: integer
-          description: Number of items to limit in a page.
-        total_count:
-          type: integer
-          description: Total number of unfiltered items.
-        filtered_count:
-          type: integer
-          description: Total number of items as per the current filter.
-    NodeProvisionErrorType:
-      type: string
-      description: Node agent attestation error type.
-      enum:
-      - AESMD_FAILURE
-      - QUOTE_GENERATION_ERROR
-      - QUOTE_VERIFICATION_ERROR
-      - GROUP_OUT_OF_DATE
-      - SIGRL_VERSION_MISMATCH
-      - CONFIGURATION_NEEDED
-      - QUOTE_REVOKED
-      - SIGNATURE_INVALID
-      - DCAP_ERROR
-      - CPUSVN_OUT_OF_DATE
-      - PSW_OUT_OF_DATE
-      - BAD_PSW
-      - BAD DATA
-    AppStatusType:
-      type: string
-      description: Status string for the app on a compute node.
-      enum:
-      - RUNNING
-      - STOPPED
-      - UNKNOWN
-    NodeUpdateRequest:
-      type: object
-      required:
-      - patch
-      properties:
-        patch:
-          $ref: '#/components/schemas/PatchRequest'
-    TaskStatus:
-      required:
-      - created_at
-      - status_updated_at
-      - status
-      type: object
-      description: Status info for a task.
-      properties:
-        created_at:
-          type: integer
-          format: int64
-          description: Task creation time
-        status_updated_at:
-          type: integer
-          format: int64
-          description: Time since the status change.
-        status:
-          $ref: '#/components/schemas/TaskStatusType'
-    NodeErrorReport:
-      type: object
-      required:
-      - name
-      - message
-      properties:
-        message:
+        version:
           type: string
-          description: Error message containing the reason why node agent failed.
-        name:
-          $ref: '#/components/schemas/NodeProvisionErrorType'
-    GpuVendor:
-      type: string
-      description: An enum for GPU Vendor
-      enum:
-      - Nvidia
-    BuildDeploymentStatusType:
-      type: string
-      description: Status string for the image deployment.
-      enum:
-      - DEPLOYED
-      - UNDEPLOYED
-    JavaRuntime:
-      type: string
-      description: Java runtime mode for conversion.
-      enum:
-      - JAVA-ORACLE
-      - OPENJDK
-      - OPENJ9
-      - LIBERTY-JRE
-    GetAllNodesResponse:
+          description: Version of the Intel SGX Platform Software running on the compute node.
+    AttestationRequest:
       type: object
       required:
-      - items
+      - csr
       properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Node'
-    EnclaveInfo:
-      type: object
-      description: Info on a application enclave.
-      required:
-      - mrenclave
-      - mrsigner
-      - isvsvn
-      - isvprodid
-      properties:
-        mrenclave:
+        ias_quote:
           type: string
-          description: mrenclave of an image, as a hex string.
-        mrsigner:
+          format: binary
+          description: IAS (EPID/DCAP) Quote report bytes.
+        csr:
           type: string
-          description: mrsigner of an image, as a hex string.
-        isvprodid:
-          type: integer
-          format: int32
-          description: ISV Product Id.
-        isvsvn:
-          type: integer
-          format: int32
-          description: ISV Security Version Number.
-    ImageAttributes:
-      type: object
-      minProperties: 0
-      maxProperties: 1
-      x-derive-default: true
-      properties:
-        sgx:
-          description: SGX1/SGX2 Enclave Attributes
-          $ref: '#/components/schemas/SgxAttributes'
-        nitro_enclave:
-          description: AWS Nitro Enclave Attributes
-          $ref: '#/components/schemas/NitroEnclaveAttributes'
-        aci:
-          description: Azure ACI Policy Attributes
-          $ref: '#/components/schemas/AciAttributes'
-        azure_cvm:
-          description: Azure Confidential VM Attributes
-          $ref: '#/components/schemas/AzureCvmAttributes'
-        baremetal_tdx:
-          description: Baremetal TDX Enclave Attributes
-          $ref: '#/components/schemas/BaremetalTdxAttributes'
-        baremetal_amd_sev_snp:
-          description: Baremetal AMD SEV-SNP Enclave Attributes
-          $ref: '#/components/schemas/BaremetalAmdSevSnpAttributes'
+          description: Certificate Signing Request bytes.
+        attestation_type:
+          type: string
+          description: Node Attestation type (DCAP, NITRO_ENCLAVE, AMD_SEV_SNP, BAREMETAL_AMD_SEV_SNP or BAREMETAL_TDX).
     Node:
       type: object
       required:
@@ -644,79 +331,81 @@ components:
           description: Node Attestation type (DCAP, NITRO_ENCLAVE or AMD_SEV_SNP).
         error_report:
           $ref: '#/components/schemas/NodeErrorReport'
-    NodeSysInfo:
+    AmdSevSnpVmpl:
+      type: string
+      description: Virtual Machine Privilege Level
+      enum:
+      - vmpl0
+      - vmpl1
+      - vmpl2
+      - vmpl3
+    AppStatus:
       type: object
-      required:
-      - epc_size
-      - num_cpu_cores
-      description: System Related details of a compute node.
+      description: Run status info of an app for a compute node.
       properties:
-        epc_size:
-          type:
-          - integer
-          - 'null'
-          format: int64
-          description: Size of EPC of the compute node in bytes.
-        num_cpu_cores:
-          x-aliases:
-          - num_cpu
-          type: integer
-          format: int32
-          description: Number of CPU cores of the compute node.
-        total_memory:
-          type:
-          - integer
-          - 'null'
-          format: int64
-          description: Total available memory of the compute node in bytes. Populated for TDX nodes; null for SGX and other node types.
-    AppNodeInfo:
-      type: object
-      required:
-      - certificate
-      - created_at
-      - node_id
-      description: Detailed info of an app running on a compute node.
-      properties:
-        certificate:
-          $ref: '#/components/schemas/Certificate'
-        created_at:
-          type: integer
-          format: int64
-          description: App compute node creation time.
-        node_id:
-          type: string
-          format: uuid
-          description: Compute Node Id.
-        node_name:
-          type: string
-          description: Compute Node Name.
         status:
-          $ref: '#/components/schemas/AppStatus'
-        build_info:
-          $ref: '#/components/schemas/Build'
-        message_count:
+          $ref: '#/components/schemas/AppStatusType'
+        status_updated_at:
           type: integer
-          format: int32
-          description: App heartbeat message count.
-        key_id:
-          type: string
-          description: Key Id for app heartbeat.
-        is_debug:
-          type: boolean
-          description: App running in debug mode or not.
-    CertificateStatusType:
+          format: int64
+          description: Time since the status change.
+        attested_at:
+          type: integer
+          format: int64
+          description: The app attestation date.
+    NodeStatusType:
       type: string
-      description: Certificate status.
+      description: Status string for the compute node.
       enum:
-      - PENDING
+      - RUNNING
+      - STOPPED
+      - FAILED
+      - DEACTIVATED
+      - INPROGRESS
+      - PROVISIONED
+    BuildDeploymentStatus:
+      type: object
+      required:
+      - status
+      - status_updated_at
+      properties:
+        status:
+          $ref: '#/components/schemas/BuildDeploymentStatusType'
+        status_updated_at:
+          type: integer
+          format: int64
+          description: The time when the deployment status changed.
+    GetAllNodesResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Node'
+    DockerNetworkProtocol:
+      type: string
+      description: Protocol Associated with a Port exposed by a docker container.
+      enum:
+      - Tcp
+      - Udp
+    BuildStatusType:
+      type: string
+      description: Status string for the image.
+      enum:
       - REJECTED
-      - ISSUED
-      - REVOKED
-      - EXPIRED
-    HashAlgorithm:
+      - WHITELISTED
+      - PENDING
+    AppStatusType:
       type: string
+      description: Status string for the app on a compute node.
       enum:
-      - SHA256
+      - RUNNING
+      - STOPPED
+      - UNKNOWN
     NitroEnclaveAttributes:
       type: object
       required:
@@ -736,6 +425,87 @@ components:
         pcr2:
           type: string
           description: A contiguous measure of the contents of the image file, without the section data as a hex string.
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    BaremetalTdxAttributes:
+      type: object
+      required:
+      - mrtd
+      - rtmr0
+      - rtmr1
+      - rtmr2
+      - rtmr3
+      - coprocessors
+      properties:
+        mrtd:
+          type: string
+          description: TD firmware binary (OVMF.fd) measurement as a hex string.
+        rtmr0:
+          type: string
+          description: Firmware and platform runtime measurements as hex string
+        rtmr1:
+          type: string
+          description: Runtime measurement for kernel for direct boot and bootchain for indirect boot as hex string
+        rtmr2:
+          type: string
+          description: Runtime measurement of kernel cmdline and initrd as hex string
+        rtmr3:
+          type: string
+          description: Runtime extendable measurement register 3 as hex string
+        coprocessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coprocessor'
+    Certificate:
+      description: A certificate request or issued certificate.
+      type: object
+      properties:
+        certificate_id:
+          type: string
+          format: uuid
+          description: Certificate ID.
+        status:
+          $ref: '#/components/schemas/CertificateStatusType'
+        csr:
+          type: string
+          description: The certificate signing request.
+        certificate:
+          type: string
+          description: The certificate itself, if issued.
+        node_id:
+          type: string
+          format: uuid
+          description: The node relevant to this certificate, if known.
+        app_id:
+          type: string
+          format: uuid
+          description: The app relevant to this certificate, if known.
+        build_id:
+          type: string
+          format: uuid
+          description: The build relevant to this certificate, if known.
     SgxAttributes:
       type: object
       required:
@@ -749,15 +519,14 @@ components:
           uniqueItems: true
           items:
             type: string
-    AciAttributes:
-      type: object
-      description: ACI generated policy that represents the containers to run and other security restrictions.
-      required:
-      - policy
-      properties:
-        policy:
-          type: string
-          description: Base64-encoded output of azure confcom acipolicygen tool.
+    TaskStatusType:
+      type: string
+      description: Status string for a task.
+      enum:
+      - INPROGRESS
+      - FAILED
+      - SUCCESS
+      - DENIED
     Build:
       type: object
       description: Detailed info of an application image.
@@ -836,18 +605,262 @@ components:
           type: string
           format: uuid
           description: Group Id
-    BuildDeploymentStatus:
+    TaskType:
+      type: string
+      description: The types of tasks supported.
+      enum:
+      - NODE_ATTESTATION
+      - CERTIFICATE_ISSUANCE
+      - BUILD_WHITELIST
+      - DOMAIN_WHITELIST
+    NodeErrorReport:
       type: object
       required:
-      - status
-      - status_updated_at
+      - name
+      - message
       properties:
-        status:
-          $ref: '#/components/schemas/BuildDeploymentStatusType'
+        message:
+          type: string
+          description: Error message containing the reason why node agent failed.
+        name:
+          $ref: '#/components/schemas/NodeProvisionErrorType'
+    NitroEnclaveHashAlgorithm:
+      type: string
+      description: Nitro enclave hash algorithm
+      enum:
+      - Sha384
+    TaskStatus:
+      required:
+      - created_at
+      - status_updated_at
+      - status
+      type: object
+      description: Status info for a task.
+      properties:
+        created_at:
+          type: integer
+          format: int64
+          description: Task creation time
         status_updated_at:
           type: integer
           format: int64
-          description: The time when the deployment status changed.
+          description: Time since the status change.
+        status:
+          $ref: '#/components/schemas/TaskStatusType'
+    NodeSysInfo:
+      type: object
+      required:
+      - epc_size
+      - num_cpu_cores
+      description: System Related details of a compute node.
+      properties:
+        epc_size:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          description: Size of EPC of the compute node in bytes.
+        num_cpu_cores:
+          x-aliases:
+          - num_cpu
+          type: integer
+          format: int32
+          description: Number of CPU cores of the compute node.
+        total_memory:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          description: Total available memory of the compute node in bytes. Populated for TDX nodes; null for SGX and other node types.
+    PatchRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchDocument'
+    TaskResult:
+      type: object
+      properties:
+        task_id:
+          type: string
+          format: uuid
+          description: Task Id
+        certificate_id:
+          type: string
+          format: uuid
+          description: Certificate Id in case of certificate issuance task.
+        node_id:
+          type: string
+          format: uuid
+          description: Compute Node Id.
+        task_type:
+          $ref: '#/components/schemas/TaskType'
+        task_status:
+          $ref: '#/components/schemas/TaskStatus'
+        build_id:
+          type: string
+          format: uuid
+          description: Build Id.
+    AciAttributes:
+      type: object
+      description: ACI generated policy that represents the containers to run and other security restrictions.
+      required:
+      - policy
+      properties:
+        policy:
+          type: string
+          description: Base64-encoded output of azure confcom acipolicygen tool.
+    Attestation:
+      type: string
+      description: Specifies whether attestation is required or ignored.
+      enum:
+      - Ignored
+      - Required
+    NodeUpdateRequest:
+      type: object
+      required:
+      - patch
+      properties:
+        patch:
+          $ref: '#/components/schemas/PatchRequest'
+    CertificateStatusType:
+      type: string
+      description: Certificate status.
+      enum:
+      - PENDING
+      - REJECTED
+      - ISSUED
+      - REVOKED
+      - EXPIRED
+    NodeStatus:
+      type: object
+      required:
+      - status
+      - created_at
+      - status_updated_at
+      properties:
+        status:
+          $ref: '#/components/schemas/NodeStatusType'
+        created_at:
+          type: integer
+          format: int64
+          description: Compute node creation time.
+        status_updated_at:
+          type: integer
+          format: int64
+          description: Time since the status changed.
+        last_seen_at:
+          type: integer
+          format: int64
+          description: Time the node was last seen.
+        last_seen_version:
+          type: string
+          description: Version of the node when it was last seen.
+    BaremetalAmdSevSnpAttributes:
+      type: object
+      required:
+      - measurement
+      - vmpl
+      - coprocessors
+      properties:
+        measurement:
+          type: string
+          description: Guest Launch Measurement as hex string
+        vmpl:
+          type: string
+          description: Virtual Machine Privilege Level
+          $ref: '#/components/schemas/AmdSevSnpVmpl'
+        coprocessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coprocessor'
+    LaunchHint:
+      type: object
+      description: This object encodes a suggested manner for launching a confidential application. It may need to be configured further depending on your environment.
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        azure_resource_template:
+          description: The Microsoft ARM Template for launching this build. May require some properties (such as the join token).
+          type: string
+    NodeProvisionErrorType:
+      type: string
+      description: Node agent attestation error type.
+      enum:
+      - AESMD_FAILURE
+      - QUOTE_GENERATION_ERROR
+      - QUOTE_VERIFICATION_ERROR
+      - GROUP_OUT_OF_DATE
+      - SIGRL_VERSION_MISMATCH
+      - CONFIGURATION_NEEDED
+      - QUOTE_REVOKED
+      - SIGNATURE_INVALID
+      - DCAP_ERROR
+      - CPUSVN_OUT_OF_DATE
+      - PSW_OUT_OF_DATE
+      - BAD_PSW
+      - BAD DATA
+    NodeProvisionRequest:
+      type: object
+      required:
+      - name
+      - ipaddress
+      - sgx_version
+      properties:
+        name:
+          type: string
+          description: Name of the compute node.
+        description:
+          type: string
+          description: Description of the compute node.
+        ipaddress:
+          type: string
+          description: IP Address of the compute node.
+        sys_info:
+          $ref: '#/components/schemas/NodeSysInfo'
+        sgx_version:
+          type: string
+          description: Version of the Intel SGX Platform Software running on the compute node.
+        attestation_request:
+          $ref: '#/components/schemas/AttestationRequest'
+        error_report:
+          $ref: '#/components/schemas/NodeErrorReport'
+    CertificateDetails:
+      type: object
+      required:
+      - subject_name
+      - issuer_name
+      - valid_from
+      - valid_until
+      - cpusvn
+      - ias_quote_status
+      properties:
+        enclave_info:
+          $ref: '#/components/schemas/EnclaveInfo'
+        subject_name:
+          type: string
+          description: Name of the subject.
+        issuer_name:
+          type: string
+          description: Name of the issuer.
+        valid_until:
+          type: integer
+          format: int64
+          description: Certificate expiry date.
+        valid_from:
+          type: integer
+          format: int64
+          description: Certificate valid from.
+        cpusvn:
+          type: string
+          description: CPUSVN, as a hex string.
+        ias_quote_status:
+          type: string
+          description: IAS quote status.
+    BuildDeploymentStatusType:
+      type: string
+      description: Status string for the image deployment.
+      enum:
+      - DEPLOYED
+      - UNDEPLOYED
     CertificateConfig:
       type: object
       properties:
@@ -879,29 +892,174 @@ components:
         certPath:
           type: string
           description: Path to expose the certificate in the application filesystem
-    TaskResult:
+    PatchDocument:
       type: object
+      description: A JSONPatch document as defined by RFC 6902. The patch operation is subset of what is supported by RFC 6902.
+      required:
+      - op
+      - path
       properties:
-        task_id:
+        op:
+          $ref: '#/components/schemas/PatchOperation'
+        path:
           type: string
-          format: uuid
-          description: Task Id
-        certificate_id:
+          description: It is JSON pointer indicating a field to be updated
+        value:
+          type: object
+          description: It is the value to be used for the field as indicated by op and path
+    EnclaveInfo:
+      type: object
+      description: Info on a application enclave.
+      required:
+      - mrenclave
+      - mrsigner
+      - isvsvn
+      - isvprodid
+      properties:
+        mrenclave:
           type: string
-          format: uuid
-          description: Certificate Id in case of certificate issuance task.
+          description: mrenclave of an image, as a hex string.
+        mrsigner:
+          type: string
+          description: mrsigner of an image, as a hex string.
+        isvprodid:
+          type: integer
+          format: int32
+          description: ISV Product Id.
+        isvsvn:
+          type: integer
+          format: int32
+          description: ISV Security Version Number.
+    AdvancedSettings:
+      type: object
+      description: Advanced settings for apps and images.
+      properties:
+        entrypoint:
+          type: array
+          items:
+            type: string
+          description: Entrypoint for the container.
+        encryptedDirs:
+          type: array
+          items:
+            type: string
+          description: "List of read-write files and/or directories which are encrypted using the enclave sealing key\nDefault encrypted directories - enclave-os protects the content in these files by encrypting them using the enclave sealing key. Anyone is allowed to read from or write to these files but only the enclave application can see it's contents in plain text.\n  - /tmp\n  - /run\n  - /ftx-efs\n  - /opt/fortanix/enclave-os/app-config/rw\nTips while debugging -> The default encrypted directories visible to the guest application as /tmp, /run and /ftx-efs are available in the container filesystem at /opt/fortanix/enclave-os/default-efs-dirs/.\n"
+        certificate:
+          $ref: '#/components/schemas/CertificateConfig'
+        java_runtime:
+          $ref: '#/components/schemas/JavaRuntime'
+          description: Java runtime mode.
+        rw_dirs:
+          type: array
+          items:
+            type: string
+          description: "List of read-write files and/or directories\nDefault read-write directories - enclave-os doesn't provide any security measures for these files and anyone is allowed to read from or write to these files.\n  - /etc/hosts\n  - /etc/resolv.conf\n  - /etc/hostname\n"
+        allowCmdlineArgs:
+          type: boolean
+          description: Allow command line arguments converter flag for an image.
+        manifestEnv:
+          type: array
+          items:
+            type: string
+          description: Environment variables that will be passed to the manifest file when the container is converted.
+        mutableEnv:
+          type: array
+          items:
+            type: string
+          description: 'Environment variables with supplied default values, but that may be overridden at runtime.
+
+            '
+    ImageAttributes:
+      type: object
+      minProperties: 0
+      maxProperties: 1
+      x-derive-default: true
+      properties:
+        sgx:
+          description: SGX1/SGX2 Enclave Attributes
+          $ref: '#/components/schemas/SgxAttributes'
+        nitro_enclave:
+          description: AWS Nitro Enclave Attributes
+          $ref: '#/components/schemas/NitroEnclaveAttributes'
+        aci:
+          description: Azure ACI Policy Attributes
+          $ref: '#/components/schemas/AciAttributes'
+        azure_cvm:
+          description: Azure Confidential VM Attributes
+          $ref: '#/components/schemas/AzureCvmAttributes'
+        baremetal_tdx:
+          description: Baremetal TDX Enclave Attributes
+          $ref: '#/components/schemas/BaremetalTdxAttributes'
+        baremetal_amd_sev_snp:
+          description: Baremetal AMD SEV-SNP Enclave Attributes
+          $ref: '#/components/schemas/BaremetalAmdSevSnpAttributes'
+    PatchOperation:
+      type: string
+      description: The operation to be performed
+      enum:
+      - add
+      - remove
+      - replace
+    Coprocessor:
+      type: object
+      required:
+      - attestation
+      properties:
+        attestation:
+          $ref: '#/components/schemas/Attestation'
+        gpu_vendor:
+          $ref: '#/components/schemas/GpuVendor'
+    AppNodeInfo:
+      type: object
+      required:
+      - certificate
+      - created_at
+      - node_id
+      description: Detailed info of an app running on a compute node.
+      properties:
+        certificate:
+          $ref: '#/components/schemas/Certificate'
+        created_at:
+          type: integer
+          format: int64
+          description: App compute node creation time.
         node_id:
           type: string
           format: uuid
           description: Compute Node Id.
-        task_type:
-          $ref: '#/components/schemas/TaskType'
-        task_status:
-          $ref: '#/components/schemas/TaskStatus'
-        build_id:
+        node_name:
           type: string
-          format: uuid
-          description: Build Id.
+          description: Compute Node Name.
+        status:
+          $ref: '#/components/schemas/AppStatus'
+        build_info:
+          $ref: '#/components/schemas/Build'
+        message_count:
+          type: integer
+          format: int32
+          description: App heartbeat message count.
+        key_id:
+          type: string
+          description: Key Id for app heartbeat.
+        is_debug:
+          type: boolean
+          description: App running in debug mode or not.
+    BuildStatus:
+      type: object
+      required:
+      - status
+      - status_updated_at
+      properties:
+        status:
+          $ref: '#/components/schemas/BuildStatusType'
+        status_updated_at:
+          type: integer
+          format: int64
+          description: Time since the status change.
+    HashAlgorithm:
+      type: string
+      enum:
+      - SHA256
     AzureCvmAttributes:
       type: object
       required:
@@ -966,198 +1124,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Coprocessor'
-    Certificate:
-      description: A certificate request or issued certificate.
-      type: object
-      properties:
-        certificate_id:
-          type: string
-          format: uuid
-          description: Certificate ID.
-        status:
-          $ref: '#/components/schemas/CertificateStatusType'
-        csr:
-          type: string
-          description: The certificate signing request.
-        certificate:
-          type: string
-          description: The certificate itself, if issued.
-        node_id:
-          type: string
-          format: uuid
-          description: The node relevant to this certificate, if known.
-        app_id:
-          type: string
-          format: uuid
-          description: The app relevant to this certificate, if known.
-        build_id:
-          type: string
-          format: uuid
-          description: The build relevant to this certificate, if known.
-    AppStatus:
-      type: object
-      description: Run status info of an app for a compute node.
-      properties:
-        status:
-          $ref: '#/components/schemas/AppStatusType'
-        status_updated_at:
-          type: integer
-          format: int64
-          description: Time since the status change.
-        attested_at:
-          type: integer
-          format: int64
-          description: The app attestation date.
-    AttestationRequest:
-      type: object
-      required:
-      - csr
-      properties:
-        ias_quote:
-          type: string
-          format: binary
-          description: IAS (EPID/DCAP) Quote report bytes.
-        csr:
-          type: string
-          description: Certificate Signing Request bytes.
-        attestation_type:
-          type: string
-          description: Node Attestation type (DCAP, NITRO_ENCLAVE, AMD_SEV_SNP, BAREMETAL_AMD_SEV_SNP or BAREMETAL_TDX).
-    AdvancedSettings:
-      type: object
-      description: Advanced settings for apps and images.
-      properties:
-        entrypoint:
-          type: array
-          items:
-            type: string
-          description: Entrypoint for the container.
-        encryptedDirs:
-          type: array
-          items:
-            type: string
-          description: "List of read-write files and/or directories which are encrypted using the enclave sealing key\nDefault encrypted directories - enclave-os protects the content in these files by encrypting them using the enclave sealing key. Anyone is allowed to read from or write to these files but only the enclave application can see it's contents in plain text.\n  - /tmp\n  - /run\n  - /ftx-efs\n  - /opt/fortanix/enclave-os/app-config/rw\nTips while debugging -> The default encrypted directories visible to the guest application as /tmp, /run and /ftx-efs are available in the container filesystem at /opt/fortanix/enclave-os/default-efs-dirs/.\n"
-        certificate:
-          $ref: '#/components/schemas/CertificateConfig'
-        java_runtime:
-          $ref: '#/components/schemas/JavaRuntime'
-          description: Java runtime mode.
-        rw_dirs:
-          type: array
-          items:
-            type: string
-          description: "List of read-write files and/or directories\nDefault read-write directories - enclave-os doesn't provide any security measures for these files and anyone is allowed to read from or write to these files.\n  - /etc/hosts\n  - /etc/resolv.conf\n  - /etc/hostname\n"
-        allowCmdlineArgs:
-          type: boolean
-          description: Allow command line arguments converter flag for an image.
-        manifestEnv:
-          type: array
-          items:
-            type: string
-          description: Environment variables that will be passed to the manifest file when the container is converted.
-        mutableEnv:
-          type: array
-          items:
-            type: string
-          description: 'Environment variables with supplied default values, but that may be overridden at runtime.
-
-            '
-    BaremetalAmdSevSnpAttributes:
-      type: object
-      required:
-      - measurement
-      - vmpl
-      - coprocessors
-      properties:
-        measurement:
-          type: string
-          description: Guest Launch Measurement as hex string
-        vmpl:
-          type: string
-          description: Virtual Machine Privilege Level
-          $ref: '#/components/schemas/AmdSevSnpVmpl'
-        coprocessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coprocessor'
-    TaskStatusType:
-      type: string
-      description: Status string for a task.
-      enum:
-      - INPROGRESS
-      - FAILED
-      - SUCCESS
-      - DENIED
+  parameters:
+    NodeId:
+      name: node-id
+      in: path
+      required: true
+      description: UUID of a compute node.
+      schema:
+        type: string
+        format: uuid
     NodeStatusType:
-      type: string
+      name: status
+      in: query
       description: Status string for the compute node.
-      enum:
-      - RUNNING
-      - STOPPED
-      - FAILED
-      - DEACTIVATED
-      - INPROGRESS
-      - PROVISIONED
-    DockerInfo:
-      type: object
-      description: Docker info of an image.
-      required:
-      - docker_image_name
-      - docker_version
-      properties:
-        docker_image_name:
-          type: string
-          description: Image docker image name.
-        docker_version:
-          type: string
-          description: Image docker version.
-        docker_image_sha:
-          type: string
-          description: Build docker image sha.
-        docker_image_size:
-          type: integer
-          format: int64
-          description: Docker image size in MiB (units of 2**20 bytes).
-        exposed_ports:
-          description: List of ports exposed by the Docker image.
-          items:
-            $ref: '#/components/schemas/DockerNetworkPort'
-          type: array
-    LaunchHint:
-      type: object
-      description: This object encodes a suggested manner for launching a confidential application. It may need to be configured further depending on your environment.
-      minProperties: 1
-      maxProperties: 1
-      properties:
-        azure_resource_template:
-          description: The Microsoft ARM Template for launching this build. May require some properties (such as the join token).
-          type: string
-    PatchDocument:
-      type: object
-      description: A JSONPatch document as defined by RFC 6902. The patch operation is subset of what is supported by RFC 6902.
-      required:
-      - op
-      - path
-      properties:
-        op:
-          $ref: '#/components/schemas/PatchOperation'
-        path:
-          type: string
-          description: It is JSON pointer indicating a field to be updated
-        value:
-          type: object
-          description: It is the value to be used for the field as indicated by op and path
-    Attestation:
-      type: string
-      description: Specifies whether attestation is required or ignored.
-      enum:
-      - Ignored
-      - Required
-    NitroEnclaveHashAlgorithm:
-      type: string
-      description: Nitro enclave hash algorithm
-      enum:
-      - Sha384
+      schema:
+        type: string
+        enum:
+        - RUNNING
+        - STOPPED
+        - FAILED
+        - UNKNOWN
+    NodeUpdateRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to update a compute node.
+      schema:
+        $ref: '#/components/schemas/NodeUpdateRequest'
+    NodeProvisionRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to provision a compute node.
+      schema:
+        $ref: '#/components/schemas/NodeProvisionRequest'
   securitySchemes:
     bearerToken:
       type: apiKey

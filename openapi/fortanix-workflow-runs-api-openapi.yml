@@ -14,12 +14,12 @@ info:
 servers:
 - url: https://ccm.fortanix.com
 tags:
-- name: WorkflowRuns
+- name: Workflow Runs
 paths:
   /v1/workflow_runs:
     get:
       tags:
-      - WorkflowRuns
+      - Workflow Runs
       summary: Get all registered running workflows
       description: Does not query the orchestrator backend but rather a database table of registered running workflows
       operationId: getAllWorkflowRuns
@@ -65,7 +65,7 @@ paths:
       - bearerToken: []
     post:
       tags:
-      - WorkflowRuns
+      - Workflow Runs
       summary: Start the given workflow
       description: ''
       operationId: startWorkflowRun
@@ -88,7 +88,7 @@ paths:
   /v1/workflow_runs/{run-id}:
     patch:
       tags:
-      - WorkflowRuns
+      - Workflow Runs
       summary: Update the properties of a workflow run
       description: ''
       operationId: updateWorkflowRun
@@ -108,7 +108,7 @@ paths:
   /v1/workflow_runs/{run-id}/status:
     get:
       tags:
-      - WorkflowRuns
+      - Workflow Runs
       summary: Get the status of the given running workflow
       description: ''
       operationId: getWorkflowRunStatus
@@ -127,7 +127,7 @@ paths:
   /v1/workflow_runs/{run-id}/logs:
     get:
       tags:
-      - WorkflowRuns
+      - Workflow Runs
       summary: Retrieve logs from an app in the given workflow
       description: ''
       operationId: getWorkflowRunLogs
@@ -147,8 +147,8 @@ paths:
   /v1/workflow_runs/{run-id}/stop:
     post:
       tags:
-      - WorkflowRuns
-      summary: Stop execution for the given workflow.
+      - Workflow Runs
+      summary: Stop execution for the given workflow
       description: ''
       operationId: stopWorkflowRun
       x-auth-resource: Writer,Manager,ActiveAccount
@@ -164,126 +164,17 @@ paths:
       security:
       - bearerToken: []
 components:
-  parameters:
-    WorkflowRunId:
-      name: run-id
-      in: path
-      required: true
-      description: An instance of a running workflow.
-      schema:
-        type: string
-        format: uuid
-    UpdateWorkflowRunRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to update a workflow run
-      schema:
-        $ref: '#/components/schemas/UpdateWorkflowRunRequest'
-    RuntimeConfigId:
-      description: Runtime config_id of final workflow app.
-      name: runtime_config_id
-      in: query
-      required: false
-      schema:
-        type: string
   schemas:
-    WorkflowRunStatusResponse:
+    WorkflowDeployment:
       type: object
-      required:
-      - run
+      description: Deployment info for a workflow. Exactly one of kubernetes_single_job or aci_single_job field must be set.
+      minProperties: 1
+      maxProperties: 1
       properties:
-        run:
-          $ref: '#/components/schemas/WorkflowRun'
-        generic:
-          $ref: '#/components/schemas/WorkflowRunRawResponse'
-    WorkflowObjectFinalAppPatch:
-      type: object
-      description: ''
-      properties:
-        deployment:
-          $ref: '#/components/schemas/WorkflowAppDeployment'
-    AciWorkflowRunData:
-      type: object
-      required:
-      - app_id
-      - build_id
-      - config_id
-      - cluster_id
-      - container_group_name
-      - deployment_name
-      properties:
-        app_id:
-          type: string
-          format: uuid
-        build_id:
-          type: string
-          format: uuid
-        config_id:
-          type: string
-        cluster_id:
-          type: string
-          format: uuid
-        container_group_name:
-          type: string
-        deployment_name:
-          type: string
-    KubernetesWorkflowRunData:
-      type: object
-      required:
-      - app_id
-      - build_id
-      - config_id
-      - cluster_id
-      properties:
-        app_id:
-          type: string
-          format: uuid
-        build_id:
-          type: string
-          format: uuid
-        config_id:
-          type: string
-        cluster_id:
-          type: string
-          format: uuid
-    KubernetesSingleJob:
-      type: object
-      description: ''
-      required:
-      - namespace
-      - cluster_id
-      properties:
-        namespace:
-          type: string
-        cluster_id:
-          type: string
-          format: uuid
-    DockerNetworkProtocol:
-      type: string
-      description: Protocol Associated with a Port exposed by a docker container.
-      enum:
-      - Tcp
-      - Udp
-    AciSingleJob:
-      type: object
-      description: ''
-      required:
-      - cluster_id
-      properties:
-        cluster_id:
-          type: string
-          format: uuid
-        deployment_location:
-          type: string
-    WorkflowRunData:
-      type: object
-      x-union-object: true
-      properties:
-        AciSingleJob:
-          $ref: '#/components/schemas/AciWorkflowRunData'
-        KubernetesSingleJob:
-          $ref: '#/components/schemas/KubernetesWorkflowRunData'
+        kubernetes_single_job:
+          $ref: '#/components/schemas/KubernetesSingleJob'
+        aci_single_job:
+          $ref: '#/components/schemas/AciSingleJob'
     DockerNetworkPort:
       type: object
       description: A port exposed by a docker container.
@@ -296,6 +187,77 @@ components:
           description: A valid, specific port number from 1..65535 (inclusive).
         protocol:
           $ref: '#/components/schemas/DockerNetworkProtocol'
+    WorkflowAppDeployment:
+      type: object
+      description: Deployment info for an app. Exactly one of kubernetes or aci field must be set.
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        kubernetes:
+          $ref: '#/components/schemas/WorkflowAppKubernetes'
+        aci:
+          $ref: '#/components/schemas/WorkflowAppAci'
+    WorkflowAppKubernetes:
+      type: object
+      description: ''
+      required:
+      - job_spec
+      properties:
+        job_spec:
+          type: object
+    WorkflowRunStatus:
+      type: string
+      enum:
+      - PENDING
+      - RUNNING
+      - FAILED
+      - SUCCEEDED
+      - TERMINATING
+      - TERMINATED
+      - UNKNOWN
+    AciSingleJob:
+      type: object
+      description: ''
+      required:
+      - cluster_id
+      properties:
+        cluster_id:
+          type: string
+          format: uuid
+        deployment_location:
+          type: string
+    DockerNetworkProtocol:
+      type: string
+      description: Protocol Associated with a Port exposed by a docker container.
+      enum:
+      - Tcp
+      - Udp
+    WorkflowAppAci:
+      type: object
+      description: ''
+      required:
+      - exposed_ports
+      - env_vars
+      properties:
+        exposed_ports:
+          description: List of ports exposed for the azure container instance.
+          type: array
+          items:
+            $ref: '#/components/schemas/DockerNetworkPort'
+        env_vars:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+    GetAllWorkflowRunsResponse:
+      type: object
+      required:
+      - workflow_runs
+      properties:
+        workflow_runs:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowRun'
     StartWorkflowRunRequest:
       type: object
       required:
@@ -316,33 +278,6 @@ components:
           x-sorted: true
           additionalProperties:
             $ref: '#/components/schemas/WorkflowObjectFinalAppPatch'
-    WorkflowAppAci:
-      type: object
-      description: ''
-      required:
-      - exposed_ports
-      - env_vars
-      properties:
-        exposed_ports:
-          description: List of ports exposed for the azure container instance.
-          type: array
-          items:
-            $ref: '#/components/schemas/DockerNetworkPort'
-        env_vars:
-          type: object
-          x-sorted: true
-          additionalProperties:
-            type: string
-    WorkflowAppDeployment:
-      type: object
-      description: Deployment info for an app. Exactly one of kubernetes or aci field must be set.
-      minProperties: 1
-      maxProperties: 1
-      properties:
-        kubernetes:
-          $ref: '#/components/schemas/WorkflowAppKubernetes'
-        aci:
-          $ref: '#/components/schemas/WorkflowAppAci'
     WorkflowRunLogsResponse:
       type: object
       required:
@@ -353,6 +288,58 @@ components:
           description: Plain text logs
         generic:
           $ref: '#/components/schemas/WorkflowRunRawResponse'
+    WorkflowRunRawResponse:
+      type: object
+      properties:
+        kubernetes: {}
+        aci: {}
+    KubernetesWorkflowRunData:
+      type: object
+      required:
+      - app_id
+      - build_id
+      - config_id
+      - cluster_id
+      properties:
+        app_id:
+          type: string
+          format: uuid
+        build_id:
+          type: string
+          format: uuid
+        config_id:
+          type: string
+        cluster_id:
+          type: string
+          format: uuid
+    WorkflowRunData:
+      type: object
+      x-union-object: true
+      properties:
+        AciSingleJob:
+          $ref: '#/components/schemas/AciWorkflowRunData'
+        KubernetesSingleJob:
+          $ref: '#/components/schemas/KubernetesWorkflowRunData'
+    WorkflowObjectFinalAppPatch:
+      type: object
+      description: ''
+      properties:
+        deployment:
+          $ref: '#/components/schemas/WorkflowAppDeployment'
+    WorkflowRunStatusResponse:
+      type: object
+      required:
+      - run
+      properties:
+        run:
+          $ref: '#/components/schemas/WorkflowRun'
+        generic:
+          $ref: '#/components/schemas/WorkflowRunRawResponse'
+    UpdateWorkflowRunRequest:
+      type: object
+      properties:
+        run_status:
+          $ref: '#/components/schemas/WorkflowRunStatus'
     WorkflowRun:
       type: object
       required:
@@ -388,53 +375,66 @@ components:
           $ref: '#/components/schemas/WorkflowDeployment'
         workflow_cluster_data:
           $ref: '#/components/schemas/WorkflowRunData'
-    GetAllWorkflowRunsResponse:
+    AciWorkflowRunData:
       type: object
       required:
-      - workflow_runs
+      - app_id
+      - build_id
+      - config_id
+      - cluster_id
+      - container_group_name
+      - deployment_name
       properties:
-        workflow_runs:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkflowRun'
-    WorkflowRunRawResponse:
-      type: object
-      properties:
-        kubernetes: {}
-        aci: {}
-    WorkflowRunStatus:
-      type: string
-      enum:
-      - PENDING
-      - RUNNING
-      - FAILED
-      - SUCCEEDED
-      - TERMINATING
-      - TERMINATED
-      - UNKNOWN
-    UpdateWorkflowRunRequest:
-      type: object
-      properties:
-        run_status:
-          $ref: '#/components/schemas/WorkflowRunStatus'
-    WorkflowDeployment:
-      type: object
-      description: Deployment info for a workflow. Exactly one of kubernetes_single_job or aci_single_job field must be set.
-      minProperties: 1
-      maxProperties: 1
-      properties:
-        kubernetes_single_job:
-          $ref: '#/components/schemas/KubernetesSingleJob'
-        aci_single_job:
-          $ref: '#/components/schemas/AciSingleJob'
-    WorkflowAppKubernetes:
+        app_id:
+          type: string
+          format: uuid
+        build_id:
+          type: string
+          format: uuid
+        config_id:
+          type: string
+        cluster_id:
+          type: string
+          format: uuid
+        container_group_name:
+          type: string
+        deployment_name:
+          type: string
+    KubernetesSingleJob:
       type: object
       description: ''
       required:
-      - job_spec
+      - namespace
+      - cluster_id
       properties:
-        job_spec:
-          type: object
+        namespace:
+          type: string
+        cluster_id:
+          type: string
+          format: uuid
+  parameters:
+    UpdateWorkflowRunRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to update a workflow run
+      schema:
+        $ref: '#/components/schemas/UpdateWorkflowRunRequest'
+    WorkflowRunId:
+      name: run-id
+      in: path
+      required: true
+      description: An instance of a running workflow.
+      schema:
+        type: string
+        format: uuid
+    RuntimeConfigId:
+      description: Runtime config_id of final workflow app.
+      name: runtime_config_id
+      in: query
+      required: false
+      schema:
+        type: string
   securitySchemes:
     bearerToken:
       type: apiKey

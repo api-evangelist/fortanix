@@ -20,7 +20,7 @@ paths:
     get:
       tags:
       - System
-      summary: Get Manager Version.
+      summary: Get Manager Version
       description: Get Manager Version.
       operationId: getManagerVersion
       x-auth-resource: NoAuth

@@ -3,9 +3,7 @@ info:
   description: '**API of the Fortanix Unified Data and AI Security Platform**
 
 
-    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
-
-    '
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.'
   title: Armor Discovery Pqc Reports API
   version: 0.1.0
 servers:
@@ -29,7 +27,7 @@ paths:
           description: Success result
       security:
       - Oauth2ClientCredentials: []
-      summary: Get List of Connections for PQC Report.
+      summary: Get List of Connections for PQC Report
       tags:
       - DiscoveryPqcReports
   /api/v1/discovery/pqc/report:
@@ -45,7 +43,7 @@ paths:
           description: Success result
       security:
       - Oauth2ClientCredentials: []
-      summary: Get Cumulative PQC Report.
+      summary: Get Cumulative PQC Report
       tags:
       - DiscoveryPqcReports
   /api/v1/discovery/pqc/services:
@@ -63,7 +61,7 @@ paths:
           description: Success result
       security:
       - Oauth2ClientCredentials: []
-      summary: Get List of Services for PQC Report.
+      summary: Get List of Services for PQC Report
       tags:
       - DiscoveryPqcReports
   /api/v1/discovery/scans/{id}/pqc/report:
@@ -86,11 +84,43 @@ paths:
           description: Success result
       security:
       - Oauth2ClientCredentials: []
-      summary: Get PQC Report for a single connection.
+      summary: Get PQC Report for a single connection
       tags:
       - DiscoveryPqcReports
 components:
   schemas:
+    DiscoveryPqcReportServicesResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryPqcReportService'
+            type: array
+        required:
+        - items
+        type: object
+    DiscoveryPqcReportCertificatesViolationMetricsForService:
+      allOf:
+      - properties:
+          certificate_metrics:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryPqcReportMetrics'
+            type: object
+          overall_status:
+            $ref: '#/components/schemas/DiscoveryPqcReportVulnerabilityStatus'
+          services_metrics:
+            $ref: '#/components/schemas/DiscoveryPqcReportMetrics'
+          vulnerable_regions:
+            items:
+              type: string
+            type: array
+            uniqueItems: true
+        required:
+        - overall_status
+        - services_metrics
+        - vulnerable_regions
+        - certificate_metrics
+        type: object
     DiscoveryPqcReportResourcesViolationMetrics:
       allOf:
       - properties:
@@ -104,27 +134,11 @@ components:
         - overall_status
         - service_metrics
         type: object
-    DiscoveryPqcReportConnections:
-      allOf:
-      - properties:
-          connection_id:
-            format: uuid
-            type: string
-          connection_name:
-            type: string
-          connection_type:
-            $ref: '#/components/schemas/DiscoveryPqcReportConnectionType'
-          service_type:
-            $ref: '#/components/schemas/DiscoveryPqcReportServiceType'
-          vulnerability_status:
-            $ref: '#/components/schemas/DiscoveryPqcReportVulnerabilityStatus'
-        required:
-        - connection_id
-        - connection_name
-        - connection_type
-        - service_type
-        - vulnerability_status
-        type: object
+    DiscoveryPqcReportVulnerabilityStatus:
+      enum:
+      - pqc_vulnerable
+      - pqc_safe
+      type: string
     DiscoveryPqcReport:
       allOf:
       - description: Pqc Central Report in Predjama.
@@ -156,61 +170,6 @@ components:
           sort_by:
             type: string
         type: object
-    DiscoveryPqcReportMetrics:
-      allOf:
-      - properties:
-          pqc_vulnerable_count:
-            type: integer
-          total_count:
-            type: integer
-        required:
-        - total_count
-        - pqc_vulnerable_count
-        type: object
-    DiscoveryPqcReportKeysViolationMetricsForService:
-      allOf:
-      - properties:
-          key_metrics:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryPqcReportMetrics'
-            type: object
-          overall_status:
-            $ref: '#/components/schemas/DiscoveryPqcReportVulnerabilityStatus'
-          services_summary:
-            $ref: '#/components/schemas/DiscoveryPqcReportMetrics'
-          vulnerable_regions:
-            items:
-              type: string
-            type: array
-            uniqueItems: true
-        required:
-        - overall_status
-        - services_summary
-        - vulnerable_regions
-        - key_metrics
-        type: object
-    DiscoveryPqcReportCertificatesViolationMetricsForService:
-      allOf:
-      - properties:
-          certificate_metrics:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryPqcReportMetrics'
-            type: object
-          overall_status:
-            $ref: '#/components/schemas/DiscoveryPqcReportVulnerabilityStatus'
-          services_metrics:
-            $ref: '#/components/schemas/DiscoveryPqcReportMetrics'
-          vulnerable_regions:
-            items:
-              type: string
-            type: array
-            uniqueItems: true
-        required:
-        - overall_status
-        - services_metrics
-        - vulnerable_regions
-        - certificate_metrics
-        type: object
     DiscoveryPqcReportViolationMetricsForConnection:
       allOf:
       - properties:
@@ -224,20 +183,39 @@ components:
         - keys
         - resources
         type: object
-    DiscoveryPqcReportVulnerabilityStatus:
-      enum:
-      - pqc_vulnerable
-      - pqc_safe
-      type: string
-    DiscoveryPqcReportServicesResponse:
+    DiscoveryPqcReportConnections:
       allOf:
       - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryPqcReportService'
-            type: array
+          connection_id:
+            format: uuid
+            type: string
+          connection_name:
+            type: string
+          connection_type:
+            $ref: '#/components/schemas/DiscoveryPqcReportConnectionType'
+          service_type:
+            $ref: '#/components/schemas/DiscoveryPqcReportServiceType'
+          vulnerability_status:
+            $ref: '#/components/schemas/DiscoveryPqcReportVulnerabilityStatus'
         required:
-        - items
+        - connection_id
+        - connection_name
+        - connection_type
+        - service_type
+        - vulnerability_status
+        type: object
+    DiscoveryPqcReportCertificatesViolationMetrics:
+      allOf:
+      - properties:
+          overall_status:
+            $ref: '#/components/schemas/DiscoveryPqcReportVulnerabilityStatus'
+          service_metrics:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryPqcReportCertificatesViolationMetricsForService'
+            type: object
+        required:
+        - overall_status
+        - service_metrics
         type: object
     DiscoveryPqcReportResourceViolationMetricsForService:
       allOf:
@@ -261,17 +239,22 @@ components:
         - vulnerable_regions
         - resource_metrics
         type: object
-    DiscoveryPqcReportConnectionParams:
+    DiscoveryPqcReportServiceType:
+      enum:
+      - aws
+      - azure
+      - databases
+      - dsm
+      type: string
+    DiscoveryPqcReportConnectionsResponse:
       allOf:
       - properties:
-          filter:
-            type: string
-          limit:
-            type: integer
-          offset:
-            type: integer
-          sort_by:
-            type: string
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryPqcReportConnections'
+            type: array
+        required:
+        - items
         type: object
     DiscoveryPqcReportService:
       allOf:
@@ -298,56 +281,6 @@ components:
         - service_type
         - vulnerability_status
         type: object
-    DiscoveryPqcReportConnectionType:
-      enum:
-      - cloud
-      - on_prem
-      - external
-      type: string
-    DiscoveryPqcReportServiceType:
-      enum:
-      - aws
-      - azure
-      - databases
-      - dsm
-      type: string
-    DiscoveryPqcReportCertificatesViolationMetrics:
-      allOf:
-      - properties:
-          overall_status:
-            $ref: '#/components/schemas/DiscoveryPqcReportVulnerabilityStatus'
-          service_metrics:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryPqcReportCertificatesViolationMetricsForService'
-            type: object
-        required:
-        - overall_status
-        - service_metrics
-        type: object
-    DiscoveryPqcReportConnectionsResponse:
-      allOf:
-      - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryPqcReportConnections'
-            type: array
-        required:
-        - items
-        type: object
-    DiscoveryPqcReportResourceMetrics:
-      allOf:
-      - properties:
-          pqc_vulnerable_count:
-            type: integer
-          total_count:
-            type: integer
-          unencrypted_count:
-            type: integer
-        required:
-        - total_count
-        - unencrypted_count
-        - pqc_vulnerable_count
-        type: object
     DiscoveryPqcCumulativeReport:
       allOf:
       - properties:
@@ -363,6 +296,57 @@ components:
         - connection_summary
         - connection_metrics
         type: object
+    DiscoveryPqcReportMetrics:
+      allOf:
+      - properties:
+          pqc_vulnerable_count:
+            type: integer
+          total_count:
+            type: integer
+        required:
+        - total_count
+        - pqc_vulnerable_count
+        type: object
+    DiscoveryPqcReportConnectionType:
+      enum:
+      - cloud
+      - on_prem
+      - external
+      type: string
+    DiscoveryPqcReportKeysViolationMetricsForService:
+      allOf:
+      - properties:
+          key_metrics:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryPqcReportMetrics'
+            type: object
+          overall_status:
+            $ref: '#/components/schemas/DiscoveryPqcReportVulnerabilityStatus'
+          services_summary:
+            $ref: '#/components/schemas/DiscoveryPqcReportMetrics'
+          vulnerable_regions:
+            items:
+              type: string
+            type: array
+            uniqueItems: true
+        required:
+        - overall_status
+        - services_summary
+        - vulnerable_regions
+        - key_metrics
+        type: object
+    DiscoveryPqcReportConnectionParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          offset:
+            type: integer
+          sort_by:
+            type: string
+        type: object
     DiscoveryPqcReportKeysViolationMetrics:
       allOf:
       - properties:
@@ -375,6 +359,20 @@ components:
         required:
         - overall_status
         - service_metrics
+        type: object
+    DiscoveryPqcReportResourceMetrics:
+      allOf:
+      - properties:
+          pqc_vulnerable_count:
+            type: integer
+          total_count:
+            type: integer
+          unencrypted_count:
+            type: integer
+        required:
+        - total_count
+        - unencrypted_count
+        - pqc_vulnerable_count
         type: object
   parameters:
     DiscoveryPqcReportConnectionParams:

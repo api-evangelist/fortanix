@@ -20,7 +20,7 @@ paths:
     get:
       tags:
       - Zone
-      summary: Get all zones.
+      summary: Get all zones
       description: Get details of all the zones.
       operationId: getZones
       x-auth-resource: Reader,Writer,Manager
@@ -37,7 +37,7 @@ paths:
     get:
       tags:
       - Zone
-      summary: Get zone details.
+      summary: Get zone details
       description: Get details for a zone.
       operationId: getZone
       x-auth-resource: Reader,Writer,Manager
@@ -54,10 +54,8 @@ paths:
     get:
       tags:
       - Zone
-      summary: Get the authentication token.
-      description: '"Retrieve the authentication token ("join token") used to enroll compute nodes in this zone."
-
-        '
+      summary: Get the authentication token
+      description: '"Retrieve the authentication token ("join token") used to enroll compute nodes in this zone."'
       operationId: getZoneJoinToken
       x-auth-resource: Manager
       parameters:
@@ -127,12 +125,6 @@ paths:
       - bearerToken: []
 components:
   schemas:
-    ZoneJoinToken:
-      type: object
-      properties:
-        token:
-          type: string
-          description: Bearer token used to enroll compute nodes.
     ZoneCertificateCreateResponse:
       type: object
       description: Detailed info of all zone certificates.
@@ -167,6 +159,12 @@ components:
             type: string
           type: array
           description: Old Zone certificates (PEM format).
+    ZoneJoinToken:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Bearer token used to enroll compute nodes.
     Zone:
       type: object
       description: Detailed info of a zone.

@@ -3,9 +3,7 @@ info:
   description: '**API of the Fortanix Unified Data and AI Security Platform**
 
 
-    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.
-
-    '
+    The API client *must* follow HTTP redirects, including 308 redirects. Many HTTP libraries (such as Python Requests, JavaScript fetch) do this by default. With cURL, you must pass `--location`.'
   title: Armor Discovery Policies API
   version: 0.1.0
 servers:
@@ -16,7 +14,6 @@ tags:
 paths:
   /api/v1/discovery/policies:
     get:
-      description: Get all policies
       operationId: GetAllPolicies
       parameters:
       - $ref: '#/components/parameters/DiscoveryGetAllPoliciesParams'
@@ -34,7 +31,6 @@ paths:
       - DiscoveryPolicies
   /api/v1/discovery/policies/{id}:
     get:
-      description: Get a specific Policy
       operationId: GetPolicy
       parameters:
       - in: path
@@ -57,185 +53,25 @@ paths:
       - DiscoveryPolicies
 components:
   schemas:
-    DiscoveryFpeCompoundPart:
-      description: 'Structure of a compound portion of a complex tokenization data type, itself composed of
-
-        smaller parts.'
+    DiscoveryPolicySource:
+      discriminator:
+        mapping:
+          dsm: DiscoveryPolicySourceVariantDsm
+          system_defined: DiscoveryPolicySourceVariantSystemDefined
+          user_defined: DiscoveryPolicySourceVariantUserDefined
+        propertyName: $type
       oneOf:
-      - $ref: '#/components/schemas/DiscoveryFpeCompoundPartOr'
-      - $ref: '#/components/schemas/DiscoveryFpeCompoundPartConcat'
-      - $ref: '#/components/schemas/DiscoveryFpeCompoundPartMultiple'
-    DiscoveryBlsOptionsPolicy:
-      allOf:
-      - properties: {}
-        type: object
-    DiscoveryMlDsaOptionsPolicy:
-      allOf:
-      - properties: {}
-        type: object
-    DiscoveryFpeFormatV2:
-      allOf:
-      - description: The second generation of Fortanix Tokenization scheme.
-        properties:
-          input_processing:
-            $ref: '#/components/schemas/DiscoveryFpeInputProcessing'
-          mode:
-            $ref: '#/components/schemas/DiscoveryFpeTokenizeMode'
-          variants:
-            description: 'A token is accepted if it is accepted by any of these variants. Note
+      - $ref: '#/components/schemas/DiscoveryPolicySourceVariantSystemDefined'
+      - $ref: '#/components/schemas/DiscoveryPolicySourceVariantDsm'
+      - $ref: '#/components/schemas/DiscoveryPolicySourceVariantUserDefined'
+    DiscoveryFpeOptions:
+      description: 'FPE-specific options (for specifying the format of the
 
-              tokenization results depend on the order of this list.'
-            items:
-              $ref: '#/components/schemas/DiscoveryFpeVariant'
-            type: array
-        required:
-        - variants
-        type: object
-    DiscoveryFpeCompoundPartConcat:
-      allOf:
-      - description: Represents a concatenation of multiple structures (in a particular order).
-        properties:
-          concat:
-            description: The actual subparts that make up this compound part, in order.
-            items:
-              $ref: '#/components/schemas/DiscoveryFpeDataPart'
-            type: array
-          constraints:
-            $ref: '#/components/schemas/DiscoveryFpeConstraints'
-          mask:
-            description: 'Whether the entire concat should be masked when doing masked decryption. If this is
-
-              set, any descendant subparts cannot contain any mask-related fields set.'
-            type:
-            - boolean
-            - 'null'
-          max_length:
-            description: The maximum allowed length for this part (in chars).
-            maximum: 4294967295
-            minimum: 0
-            type:
-            - integer
-            - 'null'
-          min_length:
-            description: The minimum allowed length for this part (in chars).
-            maximum: 4294967295
-            minimum: 0
-            type:
-            - integer
-            - 'null'
-          preserve:
-            description: 'Whether the entire concat should be preserved as-is (i.e., not tokenized). If this is
-
-              set, any descendant subparts cannot contain any preserve-related fields set.'
-            type:
-            - boolean
-            - 'null'
-        required:
-        - concat
-        type: object
-    DiscoveryRsaSignaturePaddingPolicy:
-      description: RSA signature padding policy.
+        data to be encrypted)'
       oneOf:
-      - properties:
-          PSS:
-            $ref: '#/components/schemas/DiscoveryRsaSignaturePaddingPolicyPss'
-        required:
-        - PSS
-        title: DiscoveryRsaSignaturePaddingPolicyVariantPss
-        type: object
-      - properties:
-          PKCS1_V15:
-            properties: {}
-            type: object
-        required:
-        - PKCS1_V15
-        title: DiscoveryRsaSignaturePaddingPolicyVariantPkcs1V15
-        type: object
-    DiscoveryDsaOptionsPolicy:
-      allOf:
-      - properties: {}
-        type: object
-    DiscoveryRsaEncryptionPaddingPolicyOaep:
-      allOf:
-      - description: 'The Optional Asymmetric Encryption Padding scheme, as defined
-
-          in RFC 8017 (PKCS #1 version 2.2)'
-        properties:
-          mgf:
-            $ref: '#/components/schemas/DiscoveryMgfPolicy'
-        type: object
-    DiscoveryFpeEncryptedPart:
-      allOf:
-      - description: 'Structure of a tokenized portion of a complex tokenization data type.
-
-
-          Implementation note: the backend parser is locally "greedy" and will attempt to match
-
-          as many characters as possible. If this later results in an invalid parse of the rest
-
-          of the input, the backend ***will not backtrack*** and will simply return with an error.'
-        properties:
-          char_set:
-            $ref: '#/components/schemas/DiscoveryFpeCharSet'
-          cipher_char_set:
-            $ref: '#/components/schemas/DiscoveryFpeCharSet'
-          constraints:
-            $ref: '#/components/schemas/DiscoveryFpeConstraints'
-          mask:
-            $ref: '#/components/schemas/DiscoveryFpePreserveMask'
-          max_length:
-            description: The maximum allowed length for this part (in chars).
-            maximum: 4294967295
-            minimum: 0
-            type: integer
-          min_length:
-            description: The minimum allowed length for this part (in chars).
-            maximum: 4294967295
-            minimum: 0
-            type: integer
-          preserve:
-            $ref: '#/components/schemas/DiscoveryFpePreserveMask'
-        required:
-        - min_length
-        - max_length
-        - char_set
-        type: object
-    DiscoveryDigestAlgorithm:
-      description: A hash algorithm.
-      enum:
-      - BLAKE2B256
-      - BLAKE2B384
-      - BLAKE2B512
-      - BLAKE2S256
-      - RIPEMD160
-      - SSL3
-      - SHA1
-      - SHA224
-      - SHA256
-      - SHA384
-      - SHA512
-      - STREEBOG256
-      - STREEBOG512
-      - SHA3_224
-      - SHA3_256
-      - SHA3_384
-      - SHA3_512
-      type: string
-    DiscoveryPolicyDetailsVariantCryptoPolicy:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - crypto_policy
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryCryptographicPolicy'
-    DiscoveryEcKcdsaOptionsPolicy:
-      allOf:
-      - properties: {}
-        type: object
+      - $ref: '#/components/schemas/DiscoveryFpeOptionsBasic'
+      - $ref: '#/components/schemas/DiscoveryFpeOptionsAdvanced'
+      - $ref: '#/components/schemas/DiscoveryFpeOptionsV2'
     DiscoveryPolicySourceVariantSystemDefined:
       allOf:
       - properties:
@@ -247,115 +83,6 @@ components:
         - $type
         type: object
       - properties: {}
-        type: object
-    DiscoveryDes3OptionsPolicy:
-      allOf:
-      - description: 'Cryptographic policy for triple DES objects. Setting `key_sizes: [168]`
-
-          forbids two-key triple DES.'
-        properties:
-          key_sizes:
-            items:
-              maximum: 4294967295
-              minimum: 0
-              type: integer
-            type:
-            - array
-            - 'null'
-          random_iv:
-            type:
-            - boolean
-            - 'null'
-        type: object
-    DiscoveryEllipticCurve:
-      description: Identifies a standardized elliptic curve.
-      enum:
-      - X25519
-      - Ed25519
-      - X448
-      - SecP192K1
-      - SecP224K1
-      - SecP256K1
-      - NistP192
-      - NistP224
-      - NistP256
-      - NistP384
-      - NistP521
-      - Gost256A
-      type: string
-    DiscoveryRsaEncryptionPolicy:
-      allOf:
-      - description: Constraints on RSA encryption parameters. In general, if a constraint is not specified, anything is allowed.
-        properties:
-          padding:
-            $ref: '#/components/schemas/DiscoveryRsaEncryptionPaddingPolicy'
-        type: object
-    DiscoveryFpeDayMonthYearDate:
-      allOf:
-      - description: 'A structure for specifying a particular date consisting of a day, month, and year, for use in
-
-          an FpeDate structure.'
-        properties:
-          day:
-            description: 'The day, which should be an integer from 1 to either 28, 29, 30, or 31, depending on the
-
-              month and year.'
-            maximum: 255
-            minimum: 0
-            type: integer
-          month:
-            description: The month, which should be an integer from 1 to 12.
-            maximum: 255
-            minimum: 0
-            type: integer
-          year:
-            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
-            maximum: 4294967295
-            minimum: 0
-            type: integer
-        required:
-        - year
-        - month
-        - day
-        type: object
-    DiscoveryGetAllPoliciesResponse:
-      allOf:
-      - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryPolicy'
-            type: array
-          metadata:
-            $ref: '#/components/schemas/DiscoveryGetAllPoliciesMetadata'
-        required:
-        - items
-        - metadata
-        type: object
-    DiscoverySecretOptionsPolicy:
-      allOf:
-      - properties: {}
-        type: object
-    DiscoveryFpeDayMonthDate:
-      allOf:
-      - description: 'A structure for specifying a particular date consisting of a day and a month, for use in an
-
-          FpeDate structure.'
-        properties:
-          day:
-            description: 'The day, which should be an integer from 1 to either 29, 30, or 31, depending on the month
-
-              and year. Here, February is treated as having 29 days.'
-            maximum: 255
-            minimum: 0
-            type: integer
-          month:
-            description: The month, which should be an integer from 1 to 12.
-            maximum: 255
-            minimum: 0
-            type: integer
-        required:
-        - month
-        - day
         type: object
     DiscoveryFpeCharSet:
       allOf:
@@ -393,80 +120,218 @@ components:
         In any case, ranges should not overlap with each other, and should not contain surrogate
 
         code points.'
-    DiscoveryMgfPolicy:
-      description: MGF policy.
+    DiscoveryFpeDate:
+      description: 'A structure for specifying a token part representing a date that occurs after a specified date
+
+        and/or occurs before a specified date. Depending on the subparts that make up the date, one of
+
+        the three options is used.'
       oneOf:
       - properties:
-          mgf1:
-            $ref: '#/components/schemas/DiscoveryMgfPolicyMgf1'
+          dmy_date:
+            $ref: '#/components/schemas/DiscoveryFpeDateDayMonthYear'
         required:
-        - mgf1
-        title: DiscoveryMgfPolicyVariantMgf1
+        - dmy_date
+        title: DiscoveryFpeDateVariantDayMonthYear
         type: object
-    DiscoveryFpeOptions:
-      description: 'FPE-specific options (for specifying the format of the
-
-        data to be encrypted)'
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryFpeOptionsBasic'
-      - $ref: '#/components/schemas/DiscoveryFpeOptionsAdvanced'
-      - $ref: '#/components/schemas/DiscoveryFpeOptionsV2'
-    DiscoveryPolicyDetails:
-      discriminator:
-        mapping:
-          crypto_policy: DiscoveryPolicyDetailsVariantCryptoPolicy
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryPolicyDetailsVariantCryptoPolicy'
-    DiscoveryFpeChecksum:
+      - properties:
+          month_day_date:
+            $ref: '#/components/schemas/DiscoveryFpeDateMonthDay'
+        required:
+        - month_day_date
+        title: DiscoveryFpeDateVariantMonthDay
+        type: object
+      - properties:
+          month_year_date:
+            $ref: '#/components/schemas/DiscoveryFpeDateMonthYear'
+        required:
+        - month_year_date
+        title: DiscoveryFpeDateVariantMonthYear
+        type: object
+    DiscoveryDigestAlgorithm:
+      description: A hash algorithm.
       enum:
-      - luhn
+      - BLAKE2B256
+      - BLAKE2B384
+      - BLAKE2B512
+      - BLAKE2S256
+      - RIPEMD160
+      - SSL3
+      - SHA1
+      - SHA224
+      - SHA256
+      - SHA384
+      - SHA512
+      - STREEBOG256
+      - STREEBOG512
+      - SHA3_224
+      - SHA3_256
+      - SHA3_384
+      - SHA3_512
       type: string
-    DiscoveryFpeDateDayMonthYear:
+    DiscoveryFpeGroup:
       allOf:
-      - description: 'Represents a date that consists of a Month subpart, a Day subpart, and a Year subpart. The
+      - description: 'A concatenation of codes, that can be repeated an amount of times. An
 
-          Year part is allowed to be preserved, and the Day and Month parts are allowed to be
+          amount of leading and trailing characters can be preserved, this is,
 
-          preserved together. (The Day part cannot be preserved if the Month part is not, and vice
-
-          versa.)'
+          unmodified by tokenization.'
         properties:
-          after:
-            $ref: '#/components/schemas/DiscoveryFpeDayMonthYearDate'
-          before:
-            $ref: '#/components/schemas/DiscoveryFpeDayMonthYearDate'
-        type: object
-    DiscoveryPolicySourceVariantDsm:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - dsm
-            type: string
+          codes:
+            items:
+              $ref: '#/components/schemas/DiscoveryFpeCode'
+            type: array
+          max_repetitions:
+            type:
+            - integer
+            - 'null'
+          min_repetitions:
+            description: A group cannot be omitted, thus this field must be positive if present.
+            type:
+            - integer
+            - 'null'
+          preserve:
+            description: 'Amount of leading and trailing characters to preserve in this group.
+
+              Preserved characters are the leading/trailing characters of the whole
+
+              group, not individual repetitions.'
+            items:
+              type: integer
+            maxItems: 2
+            minItems: 2
+            type:
+            - array
+            - 'null'
         required:
-        - $type
+        - codes
         type: object
+    DiscoveryFpeDataPartLiteral:
+      allOf:
+      - description: 'A section of the data type that is not to be tokenized (e.g., a delimiter).
+
+
+          Unlike preserved characters, literal characters are not used for FF1 tweaks.'
+        properties:
+          literal:
+            description: 'The list of possible strings that make up this literal portion of the token.
+
+              For example, if a delimiter can either be a space or a dash, the list would
+
+              be `[" ", "-"]`.
+
+
+              Implementation note: the backend will pick the first choice that matches when
+
+              when parsing the input. If this results in an invalid parse of the rest of the
+
+              input, the backend ***will not backtrack*** and will simply return with an error.'
+            items:
+              type: string
+            type: array
+        required:
+        - literal
+        type: object
+    DiscoveryRsaEncryptionPaddingPolicy:
+      description: RSA encryption padding policy.
+      oneOf:
+      - properties:
+          OAEP:
+            $ref: '#/components/schemas/DiscoveryRsaEncryptionPaddingPolicyOaep'
+        required:
+        - OAEP
+        title: DiscoveryRsaEncryptionPaddingPolicyVariantOaep
+        type: object
+      - properties:
+          PKCS1_V15:
+            properties: {}
+            type: object
+        required:
+        - PKCS1_V15
+        title: DiscoveryRsaEncryptionPaddingPolicyVariantPkcs1V15
+        type: object
+      - properties:
+          RAW_DECRYPT:
+            properties: {}
+            type: object
+        required:
+        - RAW_DECRYPT
+        title: DiscoveryRsaEncryptionPaddingPolicyVariantRawDecrypt
+        type: object
+    DiscoveryPolicy:
+      allOf:
+      - description: Policy in Predjama.
+        properties:
+          created_at:
+            description: The time this Policy object was created
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          details:
+            $ref: '#/components/schemas/DiscoveryPolicyDetails'
+          last_updated_at:
+            description: The time at which this Policy object was last updated
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          name:
+            description: Name of the Policy
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            type: string
+          policy_id:
+            description: An internally generated Uuid for the Policy type
+            format: uuid
+            type: string
+          source:
+            $ref: '#/components/schemas/DiscoveryPolicySource'
+        required:
+        - created_at
+        - details
+        - name
+        - policy_id
+        - source
+        type: object
+    DiscoveryLmsOptionsPolicy:
+      allOf:
       - properties: {}
         type: object
-    DiscoveryFpeDateMonthDay:
+    DiscoveryFpeEncryptedPart:
       allOf:
-      - description: 'Represents a date that consists of a Month subpart and a Day subpart. It is an error to
+      - description: 'Structure of a tokenized portion of a complex tokenization data type.
 
-          preserve only the Month part or the Day part.'
+
+          Implementation note: the backend parser is locally "greedy" and will attempt to match
+
+          as many characters as possible. If this later results in an invalid parse of the rest
+
+          of the input, the backend ***will not backtrack*** and will simply return with an error.'
         properties:
-          after:
-            $ref: '#/components/schemas/DiscoveryFpeDayMonthDate'
-          before:
-            $ref: '#/components/schemas/DiscoveryFpeDayMonthDate'
+          char_set:
+            $ref: '#/components/schemas/DiscoveryFpeCharSet'
+          cipher_char_set:
+            $ref: '#/components/schemas/DiscoveryFpeCharSet'
+          constraints:
+            $ref: '#/components/schemas/DiscoveryFpeConstraints'
+          mask:
+            $ref: '#/components/schemas/DiscoveryFpePreserveMask'
+          max_length:
+            description: The maximum allowed length for this part (in chars).
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+          min_length:
+            description: The minimum allowed length for this part (in chars).
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+          preserve:
+            $ref: '#/components/schemas/DiscoveryFpePreserveMask'
+        required:
+        - min_length
+        - max_length
+        - char_set
         type: object
-    DiscoveryFpeTokenizeMode:
-      description: How to tokenize a given input. The most secure option is "PreserveFormat".
-      enum:
-      - preserve_format
-      - preserve_variant
-      - preserve_length
-      type: string
     DiscoveryKeyOperations:
       description: "Operations allowed to be performed on a given key.\n\n\n\n          SIGN:\n            If this is set, the key can be used to for signing.\n\n\n          VERIFY:\n            If this is set, the key can used for verifying a signature.\n\n\n          ENCRYPT:\n            If this is set, the key can be used for encryption.\n\n\n          DECRYPT:\n            If this is set, the key can be used for decryption.\n\n\n          WRAPKEY:\n            If this is set, the key can be used wrapping other keys.\n            The key being wrapped must have the EXPORT operation enabled.\n\n\n          UNWRAPKEY:\n            If this is set, the key can be used to unwrap a wrapped key.\n\n\n          DERIVEKEY:\n            If this is set, the key can be used to derive another key.\n\n\n          TRANSFORM:\n            If this is set, the key can be transformed.\n\n\n          MACGENERATE:\n            If this is set, the key can be used to compute a cryptographic\n            Message Authentication Code (MAC) on a message.\n\n\n          MACVERIFY:\n            If they is set, the key can be used to verify a MAC.\n\n\n          EXPORT:\n            If this is set, the value of the key can be retrieved\n            with an authenticated request. This shouldn't be set unless\n            required. It is more secure to keep the key's value inside DSM only.\n\n\n          APPMANAGEABLE:\n            Without this operation, management operations like delete, destroy,\n            rotate, activate, restore, revoke, revert, update, remove_private, etc.\n            cannot be performed by a crypto App.\n            A user with access or admin app can still perform these operations.\n            This option is only relevant for crypto apps.\n\n\n          HIGHVOLUME:\n            If this is set, audit logs will not be recorded for the key.\n            High volume here tries to signify a key that is being used a lot\n            and will produce lots of logs. Setting this operation disables\n            audit logs for the key.\n\n\n          AGREEKEY:\n            If this is set, the key can be used for key agreement.\n            Both the private and public key should have this option enabled\n            to perform an agree operation.\n\n\n          ENCAPSULATE:\n            If this is set, the key can be used for key encapsulation. The\n            result is a new symmetric key and a ciphertext.\n\n\n          DECAPSULATE:\n            If this is set, the key can be used for key decapsulation. If\n            decapsulation succeeds, the result is a new symmetric key.\n\n"
       enum:
@@ -491,41 +356,81 @@ components:
       allOf:
       - properties: {}
         type: object
-    DiscoveryFpeWordsCustom:
+    DiscoveryFpeDateMonthDay:
+      allOf:
+      - description: 'Represents a date that consists of a Month subpart and a Day subpart. It is an error to
+
+          preserve only the Month part or the Day part.'
+        properties:
+          after:
+            $ref: '#/components/schemas/DiscoveryFpeDayMonthDate'
+          before:
+            $ref: '#/components/schemas/DiscoveryFpeDayMonthDate'
+        type: object
+    DiscoveryEllipticCurve:
+      description: Identifies a standardized elliptic curve.
+      enum:
+      - X25519
+      - Ed25519
+      - X448
+      - SecP192K1
+      - SecP224K1
+      - SecP256K1
+      - NistP192
+      - NistP224
+      - NistP256
+      - NistP384
+      - NistP521
+      - Gost256A
+      type: string
+    DiscoverySecretOptionsPolicy:
+      allOf:
+      - properties: {}
+        type: object
+    DiscoveryDesOptionsPolicy:
       allOf:
       - properties:
-          list:
-            description: 'Examples: {"john", "jane"}, {".", "-", "_", "@", " "}'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+        type: object
+    DiscoveryFpeFormatV2:
+      allOf:
+      - description: The second generation of Fortanix Tokenization scheme.
+        properties:
+          input_processing:
+            $ref: '#/components/schemas/DiscoveryFpeInputProcessing'
+          mode:
+            $ref: '#/components/schemas/DiscoveryFpeTokenizeMode'
+          variants:
+            description: 'A token is accepted if it is accepted by any of these variants. Note
+
+              tokenization results depend on the order of this list.'
             items:
-              type: string
+              $ref: '#/components/schemas/DiscoveryFpeVariant'
             type: array
         required:
-        - list
+        - variants
         type: object
-    DiscoveryFpeConstraintsApplicability:
-      description: A structure indicating which subparts to which to apply a set of constraints.
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryAll'
-      - additionalProperties:
-          $ref: '#/components/schemas/DiscoveryFpeConstraintsApplicability'
-        description: 'An object representing the individual subparts that the constraints should apply to. This
-
-          is a BTreeMap where for each key-value pair, the key represents the "index" of the subpart
-
-          (with the first subpart having index 0), and the value is an FpeConstraintsApplicability
-
-          instance. Note that a Multiple part only allows for one possible key-value pair, since it
-
-          only contains one subpart. For Concat parts, the key is the zero-based index of the subpart
-
-          in the `concat` field, and for Multiple parts, this is always 0 (due to a Multiple having
-
-          only one subpart).
-
-
-          This cannot be used with OR parts; instead, specify constraints individually on each
-
-          relevant subpart.'
+    DiscoveryRsaEncryptionPolicy:
+      allOf:
+      - description: Constraints on RSA encryption parameters. In general, if a constraint is not specified, anything is allowed.
+        properties:
+          padding:
+            $ref: '#/components/schemas/DiscoveryRsaEncryptionPaddingPolicy'
+        type: object
+    DiscoveryFpeChecksum:
+      enum:
+      - luhn
+      type: string
+    DiscoveryOpaqueOptionsPolicy:
+      allOf:
+      - properties: {}
+        type: object
+    DiscoveryMlKemOptionsPolicy:
+      allOf:
+      - properties: {}
         type: object
     DiscoveryRsaOptionsPolicy:
       allOf:
@@ -563,44 +468,143 @@ components:
             - array
             - 'null'
         type: object
-    DiscoveryXmssOptionsPolicy:
+    DiscoveryPolicyDetails:
+      discriminator:
+        mapping:
+          crypto_policy: DiscoveryPolicyDetailsVariantCryptoPolicy
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryPolicyDetailsVariantCryptoPolicy'
+    DiscoveryFpeOptionsAdvanced:
+      allOf:
+      - description: 'Advanced FPE options. It is recommended to use this for
+
+          specifying any FPE options, as it is more expressive than
+
+          FpeOptionsBasic.'
+        properties:
+          description:
+            description: The user-provided name for the data type.
+            type:
+            - string
+            - 'null'
+          format:
+            $ref: '#/components/schemas/DiscoveryFpeDataPart'
+        required:
+        - format
+        type: object
+    DiscoveryKcdsaOptionsPolicy:
       allOf:
       - properties: {}
         type: object
-    DiscoveryMgfPolicyMgf1:
+    DiscoveryAriaOptionsPolicy:
       allOf:
       - properties:
-          hash:
-            $ref: '#/components/schemas/DiscoveryDigestAlgorithm'
+          key_sizes:
+            items:
+              maximum: 4294967295
+              minimum: 0
+              type: integer
+            type:
+            - array
+            - 'null'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
         type: object
-    DiscoveryFpeDate:
-      description: 'A structure for specifying a token part representing a date that occurs after a specified date
+    DiscoveryFpeOptionsV2:
+      allOf:
+      - properties:
+          description:
+            type:
+            - string
+            - 'null'
+          format_v2:
+            $ref: '#/components/schemas/DiscoveryFpeFormatV2'
+        required:
+        - format_v2
+        type: object
+    DiscoveryFpeCompoundPartMultiple:
+      allOf:
+      - description: 'Indicates a part that is possibly repeated multiple times.
 
-        and/or occurs before a specified date. Depending on the subparts that make up the date, one of
 
-        the three options is used.'
+          Implementation note: the backend parser is locally "greedy" and will attempt to match
+
+          as many repetitions as possible. If this later results in an invalid parse of the rest
+
+          of the input, the backend ***will not backtrack*** and will simply return with an error.'
+        properties:
+          constraints:
+            $ref: '#/components/schemas/DiscoveryFpeConstraints'
+          mask:
+            description: 'Whether the entire Multiple should be masked when doing masked decryption. If this is
+
+              set, the `multiple` subpart and its descendants cannot contain any mask-related fields
+
+              set.'
+            type:
+            - boolean
+            - 'null'
+          max_length:
+            description: The maximum allowed length for this part (in chars).
+            maximum: 4294967295
+            minimum: 0
+            type:
+            - integer
+            - 'null'
+          max_repetitions:
+            description: 'The maximum number of times the subpart may occur. (A value of 1 marks a single
+
+              occurrence.)'
+            type:
+            - integer
+            - 'null'
+          min_length:
+            description: The minimum allowed length for this part (in chars).
+            maximum: 4294967295
+            minimum: 0
+            type:
+            - integer
+            - 'null'
+          min_repetitions:
+            description: 'The minimum number of times the subpart may occur. (A value of 1 marks a single
+
+              occurrence.)'
+            type:
+            - integer
+            - 'null'
+          multiple:
+            $ref: '#/components/schemas/DiscoveryFpeDataPart'
+          preserve:
+            description: 'Whether the entire Multiple should be preserved as-is (i.e., not tokenized). If this
+
+              is set, the `multiple` subpart and its descendants cannot contain any preserve-related
+
+              fields set.'
+            type:
+            - boolean
+            - 'null'
+        required:
+        - multiple
+        type: object
+    DiscoveryFpeDateMonthYear:
+      allOf:
+      - description: 'Represents a date that consists of a Month subpart and a Year subpart. The Year part is
+
+          allowed to be preserved; however, the Month part cannot be preserved by itself.'
+        properties:
+          after:
+            $ref: '#/components/schemas/DiscoveryFpeMonthYearDate'
+          before:
+            $ref: '#/components/schemas/DiscoveryFpeMonthYearDate'
+        type: object
+    DiscoveryFpeDateConstraint:
+      description: Possible date-related constraint types for a portion of a complex tokenization data type.
       oneOf:
-      - properties:
-          dmy_date:
-            $ref: '#/components/schemas/DiscoveryFpeDateDayMonthYear'
-        required:
-        - dmy_date
-        title: DiscoveryFpeDateVariantDayMonthYear
-        type: object
-      - properties:
-          month_day_date:
-            $ref: '#/components/schemas/DiscoveryFpeDateMonthDay'
-        required:
-        - month_day_date
-        title: DiscoveryFpeDateVariantMonthDay
-        type: object
-      - properties:
-          month_year_date:
-            $ref: '#/components/schemas/DiscoveryFpeDateMonthYear'
-        required:
-        - month_year_date
-        title: DiscoveryFpeDateVariantMonthYear
-        type: object
+      - $ref: '#/components/schemas/DiscoveryFpeDate'
+      - $ref: '#/components/schemas/DiscoveryFpeDatePart'
     DiscoveryFpeCompoundPartOr:
       allOf:
       - description: 'Represents an OR of multiple structures.
@@ -654,35 +658,6 @@ components:
         required:
         - or
         type: object
-    DiscoveryFpeCode:
-      allOf:
-      - description: A set of words, repeated an amount of times.
-        properties:
-          max_repetitions:
-            type:
-            - integer
-            - 'null'
-          min_repetitions:
-            type:
-            - integer
-            - 'null'
-          words:
-            $ref: '#/components/schemas/DiscoveryFpeWords'
-        required:
-        - words
-        type: object
-    DiscoveryFpeOptionsV2:
-      allOf:
-      - properties:
-          description:
-            type:
-            - string
-            - 'null'
-          format_v2:
-            $ref: '#/components/schemas/DiscoveryFpeFormatV2'
-        required:
-        - format_v2
-        type: object
     DiscoveryFpeSection:
       allOf:
       - description: A concatenation of groups, optionally including a checksum.
@@ -696,50 +671,45 @@ components:
         required:
         - groups
         type: object
-    DiscoveryFpeDateMonthYear:
+    DiscoveryPolicyDetailsVariantCryptoPolicy:
       allOf:
-      - description: 'Represents a date that consists of a Month subpart and a Year subpart. The Year part is
-
-          allowed to be preserved; however, the Month part cannot be preserved by itself.'
-        properties:
-          after:
-            $ref: '#/components/schemas/DiscoveryFpeMonthYearDate'
-          before:
-            $ref: '#/components/schemas/DiscoveryFpeMonthYearDate'
-        type: object
-    DiscoveryPolicy:
-      allOf:
-      - description: Policy in Predjama.
-        properties:
-          created_at:
-            description: The time this Policy object was created
-            example: 20170509T070912Z
-            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+      - properties:
+          $type:
+            enum:
+            - crypto_policy
             type: string
-          details:
-            $ref: '#/components/schemas/DiscoveryPolicyDetails'
-          last_updated_at:
-            description: The time at which this Policy object was last updated
-            example: 20170509T070912Z
-            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
-            type: string
-          name:
-            description: Name of the Policy
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-            type: string
-          policy_id:
-            description: An internally generated Uuid for the Policy type
-            format: uuid
-            type: string
-          source:
-            $ref: '#/components/schemas/DiscoveryPolicySource'
         required:
-        - created_at
-        - details
-        - name
-        - policy_id
-        - source
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryCryptographicPolicy'
+    DiscoveryHmacOptionsPolicy:
+      allOf:
+      - properties:
+          minimum_key_length:
+            maximum: 4294967295
+            minimum: 0
+            type:
+            - integer
+            - 'null'
+        type: object
+    DiscoveryRsaEncryptionPaddingPolicyOaep:
+      allOf:
+      - description: 'The Optional Asymmetric Encryption Padding scheme, as defined
+
+          in RFC 8017 (PKCS #1 version 2.2)'
+        properties:
+          mgf:
+            $ref: '#/components/schemas/DiscoveryMgfPolicy'
+        type: object
+    DiscoveryEcOptionsPolicy:
+      allOf:
+      - properties:
+          elliptic_curves:
+            items:
+              $ref: '#/components/schemas/DiscoveryEllipticCurve'
+            type:
+            - array
+            - 'null'
         type: object
     DiscoveryFpeConstraints:
       allOf:
@@ -808,101 +778,145 @@ components:
             - array
             - 'null'
         type: object
-    DiscoveryGetAllPoliciesMetadata:
+    DiscoveryFpeDayMonthDate:
+      allOf:
+      - description: 'A structure for specifying a particular date consisting of a day and a month, for use in an
+
+          FpeDate structure.'
+        properties:
+          day:
+            description: 'The day, which should be an integer from 1 to either 29, 30, or 31, depending on the month
+
+              and year. Here, February is treated as having 29 days.'
+            maximum: 255
+            minimum: 0
+            type: integer
+          month:
+            description: The month, which should be an integer from 1 to 12.
+            maximum: 255
+            minimum: 0
+            type: integer
+        required:
+        - month
+        - day
+        type: object
+    DiscoveryFpeDataPart:
+      description: Structure for specifying (part of) a complex tokenization data type.
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryFpeEncryptedPart'
+      - $ref: '#/components/schemas/DiscoveryFpeDataPartLiteral'
+      - $ref: '#/components/schemas/DiscoveryFpeCompoundPart'
+    DiscoveryMlDsaOptionsPolicy:
+      allOf:
+      - properties: {}
+        type: object
+    DiscoveryGetAllPoliciesParams:
       allOf:
       - properties:
-          filtered_count:
-            description: The amount returned with the filter applied
-            maximum: 4294967295
-            minimum: 0
+          filter:
+            type: string
+          limit:
             type: integer
-          total_count:
-            description: The total number of Policy objects exist
-            maximum: 4294967295
-            minimum: 0
+          offset:
             type: integer
-        required:
-        - total_count
-        - filtered_count
+          sort_by:
+            type: string
         type: object
-    DiscoveryRsaSignaturePolicy:
-      allOf:
-      - description: Constraints on RSA signature parameters. In general, if a constraint is not specified, anything is allowed.
-        properties:
-          padding:
-            $ref: '#/components/schemas/DiscoveryRsaSignaturePaddingPolicy'
-        type: object
-    DiscoveryFpeVariant:
-      allOf:
-      - description: A concatenation of sections.
-        properties:
-          sections:
-            items:
-              $ref: '#/components/schemas/DiscoveryFpeSection'
-            type: array
-        required:
-        - sections
-        type: object
-    DiscoveryAll:
-      description: 'A helper enum with a single variant, All, which indicates that something should apply to an
-
-        entire part. (This is here mainly to allow other untagged enums to work properly.)'
+    DiscoveryFpeTokenizeMode:
+      description: How to tokenize a given input. The most secure option is "PreserveFormat".
       enum:
-      - all
+      - preserve_format
+      - preserve_variant
+      - preserve_length
       type: string
-    DiscoveryFpePreserveMask:
-      description: A structure indicating which indices in an encrypted part to mask or preserve.
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryAll'
-      - description: 'Indicates that only certain characters are to be preserved or masked. Indices are
-
-          Python-like; i.e., negative indices index from the end of the token portion, with
-
-          index -1 denoting the last character. (Indicating that nothing should be preserved
-
-          or masked can be done via an empty list, which is the default value for this enum.)'
-        items:
-          format: int64
-          type: integer
-        type: array
-    DiscoveryFpeWordsIntegerRanges:
+    DiscoveryGetAllPoliciesResponse:
       allOf:
-      - description: 'A union of positive integer ranges.
-
-
-          ```plain
-
-          Examples: [[0, 400], [402, 1000]]
-
-          = {0000, 0001, ..., 0400, 0402, ..., 1000}
-
-
-          [[1,3], [49, 50]] with optional padding of length 8
-
-          = {00000001, 00000002, 00000003, 00000049, 00000050}
-
-          (accepts 1, 01, 00002, 49, 000050, etc)
-
-          ```'
-        properties:
-          padding_required:
-            description: 'If this field is true, this set accepts only numeric strings
-
-              padded to the length given by the maximum integer in the range
-
-              set.'
-            type: boolean
-          ranges:
+      - properties:
+          items:
             items:
-              items:
-                type: integer
-              maxItems: 2
-              minItems: 2
-              type: array
+              $ref: '#/components/schemas/DiscoveryPolicy'
             type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryGetAllPoliciesMetadata'
         required:
-        - ranges
-        - padding_required
+        - items
+        - metadata
+        type: object
+    DiscoveryFpeDayMonthYearDate:
+      allOf:
+      - description: 'A structure for specifying a particular date consisting of a day, month, and year, for use in
+
+          an FpeDate structure.'
+        properties:
+          day:
+            description: 'The day, which should be an integer from 1 to either 28, 29, 30, or 31, depending on the
+
+              month and year.'
+            maximum: 255
+            minimum: 0
+            type: integer
+          month:
+            description: The month, which should be an integer from 1 to 12.
+            maximum: 255
+            minimum: 0
+            type: integer
+          year:
+            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+        required:
+        - year
+        - month
+        - day
+        type: object
+    DiscoveryRsaSignaturePaddingPolicy:
+      description: RSA signature padding policy.
+      oneOf:
+      - properties:
+          PSS:
+            $ref: '#/components/schemas/DiscoveryRsaSignaturePaddingPolicyPss'
+        required:
+        - PSS
+        title: DiscoveryRsaSignaturePaddingPolicyVariantPss
+        type: object
+      - properties:
+          PKCS1_V15:
+            properties: {}
+            type: object
+        required:
+        - PKCS1_V15
+        title: DiscoveryRsaSignaturePaddingPolicyVariantPkcs1V15
+        type: object
+    DiscoveryFpeWords:
+      description: A set of fixed-length strings.
+      oneOf:
+      - properties:
+          integer_ranges:
+            $ref: '#/components/schemas/DiscoveryFpeWordsIntegerRanges'
+        required:
+        - integer_ranges
+        title: DiscoveryFpeWordsVariantIntegerRanges
+        type: object
+      - properties:
+          alphabet:
+            $ref: '#/components/schemas/DiscoveryFpeCharSet'
+        required:
+        - alphabet
+        title: DiscoveryFpeWordsVariantAlphabet
+        type: object
+      - properties:
+          custom:
+            $ref: '#/components/schemas/DiscoveryFpeWordsCustom'
+        required:
+        - custom
+        title: DiscoveryFpeWordsVariantCustom
+        type: object
+    DiscoveryRsaSignaturePaddingPolicyPss:
+      allOf:
+      - properties:
+          mgf:
+            $ref: '#/components/schemas/DiscoveryMgfPolicy'
         type: object
     DiscoveryCryptographicPolicy:
       allOf:
@@ -958,369 +972,80 @@ components:
           xmss:
             $ref: '#/components/schemas/DiscoveryXmssOptionsPolicy'
         type: object
-    DiscoveryCertificateOptionsPolicy:
+    DiscoveryEcKcdsaOptionsPolicy:
       allOf:
       - properties: {}
         type: object
-    DiscoveryFpeDateConstraint:
-      description: Possible date-related constraint types for a portion of a complex tokenization data type.
+    DiscoveryFpePreserveMask:
+      description: A structure indicating which indices in an encrypted part to mask or preserve.
       oneOf:
-      - $ref: '#/components/schemas/DiscoveryFpeDate'
-      - $ref: '#/components/schemas/DiscoveryFpeDatePart'
-    DiscoveryAriaOptionsPolicy:
-      allOf:
-      - properties:
-          key_sizes:
-            items:
-              maximum: 4294967295
-              minimum: 0
-              type: integer
-            type:
-            - array
-            - 'null'
-          random_iv:
-            type:
-            - boolean
-            - 'null'
-        type: object
-    DiscoveryKcdsaOptionsPolicy:
-      allOf:
-      - properties: {}
-        type: object
-    DiscoveryFpeDatePart:
-      description: 'Possible date-related constraint types that do not form a complete date (by themselves) for a
+      - $ref: '#/components/schemas/DiscoveryAll'
+      - description: 'Indicates that only certain characters are to be preserved or masked. Indices are
 
-        complex tokenization data type.'
-      enum:
-      - month
-      - day
-      - year
-      type: string
-    DiscoverySeedOptionsPolicy:
-      allOf:
-      - properties:
-          random_iv:
-            type:
-            - boolean
-            - 'null'
-        type: object
-    DiscoveryLmsOptionsPolicy:
-      allOf:
-      - properties: {}
-        type: object
-    DiscoveryEcOptionsPolicy:
-      allOf:
-      - properties:
-          elliptic_curves:
-            items:
-              $ref: '#/components/schemas/DiscoveryEllipticCurve'
-            type:
-            - array
-            - 'null'
-        type: object
-    DiscoveryFpeOptionsAdvanced:
-      allOf:
-      - description: 'Advanced FPE options. It is recommended to use this for
+          Python-like; i.e., negative indices index from the end of the token portion, with
 
-          specifying any FPE options, as it is more expressive than
+          index -1 denoting the last character. (Indicating that nothing should be preserved
 
-          FpeOptionsBasic.'
+          or masked can be done via an empty list, which is the default value for this enum.)'
+        items:
+          format: int64
+          type: integer
+        type: array
+    DiscoveryFpeCode:
+      allOf:
+      - description: A set of words, repeated an amount of times.
         properties:
-          description:
-            description: The user-provided name for the data type.
-            type:
-            - string
-            - 'null'
-          format:
-            $ref: '#/components/schemas/DiscoveryFpeDataPart'
-        required:
-        - format
-        type: object
-    DiscoveryAesOptionsPolicy:
-      allOf:
-      - properties:
-          fpe:
-            $ref: '#/components/schemas/DiscoveryFpeOptions'
-          key_sizes:
-            items:
-              maximum: 4294967295
-              minimum: 0
-              type: integer
-            type:
-            - array
-            - 'null'
-          random_iv:
-            type:
-            - boolean
-            - 'null'
-        type: object
-    DiscoveryFpeDataPart:
-      description: Structure for specifying (part of) a complex tokenization data type.
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryFpeEncryptedPart'
-      - $ref: '#/components/schemas/DiscoveryFpeDataPartLiteral'
-      - $ref: '#/components/schemas/DiscoveryFpeCompoundPart'
-    DiscoveryFpeDataPartLiteral:
-      allOf:
-      - description: 'A section of the data type that is not to be tokenized (e.g., a delimiter).
-
-
-          Unlike preserved characters, literal characters are not used for FF1 tweaks.'
-        properties:
-          literal:
-            description: 'The list of possible strings that make up this literal portion of the token.
-
-              For example, if a delimiter can either be a space or a dash, the list would
-
-              be `[" ", "-"]`.
-
-
-              Implementation note: the backend will pick the first choice that matches when
-
-              when parsing the input. If this results in an invalid parse of the rest of the
-
-              input, the backend ***will not backtrack*** and will simply return with an error.'
-            items:
-              type: string
-            type: array
-        required:
-        - literal
-        type: object
-    DiscoveryDesOptionsPolicy:
-      allOf:
-      - properties:
-          random_iv:
-            type:
-            - boolean
-            - 'null'
-        type: object
-    DiscoveryFpeGroup:
-      allOf:
-      - description: 'A concatenation of codes, that can be repeated an amount of times. An
-
-          amount of leading and trailing characters can be preserved, this is,
-
-          unmodified by tokenization.'
-        properties:
-          codes:
-            items:
-              $ref: '#/components/schemas/DiscoveryFpeCode'
-            type: array
           max_repetitions:
             type:
             - integer
             - 'null'
           min_repetitions:
-            description: A group cannot be omitted, thus this field must be positive if present.
             type:
             - integer
             - 'null'
-          preserve:
-            description: 'Amount of leading and trailing characters to preserve in this group.
-
-              Preserved characters are the leading/trailing characters of the whole
-
-              group, not individual repetitions.'
-            items:
-              type: integer
-            maxItems: 2
-            minItems: 2
-            type:
-            - array
-            - 'null'
+          words:
+            $ref: '#/components/schemas/DiscoveryFpeWords'
         required:
-        - codes
+        - words
         type: object
-    DiscoveryFpeInputProcessing:
-      description: Options to apply some pre- and post-processing to the input.
-      enum:
-      - strip_unknown
-      - passthrough_unknown
-      type: string
-    DiscoveryPolicySource:
-      discriminator:
-        mapping:
-          dsm: DiscoveryPolicySourceVariantDsm
-          system_defined: DiscoveryPolicySourceVariantSystemDefined
-          user_defined: DiscoveryPolicySourceVariantUserDefined
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryPolicySourceVariantSystemDefined'
-      - $ref: '#/components/schemas/DiscoveryPolicySourceVariantDsm'
-      - $ref: '#/components/schemas/DiscoveryPolicySourceVariantUserDefined'
-    DiscoveryOpaqueOptionsPolicy:
+    DiscoveryXmssOptionsPolicy:
       allOf:
       - properties: {}
         type: object
-    DiscoveryMlKemOptionsPolicy:
-      allOf:
-      - properties: {}
-        type: object
-    DiscoveryRsaEncryptionPaddingPolicy:
-      description: RSA encryption padding policy.
-      oneOf:
-      - properties:
-          OAEP:
-            $ref: '#/components/schemas/DiscoveryRsaEncryptionPaddingPolicyOaep'
-        required:
-        - OAEP
-        title: DiscoveryRsaEncryptionPaddingPolicyVariantOaep
-        type: object
-      - properties:
-          PKCS1_V15:
-            properties: {}
-            type: object
-        required:
-        - PKCS1_V15
-        title: DiscoveryRsaEncryptionPaddingPolicyVariantPkcs1V15
-        type: object
-      - properties:
-          RAW_DECRYPT:
-            properties: {}
-            type: object
-        required:
-        - RAW_DECRYPT
-        title: DiscoveryRsaEncryptionPaddingPolicyVariantRawDecrypt
-        type: object
-    DiscoveryHmacOptionsPolicy:
-      allOf:
-      - properties:
-          minimum_key_length:
-            maximum: 4294967295
-            minimum: 0
-            type:
-            - integer
-            - 'null'
-        type: object
-    DiscoveryFpeMonthYearDate:
-      allOf:
-      - description: 'A structure for specifying a particular date consisting of a month and a year, for use in an
-
-          FpeDate structure.'
-        properties:
-          month:
-            description: The month, which should be an integer from 1 to 12.
-            maximum: 255
-            minimum: 0
-            type: integer
-          year:
-            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
-            maximum: 4294967295
-            minimum: 0
-            type: integer
-        required:
-        - year
-        - month
-        type: object
-    DiscoveryPolicySourceVariantUserDefined:
+    DiscoveryPolicySourceVariantDsm:
       allOf:
       - properties:
           $type:
             enum:
-            - user_defined
+            - dsm
             type: string
         required:
         - $type
         type: object
       - properties: {}
         type: object
-    DiscoveryLegacyKeyPolicy:
-      enum:
-      - allowed
-      - prohibited
-      - unprotect_only
-      type: string
+    DiscoveryCertificateOptionsPolicy:
+      allOf:
+      - properties: {}
+        type: object
+    DiscoveryFpeVariant:
+      allOf:
+      - description: A concatenation of sections.
+        properties:
+          sections:
+            items:
+              $ref: '#/components/schemas/DiscoveryFpeSection'
+            type: array
+        required:
+        - sections
+        type: object
     DiscoverySlip10OptionsPolicy:
       allOf:
       - properties: {}
         type: object
-    DiscoveryFpeCompoundPartMultiple:
+    DiscoveryDsaOptionsPolicy:
       allOf:
-      - description: 'Indicates a part that is possibly repeated multiple times.
-
-
-          Implementation note: the backend parser is locally "greedy" and will attempt to match
-
-          as many repetitions as possible. If this later results in an invalid parse of the rest
-
-          of the input, the backend ***will not backtrack*** and will simply return with an error.'
-        properties:
-          constraints:
-            $ref: '#/components/schemas/DiscoveryFpeConstraints'
-          mask:
-            description: 'Whether the entire Multiple should be masked when doing masked decryption. If this is
-
-              set, the `multiple` subpart and its descendants cannot contain any mask-related fields
-
-              set.'
-            type:
-            - boolean
-            - 'null'
-          max_length:
-            description: The maximum allowed length for this part (in chars).
-            maximum: 4294967295
-            minimum: 0
-            type:
-            - integer
-            - 'null'
-          max_repetitions:
-            description: 'The maximum number of times the subpart may occur. (A value of 1 marks a single
-
-              occurrence.)'
-            type:
-            - integer
-            - 'null'
-          min_length:
-            description: The minimum allowed length for this part (in chars).
-            maximum: 4294967295
-            minimum: 0
-            type:
-            - integer
-            - 'null'
-          min_repetitions:
-            description: 'The minimum number of times the subpart may occur. (A value of 1 marks a single
-
-              occurrence.)'
-            type:
-            - integer
-            - 'null'
-          multiple:
-            $ref: '#/components/schemas/DiscoveryFpeDataPart'
-          preserve:
-            description: 'Whether the entire Multiple should be preserved as-is (i.e., not tokenized). If this
-
-              is set, the `multiple` subpart and its descendants cannot contain any preserve-related
-
-              fields set.'
-            type:
-            - boolean
-            - 'null'
-        required:
-        - multiple
-        type: object
-    DiscoveryFpeWords:
-      description: A set of fixed-length strings.
-      oneOf:
-      - properties:
-          integer_ranges:
-            $ref: '#/components/schemas/DiscoveryFpeWordsIntegerRanges'
-        required:
-        - integer_ranges
-        title: DiscoveryFpeWordsVariantIntegerRanges
-        type: object
-      - properties:
-          alphabet:
-            $ref: '#/components/schemas/DiscoveryFpeCharSet'
-        required:
-        - alphabet
-        title: DiscoveryFpeWordsVariantAlphabet
-        type: object
-      - properties:
-          custom:
-            $ref: '#/components/schemas/DiscoveryFpeWordsCustom'
-        required:
-        - custom
-        title: DiscoveryFpeWordsVariantCustom
+      - properties: {}
         type: object
     DiscoveryFpeOptionsBasic:
       allOf:
@@ -1405,23 +1130,294 @@ components:
         - max_length
         - preserve
         type: object
-    DiscoveryGetAllPoliciesParams:
+    DiscoveryFpeCompoundPart:
+      description: 'Structure of a compound portion of a complex tokenization data type, itself composed of
+
+        smaller parts.'
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryFpeCompoundPartOr'
+      - $ref: '#/components/schemas/DiscoveryFpeCompoundPartConcat'
+      - $ref: '#/components/schemas/DiscoveryFpeCompoundPartMultiple'
+    DiscoveryAll:
+      description: 'A helper enum with a single variant, All, which indicates that something should apply to an
+
+        entire part. (This is here mainly to allow other untagged enums to work properly.)'
+      enum:
+      - all
+      type: string
+    DiscoveryRsaSignaturePolicy:
       allOf:
-      - properties:
-          filter:
-            type: string
-          limit:
-            type: integer
-          offset:
-            type: integer
-          sort_by:
-            type: string
+      - description: Constraints on RSA signature parameters. In general, if a constraint is not specified, anything is allowed.
+        properties:
+          padding:
+            $ref: '#/components/schemas/DiscoveryRsaSignaturePaddingPolicy'
         type: object
-    DiscoveryRsaSignaturePaddingPolicyPss:
+    DiscoveryDes3OptionsPolicy:
+      allOf:
+      - description: 'Cryptographic policy for triple DES objects. Setting `key_sizes: [168]`
+
+          forbids two-key triple DES.'
+        properties:
+          key_sizes:
+            items:
+              maximum: 4294967295
+              minimum: 0
+              type: integer
+            type:
+            - array
+            - 'null'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+        type: object
+    DiscoveryFpeDateDayMonthYear:
+      allOf:
+      - description: 'Represents a date that consists of a Month subpart, a Day subpart, and a Year subpart. The
+
+          Year part is allowed to be preserved, and the Day and Month parts are allowed to be
+
+          preserved together. (The Day part cannot be preserved if the Month part is not, and vice
+
+          versa.)'
+        properties:
+          after:
+            $ref: '#/components/schemas/DiscoveryFpeDayMonthYearDate'
+          before:
+            $ref: '#/components/schemas/DiscoveryFpeDayMonthYearDate'
+        type: object
+    DiscoveryFpeConstraintsApplicability:
+      description: A structure indicating which subparts to which to apply a set of constraints.
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAll'
+      - additionalProperties:
+          $ref: '#/components/schemas/DiscoveryFpeConstraintsApplicability'
+        description: 'An object representing the individual subparts that the constraints should apply to. This
+
+          is a BTreeMap where for each key-value pair, the key represents the "index" of the subpart
+
+          (with the first subpart having index 0), and the value is an FpeConstraintsApplicability
+
+          instance. Note that a Multiple part only allows for one possible key-value pair, since it
+
+          only contains one subpart. For Concat parts, the key is the zero-based index of the subpart
+
+          in the `concat` field, and for Multiple parts, this is always 0 (due to a Multiple having
+
+          only one subpart).
+
+
+          This cannot be used with OR parts; instead, specify constraints individually on each
+
+          relevant subpart.'
+        type: object
+    DiscoveryFpeInputProcessing:
+      description: Options to apply some pre- and post-processing to the input.
+      enum:
+      - strip_unknown
+      - passthrough_unknown
+      type: string
+    DiscoveryFpeWordsCustom:
       allOf:
       - properties:
-          mgf:
-            $ref: '#/components/schemas/DiscoveryMgfPolicy'
+          list:
+            description: 'Examples: {"john", "jane"}, {".", "-", "_", "@", " "}'
+            items:
+              type: string
+            type: array
+        required:
+        - list
+        type: object
+    DiscoveryFpeMonthYearDate:
+      allOf:
+      - description: 'A structure for specifying a particular date consisting of a month and a year, for use in an
+
+          FpeDate structure.'
+        properties:
+          month:
+            description: The month, which should be an integer from 1 to 12.
+            maximum: 255
+            minimum: 0
+            type: integer
+          year:
+            description: The year, which should be an integer less than 100000. Zero is treated as a leap year.
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+        required:
+        - year
+        - month
+        type: object
+    DiscoveryMgfPolicy:
+      description: MGF policy.
+      oneOf:
+      - properties:
+          mgf1:
+            $ref: '#/components/schemas/DiscoveryMgfPolicyMgf1'
+        required:
+        - mgf1
+        title: DiscoveryMgfPolicyVariantMgf1
+        type: object
+    DiscoverySeedOptionsPolicy:
+      allOf:
+      - properties:
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+        type: object
+    DiscoveryPolicySourceVariantUserDefined:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - user_defined
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryMgfPolicyMgf1:
+      allOf:
+      - properties:
+          hash:
+            $ref: '#/components/schemas/DiscoveryDigestAlgorithm'
+        type: object
+    DiscoveryFpeWordsIntegerRanges:
+      allOf:
+      - description: 'A union of positive integer ranges.
+
+
+          ```plain
+
+          Examples: [[0, 400], [402, 1000]]
+
+          = {0000, 0001, ..., 0400, 0402, ..., 1000}
+
+
+          [[1,3], [49, 50]] with optional padding of length 8
+
+          = {00000001, 00000002, 00000003, 00000049, 00000050}
+
+          (accepts 1, 01, 00002, 49, 000050, etc)
+
+          ```'
+        properties:
+          padding_required:
+            description: 'If this field is true, this set accepts only numeric strings
+
+              padded to the length given by the maximum integer in the range
+
+              set.'
+            type: boolean
+          ranges:
+            items:
+              items:
+                type: integer
+              maxItems: 2
+              minItems: 2
+              type: array
+            type: array
+        required:
+        - ranges
+        - padding_required
+        type: object
+    DiscoveryAesOptionsPolicy:
+      allOf:
+      - properties:
+          fpe:
+            $ref: '#/components/schemas/DiscoveryFpeOptions'
+          key_sizes:
+            items:
+              maximum: 4294967295
+              minimum: 0
+              type: integer
+            type:
+            - array
+            - 'null'
+          random_iv:
+            type:
+            - boolean
+            - 'null'
+        type: object
+    DiscoveryFpeDatePart:
+      description: 'Possible date-related constraint types that do not form a complete date (by themselves) for a
+
+        complex tokenization data type.'
+      enum:
+      - month
+      - day
+      - year
+      type: string
+    DiscoveryLegacyKeyPolicy:
+      enum:
+      - allowed
+      - prohibited
+      - unprotect_only
+      type: string
+    DiscoveryFpeCompoundPartConcat:
+      allOf:
+      - description: Represents a concatenation of multiple structures (in a particular order).
+        properties:
+          concat:
+            description: The actual subparts that make up this compound part, in order.
+            items:
+              $ref: '#/components/schemas/DiscoveryFpeDataPart'
+            type: array
+          constraints:
+            $ref: '#/components/schemas/DiscoveryFpeConstraints'
+          mask:
+            description: 'Whether the entire concat should be masked when doing masked decryption. If this is
+
+              set, any descendant subparts cannot contain any mask-related fields set.'
+            type:
+            - boolean
+            - 'null'
+          max_length:
+            description: The maximum allowed length for this part (in chars).
+            maximum: 4294967295
+            minimum: 0
+            type:
+            - integer
+            - 'null'
+          min_length:
+            description: The minimum allowed length for this part (in chars).
+            maximum: 4294967295
+            minimum: 0
+            type:
+            - integer
+            - 'null'
+          preserve:
+            description: 'Whether the entire concat should be preserved as-is (i.e., not tokenized). If this is
+
+              set, any descendant subparts cannot contain any preserve-related fields set.'
+            type:
+            - boolean
+            - 'null'
+        required:
+        - concat
+        type: object
+    DiscoveryGetAllPoliciesMetadata:
+      allOf:
+      - properties:
+          filtered_count:
+            description: The amount returned with the filter applied
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+          total_count:
+            description: The total number of Policy objects exist
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+        required:
+        - total_count
+        - filtered_count
+        type: object
+    DiscoveryBlsOptionsPolicy:
+      allOf:
+      - properties: {}
         type: object
   parameters:
     DiscoveryGetAllPoliciesParams:

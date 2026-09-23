@@ -20,7 +20,7 @@ paths:
     get:
       tags:
       - Certificate
-      summary: Retrieve a certificate.
+      summary: Retrieve a certificate
       description: Retrieve a certificate.
       operationId: getCertificate
       x-auth-resource: Reader,Writer,Manager,AgentAuth,JoinTokenAuth

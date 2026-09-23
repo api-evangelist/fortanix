@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST Logs API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -29,7 +29,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get all logs visible to the requester.
+      summary: Get all logs visible to the requester
       description: Get all logs visible to the requester.
       parameters:
       - $ref: '#/components/parameters/LogsParams'
@@ -42,6 +42,38 @@ paths:
                 $ref: '#/components/schemas/EsAuditQueryResponse'
 components:
   schemas:
+    EsAuditQueryResponse:
+      allOf:
+      - type: object
+        description: Response for Audit log Query.
+        properties:
+          hits:
+            type: array
+            items:
+              $ref: '#/components/schemas/EsAuditLogOuter'
+            description: List of audit logs.
+        required:
+        - hits
+    SeverityLevel:
+      type: string
+      enum:
+      - INFO
+      - WARNING
+      - ERROR
+      - CRITICAL
+    EsAuditLogOuter:
+      allOf:
+      - type: object
+        description: Response structure of a single log.
+        properties:
+          _id:
+            type: string
+            description: UUID of audit log
+          _source:
+            $ref: '#/components/schemas/EsAuditLog'
+        required:
+        - _id
+        - _source
     EsAuditLog:
       allOf:
       - type: object
@@ -136,38 +168,6 @@ components:
       - RUNPLUGIN
       - CUSTOM
       - OTHER
-    SeverityLevel:
-      type: string
-      enum:
-      - INFO
-      - WARNING
-      - ERROR
-      - CRITICAL
-    EsAuditQueryResponse:
-      allOf:
-      - type: object
-        description: Response for Audit log Query.
-        properties:
-          hits:
-            type: array
-            items:
-              $ref: '#/components/schemas/EsAuditLogOuter'
-            description: List of audit logs.
-        required:
-        - hits
-    EsAuditLogOuter:
-      allOf:
-      - type: object
-        description: Response structure of a single log.
-        properties:
-          _id:
-            type: string
-            description: UUID of audit log
-          _source:
-            $ref: '#/components/schemas/EsAuditLog'
-        required:
-        - _id
-        - _source
     LogsParams:
       allOf:
       - type: object

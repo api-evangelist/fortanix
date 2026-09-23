@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST Marketplace API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -29,7 +29,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Gets all the plugins from the input url.
+      summary: Gets all the plugins from the input url
       description: Gets all the plugins from the input url.
       parameters:
       - $ref: '#/components/parameters/GetMarketplaceParams'
@@ -43,15 +43,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/MarketplacePlugin'
 components:
-  schemas:
+  parameters:
     GetMarketplaceParams:
-      allOf:
-      - type: object
-        properties:
-          repo_url:
-            type: string
-        required:
-        - repo_url
+      in: query
+      name: GetMarketplaceParams
+      schema:
+        $ref: '#/components/schemas/GetMarketplaceParams'
+      explode: true
+  schemas:
     MarketplacePlugin:
       allOf:
       - type: object
@@ -67,13 +66,14 @@ components:
         required:
         - name
         - versions
-  parameters:
     GetMarketplaceParams:
-      in: query
-      name: GetMarketplaceParams
-      schema:
-        $ref: '#/components/schemas/GetMarketplaceParams'
-      explode: true
+      allOf:
+      - type: object
+        properties:
+          repo_url:
+            type: string
+        required:
+        - repo_url
   securitySchemes:
     basicAuth:
       type: http

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Fortanix DSM REST Roles API
-  description: "This is a set of REST APIs for accessing the Fortanix Data Security Manager. This includes APIs for managing accounts, and for performing cryptographic and key management operations. \n\n **Note:** \n- All binary input should be base64-encoded. These fields are marked with `format: byte`. \n- For forward compatibility, any API client is expected to ignore any fields in the response not explicitly mentioned in the documentation. We reserve the right to add new fields at any time to provide new functionality without affecting existing API clients. \n- PATCH requests accept a JSON value describing a partial update to the specified resource. All top-level fields in the PATCH request are optional. If an optional field is omitted, the existing value of that field is preserved. In general, for nested JSON objects, the request must provide the complete object value rather than a partial update."
+  description: This is a set of REST APIs for accessing the Fortanix Data Security Manager.
   termsOfService: https://fortanix.com/legal/agreements-and-standard-terms
   contact:
     name: Fortanix Support
@@ -29,7 +29,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Create a new role.
+      summary: Create a new role
       description: Create a new role.
       requestBody:
         required: true
@@ -51,7 +51,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Get all roles.
+      summary: Get all roles
       description: Get all roles.
       parameters:
       - $ref: '#/components/parameters/ListRolesParams'
@@ -70,7 +70,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Delete a role.
+      summary: Delete a role
       description: Delete a role.
       parameters:
       - name: custom_role_id
@@ -89,7 +89,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Lookup a role.
+      summary: Lookup a role
       description: Lookup a role.
       parameters:
       - name: custom_role_id
@@ -112,7 +112,7 @@ paths:
       security:
       - bearerToken: []
       - apiKeyAuth: []
-      summary: Update a role given by the input ID.
+      summary: Update a role given by the input ID
       description: Update a role given by the input ID.
       parameters:
       - name: custom_role_id
@@ -136,6 +136,129 @@ paths:
                 $ref: '#/components/schemas/Role'
 components:
   schemas:
+    ListRolesParams:
+      allOf:
+      - type: object
+        properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+      - $ref: '#/components/schemas/RoleSort'
+    RoleKind:
+      type: string
+      enum:
+      - account
+      - group
+    Metadata:
+      allOf:
+      - type: object
+        properties:
+          total_count:
+            type:
+            - integer
+            - 'null'
+          filtered_count:
+            type:
+            - integer
+            - 'null'
+    Principal:
+      description: A security principal.
+      oneOf:
+      - title: PrincipalVariantApp
+        type: object
+        properties:
+          app:
+            type: string
+            format: uuid
+        required:
+        - app
+      - title: PrincipalVariantUser
+        type: object
+        properties:
+          user:
+            type: string
+            format: uuid
+        required:
+        - user
+      - title: PrincipalVariantPlugin
+        type: object
+        properties:
+          plugin:
+            type: string
+            format: uuid
+        required:
+        - plugin
+      - title: PrincipalVariantUserViaApp
+        type: object
+        properties:
+          userviaapp:
+            $ref: '#/components/schemas/PrincipalUserViaApp'
+        required:
+        - userviaapp
+      - title: PrincipalVariantSystem
+        type: string
+        enum:
+        - system
+      - title: PrincipalVariantUnregisteredUser
+        type: string
+        enum:
+        - unregistereduser
+    RoleSort:
+      oneOf:
+      - title: RoleSortVariantByRoleId
+        type: object
+        properties:
+          sort:
+            type: string
+            pattern: ^role_id:(?:asc|desc)$
+            example: role_id:asc
+          start:
+            type: string
+            format: uuid
+        required:
+        - sort
+    PrincipalUserViaApp:
+      allOf:
+      - type: object
+        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
+        properties:
+          user_id:
+            type: string
+            format: uuid
+          scopes:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/OauthScope'
+        required:
+        - user_id
+        - scopes
+    GroupRole:
+      allOf:
+      - type: object
+        properties:
+          permissions:
+            type: array
+            items:
+              $ref: '#/components/schemas/GroupPermissions'
+          exclusive:
+            type:
+            - boolean
+            - 'null'
+        required:
+        - permissions
+    RoleDetailsVariantAccount:
+      allOf:
+      - type: object
+        properties:
+          kind:
+            type: string
+            enum:
+            - account
+        required:
+        - kind
+      - $ref: '#/components/schemas/AccountRole'
     Role:
       allOf:
       - type: object
@@ -175,6 +298,73 @@ components:
         - name
         - role_id
         - acct_id
+    AccountPermissions:
+      description: "\n\n\n          MANAGE_LOGGING:\n            Permission to manage logging integrations, and enable/disable error\n            logging.\n\n\n          MANAGE_AUTH:\n            Permission to manage SSO and password policy.\n\n\n          MANAGE_WORKSPACE_CSE:\n            Permission to manage Workspace CSE configuration.\n\n\n          UNWRAP_WORKSPACE_CSE_PRIVILEGED:\n            Permission required for Workspace CSE PrivilegedUnwrap API. Note\n            that `UNWRAP_WORKSPACE_CSE` permission in the group where the key is\n            stored is also required.\n\n\n          MANAGE_ACCOUNT_CLIENT_CONFIGS:\n            Permission to manage account level client configurations.\n\n\n          MANAGE_PLUGIN_CODE_SIGNING_POLICY:\n            Permission to manage plugin code signing policy.\n\n\n          CREATE_ACCOUNT_APPROVAL_POLICY:\n            Permission to create account-level approval policy. Note that\n            updating/deleting the approval policy is protected by the approval\n            policy itself.\n\n\n          SET_APPROVAL_REQUEST_EXPIRY:\n            Permission to set approval request expiry for all approval requests\n            created in the account.\n\n\n          MANAGE_APPROVAL_REQUEST_SETTINGS:\n            Permission to manage all approval request settings including\n            approval request expiry. Implies `SET_APPROVAL_REQUEST_EXPIRY`.\n\n\n          UPDATE_ACCOUNT_CUSTOM_METADATA_ATTRIBUTES:\n            Permission to update account's custom metadata attributes.\n\n\n          MANAGE_ACCOUNT_SUBSCRIPTION:\n            Permission to manage account subscription (only relevant for SaaS\n            accounts).\n\n\n          MANAGE_ACCOUNT_PROFILE:\n            Permission to update account name, custom logo, and other profile\n            information.\n\n\n          DELETE_ACCOUNT:\n            Permission to delete the account.\n\n\n          CREATE_ADMIN_APPS:\n            Permission to create administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          UPDATE_ADMIN_APPS:\n            Permission to update administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          DELETE_ADMIN_APPS:\n            Permission to delete administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          RETRIEVE_ADMIN_APP_SECRETS:\n            Permission to retrieve administrative apps' secrets. Note that not\n            all admin app credentials contain secrets. If an admin app's\n            credential does not contain any secrets, `GET_ADMIN_APPS` permission\n            is sufficient to call the `GetAppCredential` API. Implies\n            `GET_ADMIN_APPS`.\n\n\n          MANAGE_ADMIN_APPS:\n            Currently implies `CREATE_ADMIN_APPS`, `UPDATE_ADMIN_APPS`,\n            `DELETE_ADMIN_APPS`, `RETRIEVE_ADMIN_APP_SECRETS` and\n            `GET_ADMIN_APPS` permissions.\n\n\n          CREATE_CUSTOM_ROLES:\n            Permission to create custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          UPDATE_CUSTOM_ROLES:\n            Permission to update custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          DELETE_CUSTOM_ROLES:\n            Permission to delete custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          MANAGE_CUSTOM_ROLES:\n            Currently implies `CREATE_CUSTOM_ROLES`, `UPDATE_CUSTOM_ROLES`,\n            `DELETE_CUSTOM_ROLES` and `GET_CUSTOM_ROLES` permissions.\n\n\n          INVITE_USERS_TO_ACCOUNT:\n            Permission to invite users to the account. Implies `GET_ALL_USERS`.\n\n\n          DELETE_USERS_FROM_ACCOUNT:\n            Permission to remove users from the account. Implies\n            `GET_ALL_USERS`.\n\n\n          UPDATE_USERS_ACCOUNT_ROLE:\n            Permission to change users' role in the account. Implies\n            `GET_ALL_USERS`.\n\n\n          UPDATE_USERS_ACCOUNT_ENABLED_STATE:\n            Permission to enable/disable users in the account. Implies\n            `GET_ALL_USERS`.\n\n\n          MANAGE_ACCOUNT_USERS:\n            Currently implies `INVITE_USERS_TO_ACCOUNT`,\n            `DELETE_USERS_FROM_ACCOUNT`, `UPDATE_USERS_ACCOUNT_ROLE`,\n            `UPDATE_USERS_ACCOUNT_ENABLED_STATE` and `GET_ALL_USERS`\n            permissions.\n\n\n          CREATE_EXTERNAL_ROLES:\n            Permission to create external roles. Implies `GET_EXTERNAL_ROLES`.\n\n\n          SYNC_EXTERNAL_ROLES:\n            Permission to synchronize external roles. Implies\n            `GET_EXTERNAL_ROLES`.\n\n\n          DELETE_EXTERNAL_ROLES:\n            Permission to delete external roles. Implies `GET_EXTERNAL_ROLES`.\n\n\n          MANAGE_EXTERNAL_ROLES:\n            Currently implies `CREATE_EXTERNAL_ROLES`, `SYNC_EXTERNAL_ROLES`,\n            `DELETE_EXTERNAL_ROLES` and `GET_EXTERNAL_ROLES` permissions.\n\n\n          CREATE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to create various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          UPDATE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to update various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          DELETE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to delete various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          MANAGE_ACCOUNT_SOBJECT_POLICIES:\n            Currently implies `CREATE_ACCOUNT_SOBJECT_POLICIES`,\n            `UPDATE_ACCOUNT_SOBJECT_POLICIES`, and\n            `DELETE_ACCOUNT_SOBJECT_POLICIES` permissions.\n\n\n          CREATE_CHILD_ACCOUNTS:\n            Permission to create child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          UPDATE_CHILD_ACCOUNTS:\n            Permission to update child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          DELETE_CHILD_ACCOUNTS:\n            Permission to delete child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          CREATE_CHILD_ACCOUNT_USERS:\n            Permission to create users in child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS` and `GET_CHILD_ACCOUNT_USERS`.\n\n\n          GET_CHILD_ACCOUNTS:\n            Permission to get child accounts. Note that this is only applicable\n            to SaaS accounts with reseller subscription.\n\n\n          GET_CHILD_ACCOUNT_USERS:\n            Permission to get child account users. Note that this is only\n            applicable to SaaS accounts with reseller subscription.\n\n\n          MANAGE_CHILD_ACCOUNTS:\n            Currently implies `CREATE_CHILD_ACCOUNTS`, `UPDATE_CHILD_ACCOUNTS`,\n            `DELETE_CHILD_ACCOUNTS`, `CREATE_CHILD_ACCOUNT_USERS`,\n            `GET_CHILD_ACCOUNTS`, and `GET_CHILD_ACCOUNT_USERS` permissions.\n\n\n          CREATE_LOCAL_GROUPS:\n            Permission to create new local groups.\n\n\n          CREATE_EXTERNAL_GROUPS:\n            Permission to create new group backed by external HSM/KMS.\n\n\n          ALLOW_QUORUM_REVIEWER:\n            Controls if the user can act as an approval policy reviewer.\n\n\n          ALLOW_KEY_CUSTODIAN:\n            Controls if the user can act as a key custodian.\n\n\n          GET_ALL_APPROVAL_REQUESTS:\n            Grants read access to **all** approval requests in the account. Note\n            that there is a related group-level permission that is restricted to\n            approval requests related to one group.\n\n\n          GET_ADMIN_APPS:\n            Permission to get administrative apps.\n\n\n          GET_CUSTOM_ROLES:\n            Permission to get custom user roles.\n\n\n          GET_EXTERNAL_ROLES:\n            Permission to get external roles.\n\n\n          GET_ALL_USERS:\n            Permission to get all users. Note that users can always get\n            themselves.\n\n\n          GET_ACCOUNT_USAGE:\n            Grants access to accounts::GetAccountUsage API.\n\n\n          MANAGE_KEY_EXPIRY_ALERTS:\n            Permission to manage key expiry alert configurations.\n\n\n          MANAGE_REPLICATION:\n            Permission to modify an account's `purpose` field (e.g., changing a\n            replication account's settings), or to call any APIs involving\n            replication credentials. If the account is not a replication account,\n            this permission has no effect.\n\n"
+      type: string
+      enum:
+      - MANAGE_LOGGING
+      - MANAGE_AUTH
+      - MANAGE_WORKSPACE_CSE
+      - UNWRAP_WORKSPACE_CSE_PRIVILEGED
+      - MANAGE_ACCOUNT_CLIENT_CONFIGS
+      - MANAGE_PLUGIN_CODE_SIGNING_POLICY
+      - CREATE_ACCOUNT_APPROVAL_POLICY
+      - SET_APPROVAL_REQUEST_EXPIRY
+      - MANAGE_APPROVAL_REQUEST_SETTINGS
+      - UPDATE_ACCOUNT_CUSTOM_METADATA_ATTRIBUTES
+      - MANAGE_ACCOUNT_SUBSCRIPTION
+      - MANAGE_ACCOUNT_PROFILE
+      - DELETE_ACCOUNT
+      - CREATE_ADMIN_APPS
+      - UPDATE_ADMIN_APPS
+      - DELETE_ADMIN_APPS
+      - RETRIEVE_ADMIN_APP_SECRETS
+      - MANAGE_ADMIN_APPS
+      - CREATE_CUSTOM_ROLES
+      - UPDATE_CUSTOM_ROLES
+      - DELETE_CUSTOM_ROLES
+      - MANAGE_CUSTOM_ROLES
+      - INVITE_USERS_TO_ACCOUNT
+      - DELETE_USERS_FROM_ACCOUNT
+      - UPDATE_USERS_ACCOUNT_ROLE
+      - UPDATE_USERS_ACCOUNT_ENABLED_STATE
+      - MANAGE_ACCOUNT_USERS
+      - CREATE_EXTERNAL_ROLES
+      - SYNC_EXTERNAL_ROLES
+      - DELETE_EXTERNAL_ROLES
+      - MANAGE_EXTERNAL_ROLES
+      - CREATE_ACCOUNT_SOBJECT_POLICIES
+      - UPDATE_ACCOUNT_SOBJECT_POLICIES
+      - DELETE_ACCOUNT_SOBJECT_POLICIES
+      - MANAGE_ACCOUNT_SOBJECT_POLICIES
+      - CREATE_CHILD_ACCOUNTS
+      - UPDATE_CHILD_ACCOUNTS
+      - DELETE_CHILD_ACCOUNTS
+      - CREATE_CHILD_ACCOUNT_USERS
+      - GET_CHILD_ACCOUNTS
+      - GET_CHILD_ACCOUNT_USERS
+      - MANAGE_CHILD_ACCOUNTS
+      - CREATE_LOCAL_GROUPS
+      - CREATE_EXTERNAL_GROUPS
+      - ALLOW_QUORUM_REVIEWER
+      - ALLOW_KEY_CUSTODIAN
+      - GET_ALL_APPROVAL_REQUESTS
+      - GET_ADMIN_APPS
+      - GET_CUSTOM_ROLES
+      - GET_EXTERNAL_ROLES
+      - GET_ALL_USERS
+      - GET_ACCOUNT_USAGE
+      - MANAGE_KEY_EXPIRY_ALERTS
+      - MANAGE_REPLICATION
+    RoleDetails:
+      oneOf:
+      - $ref: '#/components/schemas/RoleDetailsVariantAccount'
+      - $ref: '#/components/schemas/RoleDetailsVariantGroup'
+      discriminator:
+        propertyName: kind
+        mapping:
+          account: RoleDetailsVariantAccount
+          group: RoleDetailsVariantGroup
     GroupPermissions:
       description: "\n\n\n          CREATE_GROUP_APPROVAL_POLICY:\n            Permission to create group-level approval policy. Note that\n            updating/deleting the approval policy is protected by the approval\n            policy itself. Implies `GET_GROUP`.\n\n\n          UPDATE_GROUP_EXTERNAL_LINKS:\n            Permission to update external HSM/KMS configurations. Note that this\n            is only useful for groups backed by external HSM/KMS. Implies\n            `GET_GROUP`.\n\n\n          MANAGE_GROUP_CLIENT_CONFIGS:\n            Permission to manage group-level client configurations. Implies\n            `GET_GROUP`.\n\n\n          UPDATE_GROUP_PROFILE:\n            Permission to update name, description and custom metadata of the\n            group. Implies `GET_GROUP`.\n\n\n          DELETE_GROUP:\n            Permission to delete the group. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES_FOR_APPS:\n            Permission to map external roles to DSM groups for apps authorized\n            through LDAP. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES_FOR_USERS:\n            Permission to map external roles to DSM groups for users authorized\n            through LDAP. Implies `GET_GROUP`.\n\n\n          MAP_EXTERNAL_ROLES:\n            Currently implies `MAP_EXTERNAL_ROLES_FOR_APPS`,\n            `MAP_EXTERNAL_ROLES_FOR_USERS`, and `GET_GROUP` permissions.\n\n\n          ADD_USERS_TO_GROUP:\n            Permission to add users to the group.\n\n\n          DELETE_USERS_FROM_GROUP:\n            Permission to remove users from the group.\n\n\n          UPDATE_USERS_GROUP_ROLE:\n            Permission to change users' role in the group.\n\n\n          MANAGE_GROUP_USERS:\n            Currently implies `ADD_USERS_TO_GROUP`, `DELETE_USERS_FROM_GROUP`,\n            and `UPDATE_USERS_GROUP_ROLE` permissions.\n\n\n          CREATE_GROUP_SOBJECT_POLICIES:\n            Permission to create various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          UPDATE_GROUP_SOBJECT_POLICIES:\n            Permission to update various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          DELETE_GROUP_SOBJECT_POLICIES:\n            Permission to delete various group-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy. Implies `GET_GROUP`.\n\n\n          MANAGE_GROUP_SOBJECT_POLICIES:\n            Currently implies `CREATE_GROUP_SOBJECT_POLICIES`,\n            `UPDATE_GROUP_SOBJECT_POLICIES`, `DELETE_GROUP_SOBJECT_POLICIES`,\n            and `GET_GROUP` permissions.\n\n\n          CREATE_GROUP_CUSTODIAN_POLICY:\n            Permission to create key custodian policy for the group. Implies\n            `GET_GROUP`.\n\n\n          UPDATE_GROUP_CUSTODIAN_POLICY:\n            Permission to update group's key custodian policy. Implies\n            `GET_GROUP`.\n\n\n          DELETE_GROUP_CUSTODIAN_POLICY:\n            Permission to delete group's key custodian policy. Implies\n            `GET_GROUP`.\n\n\n          MANAGE_GROUP_CUSTODIAN_POLICY:\n            Currently implies `CREATE_GROUP_CUSTODIAN_POLICY`,\n            `UPDATE_GROUP_CUSTODIAN_POLICY`, `DELETE_GROUP_CUSTODIAN_POLICY`,\n            and `GET_GROUP` permissions.\n\n\n          CREATE_APPS:\n            Permission to create cryptographic apps. Implies `GET_APPS`.\n\n\n          UPDATE_APPS:\n            Permission to update cryptographic apps. Implies `GET_APPS`.\n\n\n          RETRIEVE_APP_SECRETS:\n            Permission to retrieve cryptographic apps' secrets. Note that not\n            all cryptographic app credentials contain secrets. If a\n            cryptographic app's credential does not contain any secrets,\n            `GET_APPS` permission is sufficient to call the `GetAppCredential`\n            API. Implies `GET_APPS`.\n\n\n          DELETE_APPS:\n            Permission to delete cryptographic apps. Implies `GET_APPS`.\n\n\n          MANAGE_APPS:\n            Currently implies `CREATE_APPS`, `UPDATE_APPS`,\n            `RETRIEVE_APP_SECRETS`, `DELETE_APPS`, and `GET_APPS` permissions.\n\n\n          CREATE_PLUGINS:\n            Permission to create plugins. Implies `GET_PLUGINS`.\n            For creating a plugin, following group permissions are also required\n            in each group plugin is being added, to prevent privilege escalation:\n            `CREATE_SOBJECTS`, `EXPORT_SOBJECTS`, `COPY_SOBJECTS`,\n            `WRAP_SOBJECTS`, `UNWRAP_SOBJECTS`, `ENCAPSULATE_SOBJECTS`, `DECAPSULATE_SOBJECTS`,\n            `DERIVE_SOBJECTS`, `TRANSFORM_SOBJECTS`, `UPDATE_SOBJECTS_ENABLED_STATE`,\n            `ROTATE_SOBJECTS`, `DELETE_SOBJECTS`, `REVOKE_SOBJECTS`, `ACTIVATE_SOBJECTS`,\n            `MOVE_SOBJECTS`, `UPDATE_KEY_OPS`, `UPDATE_SOBJECT_POLICIES`, `UPDATE_SOBJECTS_PROFILE`,\n            `GET_GROUP`, `GET_SOBJECTS`, `GET_APPS`, `GET_PLUGINS`, `GET_AUDIT_LOGS`\n            Following account permissions are required as well:\n            `GET_ALL_USERS`\n\n\n          UPDATE_PLUGINS:\n            Permission to update plugins. Implies `GET_PLUGINS`.\n            For updating a plugin, following group permissions are also required\n            in each group plugin is being added, to prevent privilege escalation:\n            `CREATE_SOBJECTS`, `EXPORT_SOBJECTS`, `COPY_SOBJECTS`, `WRAP_SOBJECTS`, `UNWRAP_SOBJECTS`,\n            `ENCAPSULATE_SOBJECTS`, `DECAPSULATE_SOBJECTS`, `UPDATE_SOBJECTS_ENABLED_STATE`,\n            `ROTATE_SOBJECTS`, `DELETE_SOBJECTS`, `REVOKE_SOBJECTS`, `ACTIVATE_SOBJECTS`,\n            `MOVE_SOBJECTS`, `UPDATE_KEY_OPS`, `UPDATE_SOBJECT_POLICIES`, `UPDATE_SOBJECTS_PROFILE`,\n            `GET_GROUP`, `GET_SOBJECTS`, `GET_APPS`, `GET_PLUGINS`, `GET_AUDIT_LOGS`\n            Following account permissions are required as well while adding\n            new groups:\n            `GET_ALL_USERS`\n\n\n          INVOKE_PLUGINS:\n            Permission to invoke plugins. Implies `GET_PLUGINS`.\n\n\n          DELETE_PLUGINS:\n            Permission to delete plugins. Implies `GET_PLUGINS`.\n\n\n          MANAGE_PLUGINS:\n            Currently implies `CREATE_PLUGINS`, `UPDATE_PLUGINS`,\n            `INVOKE_PLUGINS`, `DELETE_PLUGINS`, and `GET_PLUGINS` permissions.\n\n\n          CREATE_SOBJECTS:\n            Permission to create security objects. This permission is required\n            for APIs that result in creation of a new security object including:\n            Generate, Import, Unwrap. Also required in destination group when\n            moving a key to a different group or when copying a key. Implies\n            `GET_SOBJECTS`.\n\n\n          EXPORT_SOBJECTS:\n            Permission to export security objects. This permission is required\n            for Export, ExportByComponents, Copy (depending on destination\n            group), Restore, and Wrap (for wrapped security object) APIs.\n            Implies `GET_SOBJECTS`.\n\n\n          COPY_SOBJECTS:\n            Permission to copy security objects. This permission is required in\n            the source group when calling the Copy API. Implies `GET_SOBJECTS`.\n\n\n          WRAP_SOBJECTS:\n            Permission to wrap security objects. This permission is required in\n            the wrapping security object's group. Implies `GET_SOBJECTS`.\n\n\n          UNWRAP_SOBJECTS:\n            Permission to unwrap security objects. This permission is required\n            in the unwrapping security object's group. Implies `GET_SOBJECTS`.\n\n\n          DERIVE_SOBJECTS:\n            Permission to derive other security objects. Implies `GET_SOBJECTS`.\n\n\n          TRANSFORM_SOBJECTS:\n            Permission to transform security objects. Implies `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECTS_ENABLED_STATE:\n            Permission to enable/disable security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          ROTATE_SOBJECTS:\n            Permission to rotate (a.k.a. \"rekey\") security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          DELETE_SOBJECTS:\n            Permission to delete security objects. Implies `GET_SOBJECTS`.\n\n\n          DESTROY_SOBJECTS:\n            Permission to destroy security objects. Implies `GET_SOBJECTS`.\n\n\n          REVOKE_SOBJECTS:\n            Permission to revoke security objects, i.e. mark security objects as\n            deactivated or compromised. Implies `GET_SOBJECTS`.\n\n\n          ACTIVATE_SOBJECTS:\n            Permission to activate security objects. Implies `GET_SOBJECTS`.\n\n\n          REVERT_SOBJECTS:\n            Permission to revert changes to security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          DELETE_KEY_MATERIAL:\n            Permission to delete key material including removing the private key\n            part of an asymmetric key pair and removing key material of security\n            objects backed by external HSM/KMS. Implies `GET_SOBJECTS`.\n\n\n          MOVE_SOBJECTS:\n            Permission to move security objects. This permission is required for\n            changing the group of a security object in the source group. Note\n            that changing the group of a security object also requires\n            `CREATE_SOBJECTS` permission in the destination group. Implies\n            `GET_SOBJECTS`.\n\n\n          UPDATE_KEY_OPS:\n            Permission to update key operations of security objects. Implies\n            `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECT_POLICIES:\n            Permission to update individual security objects' policies. This\n            permission allows updating RSA options, as well as Google access\n            reason policy (for use with Google EKM APIs) defined on the security\n            object itself. Implies `GET_SOBJECTS`.\n\n\n          UPDATE_SOBJECTS_PROFILE:\n            Permission to update name, description, custom metadata, key links\n            (currently only create parent link), and publish public key settings\n            of security objects. Implies `GET_SOBJECTS`.\n\n\n          SCAN_EXTERNAL_SOBJECTS:\n            Permission to scan for security objects in external HSM/KMS. Implies\n            `GET_SOBJECTS`.\n\n\n          RESTORE_EXTERNAL_SOBJECTS:\n            Permission to restore key material of security objects backed by\n            external HSM/KMS. Note that calling the Restore API needs this\n            permission in the destination group as well as `EXPORT_SOBJECTS`\n            permission in the source group (where the object was copied from\n            originally). Implies `GET_SOBJECTS`.\n\n\n          WRAP_WORKSPACE_CSE:\n            Permission to call Workspace CSE Wrap API.\n\n\n          UNWRAP_WORKSPACE_CSE:\n            Permission to call Workspace CSE Unwrap API.\n\n\n          WORKSPACE_CSE:\n\n\n          GET_GROUP:\n            Permission to get information about the group.\n\n\n          GET_SOBJECTS:\n            Permission to get security objects stored in the group.\n\n\n          GET_APPS:\n            Permission to get cryptographic apps in the group.\n\n\n          GET_PLUGINS:\n            Permission to get plugin in the group.\n\n\n          GET_GROUP_APPROVAL_REQUESTS:\n            Permission to get approval requests related to the group.\n\n\n          GET_AUDIT_LOGS:\n            Permission to get audit logs related to the group.\n\n\n          MANAGE_GROUP_WRAPPING_KEY:\n            Permission to update or remove wrapping key of the  group\n\n\n          ENCAPSULATE_SOBJECTS:\n            Permission to encapsulate security objects. Implies `CREATE_SOBJECTS`.\n\n\n          DECAPSULATE_SOBJECTS:\n            Permission to decapsulate security objects. Implies `CREATE_SOBJECTS`.\n\n\n          GET_CREDENTIALS:\n            Permission to lookup a credential object\n\n\n          CREATE_CREDENTIALS:\n            Permission to create a credential object (Implies GET_CREDENTIALS)\n\n\n          UPDATE_CREDENTIALS:\n            Permission to update a credential object (Implies GET_CREDENTIALS)\n\n\n          DELETE_CREDENTIALS:\n            Permission to delete a credential object (Implies GET_CREDENTIALS)\n\n\n          ASSIGN_CREDENTIALS:\n            Permission to assign credential objects to integration points (Implies GET_CREDENTIALS)\n\n\n          MANAGE_CREDENTIALS:\n            Permission to manage credential objects (Currently implies `GET_CREDENTIALS`,\n            `CREATE_CREDENTIALS`, `UPDATE_CREDENTIALS`, `DELETE_CREDENTIALS`, and\n            `ASSIGN_CREDENTIALS`).\n\n"
       type: string
@@ -248,115 +438,6 @@ components:
       - DELETE_CREDENTIALS
       - ASSIGN_CREDENTIALS
       - MANAGE_CREDENTIALS
-    RoleSort:
-      oneOf:
-      - title: RoleSortVariantByRoleId
-        type: object
-        properties:
-          sort:
-            type: string
-            pattern: ^role_id:(?:asc|desc)$
-            example: role_id:asc
-          start:
-            type: string
-            format: uuid
-        required:
-        - sort
-    OauthScope:
-      description: OAuth scope.
-      type: string
-      enum:
-      - app
-      - openid
-      - email
-      - profile
-    AccountPermissions:
-      description: "\n\n\n          MANAGE_LOGGING:\n            Permission to manage logging integrations, and enable/disable error\n            logging.\n\n\n          MANAGE_AUTH:\n            Permission to manage SSO and password policy.\n\n\n          MANAGE_WORKSPACE_CSE:\n            Permission to manage Workspace CSE configuration.\n\n\n          UNWRAP_WORKSPACE_CSE_PRIVILEGED:\n            Permission required for Workspace CSE PrivilegedUnwrap API. Note\n            that `UNWRAP_WORKSPACE_CSE` permission in the group where the key is\n            stored is also required.\n\n\n          MANAGE_ACCOUNT_CLIENT_CONFIGS:\n            Permission to manage account level client configurations.\n\n\n          MANAGE_PLUGIN_CODE_SIGNING_POLICY:\n            Permission to manage plugin code signing policy.\n\n\n          CREATE_ACCOUNT_APPROVAL_POLICY:\n            Permission to create account-level approval policy. Note that\n            updating/deleting the approval policy is protected by the approval\n            policy itself.\n\n\n          SET_APPROVAL_REQUEST_EXPIRY:\n            Permission to set approval request expiry for all approval requests\n            created in the account.\n\n\n          MANAGE_APPROVAL_REQUEST_SETTINGS:\n            Permission to manage all approval request settings including\n            approval request expiry. Implies `SET_APPROVAL_REQUEST_EXPIRY`.\n\n\n          UPDATE_ACCOUNT_CUSTOM_METADATA_ATTRIBUTES:\n            Permission to update account's custom metadata attributes.\n\n\n          MANAGE_ACCOUNT_SUBSCRIPTION:\n            Permission to manage account subscription (only relevant for SaaS\n            accounts).\n\n\n          MANAGE_ACCOUNT_PROFILE:\n            Permission to update account name, custom logo, and other profile\n            information.\n\n\n          DELETE_ACCOUNT:\n            Permission to delete the account.\n\n\n          CREATE_ADMIN_APPS:\n            Permission to create administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          UPDATE_ADMIN_APPS:\n            Permission to update administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          DELETE_ADMIN_APPS:\n            Permission to delete administrative apps. Implies `GET_ADMIN_APPS`.\n\n\n          RETRIEVE_ADMIN_APP_SECRETS:\n            Permission to retrieve administrative apps' secrets. Note that not\n            all admin app credentials contain secrets. If an admin app's\n            credential does not contain any secrets, `GET_ADMIN_APPS` permission\n            is sufficient to call the `GetAppCredential` API. Implies\n            `GET_ADMIN_APPS`.\n\n\n          MANAGE_ADMIN_APPS:\n            Currently implies `CREATE_ADMIN_APPS`, `UPDATE_ADMIN_APPS`,\n            `DELETE_ADMIN_APPS`, `RETRIEVE_ADMIN_APP_SECRETS` and\n            `GET_ADMIN_APPS` permissions.\n\n\n          CREATE_CUSTOM_ROLES:\n            Permission to create custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          UPDATE_CUSTOM_ROLES:\n            Permission to update custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          DELETE_CUSTOM_ROLES:\n            Permission to delete custom user roles. Implies `GET_CUSTOM_ROLES`.\n\n\n          MANAGE_CUSTOM_ROLES:\n            Currently implies `CREATE_CUSTOM_ROLES`, `UPDATE_CUSTOM_ROLES`,\n            `DELETE_CUSTOM_ROLES` and `GET_CUSTOM_ROLES` permissions.\n\n\n          INVITE_USERS_TO_ACCOUNT:\n            Permission to invite users to the account. Implies `GET_ALL_USERS`.\n\n\n          DELETE_USERS_FROM_ACCOUNT:\n            Permission to remove users from the account. Implies\n            `GET_ALL_USERS`.\n\n\n          UPDATE_USERS_ACCOUNT_ROLE:\n            Permission to change users' role in the account. Implies\n            `GET_ALL_USERS`.\n\n\n          UPDATE_USERS_ACCOUNT_ENABLED_STATE:\n            Permission to enable/disable users in the account. Implies\n            `GET_ALL_USERS`.\n\n\n          MANAGE_ACCOUNT_USERS:\n            Currently implies `INVITE_USERS_TO_ACCOUNT`,\n            `DELETE_USERS_FROM_ACCOUNT`, `UPDATE_USERS_ACCOUNT_ROLE`,\n            `UPDATE_USERS_ACCOUNT_ENABLED_STATE` and `GET_ALL_USERS`\n            permissions.\n\n\n          CREATE_EXTERNAL_ROLES:\n            Permission to create external roles. Implies `GET_EXTERNAL_ROLES`.\n\n\n          SYNC_EXTERNAL_ROLES:\n            Permission to synchronize external roles. Implies\n            `GET_EXTERNAL_ROLES`.\n\n\n          DELETE_EXTERNAL_ROLES:\n            Permission to delete external roles. Implies `GET_EXTERNAL_ROLES`.\n\n\n          MANAGE_EXTERNAL_ROLES:\n            Currently implies `CREATE_EXTERNAL_ROLES`, `SYNC_EXTERNAL_ROLES`,\n            `DELETE_EXTERNAL_ROLES` and `GET_EXTERNAL_ROLES` permissions.\n\n\n          CREATE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to create various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          UPDATE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to update various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          DELETE_ACCOUNT_SOBJECT_POLICIES:\n            Permission to delete various account-level security object policies\n            including cryptographic policy, key metadata policy and key history\n            policy.\n\n\n          MANAGE_ACCOUNT_SOBJECT_POLICIES:\n            Currently implies `CREATE_ACCOUNT_SOBJECT_POLICIES`,\n            `UPDATE_ACCOUNT_SOBJECT_POLICIES`, and\n            `DELETE_ACCOUNT_SOBJECT_POLICIES` permissions.\n\n\n          CREATE_CHILD_ACCOUNTS:\n            Permission to create child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          UPDATE_CHILD_ACCOUNTS:\n            Permission to update child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          DELETE_CHILD_ACCOUNTS:\n            Permission to delete child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS`.\n\n\n          CREATE_CHILD_ACCOUNT_USERS:\n            Permission to create users in child accounts. Note that this is only\n            applicable to SaaS accounts with reseller subscription. Implies\n            `GET_CHILD_ACCOUNTS` and `GET_CHILD_ACCOUNT_USERS`.\n\n\n          GET_CHILD_ACCOUNTS:\n            Permission to get child accounts. Note that this is only applicable\n            to SaaS accounts with reseller subscription.\n\n\n          GET_CHILD_ACCOUNT_USERS:\n            Permission to get child account users. Note that this is only\n            applicable to SaaS accounts with reseller subscription.\n\n\n          MANAGE_CHILD_ACCOUNTS:\n            Currently implies `CREATE_CHILD_ACCOUNTS`, `UPDATE_CHILD_ACCOUNTS`,\n            `DELETE_CHILD_ACCOUNTS`, `CREATE_CHILD_ACCOUNT_USERS`,\n            `GET_CHILD_ACCOUNTS`, and `GET_CHILD_ACCOUNT_USERS` permissions.\n\n\n          CREATE_LOCAL_GROUPS:\n            Permission to create new local groups.\n\n\n          CREATE_EXTERNAL_GROUPS:\n            Permission to create new group backed by external HSM/KMS.\n\n\n          ALLOW_QUORUM_REVIEWER:\n            Controls if the user can act as an approval policy reviewer.\n\n\n          ALLOW_KEY_CUSTODIAN:\n            Controls if the user can act as a key custodian.\n\n\n          GET_ALL_APPROVAL_REQUESTS:\n            Grants read access to **all** approval requests in the account. Note\n            that there is a related group-level permission that is restricted to\n            approval requests related to one group.\n\n\n          GET_ADMIN_APPS:\n            Permission to get administrative apps.\n\n\n          GET_CUSTOM_ROLES:\n            Permission to get custom user roles.\n\n\n          GET_EXTERNAL_ROLES:\n            Permission to get external roles.\n\n\n          GET_ALL_USERS:\n            Permission to get all users. Note that users can always get\n            themselves.\n\n\n          GET_ACCOUNT_USAGE:\n            Grants access to accounts::GetAccountUsage API.\n\n\n          MANAGE_KEY_EXPIRY_ALERTS:\n            Permission to manage key expiry alert configurations.\n\n\n          MANAGE_REPLICATION:\n            Permission to modify an account's `purpose` field (e.g., changing a\n            replication account's settings), or to call any APIs involving\n            replication credentials. If the account is not a replication account,\n            this permission has no effect.\n\n"
-      type: string
-      enum:
-      - MANAGE_LOGGING
-      - MANAGE_AUTH
-      - MANAGE_WORKSPACE_CSE
-      - UNWRAP_WORKSPACE_CSE_PRIVILEGED
-      - MANAGE_ACCOUNT_CLIENT_CONFIGS
-      - MANAGE_PLUGIN_CODE_SIGNING_POLICY
-      - CREATE_ACCOUNT_APPROVAL_POLICY
-      - SET_APPROVAL_REQUEST_EXPIRY
-      - MANAGE_APPROVAL_REQUEST_SETTINGS
-      - UPDATE_ACCOUNT_CUSTOM_METADATA_ATTRIBUTES
-      - MANAGE_ACCOUNT_SUBSCRIPTION
-      - MANAGE_ACCOUNT_PROFILE
-      - DELETE_ACCOUNT
-      - CREATE_ADMIN_APPS
-      - UPDATE_ADMIN_APPS
-      - DELETE_ADMIN_APPS
-      - RETRIEVE_ADMIN_APP_SECRETS
-      - MANAGE_ADMIN_APPS
-      - CREATE_CUSTOM_ROLES
-      - UPDATE_CUSTOM_ROLES
-      - DELETE_CUSTOM_ROLES
-      - MANAGE_CUSTOM_ROLES
-      - INVITE_USERS_TO_ACCOUNT
-      - DELETE_USERS_FROM_ACCOUNT
-      - UPDATE_USERS_ACCOUNT_ROLE
-      - UPDATE_USERS_ACCOUNT_ENABLED_STATE
-      - MANAGE_ACCOUNT_USERS
-      - CREATE_EXTERNAL_ROLES
-      - SYNC_EXTERNAL_ROLES
-      - DELETE_EXTERNAL_ROLES
-      - MANAGE_EXTERNAL_ROLES
-      - CREATE_ACCOUNT_SOBJECT_POLICIES
-      - UPDATE_ACCOUNT_SOBJECT_POLICIES
-      - DELETE_ACCOUNT_SOBJECT_POLICIES
-      - MANAGE_ACCOUNT_SOBJECT_POLICIES
-      - CREATE_CHILD_ACCOUNTS
-      - UPDATE_CHILD_ACCOUNTS
-      - DELETE_CHILD_ACCOUNTS
-      - CREATE_CHILD_ACCOUNT_USERS
-      - GET_CHILD_ACCOUNTS
-      - GET_CHILD_ACCOUNT_USERS
-      - MANAGE_CHILD_ACCOUNTS
-      - CREATE_LOCAL_GROUPS
-      - CREATE_EXTERNAL_GROUPS
-      - ALLOW_QUORUM_REVIEWER
-      - ALLOW_KEY_CUSTODIAN
-      - GET_ALL_APPROVAL_REQUESTS
-      - GET_ADMIN_APPS
-      - GET_CUSTOM_ROLES
-      - GET_EXTERNAL_ROLES
-      - GET_ALL_USERS
-      - GET_ACCOUNT_USAGE
-      - MANAGE_KEY_EXPIRY_ALERTS
-      - MANAGE_REPLICATION
-    RoleRequest:
-      allOf:
-      - type: object
-        properties:
-          description:
-            type:
-            - string
-            - 'null'
-          details:
-            $ref: '#/components/schemas/RoleDetails'
-          name:
-            type:
-            - string
-            - 'null'
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-    ListRolesResponse:
-      allOf:
-      - type: object
-        properties:
-          metadata:
-            $ref: '#/components/schemas/Metadata'
-          items:
-            type: array
-            items:
-              $ref: '#/components/schemas/Role'
-        required:
-        - metadata
-        - items
     AccountRole:
       allOf:
       - type: object
@@ -381,18 +462,6 @@ components:
               `RoleKind::Group`.'
         required:
         - permissions
-    Metadata:
-      allOf:
-      - type: object
-        properties:
-          total_count:
-            type:
-            - integer
-            - 'null'
-          filtered_count:
-            type:
-            - integer
-            - 'null'
     RoleDetailsVariantGroup:
       allOf:
       - type: object
@@ -404,112 +473,43 @@ components:
         required:
         - kind
       - $ref: '#/components/schemas/GroupRole'
-    Principal:
-      description: A security principal.
-      oneOf:
-      - title: PrincipalVariantApp
-        type: object
-        properties:
-          app:
-            type: string
-            format: uuid
-        required:
-        - app
-      - title: PrincipalVariantUser
-        type: object
-        properties:
-          user:
-            type: string
-            format: uuid
-        required:
-        - user
-      - title: PrincipalVariantPlugin
-        type: object
-        properties:
-          plugin:
-            type: string
-            format: uuid
-        required:
-        - plugin
-      - title: PrincipalVariantUserViaApp
-        type: object
-        properties:
-          userviaapp:
-            $ref: '#/components/schemas/PrincipalUserViaApp'
-        required:
-        - userviaapp
-      - title: PrincipalVariantSystem
-        type: string
-        enum:
-        - system
-      - title: PrincipalVariantUnregisteredUser
-        type: string
-        enum:
-        - unregistereduser
-    PrincipalUserViaApp:
+    ListRolesResponse:
       allOf:
       - type: object
-        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
         properties:
-          user_id:
-            type: string
-            format: uuid
-          scopes:
+          metadata:
+            $ref: '#/components/schemas/Metadata'
+          items:
             type: array
-            uniqueItems: true
             items:
-              $ref: '#/components/schemas/OauthScope'
+              $ref: '#/components/schemas/Role'
         required:
-        - user_id
-        - scopes
-    RoleDetailsVariantAccount:
-      allOf:
-      - type: object
-        properties:
-          kind:
-            type: string
-            enum:
-            - account
-        required:
-        - kind
-      - $ref: '#/components/schemas/AccountRole'
-    RoleKind:
+        - metadata
+        - items
+    OauthScope:
+      description: OAuth scope.
       type: string
       enum:
-      - account
-      - group
-    ListRolesParams:
+      - app
+      - openid
+      - email
+      - profile
+    RoleRequest:
       allOf:
       - type: object
         properties:
-          filter:
-            type: string
-          limit:
-            type: integer
-      - $ref: '#/components/schemas/RoleSort'
-    GroupRole:
-      allOf:
-      - type: object
-        properties:
-          permissions:
-            type: array
-            items:
-              $ref: '#/components/schemas/GroupPermissions'
-          exclusive:
+          description:
             type:
-            - boolean
+            - string
             - 'null'
-        required:
-        - permissions
-    RoleDetails:
-      oneOf:
-      - $ref: '#/components/schemas/RoleDetailsVariantAccount'
-      - $ref: '#/components/schemas/RoleDetailsVariantGroup'
-      discriminator:
-        propertyName: kind
-        mapping:
-          account: RoleDetailsVariantAccount
-          group: RoleDetailsVariantGroup
+          details:
+            $ref: '#/components/schemas/RoleDetails'
+          name:
+            type:
+            - string
+            - 'null'
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
   parameters:
     ListRolesParams:
       in: query
