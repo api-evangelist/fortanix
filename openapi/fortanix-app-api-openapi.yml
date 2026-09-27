@@ -205,14 +205,6 @@ paths:
       - bearerToken: []
 components:
   schemas:
-    JavaRuntime:
-      type: string
-      description: Java runtime mode for conversion.
-      enum:
-      - JAVA-ORACLE
-      - OPENJDK
-      - OPENJ9
-      - LIBERTY-JRE
     NitroEnclaveSigner:
       type: object
       required:
@@ -221,48 +213,6 @@ components:
         pcr8:
           type: string
           description: The signer pcr as a hex string.
-    GpuVendor:
-      type: string
-      description: An enum for GPU Vendor
-      enum:
-      - Nvidia
-    DockerInfo:
-      type: object
-      description: Docker info of an image.
-      required:
-      - docker_image_name
-      - docker_version
-      properties:
-        docker_image_name:
-          type: string
-          description: Image docker image name.
-        docker_version:
-          type: string
-          description: Image docker version.
-        docker_image_sha:
-          type: string
-          description: Build docker image sha.
-        docker_image_size:
-          type: integer
-          format: int64
-          description: Docker image size in MiB (units of 2**20 bytes).
-        exposed_ports:
-          description: List of ports exposed by the Docker image.
-          items:
-            $ref: '#/components/schemas/DockerNetworkPort'
-          type: array
-    DockerNetworkPort:
-      type: object
-      description: A port exposed by a docker container.
-      required:
-      - port
-      - protocol
-      properties:
-        port:
-          type: integer
-          description: A valid, specific port number from 1..65535 (inclusive).
-        protocol:
-          $ref: '#/components/schemas/DockerNetworkProtocol'
     AppRequest:
       type: object
       description: Request to create an app.
@@ -328,31 +278,93 @@ components:
           type: string
           format: uuid
           description: Group Id
-    SgxSigner:
+    AppNodeInfo:
       type: object
       required:
-      - mrsigner
-      - isvprodid
+      - certificate
+      - created_at
+      - node_id
+      description: Detailed info of an app running on a compute node.
       properties:
-        mrsigner:
+        certificate:
+          $ref: '#/components/schemas/Certificate'
+        created_at:
+          type: integer
+          format: int64
+          description: App compute node creation time.
+        node_id:
           type: string
-          description: mrsigner as a hex string.
-        isvprodid:
+          format: uuid
+          description: Compute Node Id.
+        node_name:
+          type: string
+          description: Compute Node Name.
+        status:
+          $ref: '#/components/schemas/AppStatus'
+        build_info:
+          $ref: '#/components/schemas/Build'
+        message_count:
           type: integer
           format: int32
-          description: ISV Product Id.
-    HashAlgorithm:
+          description: App heartbeat message count.
+        key_id:
+          type: string
+          description: Key Id for app heartbeat.
+        is_debug:
+          type: boolean
+          description: App running in debug mode or not.
+    GetAllAppsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/App'
+    CertificateStatusType:
       type: string
+      description: Certificate status.
       enum:
-      - SHA256
-    AmdSevSnpVmpl:
-      type: string
-      description: Virtual Machine Privilege Level
-      enum:
-      - vmpl0
-      - vmpl1
-      - vmpl2
-      - vmpl3
+      - PENDING
+      - REJECTED
+      - ISSUED
+      - REVOKED
+      - EXPIRED
+    DefaultNitroEnclavesBuildSettings:
+      type: object
+      description: Default build settings for Nitro Enclave builds
+      properties:
+        cpu_count:
+          type: integer
+          format: int32
+          description: CPU count
+        mem_size:
+          type: integer
+          format: int64
+          description: Enclave memory size in MBs
+        enable_overlay_filesystem_persistence:
+          type: boolean
+          default: true
+          description: Flag to enable file persistence, on by default.
+    PatchRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchDocument'
+    DockerNetworkPort:
+      type: object
+      description: A port exposed by a docker container.
+      required:
+      - port
+      - protocol
+      properties:
+        port:
+          type: integer
+          description: A valid, specific port number from 1..65535 (inclusive).
+        protocol:
+          $ref: '#/components/schemas/DockerNetworkProtocol'
     AppStatus:
       type: object
       description: Run status info of an app for a compute node.
@@ -367,18 +379,395 @@ components:
           type: integer
           format: int64
           description: The app attestation date.
-    BuildDeploymentStatus:
+    JavaRuntime:
+      type: string
+      description: Java runtime mode for conversion.
+      enum:
+      - JAVA-ORACLE
+      - OPENJDK
+      - OPENJ9
+      - LIBERTY-JRE
+    CertificateDetails:
       type: object
       required:
-      - status
-      - status_updated_at
+      - subject_name
+      - issuer_name
+      - valid_from
+      - valid_until
+      - cpusvn
+      - ias_quote_status
       properties:
-        status:
-          $ref: '#/components/schemas/BuildDeploymentStatusType'
-        status_updated_at:
+        enclave_info:
+          $ref: '#/components/schemas/EnclaveInfo'
+        subject_name:
+          type: string
+          description: Name of the subject.
+        issuer_name:
+          type: string
+          description: Name of the issuer.
+        valid_until:
           type: integer
           format: int64
-          description: The time when the deployment status changed.
+          description: Certificate expiry date.
+        valid_from:
+          type: integer
+          format: int64
+          description: Certificate valid from.
+        cpusvn:
+          type: string
+          description: CPUSVN, as a hex string.
+        ias_quote_status:
+          type: string
+          description: IAS quote status.
+    SgxAttributes:
+      type: object
+      required:
+      - mrenclave
+      properties:
+        mrenclave:
+          type: string
+          description: mrenclave as a hex string.
+        features:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    DockerInfo:
+      type: object
+      description: Docker info of an image.
+      required:
+      - docker_image_name
+      - docker_version
+      properties:
+        docker_image_name:
+          type: string
+          description: Image docker image name.
+        docker_version:
+          type: string
+          description: Image docker version.
+        docker_image_sha:
+          type: string
+          description: Build docker image sha.
+        docker_image_size:
+          type: integer
+          format: int64
+          description: Docker image size in MiB (units of 2**20 bytes).
+        exposed_ports:
+          description: List of ports exposed by the Docker image.
+          items:
+            $ref: '#/components/schemas/DockerNetworkPort'
+          type: array
+    CertificateIssuancePolicy:
+      type: object
+      required:
+      - require_known_image
+      - require_known_signer
+      properties:
+        require_known_image:
+          type: boolean
+        require_known_signer:
+          type: boolean
+        require_known_node:
+          type: boolean
+          default: true
+    EnclaveInfo:
+      type: object
+      description: Info on a application enclave.
+      required:
+      - mrenclave
+      - mrsigner
+      - isvsvn
+      - isvprodid
+      properties:
+        mrenclave:
+          type: string
+          description: mrenclave of an image, as a hex string.
+        mrsigner:
+          type: string
+          description: mrsigner of an image, as a hex string.
+        isvprodid:
+          type: integer
+          format: int32
+          description: ISV Product Id.
+        isvsvn:
+          type: integer
+          format: int32
+          description: ISV Security Version Number.
+    AppStatusType:
+      type: string
+      description: Status string for the app on a compute node.
+      enum:
+      - RUNNING
+      - STOPPED
+      - UNKNOWN
+    PatchDocument:
+      type: object
+      description: A JSONPatch document as defined by RFC 6902. The patch operation is subset of what is supported by RFC 6902.
+      required:
+      - op
+      - path
+      properties:
+        op:
+          $ref: '#/components/schemas/PatchOperation'
+        path:
+          type: string
+          description: It is JSON pointer indicating a field to be updated
+        value:
+          type: object
+          description: It is the value to be used for the field as indicated by op and path
+    Certificate:
+      description: A certificate request or issued certificate.
+      type: object
+      properties:
+        certificate_id:
+          type: string
+          format: uuid
+          description: Certificate ID.
+        status:
+          $ref: '#/components/schemas/CertificateStatusType'
+        csr:
+          type: string
+          description: The certificate signing request.
+        certificate:
+          type: string
+          description: The certificate itself, if issued.
+        node_id:
+          type: string
+          format: uuid
+          description: The node relevant to this certificate, if known.
+        app_id:
+          type: string
+          format: uuid
+          description: The app relevant to this certificate, if known.
+        build_id:
+          type: string
+          format: uuid
+          description: The build relevant to this certificate, if known.
+    GpuVendor:
+      type: string
+      description: An enum for GPU Vendor
+      enum:
+      - Nvidia
+    SgxSigner:
+      type: object
+      required:
+      - mrsigner
+      - isvprodid
+      properties:
+        mrsigner:
+          type: string
+          description: mrsigner as a hex string.
+        isvprodid:
+          type: integer
+          format: int32
+          description: ISV Product Id.
+    BaremetalTdxAttributes:
+      type: object
+      required:
+      - mrtd
+      - rtmr0
+      - rtmr1
+      - rtmr2
+      - rtmr3
+      - coprocessors
+      properties:
+        mrtd:
+          type: string
+          description: TD firmware binary (OVMF.fd) measurement as a hex string.
+        rtmr0:
+          type: string
+          description: Firmware and platform runtime measurements as hex string
+        rtmr1:
+          type: string
+          description: Runtime measurement for kernel for direct boot and bootchain for indirect boot as hex string
+        rtmr2:
+          type: string
+          description: Runtime measurement of kernel cmdline and initrd as hex string
+        rtmr3:
+          type: string
+          description: Runtime extendable measurement register 3 as hex string
+        coprocessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coprocessor'
+    AppBodyUpdateRequest:
+      type: object
+      description: Request to update an app.
+      properties:
+        description:
+          type: string
+          description: Description of the app.
+        input_image_name:
+          type: string
+          description: Input image name of images for apps.
+        output_image_name:
+          type: string
+          description: Output image name of images for apps.
+        isvsvn:
+          type: integer
+          format: int32
+          description: ISV Security Version Number.
+        isvprodid:
+          type: integer
+          format: int32
+          description: ISV Product Id.
+        mem_size:
+          type: integer
+          format: int64
+          description: Memory size required for the image.
+        threads:
+          type: integer
+          format: int32
+          description: Threads required for the image.
+        default_build_settings:
+          type: object
+          description: Default build settings
+          $ref: '#/components/schemas/DefaultBuildSettings'
+        allowed_domains:
+          description: A set of domains requested for this application; need to be approved.
+          type: array
+          items:
+            type: string
+        advanced_settings:
+          $ref: '#/components/schemas/AdvancedSettings'
+        labels:
+          $ref: '#/components/schemas/PatchRequest'
+        custom_metadata:
+          $ref: '#/components/schemas/PatchRequest'
+        certificate_policy:
+          $ref: '#/components/schemas/CertificateIssuancePolicy'
+        signers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationSigner'
+        group_id:
+          type: string
+          format: uuid
+    AdvancedSettings:
+      type: object
+      description: Advanced settings for apps and images.
+      properties:
+        entrypoint:
+          type: array
+          items:
+            type: string
+          description: Entrypoint for the container.
+        encryptedDirs:
+          type: array
+          items:
+            type: string
+          description: "List of read-write files and/or directories which are encrypted using the enclave sealing key\nDefault encrypted directories - enclave-os protects the content in these files by encrypting them using the enclave sealing key. Anyone is allowed to read from or write to these files but only the enclave application can see it's contents in plain text.\n  - /tmp\n  - /run\n  - /ftx-efs\n  - /opt/fortanix/enclave-os/app-config/rw\nTips while debugging -> The default encrypted directories visible to the guest application as /tmp, /run and /ftx-efs are available in the container filesystem at /opt/fortanix/enclave-os/default-efs-dirs/.\n"
+        certificate:
+          $ref: '#/components/schemas/CertificateConfig'
+        java_runtime:
+          $ref: '#/components/schemas/JavaRuntime'
+          description: Java runtime mode.
+        rw_dirs:
+          type: array
+          items:
+            type: string
+          description: "List of read-write files and/or directories\nDefault read-write directories - enclave-os doesn't provide any security measures for these files and anyone is allowed to read from or write to these files.\n  - /etc/hosts\n  - /etc/resolv.conf\n  - /etc/hostname\n"
+        allowCmdlineArgs:
+          type: boolean
+          description: Allow command line arguments converter flag for an image.
+        manifestEnv:
+          type: array
+          items:
+            type: string
+          description: Environment variables that will be passed to the manifest file when the container is converted.
+        mutableEnv:
+          type: array
+          items:
+            type: string
+          description: 'Environment variables with supplied default values, but that may be overridden at runtime.
+
+            '
+    BuildStatusType:
+      type: string
+      description: Status string for the image.
+      enum:
+      - REJECTED
+      - WHITELISTED
+      - PENDING
+    AmdSevSnpVmpl:
+      type: string
+      description: Virtual Machine Privilege Level
+      enum:
+      - vmpl0
+      - vmpl1
+      - vmpl2
+      - vmpl3
+    NitroEnclaveAttributes:
+      type: object
+      required:
+      - hash_algorithm
+      - pcr0
+      - pcr1
+      - pcr2
+      properties:
+        hash_algorithm:
+          $ref: '#/components/schemas/NitroEnclaveHashAlgorithm'
+        pcr0:
+          type: string
+          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
+        pcr1:
+          type: string
+          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
+        pcr2:
+          type: string
+          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
+    DefaultSgxBuildSettings:
+      type: object
+      description: Default build settings for SGX/SGX2 builds
+      properties:
+        isvprodid:
+          type: integer
+          format: int32
+          description: ISV Product Id.
+        mem_size:
+          type: integer
+          format: int64
+          description: Memory size (in MBs) required for the image.
+        threads:
+          type: integer
+          format: int32
+          description: Threads required for the image.
+    AciAttributes:
+      type: object
+      description: ACI generated policy that represents the containers to run and other security restrictions.
+      required:
+      - policy
+      properties:
+        policy:
+          type: string
+          description: Base64-encoded output of azure confcom acipolicygen tool.
+    PatchOperation:
+      type: string
+      description: The operation to be performed
+      enum:
+      - add
+      - remove
+      - replace
+    LabelCount:
+      type: object
+      required:
+      - key
+      - value
+      - count
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        count:
+          type: integer
+          format: int32
+    Attestation:
+      type: string
+      description: Specifies whether attestation is required or ignored.
+      enum:
+      - Ignored
+      - Required
     App:
       type: object
       required:
@@ -486,45 +875,158 @@ components:
           type: string
           format: uuid
           description: Group Id
-    DockerNetworkProtocol:
+    HashAlgorithm:
       type: string
-      description: Protocol Associated with a Port exposed by a docker container.
       enum:
-      - Tcp
-      - Udp
-    BuildStatusType:
+      - SHA256
+    NitroEnclaveHashAlgorithm:
       type: string
-      description: Status string for the image.
+      description: Nitro enclave hash algorithm
       enum:
-      - REJECTED
-      - WHITELISTED
-      - PENDING
-    AppStatusType:
-      type: string
-      description: Status string for the app on a compute node.
-      enum:
-      - RUNNING
-      - STOPPED
-      - UNKNOWN
-    NitroEnclaveAttributes:
+      - Sha384
+    LaunchHint:
+      type: object
+      description: This object encodes a suggested manner for launching a confidential application. It may need to be configured further depending on your environment.
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        azure_resource_template:
+          description: The Microsoft ARM Template for launching this build. May require some properties (such as the join token).
+          type: string
+    BaremetalAmdSevSnpAttributes:
       type: object
       required:
-      - hash_algorithm
-      - pcr0
-      - pcr1
-      - pcr2
+      - measurement
+      - vmpl
+      - coprocessors
       properties:
-        hash_algorithm:
-          $ref: '#/components/schemas/NitroEnclaveHashAlgorithm'
-        pcr0:
+        measurement:
           type: string
-          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
-        pcr1:
+          description: Guest Launch Measurement as hex string
+        vmpl:
           type: string
-          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
-        pcr2:
+          description: Virtual Machine Privilege Level
+          $ref: '#/components/schemas/AmdSevSnpVmpl'
+        coprocessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coprocessor'
+    CertificateConfig:
+      type: object
+      properties:
+        issuer:
           type: string
-          description: A contiguous measure of the contents of the image file, without the section data as a hex string.
+          description: Certificate issuance strategy
+          default: MANAGER_CA
+          enum:
+          - MANAGER_CA
+          - NODE
+          - SELF_IAS
+        subject:
+          type: string
+          description: Certificate subject common name, typically a DNS name
+        keyType:
+          type: string
+          description: Type of key to generate
+          default: RSA
+          enum:
+          - RSA
+        keyParam:
+          type: object
+          description: 'Key parameters. Currently must be an instance of RsaKeyParam, but other types may be supported in the future.
+
+            '
+        keyPath:
+          type: string
+          description: Path to expose the key in the application filesystem
+        certPath:
+          type: string
+          description: Path to expose the certificate in the application filesystem
+    BuildStatus:
+      type: object
+      required:
+      - status
+      - status_updated_at
+      properties:
+        status:
+          $ref: '#/components/schemas/BuildStatusType'
+        status_updated_at:
+          type: integer
+          format: int64
+          description: Time since the status change.
+    ApplicationSigner:
+      type: object
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        sgx:
+          $ref: '#/components/schemas/SgxSigner'
+        nitro_enclave:
+          $ref: '#/components/schemas/NitroEnclaveSigner'
+    AzureCvmAttributes:
+      type: object
+      required:
+      - pcrs
+      - coprocessors
+      properties:
+        pcrs:
+          type: object
+          description: List of TPM PCRs hash values to enforce. 64 hex characters
+          required:
+          - hash_alg
+          properties:
+            hash_alg:
+              $ref: '#/components/schemas/HashAlgorithm'
+            pcr0:
+              type: string
+            pcr1:
+              type: string
+            pcr2:
+              type: string
+            pcr3:
+              type: string
+            pcr4:
+              type: string
+            pcr5:
+              type: string
+            pcr6:
+              type: string
+            pcr7:
+              type: string
+            pcr8:
+              type: string
+            pcr9:
+              type: string
+            pcr10:
+              type: string
+            pcr11:
+              type: string
+            pcr12:
+              type: string
+            pcr13:
+              type: string
+            pcr14:
+              type: string
+            pcr15:
+              type: string
+            pcr16:
+              type: string
+            pcr17:
+              type: string
+            pcr18:
+              type: string
+            pcr19:
+              type: string
+            pcr20:
+              type: string
+            pcr21:
+              type: string
+            pcr22:
+              type: string
+        coprocessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coprocessor'
     SearchMetadata:
       type: object
       required:
@@ -549,76 +1051,41 @@ components:
         filtered_count:
           type: integer
           description: Total number of items as per the current filter.
-    BaremetalTdxAttributes:
+    Coprocessor:
       type: object
       required:
-      - mrtd
-      - rtmr0
-      - rtmr1
-      - rtmr2
-      - rtmr3
-      - coprocessors
+      - attestation
       properties:
-        mrtd:
-          type: string
-          description: TD firmware binary (OVMF.fd) measurement as a hex string.
-        rtmr0:
-          type: string
-          description: Firmware and platform runtime measurements as hex string
-        rtmr1:
-          type: string
-          description: Runtime measurement for kernel for direct boot and bootchain for indirect boot as hex string
-        rtmr2:
-          type: string
-          description: Runtime measurement of kernel cmdline and initrd as hex string
-        rtmr3:
-          type: string
-          description: Runtime extendable measurement register 3 as hex string
-        coprocessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coprocessor'
-    Certificate:
-      description: A certificate request or issued certificate.
+        attestation:
+          $ref: '#/components/schemas/Attestation'
+        gpu_vendor:
+          $ref: '#/components/schemas/GpuVendor'
+    BuildDeploymentStatus:
       type: object
+      required:
+      - status
+      - status_updated_at
       properties:
-        certificate_id:
-          type: string
-          format: uuid
-          description: Certificate ID.
         status:
-          $ref: '#/components/schemas/CertificateStatusType'
-        csr:
-          type: string
-          description: The certificate signing request.
-        certificate:
-          type: string
-          description: The certificate itself, if issued.
-        node_id:
-          type: string
-          format: uuid
-          description: The node relevant to this certificate, if known.
-        app_id:
-          type: string
-          format: uuid
-          description: The app relevant to this certificate, if known.
-        build_id:
-          type: string
-          format: uuid
-          description: The build relevant to this certificate, if known.
-    SgxAttributes:
+          $ref: '#/components/schemas/BuildDeploymentStatusType'
+        status_updated_at:
+          type: integer
+          format: int64
+          description: The time when the deployment status changed.
+    DockerNetworkProtocol:
+      type: string
+      description: Protocol Associated with a Port exposed by a docker container.
+      enum:
+      - Tcp
+      - Udp
+    DefaultBuildSettings:
       type: object
-      required:
-      - mrenclave
+      description: DefaultBuildSettings for builds
       properties:
-        mrenclave:
-          type: string
-          description: mrenclave as a hex string.
-        features:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
+        sgx:
+          $ref: '#/components/schemas/DefaultSgxBuildSettings'
+        nitro_enclaves:
+          $ref: '#/components/schemas/DefaultNitroEnclavesBuildSettings'
     Build:
       type: object
       description: Detailed info of an application image.
@@ -697,66 +1164,12 @@ components:
           type: string
           format: uuid
           description: Group Id
-    NitroEnclaveHashAlgorithm:
+    BuildDeploymentStatusType:
       type: string
-      description: Nitro enclave hash algorithm
+      description: Status string for the image deployment.
       enum:
-      - Sha384
-    LabelCount:
-      type: object
-      required:
-      - key
-      - value
-      - count
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-        count:
-          type: integer
-          format: int32
-    ApplicationSigner:
-      type: object
-      minProperties: 1
-      maxProperties: 1
-      properties:
-        sgx:
-          $ref: '#/components/schemas/SgxSigner'
-        nitro_enclave:
-          $ref: '#/components/schemas/NitroEnclaveSigner'
-    PatchRequest:
-      type: array
-      items:
-        $ref: '#/components/schemas/PatchDocument'
-    CertificateIssuancePolicy:
-      type: object
-      required:
-      - require_known_image
-      - require_known_signer
-      properties:
-        require_known_image:
-          type: boolean
-        require_known_signer:
-          type: boolean
-        require_known_node:
-          type: boolean
-          default: true
-    AciAttributes:
-      type: object
-      description: ACI generated policy that represents the containers to run and other security restrictions.
-      required:
-      - policy
-      properties:
-        policy:
-          type: string
-          description: Base64-encoded output of azure confcom acipolicygen tool.
-    Attestation:
-      type: string
-      description: Specifies whether attestation is required or ignored.
-      enum:
-      - Ignored
-      - Required
+      - DEPLOYED
+      - UNDEPLOYED
     LabelsCount:
       type: object
       required:
@@ -766,215 +1179,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LabelCount'
-    CertificateStatusType:
-      type: string
-      description: Certificate status.
-      enum:
-      - PENDING
-      - REJECTED
-      - ISSUED
-      - REVOKED
-      - EXPIRED
-    BaremetalAmdSevSnpAttributes:
-      type: object
-      required:
-      - measurement
-      - vmpl
-      - coprocessors
-      properties:
-        measurement:
-          type: string
-          description: Guest Launch Measurement as hex string
-        vmpl:
-          type: string
-          description: Virtual Machine Privilege Level
-          $ref: '#/components/schemas/AmdSevSnpVmpl'
-        coprocessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coprocessor'
-    LaunchHint:
-      type: object
-      description: This object encodes a suggested manner for launching a confidential application. It may need to be configured further depending on your environment.
-      minProperties: 1
-      maxProperties: 1
-      properties:
-        azure_resource_template:
-          description: The Microsoft ARM Template for launching this build. May require some properties (such as the join token).
-          type: string
-    DefaultSgxBuildSettings:
-      type: object
-      description: Default build settings for SGX/SGX2 builds
-      properties:
-        isvprodid:
-          type: integer
-          format: int32
-          description: ISV Product Id.
-        mem_size:
-          type: integer
-          format: int64
-          description: Memory size (in MBs) required for the image.
-        threads:
-          type: integer
-          format: int32
-          description: Threads required for the image.
-    CertificateDetails:
-      type: object
-      required:
-      - subject_name
-      - issuer_name
-      - valid_from
-      - valid_until
-      - cpusvn
-      - ias_quote_status
-      properties:
-        enclave_info:
-          $ref: '#/components/schemas/EnclaveInfo'
-        subject_name:
-          type: string
-          description: Name of the subject.
-        issuer_name:
-          type: string
-          description: Name of the issuer.
-        valid_until:
-          type: integer
-          format: int64
-          description: Certificate expiry date.
-        valid_from:
-          type: integer
-          format: int64
-          description: Certificate valid from.
-        cpusvn:
-          type: string
-          description: CPUSVN, as a hex string.
-        ias_quote_status:
-          type: string
-          description: IAS quote status.
-    BuildDeploymentStatusType:
-      type: string
-      description: Status string for the image deployment.
-      enum:
-      - DEPLOYED
-      - UNDEPLOYED
-    CertificateConfig:
-      type: object
-      properties:
-        issuer:
-          type: string
-          description: Certificate issuance strategy
-          default: MANAGER_CA
-          enum:
-          - MANAGER_CA
-          - NODE
-          - SELF_IAS
-        subject:
-          type: string
-          description: Certificate subject common name, typically a DNS name
-        keyType:
-          type: string
-          description: Type of key to generate
-          default: RSA
-          enum:
-          - RSA
-        keyParam:
-          type: object
-          description: 'Key parameters. Currently must be an instance of RsaKeyParam, but other types may be supported in the future.
-
-            '
-        keyPath:
-          type: string
-          description: Path to expose the key in the application filesystem
-        certPath:
-          type: string
-          description: Path to expose the certificate in the application filesystem
-    PatchDocument:
-      type: object
-      description: A JSONPatch document as defined by RFC 6902. The patch operation is subset of what is supported by RFC 6902.
-      required:
-      - op
-      - path
-      properties:
-        op:
-          $ref: '#/components/schemas/PatchOperation'
-        path:
-          type: string
-          description: It is JSON pointer indicating a field to be updated
-        value:
-          type: object
-          description: It is the value to be used for the field as indicated by op and path
-    EnclaveInfo:
-      type: object
-      description: Info on a application enclave.
-      required:
-      - mrenclave
-      - mrsigner
-      - isvsvn
-      - isvprodid
-      properties:
-        mrenclave:
-          type: string
-          description: mrenclave of an image, as a hex string.
-        mrsigner:
-          type: string
-          description: mrsigner of an image, as a hex string.
-        isvprodid:
-          type: integer
-          format: int32
-          description: ISV Product Id.
-        isvsvn:
-          type: integer
-          format: int32
-          description: ISV Security Version Number.
-    GetAllAppsResponse:
-      type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/App'
-    AdvancedSettings:
-      type: object
-      description: Advanced settings for apps and images.
-      properties:
-        entrypoint:
-          type: array
-          items:
-            type: string
-          description: Entrypoint for the container.
-        encryptedDirs:
-          type: array
-          items:
-            type: string
-          description: "List of read-write files and/or directories which are encrypted using the enclave sealing key\nDefault encrypted directories - enclave-os protects the content in these files by encrypting them using the enclave sealing key. Anyone is allowed to read from or write to these files but only the enclave application can see it's contents in plain text.\n  - /tmp\n  - /run\n  - /ftx-efs\n  - /opt/fortanix/enclave-os/app-config/rw\nTips while debugging -> The default encrypted directories visible to the guest application as /tmp, /run and /ftx-efs are available in the container filesystem at /opt/fortanix/enclave-os/default-efs-dirs/.\n"
-        certificate:
-          $ref: '#/components/schemas/CertificateConfig'
-        java_runtime:
-          $ref: '#/components/schemas/JavaRuntime'
-          description: Java runtime mode.
-        rw_dirs:
-          type: array
-          items:
-            type: string
-          description: "List of read-write files and/or directories\nDefault read-write directories - enclave-os doesn't provide any security measures for these files and anyone is allowed to read from or write to these files.\n  - /etc/hosts\n  - /etc/resolv.conf\n  - /etc/hostname\n"
-        allowCmdlineArgs:
-          type: boolean
-          description: Allow command line arguments converter flag for an image.
-        manifestEnv:
-          type: array
-          items:
-            type: string
-          description: Environment variables that will be passed to the manifest file when the container is converted.
-        mutableEnv:
-          type: array
-          items:
-            type: string
-          description: 'Environment variables with supplied default values, but that may be overridden at runtime.
-
-            '
     ImageAttributes:
       type: object
       minProperties: 0
@@ -999,210 +1203,6 @@ components:
         baremetal_amd_sev_snp:
           description: Baremetal AMD SEV-SNP Enclave Attributes
           $ref: '#/components/schemas/BaremetalAmdSevSnpAttributes'
-    PatchOperation:
-      type: string
-      description: The operation to be performed
-      enum:
-      - add
-      - remove
-      - replace
-    AppBodyUpdateRequest:
-      type: object
-      description: Request to update an app.
-      properties:
-        description:
-          type: string
-          description: Description of the app.
-        input_image_name:
-          type: string
-          description: Input image name of images for apps.
-        output_image_name:
-          type: string
-          description: Output image name of images for apps.
-        isvsvn:
-          type: integer
-          format: int32
-          description: ISV Security Version Number.
-        isvprodid:
-          type: integer
-          format: int32
-          description: ISV Product Id.
-        mem_size:
-          type: integer
-          format: int64
-          description: Memory size required for the image.
-        threads:
-          type: integer
-          format: int32
-          description: Threads required for the image.
-        default_build_settings:
-          type: object
-          description: Default build settings
-          $ref: '#/components/schemas/DefaultBuildSettings'
-        allowed_domains:
-          description: A set of domains requested for this application; need to be approved.
-          type: array
-          items:
-            type: string
-        advanced_settings:
-          $ref: '#/components/schemas/AdvancedSettings'
-        labels:
-          $ref: '#/components/schemas/PatchRequest'
-        custom_metadata:
-          $ref: '#/components/schemas/PatchRequest'
-        certificate_policy:
-          $ref: '#/components/schemas/CertificateIssuancePolicy'
-        signers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApplicationSigner'
-        group_id:
-          type: string
-          format: uuid
-    DefaultNitroEnclavesBuildSettings:
-      type: object
-      description: Default build settings for Nitro Enclave builds
-      properties:
-        cpu_count:
-          type: integer
-          format: int32
-          description: CPU count
-        mem_size:
-          type: integer
-          format: int64
-          description: Enclave memory size in MBs
-        enable_overlay_filesystem_persistence:
-          type: boolean
-          default: true
-          description: Flag to enable file persistence, on by default.
-    Coprocessor:
-      type: object
-      required:
-      - attestation
-      properties:
-        attestation:
-          $ref: '#/components/schemas/Attestation'
-        gpu_vendor:
-          $ref: '#/components/schemas/GpuVendor'
-    AppNodeInfo:
-      type: object
-      required:
-      - certificate
-      - created_at
-      - node_id
-      description: Detailed info of an app running on a compute node.
-      properties:
-        certificate:
-          $ref: '#/components/schemas/Certificate'
-        created_at:
-          type: integer
-          format: int64
-          description: App compute node creation time.
-        node_id:
-          type: string
-          format: uuid
-          description: Compute Node Id.
-        node_name:
-          type: string
-          description: Compute Node Name.
-        status:
-          $ref: '#/components/schemas/AppStatus'
-        build_info:
-          $ref: '#/components/schemas/Build'
-        message_count:
-          type: integer
-          format: int32
-          description: App heartbeat message count.
-        key_id:
-          type: string
-          description: Key Id for app heartbeat.
-        is_debug:
-          type: boolean
-          description: App running in debug mode or not.
-    BuildStatus:
-      type: object
-      required:
-      - status
-      - status_updated_at
-      properties:
-        status:
-          $ref: '#/components/schemas/BuildStatusType'
-        status_updated_at:
-          type: integer
-          format: int64
-          description: Time since the status change.
-    AzureCvmAttributes:
-      type: object
-      required:
-      - pcrs
-      - coprocessors
-      properties:
-        pcrs:
-          type: object
-          description: List of TPM PCRs hash values to enforce. 64 hex characters
-          required:
-          - hash_alg
-          properties:
-            hash_alg:
-              $ref: '#/components/schemas/HashAlgorithm'
-            pcr0:
-              type: string
-            pcr1:
-              type: string
-            pcr2:
-              type: string
-            pcr3:
-              type: string
-            pcr4:
-              type: string
-            pcr5:
-              type: string
-            pcr6:
-              type: string
-            pcr7:
-              type: string
-            pcr8:
-              type: string
-            pcr9:
-              type: string
-            pcr10:
-              type: string
-            pcr11:
-              type: string
-            pcr12:
-              type: string
-            pcr13:
-              type: string
-            pcr14:
-              type: string
-            pcr15:
-              type: string
-            pcr16:
-              type: string
-            pcr17:
-              type: string
-            pcr18:
-              type: string
-            pcr19:
-              type: string
-            pcr20:
-              type: string
-            pcr21:
-              type: string
-            pcr22:
-              type: string
-        coprocessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coprocessor'
-    DefaultBuildSettings:
-      type: object
-      description: DefaultBuildSettings for builds
-      properties:
-        sgx:
-          $ref: '#/components/schemas/DefaultSgxBuildSettings'
-        nitro_enclaves:
-          $ref: '#/components/schemas/DefaultNitroEnclavesBuildSettings'
   parameters:
     NodeId:
       name: node-id
@@ -1212,13 +1212,6 @@ components:
       schema:
         type: string
         format: uuid
-    AppRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to add a new application.
-      schema:
-        $ref: '#/components/schemas/AppRequest'
     AppBodyUpdateRequest:
       name: body
       in: body
@@ -1234,6 +1227,13 @@ components:
       schema:
         type: string
         format: uuid
+    AppRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to add a new application.
+      schema:
+        $ref: '#/components/schemas/AppRequest'
   securitySchemes:
     bearerToken:
       type: apiKey

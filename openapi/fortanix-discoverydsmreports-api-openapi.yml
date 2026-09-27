@@ -36,14 +36,6 @@ paths:
       - DiscoveryDsmReports
 components:
   schemas:
-    DiscoveryDsmKeyAlgorithmData:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
     DiscoveryConnectionCorrelationData:
       allOf:
       - properties:
@@ -61,13 +53,24 @@ components:
         - connection_name
         - correlated_keys_count
         type: object
-    DiscoveryDsmSummaryKeyStatusData:
+    DiscoveryDsmKeyAlgorithmData:
       allOf:
       - properties:
           count:
             type: integer
         required:
         - count
+        type: object
+    DiscoveryDsmKeysDiscoveryData:
+      allOf:
+      - properties:
+          correlated_keys:
+            type: integer
+          total_keys:
+            type: integer
+        required:
+        - total_keys
+        - correlated_keys
         type: object
     DiscoveryDsmScanSummaryData:
       allOf:
@@ -91,16 +94,13 @@ components:
         - keys_by_type
         - connection_correlation_data
         type: object
-    DiscoveryDsmKeysDiscoveryData:
+    DiscoveryDsmSummaryKeyStatusData:
       allOf:
       - properties:
-          correlated_keys:
-            type: integer
-          total_keys:
+          count:
             type: integer
         required:
-        - total_keys
-        - correlated_keys
+        - count
         type: object
   securitySchemes:
     Oauth2ClientCredentials:

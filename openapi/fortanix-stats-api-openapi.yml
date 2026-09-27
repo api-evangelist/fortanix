@@ -135,7 +135,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/EsStatsCountQueryResponse'
 components:
+  parameters:
+    StatsParams:
+      in: query
+      name: StatsParams
+      schema:
+        $ref: '#/components/schemas/StatsParams'
+      explode: true
   schemas:
+    EsTotalTxn:
+      allOf:
+      - type: object
+        properties:
+          buckets:
+            type: array
+            items:
+              $ref: '#/components/schemas/InnerEsBucket'
+        required:
+        - buckets
+    StatsParams:
+      allOf:
+      - type: object
+        properties:
+          num_points:
+            type: integer
+          top_count:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+          range_from:
+            type: integer
+          range_to:
+            type: integer
     EsStatsCountQueryResponse:
       allOf:
       - type: object
@@ -152,6 +183,16 @@ components:
             type: integer
         required:
         - value
+    EsCountStatsLog:
+      allOf:
+      - type: object
+        properties:
+          buckets:
+            type: array
+            items:
+              $ref: '#/components/schemas/OuterEsBucket'
+        required:
+        - buckets
     InnerEsBucket:
       allOf:
       - type: object
@@ -170,30 +211,6 @@ components:
         required:
         - doc_count
         - key
-    StatsParams:
-      allOf:
-      - type: object
-        properties:
-          num_points:
-            type: integer
-          top_count:
-            type: integer
-            minimum: 0
-            maximum: 4294967295
-          range_from:
-            type: integer
-          range_to:
-            type: integer
-    EsTotalTxn:
-      allOf:
-      - type: object
-        properties:
-          buckets:
-            type: array
-            items:
-              $ref: '#/components/schemas/InnerEsBucket'
-        required:
-        - buckets
     OuterEsBucket:
       allOf:
       - type: object
@@ -211,23 +228,6 @@ components:
         - key
         - key_as_string
         - total_txn
-    EsCountStatsLog:
-      allOf:
-      - type: object
-        properties:
-          buckets:
-            type: array
-            items:
-              $ref: '#/components/schemas/OuterEsBucket'
-        required:
-        - buckets
-  parameters:
-    StatsParams:
-      in: query
-      name: StatsParams
-      schema:
-        $ref: '#/components/schemas/StatsParams'
-      explode: true
   securitySchemes:
     basicAuth:
       type: http

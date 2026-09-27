@@ -42,6 +42,19 @@ paths:
                 $ref: '#/components/schemas/EsAuditQueryResponse'
 components:
   schemas:
+    EsAuditLogOuter:
+      allOf:
+      - type: object
+        description: Response structure of a single log.
+        properties:
+          _id:
+            type: string
+            description: UUID of audit log
+          _source:
+            $ref: '#/components/schemas/EsAuditLog'
+        required:
+        - _id
+        - _source
     EsAuditQueryResponse:
       allOf:
       - type: object
@@ -61,19 +74,6 @@ components:
       - WARNING
       - ERROR
       - CRITICAL
-    EsAuditLogOuter:
-      allOf:
-      - type: object
-        description: Response structure of a single log.
-        properties:
-          _id:
-            type: string
-            description: UUID of audit log
-          _source:
-            $ref: '#/components/schemas/EsAuditLog'
-        required:
-        - _id
-        - _source
     EsAuditLog:
       allOf:
       - type: object
@@ -159,15 +159,6 @@ components:
         - actor_id
         - group_ids
         - object_id
-    ActionType:
-      type: string
-      enum:
-      - ADMINISTRATIVE
-      - AUTH
-      - CRYPTOOPERATION
-      - RUNPLUGIN
-      - CUSTOM
-      - OTHER
     LogsParams:
       allOf:
       - type: object
@@ -218,6 +209,15 @@ components:
             items:
               $ref: '#/components/schemas/SeverityLevel'
             description: Severity of event
+    ActionType:
+      type: string
+      enum:
+      - ADMINISTRATIVE
+      - AUTH
+      - CRYPTOOPERATION
+      - RUNPLUGIN
+      - CUSTOM
+      - OTHER
   parameters:
     LogsParams:
       in: query

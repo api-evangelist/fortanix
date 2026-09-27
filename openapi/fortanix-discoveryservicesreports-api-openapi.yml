@@ -110,61 +110,17 @@ paths:
       - DiscoveryServicesReports
 components:
   schemas:
-    DiscoveryCspServicesMetadataVariantAws:
+    DiscoveryCspServicesMetadataVariantAzure:
       allOf:
       - properties:
           $type:
             enum:
-            - aws
+            - azure
             type: string
         required:
         - $type
         type: object
-      - $ref: '#/components/schemas/DiscoveryAwsFilterMetadata'
-    DiscoveryAwsFilterMetadata:
-      allOf:
-      - properties:
-          account_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-          region_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-        required:
-        - account_metrics
-        - region_metrics
-        type: object
-    DiscoveryScannedServicesReportByServiceTypeParams:
-      allOf:
-      - properties:
-          filter:
-            type: string
-        type: object
-    DiscoveryAzureService:
-      enum:
-      - key_vaults
-      - storage_accounts
-      - sql_server
-      - cosmos_db
-      - container_groups
-      - managed_disks
-      - managed_clusters
-      - storage_account_blobs
-      type: string
-    DiscoveryServiceViolationMetricsWithOverallRisk:
-      allOf:
-      - properties:
-          overall_risk:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-          total_resources:
-            type: integer
-          violation_metrics:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryViolationDetails'
-            type: object
-        required:
-        - overall_risk
-        - total_resources
-        - violation_metrics
-        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureFilterMetadata'
     DiscoveryAwsAccountViolationMetrics:
       allOf:
       - properties:
@@ -178,40 +134,32 @@ components:
         - account_id
         - violations_by_region
         type: object
-    DiscoveryCloudProviderServiceTypeAzure:
+    DiscoveryCspServicesMetadataVariantAws:
       allOf:
       - properties:
-          service_type:
-            $ref: '#/components/schemas/DiscoveryAzureService'
+          $type:
+            enum:
+            - aws
+            type: string
         required:
-        - service_type
+        - $type
         type: object
-    DiscoveryViolationDetails:
+      - $ref: '#/components/schemas/DiscoveryAwsFilterMetadata'
+    DiscoveryServiceViolationMetrics:
       allOf:
       - properties:
-          count:
-            type: integer
-          risk_level:
+          cloud_provider_service_type:
+            $ref: '#/components/schemas/DiscoveryCloudProviderServiceType'
+          overall_risk:
             $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationDetails'
+            type: object
         required:
-        - count
-        type: object
-    DiscoveryAwsServicesReportMetadata:
-      allOf:
-      - properties:
-          account_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-          region_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-          resource_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-          violation_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-        required:
-        - violation_metrics
-        - resource_metrics
-        - region_metrics
-        - account_metrics
+        - cloud_provider_service_type
+        - overall_risk
+        - violations
         type: object
     DiscoveryCloudProviderServiceTypeAws:
       allOf:
@@ -220,6 +168,32 @@ components:
             $ref: '#/components/schemas/DiscoveryAwsService'
         required:
         - service_type
+        type: object
+    DiscoveryAzureScannedServicesResponseBySubscription:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryAzureServicesViolationMetrics'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryAzureServicesReportMetadata'
+        required:
+        - items
+        - metadata
+        type: object
+    DiscoveryAwsScannedServicesResponseByAccount:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryAwsAccountViolationMetrics'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryAwsServicesReportMetadata'
+        required:
+        - items
+        - metadata
         type: object
     DiscoveryCloudProviderServiceTypeVariantAzure:
       allOf:
@@ -232,18 +206,83 @@ components:
         - cloud_provider
         type: object
       - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeAzure'
-    DiscoveryAwsService:
-      enum:
-      - acm
-      - ebs
-      - kms
-      - s3
-      - rds
-      - dynamo_db
-      - eks
-      - efs
-      - redshift
-      type: string
+    DiscoveryAzureFilterMetadata:
+      allOf:
+      - properties:
+          region_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          resource_group_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          subscription_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+        required:
+        - subscription_metrics
+        - resource_group_metrics
+        - region_metrics
+        type: object
+    DiscoveryAzureScannedServicesReportBySubscriptionParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            format: uuid
+            type: string
+          previous_sort_value:
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryCloudProviderServiceTypeAzure:
+      allOf:
+      - properties:
+          service_type:
+            $ref: '#/components/schemas/DiscoveryAzureService'
+        required:
+        - service_type
+        type: object
+    DiscoveryAzureRegionViolationMetrics:
+      allOf:
+      - properties:
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations_by_service_type:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryServiceViolationMetricsWithOverallRisk'
+            type: object
+        required:
+        - overall_risk
+        - violations_by_service_type
+        type: object
+    DiscoveryServicesMetadata:
+      allOf:
+      - properties:
+          scan_inventory_provider_metrics:
+            $ref: '#/components/schemas/DiscoveryCspServicesMetadata'
+          service_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          violation_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+        required:
+        - violation_metrics
+        - service_metrics
+        - scan_inventory_provider_metrics
+        type: object
+    DiscoveryScannedServicesResponseByServiceType:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryServiceViolationMetrics'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryServicesMetadata'
+        required:
+        - items
+        - metadata
+        type: object
     DiscoveryAzureServicesReportMetadata:
       allOf:
       - properties:
@@ -264,57 +303,66 @@ components:
         - resource_group_metrics
         - subscription_metrics
         type: object
-    DiscoveryCspServicesMetadataVariantAzure:
+    DiscoveryAzureService:
+      enum:
+      - key_vaults
+      - storage_accounts
+      - sql_server
+      - cosmos_db
+      - container_groups
+      - managed_disks
+      - managed_clusters
+      - storage_account_blobs
+      type: string
+    DiscoveryAwsService:
+      enum:
+      - acm
+      - ebs
+      - kms
+      - s3
+      - rds
+      - dynamo_db
+      - eks
+      - efs
+      - redshift
+      type: string
+    DiscoveryAwsServicesReportMetadata:
       allOf:
       - properties:
-          $type:
-            enum:
-            - azure
-            type: string
+          account_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          region_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          resource_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          violation_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
         required:
-        - $type
+        - violation_metrics
+        - resource_metrics
+        - region_metrics
+        - account_metrics
         type: object
-      - $ref: '#/components/schemas/DiscoveryAzureFilterMetadata'
-    DiscoveryAzureScannedServicesResponseBySubscription:
+    DiscoveryAwsFilterMetadata:
       allOf:
       - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryAzureServicesViolationMetrics'
-            type: array
-          metadata:
-            $ref: '#/components/schemas/DiscoveryAzureServicesReportMetadata'
+          account_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+          region_metrics:
+            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
         required:
-        - items
-        - metadata
+        - account_metrics
+        - region_metrics
         type: object
-    DiscoveryScannedServicesResponseByViolationType:
-      allOf:
-      - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryViolationTypeMetrics'
-            type: array
-          metadata:
-            $ref: '#/components/schemas/DiscoveryServicesMetadata'
-        required:
-        - items
-        - metadata
-        type: object
-    DiscoveryAzureResourceGroupViolationMetrics:
-      allOf:
-      - properties:
-          overall_risk:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-          violations_by_region:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryAzureRegionViolationMetrics'
-            type: object
-        required:
-        - overall_risk
-        - violations_by_region
-        type: object
-    DiscoveryAzureRegionViolationMetrics:
+    DiscoveryRiskLevel:
+      enum:
+      - critical
+      - high
+      - medium
+      - low
+      - good
+      type: string
+    DiscoveryAwsRegionViolationMetrics:
       allOf:
       - properties:
           overall_risk:
@@ -338,78 +386,6 @@ components:
         - total_count
         - filtered_count
         type: object
-    DiscoveryServiceViolationMetrics:
-      allOf:
-      - properties:
-          cloud_provider_service_type:
-            $ref: '#/components/schemas/DiscoveryCloudProviderServiceType'
-          overall_risk:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-          violations:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryViolationDetails'
-            type: object
-        required:
-        - cloud_provider_service_type
-        - overall_risk
-        - violations
-        type: object
-    DiscoveryRiskLevel:
-      enum:
-      - critical
-      - high
-      - medium
-      - low
-      - good
-      type: string
-    DiscoveryCloudProviderServiceTypeVariantAws:
-      allOf:
-      - properties:
-          cloud_provider:
-            enum:
-            - aws
-            type: string
-        required:
-        - cloud_provider
-        type: object
-      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeAws'
-    DiscoveryCspServicesMetadata:
-      discriminator:
-        mapping:
-          aws: DiscoveryCspServicesMetadataVariantAws
-          azure: DiscoveryCspServicesMetadataVariantAzure
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryCspServicesMetadataVariantAws'
-      - $ref: '#/components/schemas/DiscoveryCspServicesMetadataVariantAzure'
-    DiscoveryAzureFilterMetadata:
-      allOf:
-      - properties:
-          region_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-          resource_group_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-          subscription_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
-        required:
-        - subscription_metrics
-        - resource_group_metrics
-        - region_metrics
-        type: object
-    DiscoveryAwsScannedServicesReportByAccountParams:
-      allOf:
-      - properties:
-          filter:
-            type: string
-          limit:
-            type: integer
-          previous_id:
-            type: string
-          previous_sort_value:
-            type: string
-          sort_by:
-            type: string
-        type: object
     DiscoveryViolationMetrics:
       allOf:
       - description: A structure to store the violation metrics for each violation.
@@ -419,53 +395,21 @@ components:
         required:
         - count
         type: object
-    DiscoveryAzureScannedServicesReportBySubscriptionParams:
+    DiscoveryServiceViolationMetricsWithOverallRisk:
       allOf:
       - properties:
-          filter:
-            type: string
-          limit:
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          total_resources:
             type: integer
-          previous_id:
-            format: uuid
-            type: string
-          previous_sort_value:
-            type: string
-          sort_by:
-            type: string
-        type: object
-    DiscoveryScannedServicesResponseByServiceType:
-      allOf:
-      - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryServiceViolationMetrics'
-            type: array
-          metadata:
-            $ref: '#/components/schemas/DiscoveryServicesMetadata'
-        required:
-        - items
-        - metadata
-        type: object
-    DiscoveryScannedServicesReportByViolationTypeParams:
-      allOf:
-      - properties:
-          filter:
-            type: string
-        type: object
-    DiscoveryServicesMetadata:
-      allOf:
-      - properties:
-          scan_inventory_provider_metrics:
-            $ref: '#/components/schemas/DiscoveryCspServicesMetadata'
-          service_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
           violation_metrics:
-            $ref: '#/components/schemas/DiscoveryServiceMetadataMetrics'
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationDetails'
+            type: object
         required:
+        - overall_risk
+        - total_resources
         - violation_metrics
-        - service_metrics
-        - scan_inventory_provider_metrics
         type: object
     DiscoveryViolation:
       enum:
@@ -500,6 +444,12 @@ components:
       - services_encrypted_with_platform_managed_key
       - services_encrypted_with_cross_account_key
       type: string
+    DiscoveryScannedServicesReportByViolationTypeParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+        type: object
     DiscoveryViolationTypeMetrics:
       allOf:
       - properties:
@@ -516,6 +466,41 @@ components:
         - overall_risk
         - violations_by_service
         type: object
+    DiscoveryScannedServicesResponseByViolationType:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryViolationTypeMetrics'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryServicesMetadata'
+        required:
+        - items
+        - metadata
+        type: object
+    DiscoveryCloudProviderServiceType:
+      discriminator:
+        mapping:
+          aws: DiscoveryCloudProviderServiceTypeVariantAws
+          azure: DiscoveryCloudProviderServiceTypeVariantAzure
+        propertyName: cloud_provider
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeVariantAws'
+      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeVariantAzure'
+    DiscoveryAzureResourceGroupViolationMetrics:
+      allOf:
+      - properties:
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations_by_region:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryAzureRegionViolationMetrics'
+            type: object
+        required:
+        - overall_risk
+        - violations_by_region
+        type: object
     DiscoveryAzureServicesViolationMetrics:
       allOf:
       - properties:
@@ -530,41 +515,56 @@ components:
         - subscription_id
         - violations_by_resource_group
         type: object
-    DiscoveryAwsScannedServicesResponseByAccount:
+    DiscoveryScannedServicesReportByServiceTypeParams:
       allOf:
       - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryAwsAccountViolationMetrics'
-            type: array
-          metadata:
-            $ref: '#/components/schemas/DiscoveryAwsServicesReportMetadata'
-        required:
-        - items
-        - metadata
+          filter:
+            type: string
         type: object
-    DiscoveryCloudProviderServiceType:
+    DiscoveryAwsScannedServicesReportByAccountParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            type: string
+          previous_sort_value:
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryViolationDetails:
+      allOf:
+      - properties:
+          count:
+            type: integer
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - count
+        type: object
+    DiscoveryCspServicesMetadata:
       discriminator:
         mapping:
-          aws: DiscoveryCloudProviderServiceTypeVariantAws
-          azure: DiscoveryCloudProviderServiceTypeVariantAzure
-        propertyName: cloud_provider
+          aws: DiscoveryCspServicesMetadataVariantAws
+          azure: DiscoveryCspServicesMetadataVariantAzure
+        propertyName: $type
       oneOf:
-      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeVariantAws'
-      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeVariantAzure'
-    DiscoveryAwsRegionViolationMetrics:
+      - $ref: '#/components/schemas/DiscoveryCspServicesMetadataVariantAws'
+      - $ref: '#/components/schemas/DiscoveryCspServicesMetadataVariantAzure'
+    DiscoveryCloudProviderServiceTypeVariantAws:
       allOf:
       - properties:
-          overall_risk:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-          violations_by_service_type:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryServiceViolationMetricsWithOverallRisk'
-            type: object
+          cloud_provider:
+            enum:
+            - aws
+            type: string
         required:
-        - overall_risk
-        - violations_by_service_type
+        - cloud_provider
         type: object
+      - $ref: '#/components/schemas/DiscoveryCloudProviderServiceTypeAws'
   parameters:
     DiscoveryScannedServicesReportByViolationTypeParams:
       explode: true
@@ -572,24 +572,24 @@ components:
       name: DiscoveryScannedServicesReportByViolationTypeParams
       schema:
         $ref: '#/components/schemas/DiscoveryScannedServicesReportByViolationTypeParams'
-    DiscoveryAwsScannedServicesReportByAccountParams:
-      explode: true
-      in: query
-      name: DiscoveryAwsScannedServicesReportByAccountParams
-      schema:
-        $ref: '#/components/schemas/DiscoveryAwsScannedServicesReportByAccountParams'
-    DiscoveryAzureScannedServicesReportBySubscriptionParams:
-      explode: true
-      in: query
-      name: DiscoveryAzureScannedServicesReportBySubscriptionParams
-      schema:
-        $ref: '#/components/schemas/DiscoveryAzureScannedServicesReportBySubscriptionParams'
     DiscoveryScannedServicesReportByServiceTypeParams:
       explode: true
       in: query
       name: DiscoveryScannedServicesReportByServiceTypeParams
       schema:
         $ref: '#/components/schemas/DiscoveryScannedServicesReportByServiceTypeParams'
+    DiscoveryAzureScannedServicesReportBySubscriptionParams:
+      explode: true
+      in: query
+      name: DiscoveryAzureScannedServicesReportBySubscriptionParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryAzureScannedServicesReportBySubscriptionParams'
+    DiscoveryAwsScannedServicesReportByAccountParams:
+      explode: true
+      in: query
+      name: DiscoveryAwsScannedServicesReportByAccountParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryAwsScannedServicesReportByAccountParams'
   securitySchemes:
     Oauth2ClientCredentials:
       description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.

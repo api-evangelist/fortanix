@@ -49,6 +49,94 @@ paths:
                 $ref: '#/components/schemas/SysAdminGetClusterConfigurationResponse'
 components:
   schemas:
+    AciConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - converter_url
+      - allow_large_images
+      - agent_image
+      - init_image
+      properties:
+        converter_url:
+          type: string
+          description: URL to use for contacting the ACI fortifier microservice.
+        agent_image:
+          $ref: '#/components/schemas/ConversionRequestImageInfo'
+        init_image:
+          $ref: '#/components/schemas/ConversionRequestImageInfo'
+    NitroEnclavesConverterConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - converter_url
+      properties:
+        converter_url:
+          type: string
+          description: URL to use for contacting the Nitro Enclaves Converter microservice.
+    NvidiaAttestationServiceConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - nras_url
+      properties:
+        nras_url:
+          type: string
+          description: Nvidia Remote Attestation Service (NRAS) url.
+    DsmClusterConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - active_cluster
+      - transition_clusters
+      properties:
+        active_cluster:
+          $ref: '#/components/schemas/DsmCluster'
+        transition_clusters:
+          type: array
+          description: Clusters that are being phased out but still have objects inside them. In order of their use, first being the oldest.
+          items:
+            $ref: '#/components/schemas/DsmCluster'
+    AuthConfig:
+      description: Credentials for authenticating to a docker registry
+      type: object
+      required:
+      - username
+      properties:
+        username:
+          type: string
+          description: User name for docker registry authentication
+        password:
+          type: string
+          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
+    ConversionRequestImageInfo:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Docker image name
+        auth_config:
+          $ref: '#/components/schemas/AuthConfig'
+          description: Docker credentials
+    EksConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - access_key_id
+      properties:
+        access_key_id:
+          type: string
+          description: AWS access key ID
+        secret_access_key:
+          type: string
+          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
     SysAdminGetClusterConfigurationResponse:
       type: object
       required:
@@ -71,81 +159,6 @@ components:
           $ref: '#/components/schemas/AciConfig'
         eks_config:
           $ref: '#/components/schemas/EksConfig'
-    DsmCluster:
-      type: object
-      required:
-      - app_id
-      - url
-      properties:
-        app_id:
-          type: string
-          format: uuid
-          description: SDKMS administrative app id.
-        url:
-          type: string
-          description: SDKMS URL to use for storing datasets.
-    AuthConfig:
-      description: Credentials for authenticating to a docker registry
-      type: object
-      required:
-      - username
-      properties:
-        username:
-          type: string
-          description: User name for docker registry authentication
-        password:
-          type: string
-          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
-    AciConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - converter_url
-      - allow_large_images
-      - agent_image
-      - init_image
-      properties:
-        converter_url:
-          type: string
-          description: URL to use for contacting the ACI fortifier microservice.
-        agent_image:
-          $ref: '#/components/schemas/ConversionRequestImageInfo'
-        init_image:
-          $ref: '#/components/schemas/ConversionRequestImageInfo'
-    NvidiaAttestationServiceConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - nras_url
-      properties:
-        nras_url:
-          type: string
-          description: Nvidia Remote Attestation Service (NRAS) url.
-    EksConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - access_key_id
-      properties:
-        access_key_id:
-          type: string
-          description: AWS access key ID
-        secret_access_key:
-          type: string
-          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
-    NitroEnclavesConverterConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - converter_url
-      properties:
-        converter_url:
-          type: string
-          description: URL to use for contacting the Nitro Enclaves Converter microservice.
     MicrosoftAttestationServiceConfig:
       type:
       - object
@@ -162,32 +175,19 @@ components:
           items:
             type: string
           description: Array of Microsoft Azure Attestation Service (MAA) expected MRSigner value (hex string).
-    ConversionRequestImageInfo:
+    DsmCluster:
       type: object
       required:
-      - name
+      - app_id
+      - url
       properties:
-        name:
+        app_id:
           type: string
-          description: Docker image name
-        auth_config:
-          $ref: '#/components/schemas/AuthConfig'
-          description: Docker credentials
-    DsmClusterConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - active_cluster
-      - transition_clusters
-      properties:
-        active_cluster:
-          $ref: '#/components/schemas/DsmCluster'
-        transition_clusters:
-          type: array
-          description: Clusters that are being phased out but still have objects inside them. In order of their use, first being the oldest.
-          items:
-            $ref: '#/components/schemas/DsmCluster'
+          format: uuid
+          description: SDKMS administrative app id.
+        url:
+          type: string
+          description: SDKMS URL to use for storing datasets.
   parameters:
     GetClusterConfigParams:
       name: future

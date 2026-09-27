@@ -72,16 +72,6 @@ components:
       - error
       - error_description
       type: object
-    OauthTokenErrorCode:
-      description: Conforms to RFC 6749 Section 5.2.
-      enum:
-      - invalid_client
-      - invalid_grant
-      - invalid_request
-      - invalid_scope
-      - unauthorized_client
-      - unsupported_grant_type
-      type: string
     OauthTokenResponse:
       example:
         access_token: 2YotnFZFEjr1zCsicMWpAA
@@ -100,6 +90,16 @@ components:
       - token_type
       - expires_in
       type: object
+    OauthTokenErrorCode:
+      description: Conforms to RFC 6749 Section 5.2.
+      enum:
+      - invalid_client
+      - invalid_grant
+      - invalid_request
+      - invalid_scope
+      - unauthorized_client
+      - unsupported_grant_type
+      type: string
   securitySchemes:
     Oauth2ClientCredentials:
       description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.

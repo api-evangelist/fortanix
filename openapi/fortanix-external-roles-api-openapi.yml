@@ -162,13 +162,6 @@ paths:
                 $ref: '#/components/schemas/ExternalRole'
 components:
   schemas:
-    UserGroupRole:
-      description: User's role(s) in a group.
-      allOf:
-      - type: array
-        uniqueItems: true
-        items:
-          $ref: '#/components/schemas/LegacyUserGroupRoleOrRoleId'
     ExternalRoleMapping:
       allOf:
       - type: object
@@ -181,24 +174,6 @@ components:
             - 'null'
             items:
               $ref: '#/components/schemas/AppPermissions'
-    ExternalRoleKind:
-      description: Type of an external role.
-      type: string
-      enum:
-      - ldap-group
-    LegacyUserGroupRoleOrRoleId:
-      description: Legacy user group role name or custom role id
-      oneOf:
-      - $ref: '#/components/schemas/LegacyUserGroupRole'
-      - type: string
-        format: uuid
-    ListExternalRolesParams:
-      allOf:
-      - type: object
-        properties:
-          group_id:
-            type: string
-            format: uuid
     ExternalRole:
       allOf:
       - type: object
@@ -232,6 +207,11 @@ components:
         - name
         - source_id
         - acct_id
+    ExternalRoleKind:
+      description: Type of an external role.
+      type: string
+      enum:
+      - ldap-group
     AppPermissions:
       description: "Operations allowed to be performed by an app.\n\n\n\n          SIGN:\n\n\n          VERIFY:\n\n\n          ENCRYPT:\n\n\n          DECRYPT:\n\n\n          WRAPKEY:\n\n\n          UNWRAPKEY:\n\n\n          DERIVEKEY:\n\n\n          MACGENERATE:\n\n\n          MACVERIFY:\n\n\n          EXPORT:\n\n\n          MANAGE:\n\n\n          AGREEKEY:\n\n\n          MASKDECRYPT:\n\n\n          AUDIT:\n\n\n          TRANSFORM:\n\n\n          CREATE_SOBJECTS:\n\n\n          COPY_SOBJECTS:\n\n\n          ROTATE_SOBJECTS:\n\n\n          ACTIVATE_SOBJECTS:\n\n\n          REVOKE_SOBJECTS:\n\n\n          REVERT_SOBJECTS:\n\n\n          MOVE_SOBJECTS:\n\n\n          UPDATE_SOBJECTS_PROFILE:\n\n\n          UPDATE_SOBJECTS_ENABLED_STATE:\n\n\n          UPDATE_SOBJECT_POLICIES:\n\n\n          UPDATE_KEY_OPS:\n\n\n          DELETE_KEY_MATERIAL:\n\n\n          DELETE_SOBJECTS:\n\n\n          DESTROY_SOBJECTS:\n\n\n          RESTORE_EXTERNAL_SOBJECTS:\n\n\n          CALCULATE_DIGEST:\n\n\n          ENCAPSULATE:\n\n\n          DECAPSULATE:\n\n"
       type: string
@@ -269,12 +249,13 @@ components:
       - CALCULATE_DIGEST
       - ENCAPSULATE
       - DECAPSULATE
-    LegacyUserGroupRole:
-      description: Legacy user group role
-      type: string
-      enum:
-      - GROUPAUDITOR
-      - GROUPADMINISTRATOR
+    UserGroupRole:
+      description: User's role(s) in a group.
+      allOf:
+      - type: array
+        uniqueItems: true
+        items:
+          $ref: '#/components/schemas/LegacyUserGroupRoleOrRoleId'
     ExternalRoleRequest:
       allOf:
       - type: object
@@ -309,6 +290,25 @@ components:
             type:
             - string
             - 'null'
+            format: uuid
+    LegacyUserGroupRole:
+      description: Legacy user group role
+      type: string
+      enum:
+      - GROUPAUDITOR
+      - GROUPADMINISTRATOR
+    LegacyUserGroupRoleOrRoleId:
+      description: Legacy user group role name or custom role id
+      oneOf:
+      - $ref: '#/components/schemas/LegacyUserGroupRole'
+      - type: string
+        format: uuid
+    ListExternalRolesParams:
+      allOf:
+      - type: object
+        properties:
+          group_id:
+            type: string
             format: uuid
   parameters:
     ListExternalRolesParams:

@@ -170,13 +170,43 @@ paths:
                 $ref: '#/components/schemas/Plugin'
 components:
   schemas:
-    PluginType:
-      description: Type of a plugin.
-      type: string
-      enum:
-      - STANDARD
-      - IMPERSONATING
-      - CUSTOMALGORITHM
+    ListPluginsParams:
+      allOf:
+      - type: object
+        description: Query parameters to get Plugins.
+        properties:
+          group_id:
+            type: string
+            format: uuid
+            description: Group for which the associated plugins should be retrieved.
+          limit:
+            type: integer
+            description: Maximum number of entries to return.
+          offset:
+            type: integer
+            description: Starting offset.
+      - $ref: '#/components/schemas/PluginSort'
+    PluginSort:
+      oneOf:
+      - title: PluginSortVariantByPluginId
+        type: object
+        description: Sort plugins by Plugin Id.
+        properties:
+          sort:
+            type: string
+            pattern: ^plugin_id:(?:asc|desc)$
+            example: plugin_id:asc
+          start:
+            type: string
+            format: uuid
+            description: Starting offset(UUID of plugin).
+        required:
+        - sort
+    PluginSource:
+      description: Plugin code that will be executed inside SGX enclave.
+      oneOf:
+      - $ref: '#/components/schemas/PluginSourceFromRepo'
+      - $ref: '#/components/schemas/PluginSourceInline'
     PluginSourceRequestFromRepo:
       allOf:
       - type: object
@@ -191,11 +221,87 @@ components:
         - repo_url
         - plugin_name
         - version
-    PluginSource:
-      description: Plugin code that will be executed inside SGX enclave.
-      oneOf:
-      - $ref: '#/components/schemas/PluginSourceFromRepo'
-      - $ref: '#/components/schemas/PluginSourceInline'
+    PrincipalUserViaApp:
+      allOf:
+      - type: object
+        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
+        properties:
+          user_id:
+            type: string
+            format: uuid
+          scopes:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/OauthScope'
+        required:
+        - user_id
+        - scopes
+    OauthScope:
+      description: OAuth scope.
+      type: string
+      enum:
+      - app
+      - openid
+      - email
+      - profile
+    PluginType:
+      description: Type of a plugin.
+      type: string
+      enum:
+      - STANDARD
+      - IMPERSONATING
+      - CUSTOMALGORITHM
+    PluginSourceRequestInline:
+      allOf:
+      - type: object
+        properties:
+          language:
+            $ref: '#/components/schemas/Language'
+          code:
+            type: string
+        required:
+        - language
+        - code
+    Language:
+      description: Language of plugin code.
+      type: string
+      enum:
+      - LUA
+    PluginVersion:
+      type: string
+      pattern: ^\d+.\d+$
+    PluginSourceFromRepo:
+      allOf:
+      - type: object
+        properties:
+          repo_url:
+            type: string
+          name:
+            type: string
+          version:
+            $ref: '#/components/schemas/PluginVersion'
+          language:
+            $ref: '#/components/schemas/Language'
+          code:
+            type: string
+        required:
+        - repo_url
+        - name
+        - version
+        - language
+        - code
+    PluginSourceInline:
+      allOf:
+      - type: object
+        properties:
+          language:
+            $ref: '#/components/schemas/Language'
+          code:
+            type: string
+        required:
+        - language
+        - code
     Principal:
       description: A security principal.
       oneOf:
@@ -238,80 +344,6 @@ components:
         type: string
         enum:
         - unregistereduser
-    PluginSourceFromRepo:
-      allOf:
-      - type: object
-        properties:
-          repo_url:
-            type: string
-          name:
-            type: string
-          version:
-            $ref: '#/components/schemas/PluginVersion'
-          language:
-            $ref: '#/components/schemas/Language'
-          code:
-            type: string
-        required:
-        - repo_url
-        - name
-        - version
-        - language
-        - code
-    Language:
-      description: Language of plugin code.
-      type: string
-      enum:
-      - LUA
-    PrincipalUserViaApp:
-      allOf:
-      - type: object
-        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
-        properties:
-          user_id:
-            type: string
-            format: uuid
-          scopes:
-            type: array
-            uniqueItems: true
-            items:
-              $ref: '#/components/schemas/OauthScope'
-        required:
-        - user_id
-        - scopes
-    PluginOutput:
-      type: string
-      format: byte
-    PluginSourceRequestInline:
-      allOf:
-      - type: object
-        properties:
-          language:
-            $ref: '#/components/schemas/Language'
-          code:
-            type: string
-        required:
-        - language
-        - code
-    PluginVersion:
-      type: string
-      pattern: ^\d+.\d+$
-    PluginSort:
-      oneOf:
-      - title: PluginSortVariantByPluginId
-        type: object
-        description: Sort plugins by Plugin Id.
-        properties:
-          sort:
-            type: string
-            pattern: ^plugin_id:(?:asc|desc)$
-            example: plugin_id:asc
-          start:
-            type: string
-            format: uuid
-            description: Starting offset(UUID of plugin).
-        required:
-        - sort
     Plugin:
       allOf:
       - type: object
@@ -395,41 +427,9 @@ components:
       oneOf:
       - $ref: '#/components/schemas/PluginSourceRequestFromRepo'
       - $ref: '#/components/schemas/PluginSourceRequestInline'
-    OauthScope:
-      description: OAuth scope.
+    PluginOutput:
       type: string
-      enum:
-      - app
-      - openid
-      - email
-      - profile
-    ListPluginsParams:
-      allOf:
-      - type: object
-        description: Query parameters to get Plugins.
-        properties:
-          group_id:
-            type: string
-            format: uuid
-            description: Group for which the associated plugins should be retrieved.
-          limit:
-            type: integer
-            description: Maximum number of entries to return.
-          offset:
-            type: integer
-            description: Starting offset.
-      - $ref: '#/components/schemas/PluginSort'
-    PluginSourceInline:
-      allOf:
-      - type: object
-        properties:
-          language:
-            $ref: '#/components/schemas/Language'
-          code:
-            type: string
-        required:
-        - language
-        - code
+      format: byte
     PluginRequest:
       allOf:
       - type: object

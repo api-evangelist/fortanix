@@ -56,31 +56,21 @@ paths:
                 $ref: '#/components/schemas/BatchResponse'
 components:
   schemas:
-    BatchRequestItem:
+    BatchResponseList:
       allOf:
       - type: object
         properties:
-          method:
-            type: string
-          operation:
-            type: string
-          body: {}
-        required:
-        - method
-        - operation
-    BatchRequestList:
-      allOf:
-      - type: object
-        properties:
-          batch_execution_type:
-            $ref: '#/components/schemas/BatchExecutionType'
           items:
             type: array
             items:
-              $ref: '#/components/schemas/BatchRequest'
+              $ref: '#/components/schemas/BatchResponse'
         required:
-        - batch_execution_type
         - items
+    BatchExecutionType:
+      type: string
+      enum:
+      - Serial
+      - Unordered
     BatchRequest:
       oneOf:
       - title: BatchRequestVariantBatch
@@ -97,11 +87,18 @@ components:
             $ref: '#/components/schemas/BatchRequestItem'
         required:
         - SingleItem
-    BatchExecutionType:
-      type: string
-      enum:
-      - Serial
-      - Unordered
+    BatchRequestItem:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+          operation:
+            type: string
+          body: {}
+        required:
+        - method
+        - operation
     BatchResponseObject:
       oneOf:
       - title: BatchResponseObjectVariantResult
@@ -118,6 +115,27 @@ components:
             $ref: '#/components/schemas/BatchResponseObjectSkipped'
         required:
         - Skipped
+    BatchRequestList:
+      allOf:
+      - type: object
+        properties:
+          batch_execution_type:
+            $ref: '#/components/schemas/BatchExecutionType'
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/BatchRequest'
+        required:
+        - batch_execution_type
+        - items
+    BatchResponseObjectSkipped:
+      allOf:
+      - type: object
+        properties:
+          reason:
+            type: string
+        required:
+        - reason
     BatchResponseObjectResult:
       allOf:
       - type: object
@@ -129,24 +147,6 @@ components:
           body: {}
         required:
         - status
-    BatchResponseList:
-      allOf:
-      - type: object
-        properties:
-          items:
-            type: array
-            items:
-              $ref: '#/components/schemas/BatchResponse'
-        required:
-        - items
-    BatchResponseObjectSkipped:
-      allOf:
-      - type: object
-        properties:
-          reason:
-            type: string
-        required:
-        - reason
     BatchResponse:
       oneOf:
       - title: BatchResponseVariantBatch

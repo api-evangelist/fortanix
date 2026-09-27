@@ -65,6 +65,19 @@ components:
         required:
         - items
         type: object
+    DiscoveryScanParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            format: uuid
+            type: string
+          sort_by:
+            type: string
+        type: object
     DiscoveryScan:
       allOf:
       - description: Scan in Predjama.
@@ -109,19 +122,6 @@ components:
         - last_updated_at
         - scan_id
         - scan_status
-        type: object
-    DiscoveryScanParams:
-      allOf:
-      - properties:
-          filter:
-            type: string
-          limit:
-            type: integer
-          previous_id:
-            format: uuid
-            type: string
-          sort_by:
-            type: string
         type: object
     DiscoveryScanStatus:
       enum:

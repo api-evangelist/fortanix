@@ -202,46 +202,39 @@ components:
               $ref: '#/components/schemas/ExternalEntropySourceInfo'
         required:
         - external_entropy_sources
-    LdapSearchScope:
+    HealthStatus:
       type: string
       enum:
-      - single-level
-      - whole-subtree
-    LdapDnResolutionVariantConstruct:
+      - Healthy
+      - Unhealthy
+    UserAccountFlagOrRole:
+      description: User account flag or legacy user account role name or custom role id
+      oneOf:
+      - $ref: '#/components/schemas/UserAccountFlag'
+      - $ref: '#/components/schemas/LegacyUserAccountRole'
+      - type: string
+        format: uuid
+    TlsConfigVariantDisabled:
       allOf:
       - type: object
         properties:
-          method:
+          mode:
             type: string
             enum:
-            - construct
+            - disabled
         required:
-        - method
-      - $ref: '#/components/schemas/LdapDnResolutionConstruct'
-    LdapDnResolutionConstruct:
-      allOf:
+        - mode
       - type: object
-        description: Transform the user email through a pattern to derive the DN.
-        properties:
-          domain_format:
-            type: object
-            additionalProperties:
-              type: string
-            description: 'For example: "example.com" => "uid={},ou=users,dc=example,dc=com".'
-        required:
-        - domain_format
-    CaSet:
-      description: Predefined CA sets.
+        properties: {}
+    LegacyLdapAccountRole:
+      description: Role of a user or app in an account for the purpose of LDAP configurations.
       type: string
       enum:
-      - global_roots
-    UserAccountFlags:
-      description: User's role(s) and state in an account.
-      allOf:
-      - type: array
-        uniqueItems: true
-        items:
-          $ref: '#/components/schemas/UserAccountFlagOrRole'
+      - ADMIN_USER
+      - MEMBER_USER
+      - AUDITOR_USER
+      - ADMIN_APP
+      - CRYPTO_APP
     LdapSearchResultEntry:
       allOf:
       - type: object
@@ -277,91 +270,17 @@ components:
         - common_name
         - description
         - object_class
-    LegacyLdapAccountRole:
-      description: Role of a user or app in an account for the purpose of LDAP configurations.
-      type: string
-      enum:
-      - ADMIN_USER
-      - MEMBER_USER
-      - AUDITOR_USER
-      - ADMIN_APP
-      - CRYPTO_APP
-    LdapDnResolutionVariantUserPrincipalName:
+    TlsConfigVariantRequired:
       allOf:
       - type: object
         properties:
-          method:
+          mode:
             type: string
             enum:
-            - upn
+            - required
         required:
-        - method
-      - type: object
-        properties: {}
-    LdapAccountRole:
-      description: Role of a user or app in an account for the purpose of LDAP configurations.
-      oneOf:
-      - $ref: '#/components/schemas/LegacyLdapAccountRole'
-      - type: string
-        format: uuid
-    TlsCertificateSpki:
-      allOf:
-      - type: object
-        properties:
-          cert_spki:
-            type: string
-            format: byte
-            description: The TbsCertificate's spki value.
-          is_active:
-            type: boolean
-            description: True if the certificate is currently active.
-        required:
-        - cert_spki
-        - is_active
-    TlsConfig:
-      description: TLS client settings.
-      oneOf:
-      - $ref: '#/components/schemas/TlsConfigVariantDisabled'
-      - $ref: '#/components/schemas/TlsConfigVariantOpportunistic'
-      - $ref: '#/components/schemas/TlsConfigVariantRequired'
-      discriminator:
-        propertyName: mode
-        mapping:
-          disabled: TlsConfigVariantDisabled
-          opportunistic: TlsConfigVariantOpportunistic
-          required: TlsConfigVariantRequired
-    LdapServiceAccount:
-      allOf:
-      - type: object
-        description: Credentials used by the service to authenticate itself to an LDAP server.
-        properties:
-          dn:
-            type: string
-            description: Distinguished name of the service account.
-          password:
-            type: string
-            description: The password for the service account.
-        required:
-        - dn
-        - password
-    LdapUserSelfProvisioningRole:
-      description: 'A structure indicating how self-provisioned LDAP users will
-
-        be assigned account roles.'
-      oneOf:
-      - $ref: '#/components/schemas/LdapUserSelfProvisioningRoleVariantFixed'
-      discriminator:
-        propertyName: $type
-        mapping:
-          Fixed: LdapUserSelfProvisioningRoleVariantFixed
-    LdapPrincipalResolved:
-      allOf:
-      - type: object
-        properties:
-          dn:
-            type: string
-        required:
-        - dn
+        - mode
+      - $ref: '#/components/schemas/TlsConfigRequired'
     CaConfig:
       description: CA settings.
       oneOf:
@@ -382,50 +301,66 @@ components:
               format: byte
         required:
         - pinned
-    ServerMode:
-      description: Server execution mode.
+    UserAccountFlag:
+      description: User account flag
       type: string
       enum:
-      - Software
-      - Sgx
-    ExternalEntropySourceInfo:
+      - STATEENABLED
+      - PENDINGINVITE
+    LdapUserSelfProvisioningRoleFixed:
+      allOf:
+      - type: object
+        description: 'Map all self-provisioned users to a single specified account role.
+
+          (Note that this setting only determines the role that a self-
+
+          provisioned user starts with; an account admin can change any user''s
+
+          role at a later time.) A "state enabled" flag will be implicitly added,
+
+          and any specified "pending invite" flag will be removed.'
+        properties:
+          role:
+            $ref: '#/components/schemas/UserAccountFlags'
+        required:
+        - role
+    LdapSearchFilter:
       allOf:
       - type: object
         properties:
           name:
             type: string
-          description:
-            type:
-            - string
-            - 'null'
+          value:
+            type: string
         required:
         - name
-    LdapTestRequest:
+        - value
+    LdapUserSelfProvisioningConfig:
+      allOf:
+      - type: object
+        description: 'LDAP user self-provisioning settings. Currently, the only
+
+          setting available for configuration is the mapping from
+
+          LDAP users to DSM account roles.'
+        properties:
+          role_assignment:
+            $ref: '#/components/schemas/LdapUserSelfProvisioningRole'
+        required:
+        - role_assignment
+    TlsCertsSpkiResponse:
       allOf:
       - type: object
         properties:
-          ldap:
-            $ref: '#/components/schemas/AuthConfigLdap'
-          test_credentials:
-            $ref: '#/components/schemas/LdapTestCredentials'
+          tls_certificates_info:
+            type: array
+            items:
+              $ref: '#/components/schemas/TlsCertificateSpki'
+            description: 'A list of leaf server certificates used for
+
+              TLS connections by DSM.'
         required:
-        - ldap
-    LegacyUserAccountRole:
-      description: Legacy user account role
-      type: string
-      enum:
-      - ACCOUNTADMINISTRATOR
-      - ACCOUNTMEMBER
-      - ACCOUNTAUDITOR
-    LdapPrincipalUnresolved:
-      allOf:
-      - type: object
-        properties:
-          email:
-            type: string
-            format: email
-        required:
-        - email
+        - tls_certificates_info
     LdapRoleConflictResolution:
       description: 'Controls how we resolve conflicting role assignments with LDAP authorization.
 
@@ -483,76 +418,42 @@ components:
       enum:
       - backcompat_legacy_roles_only
       - disregard_exclusive_roles
-    UserAccountFlag:
-      description: User account flag
-      type: string
-      enum:
-      - STATEENABLED
-      - PENDINGINVITE
-    LdapTestCredentials:
+    ExternalEntropySourceInfo:
       allOf:
       - type: object
         properties:
-          password:
+          name:
             type: string
-          account_role:
-            $ref: '#/components/schemas/LdapAccountRole'
-        required:
-        - password
-      - $ref: '#/components/schemas/LdapPrincipal'
-    VersionResponse:
-      allOf:
-      - type: object
-        description: Information about the service version.
-        properties:
-          version:
-            type: string
-            description: Server version. This is encoded as "major.minor.build".
-          api_version:
-            type: string
-            description: The API version implemented by the server.
-          server_mode:
-            $ref: '#/components/schemas/ServerMode'
-          fips_level:
+          description:
             type:
-            - integer
+            - string
             - 'null'
-            minimum: 0
-            maximum: 255
-            description: 'FIPS level at which the service in running. If this field is absent, then the service is
-
-              not running in FIPS compliant mode.'
-          plugins_digest:
+        required:
+        - name
+    TlsConfig:
+      description: TLS client settings.
+      oneOf:
+      - $ref: '#/components/schemas/TlsConfigVariantDisabled'
+      - $ref: '#/components/schemas/TlsConfigVariantOpportunistic'
+      - $ref: '#/components/schemas/TlsConfigVariantRequired'
+      discriminator:
+        propertyName: mode
+        mapping:
+          disabled: TlsConfigVariantDisabled
+          opportunistic: TlsConfigVariantOpportunistic
+          required: TlsConfigVariantRequired
+    HealthParams:
+      allOf:
+      - type: object
+        properties:
+          consistency:
             type: string
-            format: byte
-            description: 'An opaque digest of all current plugins.
-
-
-              Only present when the server is running in FIPS mode.'
-        required:
-        - version
-        - api_version
-        - server_mode
-    GetAllServicesResponse:
-      allOf:
-      - type: object
-        properties:
-          items:
-            type: array
-            items:
-              $ref: '#/components/schemas/Service'
-        required:
-        - items
-    SystemInfoParams:
-      allOf:
-      - type: object
-        properties:
-          detailed_fips_info:
+          check_queues:
             type: boolean
-            description: 'Include FIPS-relevant info in the response. Currently that is `plugins_digest`.
-
-
-              Only applicable to FIPS builds.'
+    LdapPrincipal:
+      oneOf:
+      - $ref: '#/components/schemas/LdapPrincipalUnresolved'
+      - $ref: '#/components/schemas/LdapPrincipalResolved'
     Service:
       allOf:
       - type: object
@@ -566,187 +467,60 @@ components:
         required:
         - name
         - hostnames
-    HealthStatus:
-      type: string
-      enum:
-      - Healthy
-      - Unhealthy
-    LdapAuthorizationConfig:
+    GetAllServicesResponse:
       allOf:
       - type: object
-        description: LDAP authorization settings.
         properties:
-          valid_for:
-            type: integer
-            description: Number of seconds after which the authorization should be checked again.
-          require_role:
-            type:
-            - object
-            - 'null'
-            additionalProperties:
-              type: string
-            description: 'A map from account roles to distinguished names of LDAP groups.
-
-              If a DN is specified for an account role, entities with that role
-
-              must be a member of the specified LDAP group.'
-          user_self_provisioning:
-            $ref: '#/components/schemas/LdapUserSelfProvisioningConfig'
-          role_conflict_resolution:
-            $ref: '#/components/schemas/LdapRoleConflictResolution'
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/Service'
         required:
-        - valid_for
-    HostnameInfo:
+        - items
+    LdapUserSelfProvisioningRole:
+      description: 'A structure indicating how self-provisioned LDAP users will
+
+        be assigned account roles.'
+      oneOf:
+      - $ref: '#/components/schemas/LdapUserSelfProvisioningRoleVariantFixed'
+      discriminator:
+        propertyName: $type
+        mapping:
+          Fixed: LdapUserSelfProvisioningRoleVariantFixed
+    LdapDnResolutionVariantSearchByMail:
       allOf:
       - type: object
         properties:
-          health_status:
-            $ref: '#/components/schemas/HealthStatus'
-          last_health_check:
-            $ref: '#/components/schemas/HealthCheckInfo'
-        required:
-        - health_status
-    TlsConfigVariantDisabled:
-      allOf:
-      - type: object
-        properties:
-          mode:
+          method:
             type: string
             enum:
-            - disabled
+            - search-by-mail
         required:
-        - mode
+        - method
       - type: object
         properties: {}
-    LdapUserSelfProvisioningRoleVariantFixed:
+    LdapPrincipalResolved:
       allOf:
       - type: object
         properties:
-          $type:
+          dn:
             type: string
-            enum:
-            - Fixed
         required:
-        - $type
-      - $ref: '#/components/schemas/LdapUserSelfProvisioningRoleFixed'
-    TlsCertsSpkiResponse:
-      allOf:
-      - type: object
-        properties:
-          tls_certificates_info:
-            type: array
-            items:
-              $ref: '#/components/schemas/TlsCertificateSpki'
-            description: 'A list of leaf server certificates used for
+        - dn
+    LdapDnResolution:
+      description: 'Distinguished Name (DN) resolution method. Given a user''s email address, a DN resolution method
 
-              TLS connections by DSM.'
-        required:
-        - tls_certificates_info
-    LdapSearchRequest:
-      allOf:
-      - type: object
-        properties:
-          base_dn:
-            type:
-            - string
-            - 'null'
-          filters:
-            type: array
-            items:
-              $ref: '#/components/schemas/LdapSearchFilter'
-          object_class:
-            type:
-            - string
-            - 'null'
-          scope:
-            $ref: '#/components/schemas/LdapSearchScope'
-        required:
-        - filters
-        - scope
-    UserAccountFlagOrRole:
-      description: User account flag or legacy user account role name or custom role id
+        is used to find the user''s DN in an LDAP directory.'
       oneOf:
-      - $ref: '#/components/schemas/UserAccountFlag'
-      - $ref: '#/components/schemas/LegacyUserAccountRole'
-      - type: string
-        format: uuid
-    LdapSearchFilter:
-      allOf:
-      - type: object
-        properties:
-          name:
-            type: string
-          value:
-            type: string
-        required:
-        - name
-        - value
-    LdapPrincipal:
-      oneOf:
-      - $ref: '#/components/schemas/LdapPrincipalUnresolved'
-      - $ref: '#/components/schemas/LdapPrincipalResolved'
-    TlsPublicKeysResponse:
-      allOf:
-      - type: object
-        properties:
-          tls_public_keys:
-            type: array
-            items:
-              $ref: '#/components/schemas/TlsPublicKeyInfo'
-            description: 'A list of SPKIs(public keys) from leaf server certificates used for
-
-              TLS connections by DSM.'
-        required:
-        - tls_public_keys
-    TlsConfigVariantRequired:
-      allOf:
-      - type: object
-        properties:
-          mode:
-            type: string
-            enum:
-            - required
-        required:
-        - mode
-      - $ref: '#/components/schemas/TlsConfigRequired'
-    TlsConfigRequired:
-      allOf:
-      - type: object
-        properties:
-          validate_hostname:
-            type: boolean
-          ca:
-            $ref: '#/components/schemas/CaConfig'
-          client_key:
-            type: string
-            format: byte
-          client_cert:
-            type: string
-            format: byte
-        required:
-        - validate_hostname
-        - ca
-    HealthCheckInfo:
-      allOf:
-      - type: object
-        properties:
-          initiated_at:
-            type: string
-            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
-            example: 20170509T070912Z
-            description: The time the health check was initiated.
-          finished_at:
-            type: string
-            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
-            example: 20170509T070912Z
-            description: The time the health check finished (regardless of its outcome).
-          result:
-            type: string
-            description: The result of the health check.
-        required:
-        - initiated_at
-        - finished_at
-        - result
+      - $ref: '#/components/schemas/LdapDnResolutionVariantConstruct'
+      - $ref: '#/components/schemas/LdapDnResolutionVariantSearchByMail'
+      - $ref: '#/components/schemas/LdapDnResolutionVariantUserPrincipalName'
+      discriminator:
+        propertyName: method
+        mapping:
+          construct: LdapDnResolutionVariantConstruct
+          search-by-mail: LdapDnResolutionVariantSearchByMail
+          upn: LdapDnResolutionVariantUserPrincipalName
     AuthConfigLdap:
       allOf:
       - type: object
@@ -797,6 +571,288 @@ components:
         - ldap_url
         - dn_resolution
         - tls
+    TlsConfigVariantOpportunistic:
+      allOf:
+      - type: object
+        properties:
+          mode:
+            type: string
+            enum:
+            - opportunistic
+        required:
+        - mode
+      - type: object
+        properties: {}
+    LdapAuthorizationConfig:
+      allOf:
+      - type: object
+        description: LDAP authorization settings.
+        properties:
+          valid_for:
+            type: integer
+            description: Number of seconds after which the authorization should be checked again.
+          require_role:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              type: string
+            description: 'A map from account roles to distinguished names of LDAP groups.
+
+              If a DN is specified for an account role, entities with that role
+
+              must be a member of the specified LDAP group.'
+          user_self_provisioning:
+            $ref: '#/components/schemas/LdapUserSelfProvisioningConfig'
+          role_conflict_resolution:
+            $ref: '#/components/schemas/LdapRoleConflictResolution'
+        required:
+        - valid_for
+    TlsPublicKeysResponse:
+      allOf:
+      - type: object
+        properties:
+          tls_public_keys:
+            type: array
+            items:
+              $ref: '#/components/schemas/TlsPublicKeyInfo'
+            description: 'A list of SPKIs(public keys) from leaf server certificates used for
+
+              TLS connections by DSM.'
+        required:
+        - tls_public_keys
+    TlsCertificateSpki:
+      allOf:
+      - type: object
+        properties:
+          cert_spki:
+            type: string
+            format: byte
+            description: The TbsCertificate's spki value.
+          is_active:
+            type: boolean
+            description: True if the certificate is currently active.
+        required:
+        - cert_spki
+        - is_active
+    LdapDnResolutionVariantConstruct:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - construct
+        required:
+        - method
+      - $ref: '#/components/schemas/LdapDnResolutionConstruct'
+    LegacyUserAccountRole:
+      description: Legacy user account role
+      type: string
+      enum:
+      - ACCOUNTADMINISTRATOR
+      - ACCOUNTMEMBER
+      - ACCOUNTAUDITOR
+    ServerMode:
+      description: Server execution mode.
+      type: string
+      enum:
+      - Software
+      - Sgx
+    LdapSearchScope:
+      type: string
+      enum:
+      - single-level
+      - whole-subtree
+    LdapUserSelfProvisioningRoleVariantFixed:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - Fixed
+        required:
+        - $type
+      - $ref: '#/components/schemas/LdapUserSelfProvisioningRoleFixed'
+    LdapDnResolutionConstruct:
+      allOf:
+      - type: object
+        description: Transform the user email through a pattern to derive the DN.
+        properties:
+          domain_format:
+            type: object
+            additionalProperties:
+              type: string
+            description: 'For example: "example.com" => "uid={},ou=users,dc=example,dc=com".'
+        required:
+        - domain_format
+    LdapTestCredentials:
+      allOf:
+      - type: object
+        properties:
+          password:
+            type: string
+          account_role:
+            $ref: '#/components/schemas/LdapAccountRole'
+        required:
+        - password
+      - $ref: '#/components/schemas/LdapPrincipal'
+    UserAccountFlags:
+      description: User's role(s) and state in an account.
+      allOf:
+      - type: array
+        uniqueItems: true
+        items:
+          $ref: '#/components/schemas/UserAccountFlagOrRole'
+    LdapServiceAccount:
+      allOf:
+      - type: object
+        description: Credentials used by the service to authenticate itself to an LDAP server.
+        properties:
+          dn:
+            type: string
+            description: Distinguished name of the service account.
+          password:
+            type: string
+            description: The password for the service account.
+        required:
+        - dn
+        - password
+    LdapAccountRole:
+      description: Role of a user or app in an account for the purpose of LDAP configurations.
+      oneOf:
+      - $ref: '#/components/schemas/LegacyLdapAccountRole'
+      - type: string
+        format: uuid
+    TlsConfigRequired:
+      allOf:
+      - type: object
+        properties:
+          validate_hostname:
+            type: boolean
+          ca:
+            $ref: '#/components/schemas/CaConfig'
+          client_key:
+            type: string
+            format: byte
+          client_cert:
+            type: string
+            format: byte
+        required:
+        - validate_hostname
+        - ca
+    VersionResponse:
+      allOf:
+      - type: object
+        description: Information about the service version.
+        properties:
+          version:
+            type: string
+            description: Server version. This is encoded as "major.minor.build".
+          api_version:
+            type: string
+            description: The API version implemented by the server.
+          server_mode:
+            $ref: '#/components/schemas/ServerMode'
+          fips_level:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 255
+            description: 'FIPS level at which the service in running. If this field is absent, then the service is
+
+              not running in FIPS compliant mode.'
+          plugins_digest:
+            type: string
+            format: byte
+            description: 'An opaque digest of all current plugins.
+
+
+              Only present when the server is running in FIPS mode.'
+        required:
+        - version
+        - api_version
+        - server_mode
+    LdapPrincipalUnresolved:
+      allOf:
+      - type: object
+        properties:
+          email:
+            type: string
+            format: email
+        required:
+        - email
+    LdapSearchRequest:
+      allOf:
+      - type: object
+        properties:
+          base_dn:
+            type:
+            - string
+            - 'null'
+          filters:
+            type: array
+            items:
+              $ref: '#/components/schemas/LdapSearchFilter'
+          object_class:
+            type:
+            - string
+            - 'null'
+          scope:
+            $ref: '#/components/schemas/LdapSearchScope'
+        required:
+        - filters
+        - scope
+    SystemInfoParams:
+      allOf:
+      - type: object
+        properties:
+          detailed_fips_info:
+            type: boolean
+            description: 'Include FIPS-relevant info in the response. Currently that is `plugins_digest`.
+
+
+              Only applicable to FIPS builds.'
+    LdapDnResolutionVariantUserPrincipalName:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - upn
+        required:
+        - method
+      - type: object
+        properties: {}
+    CaSet:
+      description: Predefined CA sets.
+      type: string
+      enum:
+      - global_roots
+    HealthCheckInfo:
+      allOf:
+      - type: object
+        properties:
+          initiated_at:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: The time the health check was initiated.
+          finished_at:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: The time the health check finished (regardless of its outcome).
+          result:
+            type: string
+            description: The result of the health check.
+        required:
+        - initiated_at
+        - finished_at
+        - result
     TlsPublicKeyInfo:
       allOf:
       - type: object
@@ -819,82 +875,26 @@ components:
           external_entropy:
             $ref: '#/components/schemas/ExternalEntropyInfo'
       - $ref: '#/components/schemas/VersionResponse'
-    HealthParams:
+    LdapTestRequest:
       allOf:
       - type: object
         properties:
-          consistency:
-            type: string
-          check_queues:
-            type: boolean
-    LdapDnResolutionVariantSearchByMail:
-      allOf:
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - search-by-mail
+          ldap:
+            $ref: '#/components/schemas/AuthConfigLdap'
+          test_credentials:
+            $ref: '#/components/schemas/LdapTestCredentials'
         required:
-        - method
-      - type: object
-        properties: {}
-    TlsConfigVariantOpportunistic:
+        - ldap
+    HostnameInfo:
       allOf:
       - type: object
         properties:
-          mode:
-            type: string
-            enum:
-            - opportunistic
+          health_status:
+            $ref: '#/components/schemas/HealthStatus'
+          last_health_check:
+            $ref: '#/components/schemas/HealthCheckInfo'
         required:
-        - mode
-      - type: object
-        properties: {}
-    LdapDnResolution:
-      description: 'Distinguished Name (DN) resolution method. Given a user''s email address, a DN resolution method
-
-        is used to find the user''s DN in an LDAP directory.'
-      oneOf:
-      - $ref: '#/components/schemas/LdapDnResolutionVariantConstruct'
-      - $ref: '#/components/schemas/LdapDnResolutionVariantSearchByMail'
-      - $ref: '#/components/schemas/LdapDnResolutionVariantUserPrincipalName'
-      discriminator:
-        propertyName: method
-        mapping:
-          construct: LdapDnResolutionVariantConstruct
-          search-by-mail: LdapDnResolutionVariantSearchByMail
-          upn: LdapDnResolutionVariantUserPrincipalName
-    LdapUserSelfProvisioningConfig:
-      allOf:
-      - type: object
-        description: 'LDAP user self-provisioning settings. Currently, the only
-
-          setting available for configuration is the mapping from
-
-          LDAP users to DSM account roles.'
-        properties:
-          role_assignment:
-            $ref: '#/components/schemas/LdapUserSelfProvisioningRole'
-        required:
-        - role_assignment
-    LdapUserSelfProvisioningRoleFixed:
-      allOf:
-      - type: object
-        description: 'Map all self-provisioned users to a single specified account role.
-
-          (Note that this setting only determines the role that a self-
-
-          provisioned user starts with; an account admin can change any user''s
-
-          role at a later time.) A "state enabled" flag will be implicitly added,
-
-          and any specified "pending invite" flag will be removed.'
-        properties:
-          role:
-            $ref: '#/components/schemas/UserAccountFlags'
-        required:
-        - role
+        - health_status
   parameters:
     SystemInfoParams:
       in: query

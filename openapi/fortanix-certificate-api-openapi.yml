@@ -35,15 +35,6 @@ paths:
                 $ref: '#/components/schemas/Certificate'
 components:
   schemas:
-    CertificateStatusType:
-      type: string
-      description: Certificate status.
-      enum:
-      - PENDING
-      - REJECTED
-      - ISSUED
-      - REVOKED
-      - EXPIRED
     Certificate:
       description: A certificate request or issued certificate.
       type: object
@@ -72,6 +63,15 @@ components:
           type: string
           format: uuid
           description: The build relevant to this certificate, if known.
+    CertificateStatusType:
+      type: string
+      description: Certificate status.
+      enum:
+      - PENDING
+      - REJECTED
+      - ISSUED
+      - REVOKED
+      - EXPIRED
   parameters:
     CertificateId:
       name: cert-id
