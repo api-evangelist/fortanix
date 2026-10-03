@@ -133,47 +133,7 @@ paths:
       security:
       - bearerToken: []
 components:
-  parameters:
-    CreateDatasetRequest:
-      name: body
-      in: body
-      required: true
-      description: ''
-      schema:
-        $ref: '#/components/schemas/CreateDatasetRequest'
-    DatasetUpdateRequest:
-      name: body
-      in: body
-      required: true
-      description: ''
-      schema:
-        $ref: '#/components/schemas/DatasetUpdateRequest'
-    DatasetId:
-      name: dataset-id
-      in: path
-      required: true
-      description: UUID of a dataset.
-      schema:
-        type: string
-        format: uuid
   schemas:
-    DatasetCredentials:
-      type: object
-      description: ''
-      properties:
-        sdkms:
-          $ref: '#/components/schemas/SdkmsCredentials'
-    SdkmsCredentials:
-      type: object
-      description: ''
-      required:
-      - credentials_url
-      - credentials_key_name
-      properties:
-        credentials_url:
-          type: string
-        credentials_key_name:
-          type: string
     Dataset:
       type: object
       description: ''
@@ -254,20 +214,6 @@ components:
         filtered_count:
           type: integer
           description: Total number of items as per the current filter.
-    DatasetMetadata:
-      type: object
-      description: Metadata about the dataset.
-    GetAllDatasetsResponse:
-      type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dataset'
     DatasetCredentialsRequest:
       type: object
       description: ''
@@ -276,6 +222,15 @@ components:
       properties:
         contents:
           type: string
+    DatasetMetadata:
+      type: object
+      description: Metadata about the dataset.
+    DatasetCredentials:
+      type: object
+      description: ''
+      properties:
+        sdkms:
+          $ref: '#/components/schemas/SdkmsCredentials'
     CreateDatasetRequest:
       type: object
       required:
@@ -305,6 +260,17 @@ components:
         group_id:
           type: string
           format: uuid
+    SdkmsCredentials:
+      type: object
+      description: ''
+      required:
+      - credentials_url
+      - credentials_key_name
+      properties:
+        credentials_url:
+          type: string
+        credentials_key_name:
+          type: string
     DatasetUpdateRequest:
       type: object
       properties:
@@ -328,6 +294,40 @@ components:
         group_id:
           type: string
           format: uuid
+    GetAllDatasetsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataset'
+  parameters:
+    CreateDatasetRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/CreateDatasetRequest'
+    DatasetId:
+      name: dataset-id
+      in: path
+      required: true
+      description: UUID of a dataset.
+      schema:
+        type: string
+        format: uuid
+    DatasetUpdateRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/DatasetUpdateRequest'
   securitySchemes:
     bearerToken:
       type: apiKey

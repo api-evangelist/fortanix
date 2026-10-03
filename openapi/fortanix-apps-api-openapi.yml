@@ -363,138 +363,139 @@ paths:
                 $ref: '#/components/schemas/App'
 components:
   schemas:
-    GetAppGroupMemberships:
-      allOf:
-      - type: object
-        description: The response for the GetAllGroupMembership endpoint
+    SubjectGeneral:
+      description: 'A GeneralName that can be used as a [subject alternative name][SAN] in
+
+        a certificate.
+
+
+        Today, the directoryName, dNSName, and iPAddress choices are supported.
+
+        Note that directoryName can also be used to represent the subject field
+
+        in a certificate.
+
+
+        [SAN]: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.6'
+      oneOf:
+      - title: SubjectGeneralVariantDirectoryName
+        type: object
         properties:
-          metadata:
-            $ref: '#/components/schemas/GroupMetaData'
-          items:
+          directory_name:
             type: array
             items:
-              $ref: '#/components/schemas/AppGroupMembership'
-            description: The collection of group memberships the entity is a member in
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                type: string
+            description: 'A directoryName, which consists of a sequence of (type, value)
+
+              pairs, where type is an OID, and value is a DER-encoded ASN.1
+
+              value. (This represents a sequence of relative distinguished
+
+              names.)'
         required:
-        - metadata
-        - items
-    Pkcs11ClientConfig:
+        - directory_name
+      - title: SubjectGeneralVariantDnsName
+        type: object
+        properties:
+          dns_name:
+            type: string
+            description: A DNS name.
+        required:
+        - dns_name
+      - title: SubjectGeneralVariantIpAddress
+        type: object
+        properties:
+          ip_address:
+            oneOf:
+            - type: string
+              format: ipv4
+            - type: string
+              format: ipv6
+            description: An IP address.
+        required:
+        - ip_address
+    GcpAppPermissions:
+      description: "\n\n\n          CRYPTO_SPACE_GET_INFO:\n\n\n          CRYPTO_SPACE_GET_PUBLIC_KEY:\n\n"
+      type: string
+      enum:
+      - CRYPTO_SPACE_GET_INFO
+      - CRYPTO_SPACE_GET_PUBLIC_KEY
+    AwsXksCredentialRequest:
       allOf:
       - type: object
         properties:
-          fake_rsa_x9_31_keygen_support:
+          access_key_id:
             type:
-            - boolean
+            - string
             - 'null'
-          signing_aes_key_as_hmac:
-            type:
-            - boolean
-            - 'null'
-          exact_key_ops:
-            type:
-            - boolean
-            - 'null'
-          prevent_duplicate_opaque_objects:
-            type:
-            - boolean
-            - 'null'
-          opaque_objects_are_not_certificates:
-            type:
-            - boolean
-            - 'null'
-          max_concurrent_requests_per_slot:
+          secret_key:
+            type: string
+    SigningKeysStored:
+      allOf:
+      - type: object
+        properties:
+          keys:
+            type: object
+            additionalProperties:
+              type: string
+              format: byte
+            description: Mapping key ids to DER-encoded public key.
+        required:
+        - keys
+    ObjectTypeFilterSelection:
+      allOf:
+      - type: object
+        properties:
+          selection:
+            type: array
+            items:
+              $ref: '#/components/schemas/ObjectType'
+        required:
+        - selection
+    LastAppOperationTimestamp:
+      allOf:
+      - type: object
+        properties:
+          generic:
             type:
             - integer
             - 'null'
-    AppGroupMembership:
-      allOf:
-      - type: object
-        properties:
-          group_id:
-            type: string
-            format: uuid
-          roles:
-            type: array
-            uniqueItems: true
-            items:
-              $ref: '#/components/schemas/AppGroupRoleDescriptor'
-        required:
-        - group_id
-        - roles
-    ObjectTypeFilterVariantAll:
-      allOf:
-      - type: object
-        properties:
-          $type:
-            type: string
-            enum:
-            - All
-        required:
-        - $type
-      - type: object
-        properties: {}
-    GoogleAccessReasonPolicy:
-      allOf:
-      - type: object
-        description: 'Policy specifying acceptable access reasons
-
-          by Google Service Account at App or Sobject level.'
-        properties:
-          allow:
-            type: array
-            uniqueItems: true
-            items:
-              $ref: '#/components/schemas/GoogleAccessReason'
-            description: Set of allowed Google Access reasons.
-          allow_missing_reason:
-            type: boolean
-            description: Accept incoming requests which do not specify any access reasons.
-        required:
-        - allow
-        - allow_missing_reason
-    CreateGroupMembership:
-      allOf:
-      - type: object
-        description: Request for assigning a group membership to an (AppRole::Admin) app.
-        properties:
-          group_id:
-            type: string
-            format: uuid
-            description: The id of the target group
-          membership:
-            $ref: '#/components/schemas/AppGroupMembership'
-        required:
-        - group_id
-        - membership
-    AppGroups:
-      oneOf:
-      - type: object
-        additionalProperties:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppPermissions'
-      - type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
-    AppCredential:
-      oneOf:
-      - title: AppCredentialVariantAll
-        type: object
-        properties:
-          all:
-            type: array
-            items:
-              $ref: '#/components/schemas/OneAppCredential'
-        required:
-        - all
-      - $ref: '#/components/schemas/OneAppCredential'
+          tokenization:
+            type:
+            - integer
+            - 'null'
+          tep:
+            type:
+            - integer
+            - 'null'
+          accelerator:
+            type:
+            - integer
+            - 'null'
+          secrets_management:
+            type:
+            - integer
+            - 'null'
     TepKeyMapList:
       allOf:
       - type: array
         items:
           $ref: '#/components/schemas/TepKeyMap'
+    AwsXksCredential:
+      allOf:
+      - type: object
+        properties:
+          access_key_id:
+            type: string
+          secret_key:
+            type: string
+        required:
+        - access_key_id
+        - secret_key
     AppSort:
       oneOf:
       - title: AppSortVariantByAppId
@@ -526,213 +527,98 @@ components:
             description: Starting from a particular app_name.
         required:
         - sort
-    AppAccountRoleDescriptorVariantCustom:
+    AppRole:
+      description: App's role.
+      type: string
+      enum:
+      - admin
+      - crypto
+    OneAppCredential:
+      description: App authentication mechanisms.
+      oneOf:
+      - title: OneAppCredentialVariantSecret
+        type: object
+        properties:
+          secret:
+            type: string
+            description: Authenticating credentials of an App.
+        required:
+        - secret
+      - title: OneAppCredentialVariantCertificate
+        type: object
+        properties:
+          certificate:
+            type: string
+            format: byte
+            description: PKI Certificate based authentication.
+        required:
+        - certificate
+      - title: OneAppCredentialVariantTrustedCa
+        type: object
+        properties:
+          trustedca:
+            $ref: '#/components/schemas/TrustedCaCredential'
+        required:
+        - trustedca
+      - title: OneAppCredentialVariantGoogleServiceAccount
+        type: object
+        properties:
+          googleserviceaccount:
+            $ref: '#/components/schemas/GoogleServiceAccountCredential'
+        required:
+        - googleserviceaccount
+      - title: OneAppCredentialVariantSignedJwt
+        type: object
+        properties:
+          signedjwt:
+            $ref: '#/components/schemas/SignedJwtCredential'
+        required:
+        - signedjwt
+      - title: OneAppCredentialVariantLdap
+        type: object
+        properties:
+          ldap:
+            type: string
+            format: uuid
+            description: LDAP credentials of an App used for authentication.
+        required:
+        - ldap
+      - title: OneAppCredentialVariantAwsIam
+        type: object
+        properties:
+          awsiam:
+            type: object
+            properties: {}
+        required:
+        - awsiam
+      - title: OneAppCredentialVariantAwsXks
+        type: object
+        properties:
+          awsxks:
+            $ref: '#/components/schemas/AwsXksCredential'
+        required:
+        - awsxks
+      - title: OneAppCredentialVariantGoogleWorkspaceCse
+        type: object
+        properties:
+          googleworkspacecse:
+            type: object
+            properties: {}
+        required:
+        - googleworkspacecse
+    AppAccountRoleDescriptorVariantSystemDefined:
       allOf:
       - type: object
         properties:
           $type:
             type: string
             enum:
-            - Custom
+            - SystemDefined
           value:
-            type: string
-            format: uuid
+            $ref: '#/components/schemas/AppAccountRole'
         required:
         - $type
         - value
-    LastAppOperationTimestamp:
-      allOf:
-      - type: object
-        properties:
-          generic:
-            type:
-            - integer
-            - 'null'
-          tokenization:
-            type:
-            - integer
-            - 'null'
-          tep:
-            type:
-            - integer
-            - 'null'
-          accelerator:
-            type:
-            - integer
-            - 'null'
-          secrets_management:
-            type:
-            - integer
-            - 'null'
-    ObjectType:
-      description: Type of security object.
-      type: string
-      enum:
-      - AES
-      - ARIA
-      - DES
-      - DES3
-      - SEED
-      - RSA
-      - DSA
-      - EC
-      - KCDSA
-      - ECKCDSA
-      - BIP32
-      - SLIP10
-      - BLS
-      - OPAQUE
-      - HMAC
-      - LEDABETA
-      - ROUND5BETA
-      - SECRET
-      - LMS
-      - XMSS
-      - MLDSA
-      - MLDSABETA
-      - MLKEM
-      - MLKEMBETA
-      - CERTIFICATE
-      - PBE
-    ClientFileLoggingVariantDisabled:
-      allOf:
-      - type: object
-        properties:
-          mode:
-            type: string
-            enum:
-            - disabled
-        required:
-        - mode
-      - type: object
-        properties: {}
-    GroupSort:
-      oneOf:
-      - title: GroupSortVariantByGroupId
-        type: object
-        properties:
-          sort_by:
-            type: string
-            pattern: ^group_id:(?:asc|desc)$
-            example: group_id:asc
-          previous_id:
-            type: string
-            format: uuid
-        required:
-        - previous_id
-      - title: GroupSortVariantByGroupName
-        type: object
-        properties:
-          sort_by:
-            type: string
-            pattern: ^group_name:(?:asc|desc)$
-            example: group_name:asc
-          previous_sort_value:
-            type: string
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-        required:
-        - previous_sort_value
-    AwsXksCredentialRequest:
-      allOf:
-      - type: object
-        properties:
-          access_key_id:
-            type:
-            - string
-            - 'null'
-          secret_key:
-            type: string
-    Principal:
-      description: A security principal.
-      oneOf:
-      - title: PrincipalVariantApp
-        type: object
-        properties:
-          app:
-            type: string
-            format: uuid
-        required:
-        - app
-      - title: PrincipalVariantUser
-        type: object
-        properties:
-          user:
-            type: string
-            format: uuid
-        required:
-        - user
-      - title: PrincipalVariantPlugin
-        type: object
-        properties:
-          plugin:
-            type: string
-            format: uuid
-        required:
-        - plugin
-      - title: PrincipalVariantUserViaApp
-        type: object
-        properties:
-          userviaapp:
-            $ref: '#/components/schemas/PrincipalUserViaApp'
-        required:
-        - userviaapp
-      - title: PrincipalVariantSystem
-        type: string
-        enum:
-        - system
-      - title: PrincipalVariantUnregisteredUser
-        type: string
-        enum:
-        - unregistereduser
-    QuorumApprovalConfig:
-      allOf:
-      - type: object
-        description: Quorum Policy Configurations in clients
-        properties:
-          wait_for_quorum_approval:
-            $ref: '#/components/schemas/ApprovalWaitConfig'
-    AppAccountRoleDescriptor:
-      oneOf:
-      - $ref: '#/components/schemas/AppAccountRoleDescriptorVariantSystemDefined'
-      - $ref: '#/components/schemas/AppAccountRoleDescriptorVariantCustom'
-      discriminator:
-        propertyName: $type
-        mapping:
-          SystemDefined: AppAccountRoleDescriptorVariantSystemDefined
-          Custom: AppAccountRoleDescriptorVariantCustom
-    AppAuthType:
-      allOf:
-      - type: object
-        properties:
-          auth_type:
-            $ref: '#/components/schemas/AppAuthTypeVariants'
-          auth_type_all:
-            type:
-            - array
-            - 'null'
-            items:
-              $ref: '#/components/schemas/OneAppAuthType'
-            description: 'If `auth_type` is `all`, this field will include the list of individual auth
-
-              types for the app'
-        required:
-        - auth_type
-    TepKeyMap:
-      allOf:
-      - type: object
-        properties:
-          path:
-            $ref: '#/components/schemas/ApiPath'
-          kid:
-            type: string
-            format: uuid
-          mode:
-            $ref: '#/components/schemas/CipherMode'
-        required:
-        - path
-        - kid
-        - mode
     PolicyDefinitionRego:
       allOf:
       - type: object
@@ -793,32 +679,72 @@ components:
             type: string
         required:
         - value
-    ClientLogConfig:
+    KmipClientConfig:
       allOf:
       - type: object
         properties:
-          system:
+          ignore_unknown_key_ops_for_secrets:
             type:
             - boolean
             - 'null'
-          file:
-            $ref: '#/components/schemas/ClientFileLogging'
-          level:
-            type:
-            - string
-            - 'null'
-    SigningKeys:
-      description: 'Signing keys used to validate JSON Web Signature objects including signed
-
-        JSON Web Tokens.'
+            description: Use `ignore_unknown_key_ops_for` with [SECRET] instead of `ignore_unknown_key_ops_for_secrets``
+          ignore_unknown_key_ops_for:
+            $ref: '#/components/schemas/ObjectTypeFilter'
+          key_ops_override:
+            $ref: '#/components/schemas/KeyOpsOverride'
+    ObjectCount:
+      allOf:
+      - type: object
+        properties:
+          count:
+            type: integer
+            description: Count of the items in the collection matching the request
+          count_accuracy:
+            $ref: '#/components/schemas/CountAccuracy'
+        required:
+        - count
+        - count_accuracy
+    AppGroupRoleDescriptor:
       oneOf:
-      - $ref: '#/components/schemas/SigningKeysVariantStored'
-      - $ref: '#/components/schemas/SigningKeysVariantFetched'
+      - $ref: '#/components/schemas/AppGroupRoleDescriptorVariantSystemDefined'
+      - $ref: '#/components/schemas/AppGroupRoleDescriptorVariantCustom'
       discriminator:
-        propertyName: kind
+        propertyName: $type
         mapping:
-          stored: SigningKeysVariantStored
-          fetched: SigningKeysVariantFetched
+          SystemDefined: AppGroupRoleDescriptorVariantSystemDefined
+          Custom: AppGroupRoleDescriptorVariantCustom
+    RemovableCommonClientConfig:
+      oneOf:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/CommonClientConfig'
+    PolicyDefinitionVariantRego:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - rego
+        required:
+        - $type
+      - $ref: '#/components/schemas/PolicyDefinitionRego'
+    TepKeyMap:
+      allOf:
+      - type: object
+        properties:
+          path:
+            $ref: '#/components/schemas/ApiPath'
+          kid:
+            type: string
+            format: uuid
+          mode:
+            $ref: '#/components/schemas/CipherMode'
+        required:
+        - path
+        - kid
+        - mode
     CommonClientConfig:
       allOf:
       - type: object
@@ -839,93 +765,118 @@ components:
             - 'null'
           quorum_approval:
             $ref: '#/components/schemas/QuorumApprovalConfig'
-    CountAccuracyVariantApproximate:
-      allOf:
-      - type: object
-        properties:
-          $type:
-            type: string
-            enum:
-            - Approximate
-        required:
-        - $type
-      - type: object
-        properties: {}
-    AppGroupRoleDescriptor:
+    AppCredential:
       oneOf:
-      - $ref: '#/components/schemas/AppGroupRoleDescriptorVariantSystemDefined'
-      - $ref: '#/components/schemas/AppGroupRoleDescriptorVariantCustom'
-      discriminator:
-        propertyName: $type
-        mapping:
-          SystemDefined: AppGroupRoleDescriptorVariantSystemDefined
-          Custom: AppGroupRoleDescriptorVariantCustom
-    TepSchemaVariantOpenAPI:
-      allOf:
-      - type: object
-        properties:
-          $type:
-            type: string
-            enum:
-            - OpenAPI
-        required:
-        - $type
-      - type: object
-        properties:
-          openapi:
-            type: string
-    IpAddressPolicy:
-      description: The IPs that are allowed for an application. ipv4 or ipv6 both are acceptable types.
-      oneOf:
-      - title: IpAddressPolicyVariantAllowAll
-        type: string
-        enum:
-        - allow_all
-      - title: IpAddressPolicyVariantWhitelist
+      - title: AppCredentialVariantAll
         type: object
         properties:
-          whitelist:
-            type: array
-            uniqueItems: true
-            items:
-              type: string
-        required:
-        - whitelist
-    ListAppsResponseWithMetadata:
-      allOf:
-      - type: object
-        description: A response that includes metadata
-        properties:
-          items:
+          all:
             type: array
             items:
-              $ref: '#/components/schemas/App'
-            description: The list of apps satisfying the request
-          metadata:
-            $ref: '#/components/schemas/CollectionMetadata'
+              $ref: '#/components/schemas/OneAppCredential'
         required:
-        - items
-        - metadata
-    PreviousCredential:
+        - all
+      - $ref: '#/components/schemas/OneAppCredential'
+    ClientFileLoggingVariantEnabled:
       allOf:
       - type: object
-        description: Expired app-credentials that are still valid for a transitional period.
         properties:
-          credential:
-            $ref: '#/components/schemas/AppCredential'
-          valid_until:
+          mode:
             type: string
-            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
-            example: 20170509T070912Z
-            description: Validity period of the App credentials.
+            enum:
+            - enabled
         required:
-        - credential
-        - valid_until
-    SecretCredentialRequest:
+        - mode
+      - $ref: '#/components/schemas/ClientFileLoggingConfig'
+    AppOauthConfig:
+      description: OAuth settings for an app. If enabled, an app can request to act on behalf of a user.
       oneOf:
-      - type: string
-        description: Use the existing secret (note that this must match the existing secret configured on the app)
-      - $ref: '#/components/schemas/SecretCredentialRequestGenerate'
+      - $ref: '#/components/schemas/AppOauthConfigVariantEnabled'
+      - $ref: '#/components/schemas/AppOauthConfigVariantDisabled'
+      discriminator:
+        propertyName: state
+        mapping:
+          enabled: AppOauthConfigVariantEnabled
+          disabled: AppOauthConfigVariantDisabled
+    AppGroupRoleDescriptorVariantCustom:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - Custom
+          value:
+            type: string
+            format: uuid
+        required:
+        - $type
+        - value
+    AppCredentialRequest:
+      oneOf:
+      - title: AppCredentialRequestVariantAll
+        type: object
+        properties:
+          all:
+            type: array
+            items:
+              $ref: '#/components/schemas/OneAppCredentialRequest'
+            description: 'Using `all`, clients can specify a combination of two credentials:
+
+              - one must be a mutual TLS credential (either `certificate` or `trustedca`),
+
+              - the other must be a general app credential (one of `secret`, `awsiam`, `signedjwt`, or `ldap`)
+
+
+              Apps authenticating with this variant must present both forms of credentials,
+
+              i.e., they must present a client certificate during TLS handshake, and also
+
+              present the other form of credential in the HTTP request.'
+        required:
+        - all
+      - $ref: '#/components/schemas/OneAppCredentialRequest'
+    ApprovalWaitConfig:
+      allOf:
+      - type: object
+        description: Configurations for waiting for quorum approval.
+        properties:
+          enabled:
+            type: boolean
+            description: Indicates whether waiting for quorum approval is activated or disabled
+          poll_interval_secs:
+            type:
+            - integer
+            - 'null'
+            description: Time interval in seconds for client lib to check quorum status.
+          max_wait_for_secs:
+            type:
+            - integer
+            - 'null'
+            description: Maximum time in seconds for client lib to wait for quorum reply.
+        required:
+        - enabled
+    TrustedCaCredential:
+      allOf:
+      - type: object
+        description: '`TrustedCa` app auth configuration.'
+        properties:
+          check_revocation:
+            type:
+            - boolean
+            - 'null'
+            description: 'When `true`, revocation status of certificates is checked, and revoked
+
+              certificates are rejected'
+      - $ref: '#/components/schemas/TrustAnchorSubject'
+      - $ref: '#/components/schemas/TrustAnchor'
+    QuorumApprovalConfig:
+      allOf:
+      - type: object
+        description: Quorum Policy Configurations in clients
+        properties:
+          wait_for_quorum_approval:
+            $ref: '#/components/schemas/ApprovalWaitConfig'
     OneAppCredentialRequest:
       oneOf:
       - title: OneAppCredentialRequestVariantSecret
@@ -997,17 +948,161 @@ components:
             properties: {}
         required:
         - googleworkspacecse
-    AppAccountMembership:
+    AppPermissions:
+      description: "Operations allowed to be performed by an app.\n\n\n\n          SIGN:\n\n\n          VERIFY:\n\n\n          ENCRYPT:\n\n\n          DECRYPT:\n\n\n          WRAPKEY:\n\n\n          UNWRAPKEY:\n\n\n          DERIVEKEY:\n\n\n          MACGENERATE:\n\n\n          MACVERIFY:\n\n\n          EXPORT:\n\n\n          MANAGE:\n\n\n          AGREEKEY:\n\n\n          MASKDECRYPT:\n\n\n          AUDIT:\n\n\n          TRANSFORM:\n\n\n          CREATE_SOBJECTS:\n\n\n          COPY_SOBJECTS:\n\n\n          ROTATE_SOBJECTS:\n\n\n          ACTIVATE_SOBJECTS:\n\n\n          REVOKE_SOBJECTS:\n\n\n          REVERT_SOBJECTS:\n\n\n          MOVE_SOBJECTS:\n\n\n          UPDATE_SOBJECTS_PROFILE:\n\n\n          UPDATE_SOBJECTS_ENABLED_STATE:\n\n\n          UPDATE_SOBJECT_POLICIES:\n\n\n          UPDATE_KEY_OPS:\n\n\n          DELETE_KEY_MATERIAL:\n\n\n          DELETE_SOBJECTS:\n\n\n          DESTROY_SOBJECTS:\n\n\n          RESTORE_EXTERNAL_SOBJECTS:\n\n\n          CALCULATE_DIGEST:\n\n\n          ENCAPSULATE:\n\n\n          DECAPSULATE:\n\n"
+      type: string
+      enum:
+      - SIGN
+      - VERIFY
+      - ENCRYPT
+      - DECRYPT
+      - WRAPKEY
+      - UNWRAPKEY
+      - DERIVEKEY
+      - MACGENERATE
+      - MACVERIFY
+      - EXPORT
+      - MANAGE
+      - AGREEKEY
+      - MASKDECRYPT
+      - AUDIT
+      - TRANSFORM
+      - CREATE_SOBJECTS
+      - COPY_SOBJECTS
+      - ROTATE_SOBJECTS
+      - ACTIVATE_SOBJECTS
+      - REVOKE_SOBJECTS
+      - REVERT_SOBJECTS
+      - MOVE_SOBJECTS
+      - UPDATE_SOBJECTS_PROFILE
+      - UPDATE_SOBJECTS_ENABLED_STATE
+      - UPDATE_SOBJECT_POLICIES
+      - UPDATE_KEY_OPS
+      - DELETE_KEY_MATERIAL
+      - DELETE_SOBJECTS
+      - DESTROY_SOBJECTS
+      - RESTORE_EXTERNAL_SOBJECTS
+      - CALCULATE_DIGEST
+      - ENCAPSULATE
+      - DECAPSULATE
+    TrustAnchorSubject:
+      description: 'Subjects or subject alternative names (SANs) for trusted CA auth.
+
+        DSM will check the subject field and any SANs inside incoming
+
+        client certificates and compare them against the subjects configured
+
+        in the trusted CA auth config.'
+      oneOf:
+      - title: TrustAnchorSubjectVariantSubject
+        type: object
+        properties:
+          subject:
+            type: array
+            items:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                type: string
+            description: 'A single subject as a list of OID/value string pairs
+
+              (representing a sequence of relative distinguished names), which
+
+              should appear in the client cert''s subject field and/or as one
+
+              of its SANs.
+
+
+              This legacy variant is retained for backcompat purposes, and is
+
+              equivalent to specifying a directoryName via the SubjectGeneral
+
+              variant.'
+        required:
+        - subject
+      - title: TrustAnchorSubjectVariantSubjectGeneral
+        type: object
+        properties:
+          subject_general:
+            $ref: '#/components/schemas/SubjectGeneral'
+        required:
+        - subject_general
+      - title: TrustAnchorSubjectVariantSubjects
+        type: object
+        properties:
+          subjects:
+            type: array
+            items:
+              $ref: '#/components/schemas/SubjectGeneral'
+            description: 'List of allowed GeneralName subjects. At least one of the values
+
+              in this list must appear in the client cert, under its subject
+
+              field and/or as one of its SANs.
+
+
+              Currently, DSM supports at most 16 subjects.'
+        required:
+        - subjects
+    AppAuthType:
       allOf:
       - type: object
         properties:
-          roles:
+          auth_type:
+            $ref: '#/components/schemas/AppAuthTypeVariants'
+          auth_type_all:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/OneAppAuthType'
+            description: 'If `auth_type` is `all`, this field will include the list of individual auth
+
+              types for the app'
+        required:
+        - auth_type
+    SignedJwtCredential:
+      allOf:
+      - type: object
+        properties:
+          valid_issuers:
             type: array
             uniqueItems: true
             items:
-              $ref: '#/components/schemas/AppAccountRoleDescriptor'
+              type: string
+          signing_keys:
+            $ref: '#/components/schemas/SigningKeys'
+          private_claims_policy:
+            $ref: '#/components/schemas/PrivateClaimsPolicy'
         required:
-        - roles
+        - valid_issuers
+        - signing_keys
+    SigningKeysVariantStored:
+      allOf:
+      - type: object
+        properties:
+          kind:
+            type: string
+            enum:
+            - stored
+        required:
+        - kind
+      - $ref: '#/components/schemas/SigningKeysStored'
+    TepSchemaVariantOpenAPI:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - OpenAPI
+        required:
+        - $type
+      - type: object
+        properties:
+          openapi:
+            type: string
     GoogleAccessReason:
       description: An access reason provided by Google when making EKMS API calls.
       type: string
@@ -1024,66 +1119,265 @@ components:
       - MODIFIED_GOOGLE_INITIATED_SYSTEM_OPERATION
       - GOOGLE_RESPONSE_TO_PRODUCTION_ALERT
       - CUSTOMER_AUTHORIZED_WORKFLOW_SERVICING
-    ClientFileLogging:
+    TepSchema:
       oneOf:
-      - $ref: '#/components/schemas/ClientFileLoggingVariantEnabled'
-      - $ref: '#/components/schemas/ClientFileLoggingVariantDisabled'
+      - $ref: '#/components/schemas/TepSchemaVariantOpenAPI'
       discriminator:
-        propertyName: mode
+        propertyName: $type
         mapping:
-          enabled: ClientFileLoggingVariantEnabled
-          disabled: ClientFileLoggingVariantDisabled
-    CollectionMetadata:
-      allOf:
-      - type: object
-        properties:
-          continuation_token:
-            type:
-            - string
-            - 'null'
-            description: 'Continuation token to continue getting results. If the response contains a continuation_token,
-
-              the results returned are partial. In that case, the client can make the same request with this
-
-              continuation token to continue getting results.'
-      - $ref: '#/components/schemas/ObjectCount'
-    AppCredentialRequest:
+          OpenAPI: TepSchemaVariantOpenAPI
+    Principal:
+      description: A security principal.
       oneOf:
-      - title: AppCredentialRequestVariantAll
+      - title: PrincipalVariantApp
         type: object
         properties:
-          all:
-            type: array
-            items:
-              $ref: '#/components/schemas/OneAppCredentialRequest'
-            description: 'Using `all`, clients can specify a combination of two credentials:
-
-              - one must be a mutual TLS credential (either `certificate` or `trustedca`),
-
-              - the other must be a general app credential (one of `secret`, `awsiam`, `signedjwt`, or `ldap`)
-
-
-              Apps authenticating with this variant must present both forms of credentials,
-
-              i.e., they must present a client certificate during TLS handshake, and also
-
-              present the other form of credential in the HTTP request.'
+          app:
+            type: string
+            format: uuid
         required:
-        - all
-      - $ref: '#/components/schemas/OneAppCredentialRequest'
-    KmipClientConfig:
+        - app
+      - title: PrincipalVariantUser
+        type: object
+        properties:
+          user:
+            type: string
+            format: uuid
+        required:
+        - user
+      - title: PrincipalVariantPlugin
+        type: object
+        properties:
+          plugin:
+            type: string
+            format: uuid
+        required:
+        - plugin
+      - title: PrincipalVariantUserViaApp
+        type: object
+        properties:
+          userviaapp:
+            $ref: '#/components/schemas/PrincipalUserViaApp'
+        required:
+        - userviaapp
+      - title: PrincipalVariantSystem
+        type: string
+        enum:
+        - system
+      - title: PrincipalVariantUnregisteredUser
+        type: string
+        enum:
+        - unregistereduser
+    ObjectType:
+      description: Type of security object.
+      type: string
+      enum:
+      - AES
+      - ARIA
+      - DES
+      - DES3
+      - SEED
+      - RSA
+      - DSA
+      - EC
+      - KCDSA
+      - ECKCDSA
+      - BIP32
+      - SLIP10
+      - BLS
+      - OPAQUE
+      - HMAC
+      - LEDABETA
+      - ROUND5BETA
+      - SECRET
+      - LMS
+      - XMSS
+      - MLDSA
+      - MLDSABETA
+      - MLKEM
+      - MLKEMBETA
+      - CERTIFICATE
+      - PBE
+    GetGroupsParams:
       allOf:
       - type: object
         properties:
-          ignore_unknown_key_ops_for_secrets:
+          limit:
+            type: integer
+          filter:
+            type: string
+            description: 'If specified, only groups matching this `filter` are returned.
+
+
+              The following fields can be referenced in the filter:
+
+              - `name`
+
+              - `created_at`
+
+              - `description`
+
+              - `wrapping_key_name`'
+          offset:
+            type: integer
+            description: Number of groups to skip
+          continuation_token:
+            type: string
+            description: 'Continuation token to continue getting results. It must be the same
+
+              token returned from the backend from a previous call, or empty.
+
+
+              Existence of this query parameter controls the response (and the backend behavior):
+
+              - If specified (including an empty value), the backend returns metadata alongside
+
+              the collection of groups. The metadata will potentially contain a fresh `continuation_token`.
+
+
+              Note: If there is a `limit` specified in the request and DSM returns `limit`-many items in the
+
+              response, it will still include a fresh continuation token if there are more items in the collection.
+
+              Additionally, unlike other query parameters, `limit` is not required to remain unchanged in a chain of
+
+              requests with `continuation_token`s.
+
+              - If omitted, the backend returns just a collection of groups with no metadata.'
+      - $ref: '#/components/schemas/GroupSort'
+    AppGroupRoleDescriptorVariantSystemDefined:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - SystemDefined
+          value:
+            $ref: '#/components/schemas/AppGroupRole'
+        required:
+        - $type
+        - value
+    RemovableKmipClientConfig:
+      oneOf:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/KmipClientConfig'
+    GetAppGroupMemberships:
+      allOf:
+      - type: object
+        description: The response for the GetAllGroupMembership endpoint
+        properties:
+          metadata:
+            $ref: '#/components/schemas/GroupMetaData'
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/AppGroupMembership'
+            description: The collection of group memberships the entity is a member in
+        required:
+        - metadata
+        - items
+    OauthScope:
+      description: OAuth scope.
+      type: string
+      enum:
+      - app
+      - openid
+      - email
+      - profile
+    RemovableTepClientConfig:
+      oneOf:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/TepClientConfig'
+    GroupMembershipRequest:
+      allOf:
+      - type: object
+        description: Type for updating a group membership
+        properties:
+          add_group_roles:
             type:
-            - boolean
+            - array
             - 'null'
-            description: Use `ignore_unknown_key_ops_for` with [SECRET] instead of `ignore_unknown_key_ops_for_secrets``
-          ignore_unknown_key_ops_for:
-            $ref: '#/components/schemas/ObjectTypeFilter'
-          key_ops_override:
-            $ref: '#/components/schemas/KeyOpsOverride'
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/AppGroupRoleDescriptor'
+            description: The set of roles to add
+          del_group_roles:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/AppGroupRoleDescriptor'
+            description: The set of roles to remove
+    AppGroupMembership:
+      allOf:
+      - type: object
+        properties:
+          group_id:
+            type: string
+            format: uuid
+          roles:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/AppGroupRoleDescriptor'
+        required:
+        - group_id
+        - roles
+    SigningKeysFetched:
+      allOf:
+      - type: object
+        properties:
+          url:
+            type: string
+          cache_duration:
+            type: integer
+            description: Number of seconds that the service is allowed to cache the fetched keys.
+        required:
+        - url
+        - cache_duration
+    ListAppsResponse:
+      description: The response of the get all apps API
+      oneOf:
+      - $ref: '#/components/schemas/ListAppsResponseWithMetadata'
+      - type: array
+        items:
+          $ref: '#/components/schemas/App'
+        description: A response that omits metadata
+    AppAccountRoleDescriptor:
+      oneOf:
+      - $ref: '#/components/schemas/AppAccountRoleDescriptorVariantSystemDefined'
+      - $ref: '#/components/schemas/AppAccountRoleDescriptorVariantCustom'
+      discriminator:
+        propertyName: $type
+        mapping:
+          SystemDefined: AppAccountRoleDescriptorVariantSystemDefined
+          Custom: AppAccountRoleDescriptorVariantCustom
+    KeyOperations:
+      description: "Operations allowed to be performed on a given key.\n\n\n\n          SIGN:\n            If this is set, the key can be used to for signing.\n\n\n          VERIFY:\n            If this is set, the key can used for verifying a signature.\n\n\n          ENCRYPT:\n            If this is set, the key can be used for encryption.\n\n\n          DECRYPT:\n            If this is set, the key can be used for decryption.\n\n\n          WRAPKEY:\n            If this is set, the key can be used wrapping other keys.\n            The key being wrapped must have the EXPORT operation enabled.\n\n\n          UNWRAPKEY:\n            If this is set, the key can be used to unwrap a wrapped key.\n\n\n          DERIVEKEY:\n            If this is set, the key can be used to derive another key.\n\n\n          TRANSFORM:\n            If this is set, the key can be transformed.\n\n\n          MACGENERATE:\n            If this is set, the key can be used to compute a cryptographic\n            Message Authentication Code (MAC) on a message.\n\n\n          MACVERIFY:\n            If they is set, the key can be used to verify a MAC.\n\n\n          EXPORT:\n            If this is set, the value of the key can be retrieved\n            with an authenticated request. This shouldn't be set unless\n            required. It is more secure to keep the key's value inside DSM only.\n\n\n          APPMANAGEABLE:\n            Without this operation, management operations like delete, destroy,\n            rotate, activate, restore, revoke, revert, update, remove_private, etc.\n            cannot be performed by a crypto App.\n            A user with access or admin app can still perform these operations.\n            This option is only relevant for crypto apps.\n\n\n          HIGHVOLUME:\n            If this is set, audit logs will not be recorded for the key.\n            High volume here tries to signify a key that is being used a lot\n            and will produce lots of logs. Setting this operation disables\n            audit logs for the key.\n\n\n          AGREEKEY:\n            If this is set, the key can be used for key agreement.\n            Both the private and public key should have this option enabled\n            to perform an agree operation.\n\n\n          ENCAPSULATE:\n            If this is set, the key can be used for key encapsulation. The\n            result is a new symmetric key and a ciphertext.\n\n\n          DECAPSULATE:\n            If this is set, the key can be used for key decapsulation. If\n            decapsulation succeeds, the result is a new symmetric key.\n\n"
+      type: string
+      enum:
+      - SIGN
+      - VERIFY
+      - ENCRYPT
+      - DECRYPT
+      - WRAPKEY
+      - UNWRAPKEY
+      - DERIVEKEY
+      - TRANSFORM
+      - MACGENERATE
+      - MACVERIFY
+      - EXPORT
+      - APPMANAGEABLE
+      - HIGHVOLUME
+      - AGREEKEY
+      - ENCAPSULATE
+      - DECAPSULATE
     App:
       allOf:
       - type: object
@@ -1184,72 +1478,94 @@ components:
         - name
         - role
       - $ref: '#/components/schemas/AppAuthType'
-    TepSchema:
+    ClientConfigurationsRequest:
+      allOf:
+      - type: object
+        properties:
+          common:
+            $ref: '#/components/schemas/RemovableCommonClientConfig'
+          pkcs11:
+            $ref: '#/components/schemas/RemovablePkcs11ClientConfig'
+          kmip:
+            $ref: '#/components/schemas/RemovableKmipClientConfig'
+          tep:
+            $ref: '#/components/schemas/RemovableTepClientConfig'
+    ObjectTypeFilter:
       oneOf:
-      - $ref: '#/components/schemas/TepSchemaVariantOpenAPI'
+      - $ref: '#/components/schemas/ObjectTypeFilterVariantAll'
+      - $ref: '#/components/schemas/ObjectTypeFilterVariantSelection'
       discriminator:
         propertyName: $type
         mapping:
-          OpenAPI: TepSchemaVariantOpenAPI
-    AppGroupRoleDescriptorVariantCustom:
+          All: ObjectTypeFilterVariantAll
+          Selection: ObjectTypeFilterVariantSelection
+    IpAddressPolicy:
+      description: The IPs that are allowed for an application. ipv4 or ipv6 both are acceptable types.
+      oneOf:
+      - title: IpAddressPolicyVariantAllowAll
+        type: string
+        enum:
+        - allow_all
+      - title: IpAddressPolicyVariantWhitelist
+        type: object
+        properties:
+          whitelist:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
+        required:
+        - whitelist
+    AppGroups:
+      oneOf:
+      - type: object
+        additionalProperties:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppPermissions'
+      - type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+    ObjectTypeFilterVariantSelection:
       allOf:
       - type: object
         properties:
           $type:
             type: string
             enum:
-            - Custom
-          value:
+            - Selection
+        required:
+        - $type
+      - $ref: '#/components/schemas/ObjectTypeFilterSelection'
+    GroupSort:
+      oneOf:
+      - title: GroupSortVariantByGroupId
+        type: object
+        properties:
+          sort_by:
+            type: string
+            pattern: ^group_id:(?:asc|desc)$
+            example: group_id:asc
+          previous_id:
             type: string
             format: uuid
         required:
-        - $type
-        - value
-    GroupMetaData:
-      allOf:
-      - type: object
-        description: 'Additional information or context regarding the groups the entity
-
-          holds membership in'
+        - previous_id
+      - title: GroupSortVariantByGroupName
+        type: object
         properties:
-          all_groups:
-            type: boolean
-            description: Whether the entity has been assigned an exclusive "all groups role"
-        required:
-        - all_groups
-    SigningKeysVariantFetched:
-      allOf:
-      - type: object
-        properties:
-          kind:
+          sort_by:
             type: string
-            enum:
-            - fetched
-        required:
-        - kind
-      - $ref: '#/components/schemas/SigningKeysFetched'
-    PolicyDefinitionVariantRego:
-      allOf:
-      - type: object
-        properties:
-          $type:
+            pattern: ^group_name:(?:asc|desc)$
+            example: group_name:asc
+          previous_sort_value:
             type: string
-            enum:
-            - rego
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
         required:
-        - $type
-      - $ref: '#/components/schemas/PolicyDefinitionRego'
-    SigningKeysVariantStored:
-      allOf:
-      - type: object
-        properties:
-          kind:
-            type: string
-            enum:
-            - stored
-        required:
-        - kind
-      - $ref: '#/components/schemas/SigningKeysStored'
+        - previous_sort_value
     TrustAnchor:
       description: Trust anchors (i.e., root CA certificates) for a [`TrustedCaCredential`].
       oneOf:
@@ -1273,378 +1589,45 @@ components:
             description: Multiple root CA certificates. DSM currently supports up to 16 certs.
         required:
         - ca_certificates
-    KeyOperations:
-      description: "Operations allowed to be performed on a given key.\n\n\n\n          SIGN:\n            If this is set, the key can be used to for signing.\n\n\n          VERIFY:\n            If this is set, the key can used for verifying a signature.\n\n\n          ENCRYPT:\n            If this is set, the key can be used for encryption.\n\n\n          DECRYPT:\n            If this is set, the key can be used for decryption.\n\n\n          WRAPKEY:\n            If this is set, the key can be used wrapping other keys.\n            The key being wrapped must have the EXPORT operation enabled.\n\n\n          UNWRAPKEY:\n            If this is set, the key can be used to unwrap a wrapped key.\n\n\n          DERIVEKEY:\n            If this is set, the key can be used to derive another key.\n\n\n          TRANSFORM:\n            If this is set, the key can be transformed.\n\n\n          MACGENERATE:\n            If this is set, the key can be used to compute a cryptographic\n            Message Authentication Code (MAC) on a message.\n\n\n          MACVERIFY:\n            If they is set, the key can be used to verify a MAC.\n\n\n          EXPORT:\n            If this is set, the value of the key can be retrieved\n            with an authenticated request. This shouldn't be set unless\n            required. It is more secure to keep the key's value inside DSM only.\n\n\n          APPMANAGEABLE:\n            Without this operation, management operations like delete, destroy,\n            rotate, activate, restore, revoke, revert, update, remove_private, etc.\n            cannot be performed by a crypto App.\n            A user with access or admin app can still perform these operations.\n            This option is only relevant for crypto apps.\n\n\n          HIGHVOLUME:\n            If this is set, audit logs will not be recorded for the key.\n            High volume here tries to signify a key that is being used a lot\n            and will produce lots of logs. Setting this operation disables\n            audit logs for the key.\n\n\n          AGREEKEY:\n            If this is set, the key can be used for key agreement.\n            Both the private and public key should have this option enabled\n            to perform an agree operation.\n\n\n          ENCAPSULATE:\n            If this is set, the key can be used for key encapsulation. The\n            result is a new symmetric key and a ciphertext.\n\n\n          DECAPSULATE:\n            If this is set, the key can be used for key decapsulation. If\n            decapsulation succeeds, the result is a new symmetric key.\n\n"
-      type: string
-      enum:
-      - SIGN
-      - VERIFY
-      - ENCRYPT
-      - DECRYPT
-      - WRAPKEY
-      - UNWRAPKEY
-      - DERIVEKEY
-      - TRANSFORM
-      - MACGENERATE
-      - MACVERIFY
-      - EXPORT
-      - APPMANAGEABLE
-      - HIGHVOLUME
-      - AGREEKEY
-      - ENCAPSULATE
-      - DECAPSULATE
-    AppAuthTypeVariants:
-      oneOf:
-      - title: AppAuthTypeVariantsVariantAll
-        type: string
-        enum:
-        - All
-      - $ref: '#/components/schemas/OneAppAuthType'
-    ObjectTypeFilterSelection:
+    CollectionMetadata:
       allOf:
       - type: object
         properties:
-          selection:
-            type: array
-            items:
-              $ref: '#/components/schemas/ObjectType'
-        required:
-        - selection
-    RemovableKmipClientConfig:
-      oneOf:
-      - type: string
-        enum:
-        - remove
-      - $ref: '#/components/schemas/KmipClientConfig'
-    CountAccuracyVariantExact:
-      allOf:
-      - type: object
-        properties:
-          $type:
-            type: string
-            enum:
-            - Exact
-        required:
-        - $type
-      - type: object
-        properties: {}
-    RemovableTepClientConfig:
-      oneOf:
-      - type: string
-        enum:
-        - remove
-      - $ref: '#/components/schemas/TepClientConfig'
-    CountAccuracy:
-      description: An indicator of how accurate a count of objects is.
-      oneOf:
-      - $ref: '#/components/schemas/CountAccuracyVariantExact'
-      - $ref: '#/components/schemas/CountAccuracyVariantApproximate'
-      discriminator:
-        propertyName: $type
-        mapping:
-          Exact: CountAccuracyVariantExact
-          Approximate: CountAccuracyVariantApproximate
-    AppOauthConfig:
-      description: OAuth settings for an app. If enabled, an app can request to act on behalf of a user.
-      oneOf:
-      - $ref: '#/components/schemas/AppOauthConfigVariantEnabled'
-      - $ref: '#/components/schemas/AppOauthConfigVariantDisabled'
-      discriminator:
-        propertyName: state
-        mapping:
-          enabled: AppOauthConfigVariantEnabled
-          disabled: AppOauthConfigVariantDisabled
-    AppOauthConfigVariantEnabled:
-      allOf:
-      - type: object
-        properties:
-          state:
-            type: string
-            enum:
-            - enabled
-        required:
-        - state
-      - $ref: '#/components/schemas/AppOauthConfigEnabled'
-    ClientConfigurations:
-      allOf:
-      - type: object
-        properties:
-          common:
-            $ref: '#/components/schemas/CommonClientConfig'
-          pkcs11:
-            $ref: '#/components/schemas/Pkcs11ClientConfig'
-          kmip:
-            $ref: '#/components/schemas/KmipClientConfig'
-          tep:
-            $ref: '#/components/schemas/TepClientConfig'
-    PrincipalUserViaApp:
-      allOf:
-      - type: object
-        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
-        properties:
-          user_id:
-            type: string
-            format: uuid
-          scopes:
-            type: array
-            uniqueItems: true
-            items:
-              $ref: '#/components/schemas/OauthScope'
-        required:
-        - user_id
-        - scopes
-    AppPermissions:
-      description: "Operations allowed to be performed by an app.\n\n\n\n          SIGN:\n\n\n          VERIFY:\n\n\n          ENCRYPT:\n\n\n          DECRYPT:\n\n\n          WRAPKEY:\n\n\n          UNWRAPKEY:\n\n\n          DERIVEKEY:\n\n\n          MACGENERATE:\n\n\n          MACVERIFY:\n\n\n          EXPORT:\n\n\n          MANAGE:\n\n\n          AGREEKEY:\n\n\n          MASKDECRYPT:\n\n\n          AUDIT:\n\n\n          TRANSFORM:\n\n\n          CREATE_SOBJECTS:\n\n\n          COPY_SOBJECTS:\n\n\n          ROTATE_SOBJECTS:\n\n\n          ACTIVATE_SOBJECTS:\n\n\n          REVOKE_SOBJECTS:\n\n\n          REVERT_SOBJECTS:\n\n\n          MOVE_SOBJECTS:\n\n\n          UPDATE_SOBJECTS_PROFILE:\n\n\n          UPDATE_SOBJECTS_ENABLED_STATE:\n\n\n          UPDATE_SOBJECT_POLICIES:\n\n\n          UPDATE_KEY_OPS:\n\n\n          DELETE_KEY_MATERIAL:\n\n\n          DELETE_SOBJECTS:\n\n\n          DESTROY_SOBJECTS:\n\n\n          RESTORE_EXTERNAL_SOBJECTS:\n\n\n          CALCULATE_DIGEST:\n\n\n          ENCAPSULATE:\n\n\n          DECAPSULATE:\n\n"
-      type: string
-      enum:
-      - SIGN
-      - VERIFY
-      - ENCRYPT
-      - DECRYPT
-      - WRAPKEY
-      - UNWRAPKEY
-      - DERIVEKEY
-      - MACGENERATE
-      - MACVERIFY
-      - EXPORT
-      - MANAGE
-      - AGREEKEY
-      - MASKDECRYPT
-      - AUDIT
-      - TRANSFORM
-      - CREATE_SOBJECTS
-      - COPY_SOBJECTS
-      - ROTATE_SOBJECTS
-      - ACTIVATE_SOBJECTS
-      - REVOKE_SOBJECTS
-      - REVERT_SOBJECTS
-      - MOVE_SOBJECTS
-      - UPDATE_SOBJECTS_PROFILE
-      - UPDATE_SOBJECTS_ENABLED_STATE
-      - UPDATE_SOBJECT_POLICIES
-      - UPDATE_KEY_OPS
-      - DELETE_KEY_MATERIAL
-      - DELETE_SOBJECTS
-      - DESTROY_SOBJECTS
-      - RESTORE_EXTERNAL_SOBJECTS
-      - CALCULATE_DIGEST
-      - ENCAPSULATE
-      - DECAPSULATE
-    AppAccountRole:
-      type: string
-      enum:
-      - AccountAdministrator
-      - AccountMember
-      - AccountAuditor
-    AppRole:
-      description: App's role.
-      type: string
-      enum:
-      - admin
-      - crypto
-    RemovableCommonClientConfig:
-      oneOf:
-      - type: string
-        enum:
-        - remove
-      - $ref: '#/components/schemas/CommonClientConfig'
-    AppCredentialResponse:
-      allOf:
-      - type: object
-        description: App credential response.
-        properties:
-          app_id:
-            type: string
-            format: uuid
-            description: Unique identifier of the App.
-          credential:
-            $ref: '#/components/schemas/AppCredential'
-          previous_credential:
-            $ref: '#/components/schemas/PreviousCredential'
-        required:
-        - app_id
-        - credential
-    CipherMode:
-      description: Cipher mode used for symmetric key algorithms.
-      type: string
-      enum:
-      - ECB
-      - CBC
-      - CBCNOPAD
-      - CFB
-      - OFB
-      - CTR
-      - GCM
-      - CCM
-      - KW
-      - KWP
-      - FF1
-    GetAppParams:
-      allOf:
-      - type: object
-        description: Query params for individual App APIs
-        properties:
-          group_permissions:
-            type: boolean
-            description: Flag specifying if group permissions should be returned with the app group.
-          role:
-            type: string
-            description: The App's role.
-    AwsXksCredential:
-      allOf:
-      - type: object
-        properties:
-          access_key_id:
-            type: string
-          secret_key:
-            type: string
-        required:
-        - access_key_id
-        - secret_key
-    OneAppCredential:
-      description: App authentication mechanisms.
-      oneOf:
-      - title: OneAppCredentialVariantSecret
-        type: object
-        properties:
-          secret:
-            type: string
-            description: Authenticating credentials of an App.
-        required:
-        - secret
-      - title: OneAppCredentialVariantCertificate
-        type: object
-        properties:
-          certificate:
-            type: string
-            format: byte
-            description: PKI Certificate based authentication.
-        required:
-        - certificate
-      - title: OneAppCredentialVariantTrustedCa
-        type: object
-        properties:
-          trustedca:
-            $ref: '#/components/schemas/TrustedCaCredential'
-        required:
-        - trustedca
-      - title: OneAppCredentialVariantGoogleServiceAccount
-        type: object
-        properties:
-          googleserviceaccount:
-            $ref: '#/components/schemas/GoogleServiceAccountCredential'
-        required:
-        - googleserviceaccount
-      - title: OneAppCredentialVariantSignedJwt
-        type: object
-        properties:
-          signedjwt:
-            $ref: '#/components/schemas/SignedJwtCredential'
-        required:
-        - signedjwt
-      - title: OneAppCredentialVariantLdap
-        type: object
-        properties:
-          ldap:
-            type: string
-            format: uuid
-            description: LDAP credentials of an App used for authentication.
-        required:
-        - ldap
-      - title: OneAppCredentialVariantAwsIam
-        type: object
-        properties:
-          awsiam:
-            type: object
-            properties: {}
-        required:
-        - awsiam
-      - title: OneAppCredentialVariantAwsXks
-        type: object
-        properties:
-          awsxks:
-            $ref: '#/components/schemas/AwsXksCredential'
-        required:
-        - awsxks
-      - title: OneAppCredentialVariantGoogleWorkspaceCse
-        type: object
-        properties:
-          googleworkspacecse:
-            type: object
-            properties: {}
-        required:
-        - googleworkspacecse
-    GetGroupsParams:
-      allOf:
-      - type: object
-        properties:
-          limit:
-            type: integer
-          filter:
-            type: string
-            description: 'If specified, only groups matching this `filter` are returned.
-
-
-              The following fields can be referenced in the filter:
-
-              - `name`
-
-              - `created_at`
-
-              - `description`
-
-              - `wrapping_key_name`'
-          offset:
-            type: integer
-            description: Number of groups to skip
           continuation_token:
-            type: string
-            description: 'Continuation token to continue getting results. It must be the same
+            type:
+            - string
+            - 'null'
+            description: 'Continuation token to continue getting results. If the response contains a continuation_token,
 
-              token returned from the backend from a previous call, or empty.
+              the results returned are partial. In that case, the client can make the same request with this
 
-
-              Existence of this query parameter controls the response (and the backend behavior):
-
-              - If specified (including an empty value), the backend returns metadata alongside
-
-              the collection of groups. The metadata will potentially contain a fresh `continuation_token`.
-
-
-              Note: If there is a `limit` specified in the request and DSM returns `limit`-many items in the
-
-              response, it will still include a fresh continuation token if there are more items in the collection.
-
-              Additionally, unlike other query parameters, `limit` is not required to remain unchanged in a chain of
-
-              requests with `continuation_token`s.
-
-              - If omitted, the backend returns just a collection of groups with no metadata.'
-      - $ref: '#/components/schemas/GroupSort'
-    TepClientConfig:
+              continuation token to continue getting results.'
+      - $ref: '#/components/schemas/ObjectCount'
+    OneAppAuthType:
+      description: Authentication method of an app.
+      type: string
+      enum:
+      - Secret
+      - GoogleServiceAccount
+      - SignedJwt
+      - Ldap
+      - AwsIam
+      - AwsXks
+      - GoogleWorkspaceCSE
+      - Certificate
+      - TrustedCa
+    GroupMetaData:
       allOf:
       - type: object
+        description: 'Additional information or context regarding the groups the entity
+
+          holds membership in'
         properties:
-          schema:
-            $ref: '#/components/schemas/TepSchema'
-          key_map:
-            $ref: '#/components/schemas/TepKeyMapList'
+          all_groups:
+            type: boolean
+            description: Whether the entity has been assigned an exclusive "all groups role"
         required:
-        - schema
-        - key_map
-    AppAccountRoleDescriptorVariantSystemDefined:
-      allOf:
-      - type: object
-        properties:
-          $type:
-            type: string
-            enum:
-            - SystemDefined
-          value:
-            $ref: '#/components/schemas/AppAccountRole'
-        required:
-        - $type
-        - value
+        - all_groups
     AppRequest:
       allOf:
       - type: object
@@ -1721,40 +1704,92 @@ components:
             minimum: 0
             maximum: 4294967295
             description: Size in bytes of app's secret.
-    ListAppsResponse:
-      description: The response of the get all apps API
+    RemovablePkcs11ClientConfig:
       oneOf:
-      - $ref: '#/components/schemas/ListAppsResponseWithMetadata'
-      - type: array
-        items:
-          $ref: '#/components/schemas/App'
-        description: A response that omits metadata
-    TrustedCaCredential:
+      - type: string
+        enum:
+        - remove
+      - $ref: '#/components/schemas/Pkcs11ClientConfig'
+    ClientFileLoggingVariantDisabled:
       allOf:
       - type: object
-        description: '`TrustedCa` app auth configuration.'
         properties:
-          check_revocation:
+          mode:
+            type: string
+            enum:
+            - disabled
+        required:
+        - mode
+      - type: object
+        properties: {}
+    SecretCredentialRequestGenerate:
+      allOf:
+      - type: object
+        description: Generate a new secret
+        properties:
+          size:
             type:
-            - boolean
+            - integer
             - 'null'
-            description: 'When `true`, revocation status of certificates is checked, and revoked
-
-              certificates are rejected'
-      - $ref: '#/components/schemas/TrustAnchorSubject'
-      - $ref: '#/components/schemas/TrustAnchor'
-    ClientConfigurationsRequest:
+            minimum: 0
+            maximum: 4294967295
+            description: Size of the secret to be generated in bytes
+    PreviousCredential:
+      allOf:
+      - type: object
+        description: Expired app-credentials that are still valid for a transitional period.
+        properties:
+          credential:
+            $ref: '#/components/schemas/AppCredential'
+          valid_until:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+            description: Validity period of the App credentials.
+        required:
+        - credential
+        - valid_until
+    ClientConfigurations:
       allOf:
       - type: object
         properties:
           common:
-            $ref: '#/components/schemas/RemovableCommonClientConfig'
+            $ref: '#/components/schemas/CommonClientConfig'
           pkcs11:
-            $ref: '#/components/schemas/RemovablePkcs11ClientConfig'
+            $ref: '#/components/schemas/Pkcs11ClientConfig'
           kmip:
-            $ref: '#/components/schemas/RemovableKmipClientConfig'
+            $ref: '#/components/schemas/KmipClientConfig'
           tep:
-            $ref: '#/components/schemas/RemovableTepClientConfig'
+            $ref: '#/components/schemas/TepClientConfig'
+    ListAppsResponseWithMetadata:
+      allOf:
+      - type: object
+        description: A response that includes metadata
+        properties:
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/App'
+            description: The list of apps satisfying the request
+          metadata:
+            $ref: '#/components/schemas/CollectionMetadata'
+        required:
+        - items
+        - metadata
+    ClientLogConfig:
+      allOf:
+      - type: object
+        properties:
+          system:
+            type:
+            - boolean
+            - 'null'
+          file:
+            $ref: '#/components/schemas/ClientFileLogging'
+          level:
+            type:
+            - string
+            - 'null'
     PrivateClaimsPolicy:
       allOf:
       - type: object
@@ -1763,6 +1798,17 @@ components:
             $ref: '#/components/schemas/PolicyDefinition'
         required:
         - definition
+    GetAppParams:
+      allOf:
+      - type: object
+        description: Query params for individual App APIs
+        properties:
+          group_permissions:
+            type: boolean
+            description: Flag specifying if group permissions should be returned with the app group.
+          role:
+            type: string
+            description: The App's role.
     ClientFileLoggingConfig:
       allOf:
       - type: object
@@ -1781,49 +1827,6 @@ components:
             - 'null'
             minimum: 0
             maximum: 4294967295
-    ObjectTypeFilter:
-      oneOf:
-      - $ref: '#/components/schemas/ObjectTypeFilterVariantAll'
-      - $ref: '#/components/schemas/ObjectTypeFilterVariantSelection'
-      discriminator:
-        propertyName: $type
-        mapping:
-          All: ObjectTypeFilterVariantAll
-          Selection: ObjectTypeFilterVariantSelection
-    GroupMembershipRequest:
-      allOf:
-      - type: object
-        description: Type for updating a group membership
-        properties:
-          add_group_roles:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              $ref: '#/components/schemas/AppGroupRoleDescriptor'
-            description: The set of roles to add
-          del_group_roles:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              $ref: '#/components/schemas/AppGroupRoleDescriptor'
-            description: The set of roles to remove
-    AppGroupRoleDescriptorVariantSystemDefined:
-      allOf:
-      - type: object
-        properties:
-          $type:
-            type: string
-            enum:
-            - SystemDefined
-          value:
-            $ref: '#/components/schemas/AppGroupRole'
-        required:
-        - $type
-        - value
     ListAppsParams:
       allOf:
       - type: object
@@ -1890,201 +1893,247 @@ components:
 
               - If omitted, the backend returns just a collection of apps with no metadata.'
       - $ref: '#/components/schemas/AppSort'
-    AppGroupRole:
-      type: string
-      enum:
-      - GroupAuditor
-      - GroupAdministrator
-    GcpAppPermissions:
-      description: "\n\n\n          CRYPTO_SPACE_GET_INFO:\n\n\n          CRYPTO_SPACE_GET_PUBLIC_KEY:\n\n"
-      type: string
-      enum:
-      - CRYPTO_SPACE_GET_INFO
-      - CRYPTO_SPACE_GET_PUBLIC_KEY
-    SubjectGeneral:
-      description: 'A GeneralName that can be used as a [subject alternative name][SAN] in
-
-        a certificate.
-
-
-        Today, the directoryName, dNSName, and iPAddress choices are supported.
-
-        Note that directoryName can also be used to represent the subject field
-
-        in a certificate.
-
-
-        [SAN]: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.6'
-      oneOf:
-      - title: SubjectGeneralVariantDirectoryName
-        type: object
+    AppOauthConfigVariantDisabled:
+      allOf:
+      - type: object
         properties:
-          directory_name:
-            type: array
-            items:
-              type: array
-              minItems: 2
-              maxItems: 2
-              items:
-                type: string
-            description: 'A directoryName, which consists of a sequence of (type, value)
-
-              pairs, where type is an OID, and value is a DER-encoded ASN.1
-
-              value. (This represents a sequence of relative distinguished
-
-              names.)'
-        required:
-        - directory_name
-      - title: SubjectGeneralVariantDnsName
-        type: object
-        properties:
-          dns_name:
+          state:
             type: string
-            description: A DNS name.
+            enum:
+            - disabled
         required:
-        - dns_name
-      - title: SubjectGeneralVariantIpAddress
-        type: object
+        - state
+      - type: object
+        properties: {}
+    TepKeyContext:
+      type: string
+      enum:
+      - request
+      - response
+    PrincipalUserViaApp:
+      allOf:
+      - type: object
+        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
         properties:
-          ip_address:
-            oneOf:
-            - type: string
-              format: ipv4
-            - type: string
-              format: ipv6
-            description: An IP address.
+          user_id:
+            type: string
+            format: uuid
+          scopes:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/OauthScope'
         required:
-        - ip_address
-    GoogleServiceAccountCredential:
+        - user_id
+        - scopes
+    CountAccuracyVariantExact:
       allOf:
       - type: object
         properties:
-          access_reason_policy:
-            $ref: '#/components/schemas/GoogleAccessReasonPolicy'
-          groups:
+          $type:
+            type: string
+            enum:
+            - Exact
+        required:
+        - $type
+      - type: object
+        properties: {}
+    AppAccountRole:
+      type: string
+      enum:
+      - AccountAdministrator
+      - AccountMember
+      - AccountAuditor
+    AppResetSecretRequest:
+      allOf:
+      - type: object
+        description: Request for resetting the app secret.
+        properties:
+          secret_size:
             type:
-            - object
+            - integer
             - 'null'
-            additionalProperties:
-              type: array
-              items:
-                $ref: '#/components/schemas/GcpAppPermissions'
-            description: Mapping for all groups an application is part of and the Gcp specific permissions it has within each of those groups.
-    TrustAnchorSubject:
-      description: 'Subjects or subject alternative names (SANs) for trusted CA auth.
+            minimum: 0
+            maximum: 4294967295
+            description: Size of app's secret in bytes.
+          credential_migration_period:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+            maximum: 4294967295
+            description: 'Time until which previous credentials(or its sessions)
 
-        DSM will check the subject field and any SANs inside incoming
-
-        client certificates and compare them against the subjects configured
-
-        in the trusted CA auth config.'
+              will not be invalidated as the API key gets regenerated.'
+    AppCredentialResponse:
+      allOf:
+      - type: object
+        description: App credential response.
+        properties:
+          app_id:
+            type: string
+            format: uuid
+            description: Unique identifier of the App.
+          credential:
+            $ref: '#/components/schemas/AppCredential'
+          previous_credential:
+            $ref: '#/components/schemas/PreviousCredential'
+        required:
+        - app_id
+        - credential
+    SigningKeysVariantFetched:
+      allOf:
+      - type: object
+        properties:
+          kind:
+            type: string
+            enum:
+            - fetched
+        required:
+        - kind
+      - $ref: '#/components/schemas/SigningKeysFetched'
+    SecretCredentialRequest:
       oneOf:
-      - title: TrustAnchorSubjectVariantSubject
-        type: object
-        properties:
-          subject:
-            type: array
-            items:
-              type: array
-              minItems: 2
-              maxItems: 2
-              items:
-                type: string
-            description: 'A single subject as a list of OID/value string pairs
-
-              (representing a sequence of relative distinguished names), which
-
-              should appear in the client cert''s subject field and/or as one
-
-              of its SANs.
-
-
-              This legacy variant is retained for backcompat purposes, and is
-
-              equivalent to specifying a directoryName via the SubjectGeneral
-
-              variant.'
-        required:
-        - subject
-      - title: TrustAnchorSubjectVariantSubjectGeneral
-        type: object
-        properties:
-          subject_general:
-            $ref: '#/components/schemas/SubjectGeneral'
-        required:
-        - subject_general
-      - title: TrustAnchorSubjectVariantSubjects
-        type: object
-        properties:
-          subjects:
-            type: array
-            items:
-              $ref: '#/components/schemas/SubjectGeneral'
-            description: 'List of allowed GeneralName subjects. At least one of the values
-
-              in this list must appear in the client cert, under its subject
-
-              field and/or as one of its SANs.
-
-
-              Currently, DSM supports at most 16 subjects.'
-        required:
-        - subjects
-    SigningKeysStored:
+      - type: string
+        description: Use the existing secret (note that this must match the existing secret configured on the app)
+      - $ref: '#/components/schemas/SecretCredentialRequestGenerate'
+    AppAccountRoleDescriptorVariantCustom:
       allOf:
       - type: object
         properties:
-          keys:
-            type: object
-            additionalProperties:
-              type: string
-              format: byte
-            description: Mapping key ids to DER-encoded public key.
+          $type:
+            type: string
+            enum:
+            - Custom
+          value:
+            type: string
+            format: uuid
         required:
-        - keys
-    ApprovalWaitConfig:
+        - $type
+        - value
+    CipherMode:
+      description: Cipher mode used for symmetric key algorithms.
+      type: string
+      enum:
+      - ECB
+      - CBC
+      - CBCNOPAD
+      - CFB
+      - OFB
+      - CTR
+      - GCM
+      - CCM
+      - KW
+      - KWP
+      - FF1
+    CreateGroupMembership:
       allOf:
       - type: object
-        description: Configurations for waiting for quorum approval.
+        description: Request for assigning a group membership to an (AppRole::Admin) app.
         properties:
-          enabled:
+          group_id:
+            type: string
+            format: uuid
+            description: The id of the target group
+          membership:
+            $ref: '#/components/schemas/AppGroupMembership'
+        required:
+        - group_id
+        - membership
+    AppAuthTypeVariants:
+      oneOf:
+      - title: AppAuthTypeVariantsVariantAll
+        type: string
+        enum:
+        - All
+      - $ref: '#/components/schemas/OneAppAuthType'
+    ClientFileLogging:
+      oneOf:
+      - $ref: '#/components/schemas/ClientFileLoggingVariantEnabled'
+      - $ref: '#/components/schemas/ClientFileLoggingVariantDisabled'
+      discriminator:
+        propertyName: mode
+        mapping:
+          enabled: ClientFileLoggingVariantEnabled
+          disabled: ClientFileLoggingVariantDisabled
+    ObjectTypeFilterVariantAll:
+      allOf:
+      - type: object
+        properties:
+          $type:
+            type: string
+            enum:
+            - All
+        required:
+        - $type
+      - type: object
+        properties: {}
+    SigningKeys:
+      description: 'Signing keys used to validate JSON Web Signature objects including signed
+
+        JSON Web Tokens.'
+      oneOf:
+      - $ref: '#/components/schemas/SigningKeysVariantStored'
+      - $ref: '#/components/schemas/SigningKeysVariantFetched'
+      discriminator:
+        propertyName: kind
+        mapping:
+          stored: SigningKeysVariantStored
+          fetched: SigningKeysVariantFetched
+    PolicyDefinition:
+      oneOf:
+      - $ref: '#/components/schemas/PolicyDefinitionVariantRego'
+      discriminator:
+        propertyName: $type
+        mapping:
+          rego: PolicyDefinitionVariantRego
+    GoogleAccessReasonPolicy:
+      allOf:
+      - type: object
+        description: 'Policy specifying acceptable access reasons
+
+          by Google Service Account at App or Sobject level.'
+        properties:
+          allow:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/GoogleAccessReason'
+            description: Set of allowed Google Access reasons.
+          allow_missing_reason:
             type: boolean
-            description: Indicates whether waiting for quorum approval is activated or disabled
-          poll_interval_secs:
-            type:
-            - integer
-            - 'null'
-            description: Time interval in seconds for client lib to check quorum status.
-          max_wait_for_secs:
-            type:
-            - integer
-            - 'null'
-            description: Maximum time in seconds for client lib to wait for quorum reply.
+            description: Accept incoming requests which do not specify any access reasons.
         required:
-        - enabled
-    ObjectCount:
+        - allow
+        - allow_missing_reason
+    ApiPath:
       allOf:
       - type: object
         properties:
-          count:
-            type: integer
-            description: Count of the items in the collection matching the request
-          count_accuracy:
-            $ref: '#/components/schemas/CountAccuracy'
+          api_path:
+            type: string
+          method:
+            type: string
+          context:
+            $ref: '#/components/schemas/TepKeyContext'
+          key_path:
+            type: string
         required:
-        - count
-        - count_accuracy
-    AppOauthConfigEnabled:
+        - api_path
+        - method
+        - context
+        - key_path
+    AppAccountMembership:
       allOf:
       - type: object
         properties:
-          redirect_uris:
+          roles:
             type: array
+            uniqueItems: true
             items:
-              type: string
+              $ref: '#/components/schemas/AppAccountRoleDescriptor'
         required:
-        - redirect_uris
+        - roles
     KeyOpsOverride:
       allOf:
       - type: object
@@ -2115,164 +2164,109 @@ components:
               **Note**: This is only enforced on (KMIP) creation requests since we assume
 
               updates removing key operations are intentional.'
-    AppResetSecretRequest:
-      allOf:
-      - type: object
-        description: Request for resetting the app secret.
-        properties:
-          secret_size:
-            type:
-            - integer
-            - 'null'
-            minimum: 0
-            maximum: 4294967295
-            description: Size of app's secret in bytes.
-          credential_migration_period:
-            type:
-            - integer
-            - 'null'
-            minimum: 0
-            maximum: 4294967295
-            description: 'Time until which previous credentials(or its sessions)
-
-              will not be invalidated as the API key gets regenerated.'
-    SigningKeysFetched:
-      allOf:
-      - type: object
-        properties:
-          url:
-            type: string
-          cache_duration:
-            type: integer
-            description: Number of seconds that the service is allowed to cache the fetched keys.
-        required:
-        - url
-        - cache_duration
-    OneAppAuthType:
-      description: Authentication method of an app.
-      type: string
-      enum:
-      - Secret
-      - GoogleServiceAccount
-      - SignedJwt
-      - Ldap
-      - AwsIam
-      - AwsXks
-      - GoogleWorkspaceCSE
-      - Certificate
-      - TrustedCa
-    RemovablePkcs11ClientConfig:
+    CountAccuracy:
+      description: An indicator of how accurate a count of objects is.
       oneOf:
-      - type: string
-        enum:
-        - remove
-      - $ref: '#/components/schemas/Pkcs11ClientConfig'
-    OauthScope:
-      description: OAuth scope.
-      type: string
-      enum:
-      - app
-      - openid
-      - email
-      - profile
-    SecretCredentialRequestGenerate:
-      allOf:
-      - type: object
-        description: Generate a new secret
-        properties:
-          size:
-            type:
-            - integer
-            - 'null'
-            minimum: 0
-            maximum: 4294967295
-            description: Size of the secret to be generated in bytes
-    ClientFileLoggingVariantEnabled:
-      allOf:
-      - type: object
-        properties:
-          mode:
-            type: string
-            enum:
-            - enabled
-        required:
-        - mode
-      - $ref: '#/components/schemas/ClientFileLoggingConfig'
-    ApiPath:
-      allOf:
-      - type: object
-        properties:
-          api_path:
-            type: string
-          method:
-            type: string
-          context:
-            $ref: '#/components/schemas/TepKeyContext'
-          key_path:
-            type: string
-        required:
-        - api_path
-        - method
-        - context
-        - key_path
-    SignedJwtCredential:
-      allOf:
-      - type: object
-        properties:
-          valid_issuers:
-            type: array
-            uniqueItems: true
-            items:
-              type: string
-          signing_keys:
-            $ref: '#/components/schemas/SigningKeys'
-          private_claims_policy:
-            $ref: '#/components/schemas/PrivateClaimsPolicy'
-        required:
-        - valid_issuers
-        - signing_keys
-    TepKeyContext:
-      type: string
-      enum:
-      - request
-      - response
-    PolicyDefinition:
-      oneOf:
-      - $ref: '#/components/schemas/PolicyDefinitionVariantRego'
+      - $ref: '#/components/schemas/CountAccuracyVariantExact'
+      - $ref: '#/components/schemas/CountAccuracyVariantApproximate'
       discriminator:
         propertyName: $type
         mapping:
-          rego: PolicyDefinitionVariantRego
-    AppOauthConfigVariantDisabled:
+          Exact: CountAccuracyVariantExact
+          Approximate: CountAccuracyVariantApproximate
+    TepClientConfig:
+      allOf:
+      - type: object
+        properties:
+          schema:
+            $ref: '#/components/schemas/TepSchema'
+          key_map:
+            $ref: '#/components/schemas/TepKeyMapList'
+        required:
+        - schema
+        - key_map
+    Pkcs11ClientConfig:
+      allOf:
+      - type: object
+        properties:
+          fake_rsa_x9_31_keygen_support:
+            type:
+            - boolean
+            - 'null'
+          signing_aes_key_as_hmac:
+            type:
+            - boolean
+            - 'null'
+          exact_key_ops:
+            type:
+            - boolean
+            - 'null'
+          prevent_duplicate_opaque_objects:
+            type:
+            - boolean
+            - 'null'
+          opaque_objects_are_not_certificates:
+            type:
+            - boolean
+            - 'null'
+          max_concurrent_requests_per_slot:
+            type:
+            - integer
+            - 'null'
+    AppOauthConfigVariantEnabled:
       allOf:
       - type: object
         properties:
           state:
             type: string
             enum:
-            - disabled
+            - enabled
         required:
         - state
+      - $ref: '#/components/schemas/AppOauthConfigEnabled'
+    AppGroupRole:
+      type: string
+      enum:
+      - GroupAuditor
+      - GroupAdministrator
+    AppOauthConfigEnabled:
+      allOf:
       - type: object
-        properties: {}
-    ObjectTypeFilterVariantSelection:
+        properties:
+          redirect_uris:
+            type: array
+            items:
+              type: string
+        required:
+        - redirect_uris
+    CountAccuracyVariantApproximate:
       allOf:
       - type: object
         properties:
           $type:
             type: string
             enum:
-            - Selection
+            - Approximate
         required:
         - $type
-      - $ref: '#/components/schemas/ObjectTypeFilterSelection'
+      - type: object
+        properties: {}
+    GoogleServiceAccountCredential:
+      allOf:
+      - type: object
+        properties:
+          access_reason_policy:
+            $ref: '#/components/schemas/GoogleAccessReasonPolicy'
+          groups:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/GcpAppPermissions'
+            description: Mapping for all groups an application is part of and the Gcp specific permissions it has within each of those groups.
   parameters:
-    GetAppParams:
-      in: query
-      name: GetAppParams
-      schema:
-        $ref: '#/components/schemas/GetAppParams'
-      explode: true
     ListAppsParams:
       in: query
       name: ListAppsParams
@@ -2284,6 +2278,12 @@ components:
       name: GetGroupsParams
       schema:
         $ref: '#/components/schemas/GetGroupsParams'
+      explode: true
+    GetAppParams:
+      in: query
+      name: GetAppParams
+      schema:
+        $ref: '#/components/schemas/GetAppParams'
       explode: true
   securitySchemes:
     basicAuth:

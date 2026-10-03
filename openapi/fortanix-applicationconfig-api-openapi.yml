@@ -178,36 +178,41 @@ paths:
       - bearerToken: []
 components:
   schemas:
-    ApplicationConfigPortDataset:
+    ApplicationConfigPortApp:
       type: object
       description: ''
-      required:
-      - id
       properties:
-        id:
-          type: string
-          format: uuid
         acct_id:
           type: string
           format: uuid
         group_id:
           type: string
           format: uuid
-    ApplicationConfigSdkmsCredentials:
+    HashedConfig:
       type: object
       description: ''
       required:
-      - credentials_url
-      - credentials_key_name
-      - sdkms_app_id
+      - app_config
+      - labels
+      - zone_ca
       properties:
-        credentials_url:
-          type: string
-        credentials_key_name:
-          type: string
-        sdkms_app_id:
-          type: string
-          format: uuid
+        app_config:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            $ref: '#/components/schemas/ApplicationConfigContents'
+        labels:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: string
+        zone_ca:
+          type: array
+          x-sorted: true
+          items:
+            type: string
+        workflow:
+          $ref: '#/components/schemas/ApplicationConfigWorkflow'
     ApplicationConfigConnectionDataset:
       type: object
       description: ''
@@ -219,6 +224,48 @@ components:
           type: string
         credentials:
           $ref: '#/components/schemas/ApplicationConfigDatasetCredentials'
+    GetAllApplicationConfigsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationConfigResponse'
+    ApplicationConfigExtra:
+      type: object
+      description: ''
+      properties:
+        connections:
+          type: object
+          x-sorted: true
+          additionalProperties:
+            type: object
+            x-sorted: true
+            additionalProperties:
+              $ref: '#/components/schemas/ApplicationConfigConnection'
+    ApplicationConfigConnectionApplication:
+      type: object
+      description: ''
+      required:
+      - workflow_domain
+      properties:
+        workflow_domain:
+          type: string
+    RuntimeAppConfig:
+      type: object
+      description: ''
+      required:
+      - config
+      - extra
+      properties:
+        config:
+          $ref: '#/components/schemas/HashedConfig'
+        extra:
+          $ref: '#/components/schemas/ApplicationConfigExtra'
     ApplicationConfigResponse:
       type: object
       description: ''
@@ -265,60 +312,69 @@ components:
         group_id:
           type: string
           format: uuid
-    GetAllApplicationConfigsResponse:
+    ApplicationConfigPort:
+      type: object
+      description: ''
+      properties:
+        dataset:
+          $ref: '#/components/schemas/ApplicationConfigPortDataset'
+        application:
+          $ref: '#/components/schemas/ApplicationConfigPortApp'
+    VersionedZoneId:
       type: object
       required:
-      - items
+      - id
       properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApplicationConfigResponse'
-    UpdateApplicationConfigRequest:
+        id:
+          type: string
+          format: uuid
+        version:
+          type: integer
+          format: int64
+    ApplicationConfigSdkmsCredentials:
       type: object
-      description: Update an application config.
+      description: ''
+      required:
+      - credentials_url
+      - credentials_key_name
+      - sdkms_app_id
       properties:
-        name:
+        credentials_url:
           type: string
-        description:
+        credentials_key_name:
           type: string
-        ports:
-          type: array
-          x-sorted: true
-          items:
-            type: string
+        sdkms_app_id:
+          type: string
+          format: uuid
+    ApplicationConfigPortDataset:
+      type: object
+      description: ''
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        acct_id:
+          type: string
+          format: uuid
         group_id:
           type: string
           format: uuid
-    ApplicationConfigConnectionApplication:
-      type: object
-      description: ''
-      required:
-      - workflow_domain
-      properties:
-        workflow_domain:
-          type: string
-    ApplicationConfigContents:
-      type: object
-      required:
-      - value
-      properties:
-        contents:
-          type: string
-    ApplicationConfigExtra:
+    ApplicationConfigDatasetCredentials:
       type: object
       description: ''
       properties:
-        connections:
-          type: object
-          x-sorted: true
-          additionalProperties:
-            type: object
-            x-sorted: true
-            additionalProperties:
-              $ref: '#/components/schemas/ApplicationConfigConnection'
+        sdkms:
+          $ref: '#/components/schemas/ApplicationConfigSdkmsCredentials'
+    ApplicationConfigConnection:
+      type: object
+      description: ''
+      properties:
+        dataset:
+          $ref: '#/components/schemas/ApplicationConfigConnectionDataset'
+        application:
+          $ref: '#/components/schemas/ApplicationConfigConnectionApplication'
     ApplicationConfigWorkflow:
       type: object
       description: ''
@@ -346,58 +402,29 @@ components:
         app_group_id:
           type: string
           format: uuid
-    ApplicationConfigPortApp:
-      type: object
-      description: ''
-      properties:
-        acct_id:
-          type: string
-          format: uuid
-        group_id:
-          type: string
-          format: uuid
-    VersionedZoneId:
+    ApplicationConfigContents:
       type: object
       required:
-      - id
+      - value
       properties:
-        id:
+        contents:
           type: string
-          format: uuid
-        version:
-          type: integer
-          format: int64
-    HashedConfig:
+    UpdateApplicationConfigRequest:
       type: object
-      description: ''
-      required:
-      - app_config
-      - labels
-      - zone_ca
+      description: Update an application config.
       properties:
-        app_config:
-          type: object
-          x-sorted: true
-          additionalProperties:
-            $ref: '#/components/schemas/ApplicationConfigContents'
-        labels:
-          type: object
-          x-sorted: true
-          additionalProperties:
-            type: string
-        zone_ca:
+        name:
+          type: string
+        description:
+          type: string
+        ports:
           type: array
           x-sorted: true
           items:
             type: string
-        workflow:
-          $ref: '#/components/schemas/ApplicationConfigWorkflow'
-    ApplicationConfigDatasetCredentials:
-      type: object
-      description: ''
-      properties:
-        sdkms:
-          $ref: '#/components/schemas/ApplicationConfigSdkmsCredentials'
+        group_id:
+          type: string
+          format: uuid
     ApplicationConfig:
       type: object
       description: ''
@@ -432,14 +459,6 @@ components:
         group_id:
           type: string
           format: uuid
-    ApplicationConfigConnection:
-      type: object
-      description: ''
-      properties:
-        dataset:
-          $ref: '#/components/schemas/ApplicationConfigConnectionDataset'
-        application:
-          $ref: '#/components/schemas/ApplicationConfigConnectionApplication'
     SearchMetadata:
       type: object
       required:
@@ -464,40 +483,7 @@ components:
         filtered_count:
           type: integer
           description: Total number of items as per the current filter.
-    ApplicationConfigPort:
-      type: object
-      description: ''
-      properties:
-        dataset:
-          $ref: '#/components/schemas/ApplicationConfigPortDataset'
-        application:
-          $ref: '#/components/schemas/ApplicationConfigPortApp'
-    RuntimeAppConfig:
-      type: object
-      description: ''
-      required:
-      - config
-      - extra
-      properties:
-        config:
-          $ref: '#/components/schemas/HashedConfig'
-        extra:
-          $ref: '#/components/schemas/ApplicationConfigExtra'
   parameters:
-    ApplicationConfigId:
-      name: config-id
-      in: path
-      required: true
-      description: Identity of an application config.
-      schema:
-        type: string
-    CreateApplicationConfigRequest:
-      name: body
-      in: body
-      required: true
-      description: ''
-      schema:
-        $ref: '#/components/schemas/ApplicationConfig'
     UpdateApplicationConfigRequest:
       name: body
       in: body
@@ -505,6 +491,20 @@ components:
       description: ''
       schema:
         $ref: '#/components/schemas/UpdateApplicationConfigRequest'
+    CreateApplicationConfigRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/ApplicationConfig'
+    ApplicationConfigId:
+      name: config-id
+      in: path
+      required: true
+      description: Identity of an application config.
+      schema:
+        type: string
   securitySchemes:
     bearerToken:
       type: apiKey

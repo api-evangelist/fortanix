@@ -112,26 +112,6 @@ paths:
       - bearerToken: []
 components:
   schemas:
-    AuthMethod:
-      type: object
-      properties:
-        password:
-          type: object
-        oauth_code_grant:
-          $ref: '#/components/schemas/OauthAuthCodeGrant'
-    OauthCodeData:
-      type: object
-      required:
-      - idp_id
-      - code
-      properties:
-        idp_id:
-          type: string
-          format: binary
-        code:
-          type: string
-        email:
-          type: string
     AuthRequest:
       type: object
       required:
@@ -189,6 +169,13 @@ components:
           format: binary
         cluster_idp_id:
           type: string
+    RefreshResponse:
+      type: object
+      required:
+      - session_info
+      properties:
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
     SelectAccountResponse:
       type: object
       required:
@@ -196,6 +183,26 @@ components:
       properties:
         session_info:
           $ref: '#/components/schemas/SessionInfo'
+    OauthCodeData:
+      type: object
+      required:
+      - idp_id
+      - code
+      properties:
+        idp_id:
+          type: string
+          format: binary
+        code:
+          type: string
+        email:
+          type: string
+    AuthMethod:
+      type: object
+      properties:
+        password:
+          type: object
+        oauth_code_grant:
+          $ref: '#/components/schemas/OauthAuthCodeGrant'
     AuthDiscoverResponse:
       type: object
       required:
@@ -213,13 +220,6 @@ components:
           description: Bearer token to be used to authenticate to other APIs.
         session_info:
           $ref: '#/components/schemas/SessionInfo'
-    RefreshResponse:
-      type: object
-      required:
-      - session_info
-      properties:
-        session_info:
-          $ref: '#/components/schemas/SessionInfo'
     AuthDiscoverRequest:
       type: object
       properties:
@@ -227,13 +227,6 @@ components:
           type: string
           description: User email.
   parameters:
-    AuthRequest:
-      name: body
-      in: body
-      required: false
-      description: Request to authenticate.
-      schema:
-        $ref: '#/components/schemas/AuthRequest'
     AccountId:
       name: account-id
       in: path
@@ -242,6 +235,13 @@ components:
       schema:
         type: string
         format: uuid
+    AuthRequest:
+      name: body
+      in: body
+      required: false
+      description: Request to authenticate.
+      schema:
+        $ref: '#/components/schemas/AuthRequest'
   securitySchemes:
     bearerToken:
       type: apiKey

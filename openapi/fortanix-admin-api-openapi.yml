@@ -49,6 +49,93 @@ paths:
                 $ref: '#/components/schemas/SysAdminGetClusterConfigurationResponse'
 components:
   schemas:
+    SysAdminGetClusterConfigurationResponse:
+      type: object
+      required:
+      - dsm_config
+      - nitro_enclaves_converter_config
+      - microsoft_attestation_service_config
+      - nvidia_attestation_service_config
+      - aci_config
+      - eks_config
+      properties:
+        dsm_config:
+          $ref: '#/components/schemas/DsmClusterConfig'
+        nitro_enclaves_converter_config:
+          $ref: '#/components/schemas/NitroEnclavesConverterConfig'
+        microsoft_attestation_service_config:
+          $ref: '#/components/schemas/MicrosoftAttestationServiceConfig'
+        nvidia_attestation_service_config:
+          $ref: '#/components/schemas/NvidiaAttestationServiceConfig'
+        aci_config:
+          $ref: '#/components/schemas/AciConfig'
+        eks_config:
+          $ref: '#/components/schemas/EksConfig'
+    DsmCluster:
+      type: object
+      required:
+      - app_id
+      - url
+      properties:
+        app_id:
+          type: string
+          format: uuid
+          description: SDKMS administrative app id.
+        url:
+          type: string
+          description: SDKMS URL to use for storing datasets.
+    ConversionRequestImageInfo:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Docker image name
+        auth_config:
+          $ref: '#/components/schemas/AuthConfig'
+          description: Docker credentials
+    EksConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - access_key_id
+      properties:
+        access_key_id:
+          type: string
+          description: AWS access key ID
+        secret_access_key:
+          type: string
+          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
+    AuthConfig:
+      description: Credentials for authenticating to a docker registry
+      type: object
+      required:
+      - username
+      properties:
+        username:
+          type: string
+          description: User name for docker registry authentication
+        password:
+          type: string
+          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
+    MicrosoftAttestationServiceConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - url
+      - trusted_report_mrsigners
+      properties:
+        url:
+          type: string
+          description: Microsoft Azure Attestation Service (MAA) endpoint url.
+        trusted_report_mrsigners:
+          type: array
+          items:
+            type: string
+          description: Array of Microsoft Azure Attestation Service (MAA) expected MRSigner value (hex string).
     AciConfig:
       type:
       - object
@@ -101,93 +188,6 @@ components:
           description: Clusters that are being phased out but still have objects inside them. In order of their use, first being the oldest.
           items:
             $ref: '#/components/schemas/DsmCluster'
-    AuthConfig:
-      description: Credentials for authenticating to a docker registry
-      type: object
-      required:
-      - username
-      properties:
-        username:
-          type: string
-          description: User name for docker registry authentication
-        password:
-          type: string
-          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
-    ConversionRequestImageInfo:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Docker image name
-        auth_config:
-          $ref: '#/components/schemas/AuthConfig'
-          description: Docker credentials
-    EksConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - access_key_id
-      properties:
-        access_key_id:
-          type: string
-          description: AWS access key ID
-        secret_access_key:
-          type: string
-          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
-    SysAdminGetClusterConfigurationResponse:
-      type: object
-      required:
-      - dsm_config
-      - nitro_enclaves_converter_config
-      - microsoft_attestation_service_config
-      - nvidia_attestation_service_config
-      - aci_config
-      - eks_config
-      properties:
-        dsm_config:
-          $ref: '#/components/schemas/DsmClusterConfig'
-        nitro_enclaves_converter_config:
-          $ref: '#/components/schemas/NitroEnclavesConverterConfig'
-        microsoft_attestation_service_config:
-          $ref: '#/components/schemas/MicrosoftAttestationServiceConfig'
-        nvidia_attestation_service_config:
-          $ref: '#/components/schemas/NvidiaAttestationServiceConfig'
-        aci_config:
-          $ref: '#/components/schemas/AciConfig'
-        eks_config:
-          $ref: '#/components/schemas/EksConfig'
-    MicrosoftAttestationServiceConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - url
-      - trusted_report_mrsigners
-      properties:
-        url:
-          type: string
-          description: Microsoft Azure Attestation Service (MAA) endpoint url.
-        trusted_report_mrsigners:
-          type: array
-          items:
-            type: string
-          description: Array of Microsoft Azure Attestation Service (MAA) expected MRSigner value (hex string).
-    DsmCluster:
-      type: object
-      required:
-      - app_id
-      - url
-      properties:
-        app_id:
-          type: string
-          format: uuid
-          description: SDKMS administrative app id.
-        url:
-          type: string
-          description: SDKMS URL to use for storing datasets.
   parameters:
     GetClusterConfigParams:
       name: future

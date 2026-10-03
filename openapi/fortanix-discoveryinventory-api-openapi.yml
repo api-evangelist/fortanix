@@ -55,114 +55,18 @@ paths:
       - DiscoveryInventory
 components:
   schemas:
-    DiscoveryInventoryObjectExternalIdDsm:
-      allOf:
-      - properties:
-          deployment:
-            $ref: '#/components/schemas/DiscoveryDsmDeployment'
-          id:
-            format: uuid
-            type: string
-          resource_type:
-            $ref: '#/components/schemas/DiscoveryDsmResourceType'
-        required:
-        - id
-        - deployment
-        - resource_type
-        type: object
-    DiscoveryInventoryObjectExternalIdOnPrem:
-      allOf:
-      - properties:
-          resource_id:
-            description: unique id
-            type: string
-          resource_type:
-            $ref: '#/components/schemas/DiscoveryOnPremService'
-          service_uri:
-            description: Db/filesystem uri which yielded this resource
-            type: string
-        required:
-        - resource_id
-        - service_uri
-        - resource_type
-        type: object
-    DiscoveryDsmRegion:
+    DiscoveryAwsService:
       enum:
-      - north_america
-      - european_union
-      - united_kingdom
-      - asia_pacific
-      - australia
-      - saudi_arabia
+      - acm
+      - ebs
+      - kms
+      - s3
+      - rds
+      - dynamo_db
+      - eks
+      - efs
+      - redshift
       type: string
-    DiscoveryInventoryObjectExternalIdVariantAzure:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - azure
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdAzure'
-    DiscoveryInventoryObjectExternalId:
-      description: an enum that maps to unique identifier provided by Cloud/Onprem
-      discriminator:
-        mapping:
-          aws: DiscoveryInventoryObjectExternalIdVariantAws
-          azure: DiscoveryInventoryObjectExternalIdVariantAzure
-          dsm: DiscoveryInventoryObjectExternalIdVariantDsm
-          on_prem: DiscoveryInventoryObjectExternalIdVariantOnPrem
-          on_prem_fs: DiscoveryInventoryObjectExternalIdVariantOnPremFs
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantAws'
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantAzure'
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantDsm'
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantOnPrem'
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantOnPremFs'
-    DiscoveryInventoryObjectExternalIdOnPremFs:
-      allOf:
-      - properties:
-          file_path:
-            type: string
-          machine_id:
-            type: string
-        required:
-        - machine_id
-        - file_path
-        type: object
-    DiscoveryDsmDeploymentVariantSaaS:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - saas
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryDsmDeploymentSaaS'
-    DiscoveryInventoryObjectInfo:
-      allOf:
-      - properties:
-          ownership_details:
-            $ref: '#/components/schemas/DiscoveryInventoryObjectOwnershipDetails'
-        type: object
-    DiscoveryScanInventoryObjectReference:
-      allOf:
-      - properties:
-          id:
-            format: uuid
-            type: string
-          scan_id:
-            format: uuid
-            type: string
-        required:
-        - id
-        - scan_id
-        type: object
     DiscoveryInventoryObject:
       allOf:
       - description: InventoryObject -- represents the user provided information to be added to an external computational resource [ScanInventoryObject]
@@ -198,17 +102,35 @@ components:
         - last_scan_inventory_object
         - object_info
         type: object
-    DiscoveryDsmDeploymentVariantOther:
+    DiscoveryDsmDeploymentOther:
+      allOf:
+      - properties:
+          url:
+            format: url
+            type: string
+        required:
+        - url
+        type: object
+    DiscoveryInventoryObjectExternalIdVariantAzure:
       allOf:
       - properties:
           $type:
             enum:
-            - other
+            - azure
             type: string
         required:
         - $type
         type: object
-      - $ref: '#/components/schemas/DiscoveryDsmDeploymentOther'
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdAzure'
+    DiscoveryDsmDeployment:
+      discriminator:
+        mapping:
+          other: DiscoveryDsmDeploymentVariantOther
+          saas: DiscoveryDsmDeploymentVariantSaaS
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryDsmDeploymentVariantSaaS'
+      - $ref: '#/components/schemas/DiscoveryDsmDeploymentVariantOther'
     DiscoveryDsmDeploymentSaaS:
       allOf:
       - properties:
@@ -216,6 +138,52 @@ components:
             $ref: '#/components/schemas/DiscoveryDsmRegion'
         required:
         - region
+        type: object
+    DiscoveryDsmResourceType:
+      description: Useful for specifying [InventoryObjectExternalId]s
+      enum:
+      - dsm_sobject
+      type: string
+    DiscoveryDsmDeploymentVariantSaaS:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - saas
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryDsmDeploymentSaaS'
+    DiscoveryInventoryObjectExternalIdVariantAws:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - aws
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdAws'
+    DiscoveryScanInventoryObjectReference:
+      allOf:
+      - properties:
+          id:
+            format: uuid
+            type: string
+          scan_id:
+            format: uuid
+            type: string
+        required:
+        - id
+        - scan_id
+        type: object
+    DiscoveryInventoryObjectInfo:
+      allOf:
+      - properties:
+          ownership_details:
+            $ref: '#/components/schemas/DiscoveryInventoryObjectOwnershipDetails'
         type: object
     DiscoveryInventoryObjectOwner:
       allOf:
@@ -228,6 +196,51 @@ components:
         - name
         - email
         type: object
+    DiscoveryInventoryObjectExternalIdDsm:
+      allOf:
+      - properties:
+          deployment:
+            $ref: '#/components/schemas/DiscoveryDsmDeployment'
+          id:
+            format: uuid
+            type: string
+          resource_type:
+            $ref: '#/components/schemas/DiscoveryDsmResourceType'
+        required:
+        - id
+        - deployment
+        - resource_type
+        type: object
+    DiscoveryOnPremService:
+      enum:
+      - on_prem_key
+      - on_prem_ms_sql_database
+      - on_prem_oracle_database
+      - on_prem_source_code_repo
+      - on_prem_source_code_component
+      - filesystem
+      type: string
+    DiscoveryDsmDeploymentVariantOther:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - other
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryDsmDeploymentOther'
+    DiscoveryInventoryObjectsResponse:
+      allOf:
+      - properties:
+          items:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryInventoryObject'
+            type: object
+        required:
+        - items
+        type: object
     DiscoveryAzureService:
       enum:
       - key_vaults
@@ -239,75 +252,17 @@ components:
       - managed_clusters
       - storage_account_blobs
       type: string
-    DiscoveryDsmDeployment:
-      discriminator:
-        mapping:
-          other: DiscoveryDsmDeploymentVariantOther
-          saas: DiscoveryDsmDeploymentVariantSaaS
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryDsmDeploymentVariantSaaS'
-      - $ref: '#/components/schemas/DiscoveryDsmDeploymentVariantOther'
-    DiscoveryAwsService:
-      enum:
-      - acm
-      - ebs
-      - kms
-      - s3
-      - rds
-      - dynamo_db
-      - eks
-      - efs
-      - redshift
-      type: string
-    DiscoveryInventoryObjectExternalIdVariantOnPremFs:
+    DiscoveryInventoryObjectExternalIdVariantOnPrem:
       allOf:
       - properties:
           $type:
             enum:
-            - on_prem_fs
+            - on_prem
             type: string
         required:
         - $type
         type: object
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdOnPremFs'
-    DiscoveryInventoryObjectExternalIdVariantDsm:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - dsm
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdDsm'
-    DiscoveryInventoryObjectExternalIdAws:
-      allOf:
-      - properties:
-          arn:
-            description: fully qualified resource id as defined by AWS
-            type: string
-          service:
-            $ref: '#/components/schemas/DiscoveryAwsService'
-        required:
-        - arn
-        - service
-        type: object
-    DiscoveryInventoryObjectOwnershipDetails:
-      allOf:
-      - properties:
-          description:
-            type:
-            - string
-            - 'null'
-          primary_owner:
-            $ref: '#/components/schemas/DiscoveryInventoryObjectOwner'
-          secondary_owner:
-            $ref: '#/components/schemas/DiscoveryInventoryObjectOwner'
-        required:
-        - primary_owner
-        type: object
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdOnPrem'
     DiscoveryInventoryObjectsParams:
       allOf:
       - properties:
@@ -323,60 +278,105 @@ components:
           sort_by:
             type: string
         type: object
-    DiscoveryInventoryObjectExternalIdVariantAws:
+    DiscoveryInventoryObjectOwnershipDetails:
+      allOf:
+      - properties:
+          description:
+            type:
+            - string
+            - 'null'
+          primary_owner:
+            $ref: '#/components/schemas/DiscoveryInventoryObjectOwner'
+          secondary_owner:
+            $ref: '#/components/schemas/DiscoveryInventoryObjectOwner'
+        required:
+        - primary_owner
+        type: object
+    DiscoveryDsmRegion:
+      enum:
+      - north_america
+      - european_union
+      - united_kingdom
+      - asia_pacific
+      - australia
+      - saudi_arabia
+      type: string
+    DiscoveryInventoryObjectExternalIdVariantOnPremFs:
       allOf:
       - properties:
           $type:
             enum:
-            - aws
+            - on_prem_fs
             type: string
         required:
         - $type
         type: object
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdAws'
-    DiscoveryOnPremService:
-      enum:
-      - on_prem_key
-      - on_prem_ms_sql_database
-      - on_prem_oracle_database
-      - on_prem_source_code_repo
-      - on_prem_source_code_component
-      - filesystem
-      type: string
-    DiscoveryInventoryObjectExternalIdVariantOnPrem:
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdOnPremFs'
+    DiscoveryInventoryObjectExternalIdOnPremFs:
+      allOf:
+      - properties:
+          file_path:
+            type: string
+          machine_id:
+            type: string
+        required:
+        - machine_id
+        - file_path
+        type: object
+    DiscoveryInventoryObjectExternalIdOnPrem:
+      allOf:
+      - properties:
+          resource_id:
+            description: unique id
+            type: string
+          resource_type:
+            $ref: '#/components/schemas/DiscoveryOnPremService'
+          service_uri:
+            description: Db/filesystem uri which yielded this resource
+            type: string
+        required:
+        - resource_id
+        - service_uri
+        - resource_type
+        type: object
+    DiscoveryInventoryObjectExternalIdVariantDsm:
       allOf:
       - properties:
           $type:
             enum:
-            - on_prem
+            - dsm
             type: string
         required:
         - $type
         type: object
-      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdOnPrem'
-    DiscoveryDsmDeploymentOther:
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdDsm'
+    DiscoveryInventoryObjectExternalId:
+      description: an enum that maps to unique identifier provided by Cloud/Onprem
+      discriminator:
+        mapping:
+          aws: DiscoveryInventoryObjectExternalIdVariantAws
+          azure: DiscoveryInventoryObjectExternalIdVariantAzure
+          dsm: DiscoveryInventoryObjectExternalIdVariantDsm
+          on_prem: DiscoveryInventoryObjectExternalIdVariantOnPrem
+          on_prem_fs: DiscoveryInventoryObjectExternalIdVariantOnPremFs
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantAws'
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantAzure'
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantDsm'
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantOnPrem'
+      - $ref: '#/components/schemas/DiscoveryInventoryObjectExternalIdVariantOnPremFs'
+    DiscoveryInventoryObjectExternalIdAws:
       allOf:
       - properties:
-          url:
-            format: url
+          arn:
+            description: fully qualified resource id as defined by AWS
             type: string
+          service:
+            $ref: '#/components/schemas/DiscoveryAwsService'
         required:
-        - url
-        type: object
-    DiscoveryDsmResourceType:
-      description: Useful for specifying [InventoryObjectExternalId]s
-      enum:
-      - dsm_sobject
-      type: string
-    DiscoveryInventoryObjectsResponse:
-      allOf:
-      - properties:
-          items:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryInventoryObject'
-            type: object
-        required:
-        - items
+        - arn
+        - service
         type: object
     DiscoveryInventoryObjectExternalIdAzure:
       allOf:

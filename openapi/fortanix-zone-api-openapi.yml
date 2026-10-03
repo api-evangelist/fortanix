@@ -134,13 +134,12 @@ components:
         type: string
         format: uuid
   schemas:
-    NodeEnrollment:
+    ZoneJoinToken:
       type: object
-      required:
-      - attestation_enforcement_disabled_insecure
       properties:
-        attestation_enforcement_disabled_insecure:
-          type: boolean
+        token:
+          type: string
+          description: Bearer token used to enroll compute nodes.
     ZoneCertificateCreateResponse:
       type: object
       description: Detailed info of all zone certificates.
@@ -199,12 +198,13 @@ components:
             type: string
           type: array
           description: Old Zone certificates (PEM format).
-    ZoneJoinToken:
+    NodeEnrollment:
       type: object
+      required:
+      - attestation_enforcement_disabled_insecure
       properties:
-        token:
-          type: string
-          description: Bearer token used to enroll compute nodes.
+        attestation_enforcement_disabled_insecure:
+          type: boolean
   securitySchemes:
     bearerToken:
       type: apiKey

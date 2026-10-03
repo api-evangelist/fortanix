@@ -56,21 +56,44 @@ paths:
                 $ref: '#/components/schemas/BatchResponse'
 components:
   schemas:
-    BatchResponseList:
-      allOf:
-      - type: object
-        properties:
-          items:
-            type: array
-            items:
-              $ref: '#/components/schemas/BatchResponse'
-        required:
-        - items
     BatchExecutionType:
       type: string
       enum:
       - Serial
       - Unordered
+    BatchRequestItem:
+      allOf:
+      - type: object
+        properties:
+          method:
+            type: string
+          operation:
+            type: string
+          body: {}
+        required:
+        - method
+        - operation
+    BatchResponseObjectSkipped:
+      allOf:
+      - type: object
+        properties:
+          reason:
+            type: string
+        required:
+        - reason
+    BatchRequestList:
+      allOf:
+      - type: object
+        properties:
+          batch_execution_type:
+            $ref: '#/components/schemas/BatchExecutionType'
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/BatchRequest'
+        required:
+        - batch_execution_type
+        - items
     BatchRequest:
       oneOf:
       - title: BatchRequestVariantBatch
@@ -87,66 +110,6 @@ components:
             $ref: '#/components/schemas/BatchRequestItem'
         required:
         - SingleItem
-    BatchRequestItem:
-      allOf:
-      - type: object
-        properties:
-          method:
-            type: string
-          operation:
-            type: string
-          body: {}
-        required:
-        - method
-        - operation
-    BatchResponseObject:
-      oneOf:
-      - title: BatchResponseObjectVariantResult
-        type: object
-        properties:
-          Result:
-            $ref: '#/components/schemas/BatchResponseObjectResult'
-        required:
-        - Result
-      - title: BatchResponseObjectVariantSkipped
-        type: object
-        properties:
-          Skipped:
-            $ref: '#/components/schemas/BatchResponseObjectSkipped'
-        required:
-        - Skipped
-    BatchRequestList:
-      allOf:
-      - type: object
-        properties:
-          batch_execution_type:
-            $ref: '#/components/schemas/BatchExecutionType'
-          items:
-            type: array
-            items:
-              $ref: '#/components/schemas/BatchRequest'
-        required:
-        - batch_execution_type
-        - items
-    BatchResponseObjectSkipped:
-      allOf:
-      - type: object
-        properties:
-          reason:
-            type: string
-        required:
-        - reason
-    BatchResponseObjectResult:
-      allOf:
-      - type: object
-        properties:
-          status:
-            type: integer
-            minimum: 0
-            maximum: 65535
-          body: {}
-        required:
-        - status
     BatchResponse:
       oneOf:
       - title: BatchResponseVariantBatch
@@ -163,6 +126,43 @@ components:
             $ref: '#/components/schemas/BatchResponseObject'
         required:
         - SingleItem
+    BatchResponseObjectResult:
+      allOf:
+      - type: object
+        properties:
+          status:
+            type: integer
+            minimum: 0
+            maximum: 65535
+          body: {}
+        required:
+        - status
+    BatchResponseObject:
+      oneOf:
+      - title: BatchResponseObjectVariantResult
+        type: object
+        properties:
+          Result:
+            $ref: '#/components/schemas/BatchResponseObjectResult'
+        required:
+        - Result
+      - title: BatchResponseObjectVariantSkipped
+        type: object
+        properties:
+          Skipped:
+            $ref: '#/components/schemas/BatchResponseObjectSkipped'
+        required:
+        - Skipped
+    BatchResponseList:
+      allOf:
+      - type: object
+        properties:
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/BatchResponse'
+        required:
+        - items
   securitySchemes:
     basicAuth:
       type: http

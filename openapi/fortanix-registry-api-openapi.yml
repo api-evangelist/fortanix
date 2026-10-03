@@ -149,20 +149,42 @@ paths:
       security:
       - bearerToken: []
 components:
+  parameters:
+    AppId:
+      name: app-id
+      in: path
+      required: true
+      description: UUID of an app.
+      schema:
+        type: string
+        format: uuid
+    UpdateRegistryRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to update registry details.
+      schema:
+        $ref: '#/components/schemas/UpdateRegistryRequest'
+    RegistryRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to add a registry to an account.
+      schema:
+        $ref: '#/components/schemas/RegistryRequest'
+    RegistryId:
+      name: registry-id
+      in: path
+      required: true
+      description: UUID of a registry.
+      schema:
+        type: string
+        format: uuid
   schemas:
-    CredentialType:
-      type: object
-      minProperties: 1
-      maxProperties: 1
-      description: ''
-      properties:
-        default:
-          $ref: '#/components/schemas/AuthConfig'
-    ImageRegistryResponse:
-      type: object
-      properties:
-        registry:
-          $ref: '#/components/schemas/Registry'
+    PatchRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchDocument'
     Registry:
       type: object
       required:
@@ -182,6 +204,33 @@ components:
         username:
           type: string
           description: Username of the registry.
+    PatchOperation:
+      type: string
+      description: The operation to be performed
+      enum:
+      - add
+      - remove
+      - replace
+    AppRegistryResponse:
+      type: object
+      properties:
+        input_image_registry:
+          $ref: '#/components/schemas/Registry'
+        output_image_registry:
+          $ref: '#/components/schemas/Registry'
+    ImageRegistryResponse:
+      type: object
+      properties:
+        registry:
+          $ref: '#/components/schemas/Registry'
+    CredentialType:
+      type: object
+      minProperties: 1
+      maxProperties: 1
+      description: ''
+      properties:
+        default:
+          $ref: '#/components/schemas/AuthConfig'
     AuthConfig:
       description: Credentials for authenticating to a docker registry
       type: object
@@ -209,24 +258,8 @@ components:
         value:
           type: object
           description: It is the value to be used for the field as indicated by op and path
-    PatchOperation:
-      type: string
-      description: The operation to be performed
-      enum:
-      - add
-      - remove
-      - replace
-    AppRegistryResponse:
-      type: object
-      properties:
-        input_image_registry:
-          $ref: '#/components/schemas/Registry'
-        output_image_registry:
-          $ref: '#/components/schemas/Registry'
-    PatchRequest:
-      type: array
-      items:
-        $ref: '#/components/schemas/PatchDocument'
+    UpdateRegistryRequest:
+      $ref: '#/components/schemas/PatchRequest'
     RegistryRequest:
       type: object
       required:
@@ -241,39 +274,6 @@ components:
         description:
           type: string
           description: Description of the registry.
-    UpdateRegistryRequest:
-      $ref: '#/components/schemas/PatchRequest'
-  parameters:
-    RegistryRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to add a registry to an account.
-      schema:
-        $ref: '#/components/schemas/RegistryRequest'
-    AppId:
-      name: app-id
-      in: path
-      required: true
-      description: UUID of an app.
-      schema:
-        type: string
-        format: uuid
-    RegistryId:
-      name: registry-id
-      in: path
-      required: true
-      description: UUID of a registry.
-      schema:
-        type: string
-        format: uuid
-    UpdateRegistryRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to update registry details.
-      schema:
-        $ref: '#/components/schemas/UpdateRegistryRequest'
   securitySchemes:
     bearerToken:
       type: apiKey

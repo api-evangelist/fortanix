@@ -55,16 +55,6 @@ paths:
       - DiscoveryScan
 components:
   schemas:
-    DiscoveryGetAllScansResponse:
-      allOf:
-      - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryScan'
-            type: array
-        required:
-        - items
-        type: object
     DiscoveryScanParams:
       allOf:
       - properties:
@@ -131,6 +121,16 @@ components:
       - pending
       - failed
       type: string
+    DiscoveryGetAllScansResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryScan'
+            type: array
+        required:
+        - items
+        type: object
   parameters:
     DiscoveryScanParams:
       explode: true

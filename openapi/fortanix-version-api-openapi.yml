@@ -40,14 +40,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/VersionResponse'
 components:
-  parameters:
-    VersionParams:
-      in: query
-      name: VersionParams
-      schema:
-        $ref: '#/components/schemas/VersionParams'
-      explode: true
   schemas:
+    VersionParams:
+      allOf:
+      - type: object
+        properties:
+          detailed_fips_info:
+            type: boolean
+            description: 'Include FIPS-relevant info in the response. Currently that is `plugins_digest`.
+
+
+              Only applicable to FIPS builds.'
     ServerMode:
       description: Server execution mode.
       type: string
@@ -87,16 +90,13 @@ components:
         - version
         - api_version
         - server_mode
+  parameters:
     VersionParams:
-      allOf:
-      - type: object
-        properties:
-          detailed_fips_info:
-            type: boolean
-            description: 'Include FIPS-relevant info in the response. Currently that is `plugins_digest`.
-
-
-              Only applicable to FIPS builds.'
+      in: query
+      name: VersionParams
+      schema:
+        $ref: '#/components/schemas/VersionParams'
+      explode: true
   securitySchemes:
     basicAuth:
       type: http

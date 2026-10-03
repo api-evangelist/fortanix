@@ -42,38 +42,15 @@ paths:
                 $ref: '#/components/schemas/EsAuditQueryResponse'
 components:
   schemas:
-    EsAuditLogOuter:
-      allOf:
-      - type: object
-        description: Response structure of a single log.
-        properties:
-          _id:
-            type: string
-            description: UUID of audit log
-          _source:
-            $ref: '#/components/schemas/EsAuditLog'
-        required:
-        - _id
-        - _source
-    EsAuditQueryResponse:
-      allOf:
-      - type: object
-        description: Response for Audit log Query.
-        properties:
-          hits:
-            type: array
-            items:
-              $ref: '#/components/schemas/EsAuditLogOuter'
-            description: List of audit logs.
-        required:
-        - hits
-    SeverityLevel:
+    ActionType:
       type: string
       enum:
-      - INFO
-      - WARNING
-      - ERROR
-      - CRITICAL
+      - ADMINISTRATIVE
+      - AUTH
+      - CRYPTOOPERATION
+      - RUNPLUGIN
+      - CUSTOM
+      - OTHER
     EsAuditLog:
       allOf:
       - type: object
@@ -159,6 +136,19 @@ components:
         - actor_id
         - group_ids
         - object_id
+    EsAuditLogOuter:
+      allOf:
+      - type: object
+        description: Response structure of a single log.
+        properties:
+          _id:
+            type: string
+            description: UUID of audit log
+          _source:
+            $ref: '#/components/schemas/EsAuditLog'
+        required:
+        - _id
+        - _source
     LogsParams:
       allOf:
       - type: object
@@ -209,15 +199,25 @@ components:
             items:
               $ref: '#/components/schemas/SeverityLevel'
             description: Severity of event
-    ActionType:
+    EsAuditQueryResponse:
+      allOf:
+      - type: object
+        description: Response for Audit log Query.
+        properties:
+          hits:
+            type: array
+            items:
+              $ref: '#/components/schemas/EsAuditLogOuter'
+            description: List of audit logs.
+        required:
+        - hits
+    SeverityLevel:
       type: string
       enum:
-      - ADMINISTRATIVE
-      - AUTH
-      - CRYPTOOPERATION
-      - RUNPLUGIN
-      - CUSTOM
-      - OTHER
+      - INFO
+      - WARNING
+      - ERROR
+      - CRITICAL
   parameters:
     LogsParams:
       in: query

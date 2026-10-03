@@ -43,7 +43,22 @@ paths:
                 items:
                   $ref: '#/components/schemas/MarketplacePlugin'
 components:
+  parameters:
+    GetMarketplaceParams:
+      in: query
+      name: GetMarketplaceParams
+      schema:
+        $ref: '#/components/schemas/GetMarketplaceParams'
+      explode: true
   schemas:
+    GetMarketplaceParams:
+      allOf:
+      - type: object
+        properties:
+          repo_url:
+            type: string
+        required:
+        - repo_url
     MarketplacePlugin:
       allOf:
       - type: object
@@ -59,21 +74,6 @@ components:
         required:
         - name
         - versions
-    GetMarketplaceParams:
-      allOf:
-      - type: object
-        properties:
-          repo_url:
-            type: string
-        required:
-        - repo_url
-  parameters:
-    GetMarketplaceParams:
-      in: query
-      name: GetMarketplaceParams
-      schema:
-        $ref: '#/components/schemas/GetMarketplaceParams'
-      explode: true
   securitySchemes:
     basicAuth:
       type: http

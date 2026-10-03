@@ -168,6 +168,14 @@ paths:
       - DiscoveryOnPremReports
 components:
   schemas:
+    DiscoveryOnPremScanSummaryReport:
+      allOf:
+      - properties:
+          onprem_discovery:
+            $ref: '#/components/schemas/DiscoveryOnPremDiscoveryData'
+        required:
+        - onprem_discovery
+        type: object
     DiscoveryOnPremSourceCodeSummaryCryptoAssetMetrics:
       allOf:
       - properties:
@@ -187,50 +195,13 @@ components:
         - asset_metrics_by_repository
         - asset_metrics_by_type
         type: object
-    DiscoveryOnPremFsAssessmentCryptoAssetMetrics:
+    DiscoveryOnPremSourceCodeResourceMetrics:
       allOf:
       - properties:
-          asset_metrics_by_type:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremFsViolationMetrics'
-            type: object
-          certificate_metrics_by_violation:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremFsCertificateViolationMetrics'
-            type: object
-          total_assets:
-            type: integer
-          total_quantum_violations:
-            type: integer
-          total_violations:
+          total_repositories:
             type: integer
         required:
-        - total_assets
-        - total_violations
-        - total_quantum_violations
-        - asset_metrics_by_type
-        - certificate_metrics_by_violation
-        type: object
-    DiscoveryOnPremDatabaseResourceViolations:
-      allOf:
-      - properties:
-          total_violations:
-            type: integer
-          violation_details_by_variant:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremDatabaseVariantViolations'
-            type: object
-        required:
-        - total_violations
-        - violation_details_by_variant
-        type: object
-    DiscoveryOnPremFsSummaryRiskScoreMetrics:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
+        - total_repositories
         type: object
     DiscoveryOnPremSourceCodeScanSummaryReport:
       allOf:
@@ -243,369 +214,6 @@ components:
         - resource_metrics
         - crypto_asset_metrics
         type: object
-    DiscoveryOnPremSourceCodeRepositoryViolations:
-      allOf:
-      - properties:
-          risk_level:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-          violations:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryViolationDetails'
-            type: object
-        required:
-        - risk_level
-        - violations
-        type: object
-    DiscoveryOnPremFsCertificateViolationMetricsBucket:
-      allOf:
-      - properties:
-          violation_count:
-            type: integer
-        required:
-        - violation_count
-        type: object
-    DiscoveryOnPremDatabaseResourceMetrics:
-      allOf:
-      - properties:
-          encryption_metrics_by_service:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremDatabaseResourceEncryptionMetrics'
-            type: object
-          total_database_servers:
-            type: integer
-        required:
-        - total_database_servers
-        - encryption_metrics_by_service
-        type: object
-    DiscoveryOnPremSourceCodeAssessmentCryptoAssetMetrics:
-      allOf:
-      - properties:
-          total_assets:
-            type: integer
-        required:
-        - total_assets
-        type: object
-    DiscoveryOnPremSourceCodeRiskAssessment:
-      allOf:
-      - properties:
-          findings:
-            additionalProperties:
-              additionalProperties:
-                $ref: '#/components/schemas/DiscoveryViolationMetrics'
-              type: object
-            type: object
-          overall_risk:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-        required:
-        - findings
-        - overall_risk
-        type: object
-    DiscoveryOnPremDatabaseKeyMetrics:
-      allOf:
-      - properties:
-          count_by_source:
-            additionalProperties:
-              type: integer
-            type: object
-          count_by_spec:
-            additionalProperties:
-              type: integer
-            type: object
-          metrics_by_status:
-            $ref: '#/components/schemas/DiscoveryOnPremDatabaseKeyMetricsByStatus'
-        required:
-        - count_by_source
-        - metrics_by_status
-        - count_by_spec
-        type: object
-    DiscoveryOnPremFsSummaryRiskScore:
-      allOf:
-      - properties:
-          findings:
-            additionalProperties:
-              additionalProperties:
-                additionalProperties:
-                  $ref: '#/components/schemas/DiscoveryOnPremFsSummaryRiskScoreMetrics'
-                type: object
-              type: object
-            type: object
-          overall_risk:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-        required:
-        - findings
-        - overall_risk
-        type: object
-    DiscoveryOnPremFsScanAssessmentReport:
-      allOf:
-      - properties:
-          crypto_asset_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremFsAssessmentCryptoAssetMetrics'
-          resource_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremFsAssessmentResourceMetrics'
-          risk_score:
-            $ref: '#/components/schemas/DiscoveryOnPremFsSummaryRiskScore'
-        required:
-        - risk_score
-        - crypto_asset_metrics
-        - resource_metrics
-        type: object
-    DiscoveryOnPremDatabaseAssessmentCryptoAssetMetrics:
-      allOf:
-      - properties:
-          total_keys:
-            type: integer
-        required:
-        - total_keys
-        type: object
-    DiscoveryOnPremDatabaseVariantViolations:
-      allOf:
-      - properties:
-          risk_level:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-          violations:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryViolationDetails'
-            type: object
-        required:
-        - risk_level
-        - violations
-        type: object
-    DiscoveryOnPremSourceCodeViolationRepositoryMetrics:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
-    DiscoveryOnPremFsCryptoAssetMetrics:
-      allOf:
-      - properties:
-          asset_count:
-            type: integer
-        required:
-        - asset_count
-        type: object
-    DiscoveryOnPremDatabaseCryptoAssetMetrics:
-      allOf:
-      - properties:
-          key_count:
-            type: integer
-        required:
-        - key_count
-        type: object
-    DiscoveryOnPremDatabaseScanSummaryReport:
-      allOf:
-      - properties:
-          crypto_asset_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremDatabaseSummaryCryptoAssetMetrics'
-          resource_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremDatabaseResourceMetrics'
-        required:
-        - crypto_asset_metrics
-        - resource_metrics
-        type: object
-    DiscoveryOnPremDiscoveryData:
-      allOf:
-      - properties:
-          total_certificates:
-            type: integer
-          total_crypto_assets:
-            type: integer
-          total_databases:
-            type: integer
-          total_filesystem_agents:
-            type: integer
-          total_keys:
-            type: integer
-          total_repositories:
-            type: integer
-        required:
-        - total_databases
-        - total_repositories
-        - total_keys
-        - total_certificates
-        - total_crypto_assets
-        - total_filesystem_agents
-        type: object
-    DiscoveryOnPremFsCertificateViolationMetrics:
-      allOf:
-      - properties:
-          by_issuer:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremFsCertificateViolationMetricsBucket'
-            type: object
-          risk_level:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-        required:
-        - risk_level
-        - by_issuer
-        type: object
-      - $ref: '#/components/schemas/DiscoveryOnPremFsCertificateViolationMetricsBucket'
-    DiscoveryOnPremDatabaseRiskAssessment:
-      allOf:
-      - properties:
-          findings:
-            additionalProperties:
-              additionalProperties:
-                additionalProperties:
-                  $ref: '#/components/schemas/DiscoveryViolationMetrics'
-                type: object
-              type: object
-            type: object
-          overall_risk:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-        required:
-        - findings
-        - overall_risk
-        type: object
-    DiscoveryOnPremSourceCodeCryptoAssetMetrics:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
-    DiscoveryOnPremDatabaseResourceEncryptionMetrics:
-      allOf:
-      - properties:
-          fully_encrypted_resources:
-            type: integer
-          partially_encrypted_resources:
-            type: integer
-          total_resources:
-            type: integer
-          unencrypted_resources:
-            type: integer
-        required:
-        - total_resources
-        - fully_encrypted_resources
-        - partially_encrypted_resources
-        - unencrypted_resources
-        type: object
-    DiscoveryOnPremSourceCodeResourceViolations:
-      allOf:
-      - properties:
-          repository_metrics_by_violation:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremSourceCodeViolationRepositoryMetrics'
-            type: object
-          total_violations:
-            type: integer
-          violation_details_by_repository:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremSourceCodeRepositoryViolations'
-            description: Map from Repository URL to repository violation details
-            type: object
-        required:
-        - total_violations
-        - violation_details_by_repository
-        - repository_metrics_by_violation
-        type: object
-    DiscoveryOnPremFsAssessmentResourceMetrics:
-      allOf:
-      - properties:
-          resource_metrics_by_operating_system:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremFsOperatingSystemMetrics'
-            type: object
-        required:
-        - resource_metrics_by_operating_system
-        type: object
-    DiscoveryOnPremFsOperatingSystemMetrics:
-      allOf:
-      - properties:
-          violation_count:
-            type: integer
-          violation_metrics:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremFsViolationMetrics'
-            type: object
-        required:
-        - violation_count
-        - violation_metrics
-        type: object
-    DiscoveryRiskLevel:
-      enum:
-      - critical
-      - high
-      - medium
-      - low
-      - good
-      type: string
-    DiscoveryOnPremSourceCodeScanAssessmentReport:
-      allOf:
-      - properties:
-          crypto_asset_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremSourceCodeAssessmentCryptoAssetMetrics'
-          resource_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremSourceCodeResourceMetrics'
-          resource_violations:
-            $ref: '#/components/schemas/DiscoveryOnPremSourceCodeResourceViolations'
-          risk_assessment:
-            $ref: '#/components/schemas/DiscoveryOnPremSourceCodeRiskAssessment'
-          security_issues:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryViolationMetrics'
-            type: object
-        required:
-        - risk_assessment
-        - security_issues
-        - resource_violations
-        - resource_metrics
-        - crypto_asset_metrics
-        type: object
-    DiscoveryOnPremFsViolationMetricsBucket:
-      allOf:
-      - properties:
-          risk_level:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-          violation_count:
-            type: integer
-        required:
-        - violation_count
-        - risk_level
-        type: object
-    DiscoveryOnPremSourceCodeResourceMetrics:
-      allOf:
-      - properties:
-          total_repositories:
-            type: integer
-        required:
-        - total_repositories
-        type: object
-    DiscoveryOnPremFsViolationMetrics:
-      allOf:
-      - properties:
-          violation_by_type:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremFsViolationMetricsBucket'
-            type: object
-        required:
-        - violation_by_type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryOnPremFsViolationMetricsBucket'
-    DiscoveryViolationMetrics:
-      allOf:
-      - description: A structure to store the violation metrics for each violation.
-        properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
-    DiscoveryOnPremDatabaseAssessmentResourceMetrics:
-      allOf:
-      - properties:
-          quantum_vulnerable_databases:
-            type: integer
-          total_databases:
-            type: integer
-        required:
-        - total_databases
-        - quantum_vulnerable_databases
-        type: object
     DiscoveryOnPremFsCertificateMetrics:
       allOf:
       - properties:
@@ -614,61 +222,13 @@ components:
         required:
         - certificate_count
         type: object
-    DiscoveryOnPremDatabaseScanAssessmentReport:
+    DiscoveryOnPremDatabaseAssessmentCryptoAssetMetrics:
       allOf:
       - properties:
-          crypto_asset_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremDatabaseAssessmentCryptoAssetMetrics'
-          resource_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremDatabaseAssessmentResourceMetrics'
-          resource_violations:
-            $ref: '#/components/schemas/DiscoveryOnPremDatabaseResourceViolations'
-          risk_assessment:
-            $ref: '#/components/schemas/DiscoveryOnPremDatabaseRiskAssessment'
-          security_issues:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryViolationMetrics'
-            type: object
-        required:
-        - risk_assessment
-        - security_issues
-        - resource_violations
-        - crypto_asset_metrics
-        - resource_metrics
-        type: object
-    DiscoveryOnPremDatabaseKeyMetricsByStatus:
-      allOf:
-      - properties:
-          total_active_keys:
-            type: integer
-        required:
-        - total_active_keys
-        type: object
-    DiscoveryOnPremDatabaseSummaryCryptoAssetMetrics:
-      allOf:
-      - properties:
-          key_metrics:
-            $ref: '#/components/schemas/DiscoveryOnPremDatabaseKeyMetrics'
-          metrics_by_database_variant:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryOnPremDatabaseCryptoAssetMetrics'
-            type: object
           total_keys:
             type: integer
         required:
         - total_keys
-        - key_metrics
-        - metrics_by_database_variant
-        type: object
-    DiscoveryViolationDetails:
-      allOf:
-      - properties:
-          count:
-            type: integer
-          risk_level:
-            $ref: '#/components/schemas/DiscoveryRiskLevel'
-        required:
-        - count
         type: object
     DiscoveryOnPremFsScanSummaryReport:
       allOf:
@@ -713,6 +273,404 @@ components:
         - asset_metrics_by_key_spec
         - certificate_metrics_by_status
         type: object
+    DiscoveryOnPremDatabaseAssessmentResourceMetrics:
+      allOf:
+      - properties:
+          quantum_vulnerable_databases:
+            type: integer
+          total_databases:
+            type: integer
+        required:
+        - total_databases
+        - quantum_vulnerable_databases
+        type: object
+    DiscoveryOnPremSourceCodeRepositoryViolations:
+      allOf:
+      - properties:
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationDetails'
+            type: object
+        required:
+        - risk_level
+        - violations
+        type: object
+    DiscoveryOnPremFsSummaryRiskScoreMetrics:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryOnPremDatabaseResourceMetrics:
+      allOf:
+      - properties:
+          encryption_metrics_by_service:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremDatabaseResourceEncryptionMetrics'
+            type: object
+          total_database_servers:
+            type: integer
+        required:
+        - total_database_servers
+        - encryption_metrics_by_service
+        type: object
+    DiscoveryOnPremFsCertificateViolationMetricsBucket:
+      allOf:
+      - properties:
+          violation_count:
+            type: integer
+        required:
+        - violation_count
+        type: object
+    DiscoveryOnPremDatabaseResourceViolations:
+      allOf:
+      - properties:
+          total_violations:
+            type: integer
+          violation_details_by_variant:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremDatabaseVariantViolations'
+            type: object
+        required:
+        - total_violations
+        - violation_details_by_variant
+        type: object
+    DiscoveryOnPremDatabaseVariantViolations:
+      allOf:
+      - properties:
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violations:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationDetails'
+            type: object
+        required:
+        - risk_level
+        - violations
+        type: object
+    DiscoveryOnPremDatabaseResourceEncryptionMetrics:
+      allOf:
+      - properties:
+          fully_encrypted_resources:
+            type: integer
+          partially_encrypted_resources:
+            type: integer
+          total_resources:
+            type: integer
+          unencrypted_resources:
+            type: integer
+        required:
+        - total_resources
+        - fully_encrypted_resources
+        - partially_encrypted_resources
+        - unencrypted_resources
+        type: object
+    DiscoveryOnPremSourceCodeViolationRepositoryMetrics:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryOnPremDiscoveryData:
+      allOf:
+      - properties:
+          total_certificates:
+            type: integer
+          total_crypto_assets:
+            type: integer
+          total_databases:
+            type: integer
+          total_filesystem_agents:
+            type: integer
+          total_keys:
+            type: integer
+          total_repositories:
+            type: integer
+        required:
+        - total_databases
+        - total_repositories
+        - total_keys
+        - total_certificates
+        - total_crypto_assets
+        - total_filesystem_agents
+        type: object
+    DiscoveryOnPremSourceCodeCryptoAssetMetrics:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryRiskLevel:
+      enum:
+      - critical
+      - high
+      - medium
+      - low
+      - good
+      type: string
+    DiscoveryOnPremFsViolationMetricsBucket:
+      allOf:
+      - properties:
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+          violation_count:
+            type: integer
+        required:
+        - violation_count
+        - risk_level
+        type: object
+    DiscoveryOnPremDatabaseKeyMetricsByStatus:
+      allOf:
+      - properties:
+          total_active_keys:
+            type: integer
+        required:
+        - total_active_keys
+        type: object
+    DiscoveryOnPremFsViolationMetrics:
+      allOf:
+      - properties:
+          violation_by_type:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremFsViolationMetricsBucket'
+            type: object
+        required:
+        - violation_by_type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryOnPremFsViolationMetricsBucket'
+    DiscoveryViolationDetails:
+      allOf:
+      - properties:
+          count:
+            type: integer
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - count
+        type: object
+    DiscoveryOnPremFsCertificateViolationMetrics:
+      allOf:
+      - properties:
+          by_issuer:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremFsCertificateViolationMetricsBucket'
+            type: object
+          risk_level:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - risk_level
+        - by_issuer
+        type: object
+      - $ref: '#/components/schemas/DiscoveryOnPremFsCertificateViolationMetricsBucket'
+    DiscoveryOnPremSourceCodeResourceViolations:
+      allOf:
+      - properties:
+          repository_metrics_by_violation:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremSourceCodeViolationRepositoryMetrics'
+            type: object
+          total_violations:
+            type: integer
+          violation_details_by_repository:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremSourceCodeRepositoryViolations'
+            description: Map from Repository URL to repository violation details
+            type: object
+        required:
+        - total_violations
+        - violation_details_by_repository
+        - repository_metrics_by_violation
+        type: object
+    DiscoveryOnPremDatabaseCryptoAssetMetrics:
+      allOf:
+      - properties:
+          key_count:
+            type: integer
+        required:
+        - key_count
+        type: object
+    DiscoveryOnPremSourceCodeAssessmentCryptoAssetMetrics:
+      allOf:
+      - properties:
+          total_assets:
+            type: integer
+        required:
+        - total_assets
+        type: object
+    DiscoveryOnPremFsOperatingSystemMetrics:
+      allOf:
+      - properties:
+          violation_count:
+            type: integer
+          violation_metrics:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremFsViolationMetrics'
+            type: object
+        required:
+        - violation_count
+        - violation_metrics
+        type: object
+    DiscoveryOnPremDatabaseSummaryCryptoAssetMetrics:
+      allOf:
+      - properties:
+          key_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremDatabaseKeyMetrics'
+          metrics_by_database_variant:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremDatabaseCryptoAssetMetrics'
+            type: object
+          total_keys:
+            type: integer
+        required:
+        - total_keys
+        - key_metrics
+        - metrics_by_database_variant
+        type: object
+    DiscoveryOnPremSourceCodeScanAssessmentReport:
+      allOf:
+      - properties:
+          crypto_asset_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremSourceCodeAssessmentCryptoAssetMetrics'
+          resource_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremSourceCodeResourceMetrics'
+          resource_violations:
+            $ref: '#/components/schemas/DiscoveryOnPremSourceCodeResourceViolations'
+          risk_assessment:
+            $ref: '#/components/schemas/DiscoveryOnPremSourceCodeRiskAssessment'
+          security_issues:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationMetrics'
+            type: object
+        required:
+        - risk_assessment
+        - security_issues
+        - resource_violations
+        - resource_metrics
+        - crypto_asset_metrics
+        type: object
+    DiscoveryOnPremFsSummaryRiskScore:
+      allOf:
+      - properties:
+          findings:
+            additionalProperties:
+              additionalProperties:
+                additionalProperties:
+                  $ref: '#/components/schemas/DiscoveryOnPremFsSummaryRiskScoreMetrics'
+                type: object
+              type: object
+            type: object
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - findings
+        - overall_risk
+        type: object
+    DiscoveryOnPremDatabaseRiskAssessment:
+      allOf:
+      - properties:
+          findings:
+            additionalProperties:
+              additionalProperties:
+                additionalProperties:
+                  $ref: '#/components/schemas/DiscoveryViolationMetrics'
+                type: object
+              type: object
+            type: object
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
+        required:
+        - findings
+        - overall_risk
+        type: object
+    DiscoveryOnPremFsCryptoAssetMetrics:
+      allOf:
+      - properties:
+          asset_count:
+            type: integer
+        required:
+        - asset_count
+        type: object
+    DiscoveryOnPremDatabaseScanAssessmentReport:
+      allOf:
+      - properties:
+          crypto_asset_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremDatabaseAssessmentCryptoAssetMetrics'
+          resource_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremDatabaseAssessmentResourceMetrics'
+          resource_violations:
+            $ref: '#/components/schemas/DiscoveryOnPremDatabaseResourceViolations'
+          risk_assessment:
+            $ref: '#/components/schemas/DiscoveryOnPremDatabaseRiskAssessment'
+          security_issues:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryViolationMetrics'
+            type: object
+        required:
+        - risk_assessment
+        - security_issues
+        - resource_violations
+        - crypto_asset_metrics
+        - resource_metrics
+        type: object
+    DiscoveryOnPremDatabaseKeyMetrics:
+      allOf:
+      - properties:
+          count_by_source:
+            additionalProperties:
+              type: integer
+            type: object
+          count_by_spec:
+            additionalProperties:
+              type: integer
+            type: object
+          metrics_by_status:
+            $ref: '#/components/schemas/DiscoveryOnPremDatabaseKeyMetricsByStatus'
+        required:
+        - count_by_source
+        - metrics_by_status
+        - count_by_spec
+        type: object
+    DiscoveryOnPremFsAssessmentResourceMetrics:
+      allOf:
+      - properties:
+          resource_metrics_by_operating_system:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremFsOperatingSystemMetrics'
+            type: object
+        required:
+        - resource_metrics_by_operating_system
+        type: object
+    DiscoveryOnPremFsScanAssessmentReport:
+      allOf:
+      - properties:
+          crypto_asset_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremFsAssessmentCryptoAssetMetrics'
+          resource_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremFsAssessmentResourceMetrics'
+          risk_score:
+            $ref: '#/components/schemas/DiscoveryOnPremFsSummaryRiskScore'
+        required:
+        - risk_score
+        - crypto_asset_metrics
+        - resource_metrics
+        type: object
+    DiscoveryViolationMetrics:
+      allOf:
+      - description: A structure to store the violation metrics for each violation.
+        properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
     DiscoveryOnPremFsSummaryResourceMetrics:
       allOf:
       - properties:
@@ -721,13 +679,55 @@ components:
         required:
         - total_operating_systems
         type: object
-    DiscoveryOnPremScanSummaryReport:
+    DiscoveryOnPremSourceCodeRiskAssessment:
       allOf:
       - properties:
-          onprem_discovery:
-            $ref: '#/components/schemas/DiscoveryOnPremDiscoveryData'
+          findings:
+            additionalProperties:
+              additionalProperties:
+                $ref: '#/components/schemas/DiscoveryViolationMetrics'
+              type: object
+            type: object
+          overall_risk:
+            $ref: '#/components/schemas/DiscoveryRiskLevel'
         required:
-        - onprem_discovery
+        - findings
+        - overall_risk
+        type: object
+    DiscoveryOnPremDatabaseScanSummaryReport:
+      allOf:
+      - properties:
+          crypto_asset_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremDatabaseSummaryCryptoAssetMetrics'
+          resource_metrics:
+            $ref: '#/components/schemas/DiscoveryOnPremDatabaseResourceMetrics'
+        required:
+        - crypto_asset_metrics
+        - resource_metrics
+        type: object
+    DiscoveryOnPremFsAssessmentCryptoAssetMetrics:
+      allOf:
+      - properties:
+          asset_metrics_by_type:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremFsViolationMetrics'
+            type: object
+          certificate_metrics_by_violation:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryOnPremFsCertificateViolationMetrics'
+            type: object
+          total_assets:
+            type: integer
+          total_quantum_violations:
+            type: integer
+          total_violations:
+            type: integer
+        required:
+        - total_assets
+        - total_violations
+        - total_quantum_violations
+        - asset_metrics_by_type
+        - certificate_metrics_by_violation
         type: object
   securitySchemes:
     Oauth2ClientCredentials:

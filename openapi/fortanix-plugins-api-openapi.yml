@@ -170,138 +170,6 @@ paths:
                 $ref: '#/components/schemas/Plugin'
 components:
   schemas:
-    ListPluginsParams:
-      allOf:
-      - type: object
-        description: Query parameters to get Plugins.
-        properties:
-          group_id:
-            type: string
-            format: uuid
-            description: Group for which the associated plugins should be retrieved.
-          limit:
-            type: integer
-            description: Maximum number of entries to return.
-          offset:
-            type: integer
-            description: Starting offset.
-      - $ref: '#/components/schemas/PluginSort'
-    PluginSort:
-      oneOf:
-      - title: PluginSortVariantByPluginId
-        type: object
-        description: Sort plugins by Plugin Id.
-        properties:
-          sort:
-            type: string
-            pattern: ^plugin_id:(?:asc|desc)$
-            example: plugin_id:asc
-          start:
-            type: string
-            format: uuid
-            description: Starting offset(UUID of plugin).
-        required:
-        - sort
-    PluginSource:
-      description: Plugin code that will be executed inside SGX enclave.
-      oneOf:
-      - $ref: '#/components/schemas/PluginSourceFromRepo'
-      - $ref: '#/components/schemas/PluginSourceInline'
-    PluginSourceRequestFromRepo:
-      allOf:
-      - type: object
-        properties:
-          repo_url:
-            type: string
-          plugin_name:
-            type: string
-          version:
-            $ref: '#/components/schemas/PluginVersion'
-        required:
-        - repo_url
-        - plugin_name
-        - version
-    PrincipalUserViaApp:
-      allOf:
-      - type: object
-        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
-        properties:
-          user_id:
-            type: string
-            format: uuid
-          scopes:
-            type: array
-            uniqueItems: true
-            items:
-              $ref: '#/components/schemas/OauthScope'
-        required:
-        - user_id
-        - scopes
-    OauthScope:
-      description: OAuth scope.
-      type: string
-      enum:
-      - app
-      - openid
-      - email
-      - profile
-    PluginType:
-      description: Type of a plugin.
-      type: string
-      enum:
-      - STANDARD
-      - IMPERSONATING
-      - CUSTOMALGORITHM
-    PluginSourceRequestInline:
-      allOf:
-      - type: object
-        properties:
-          language:
-            $ref: '#/components/schemas/Language'
-          code:
-            type: string
-        required:
-        - language
-        - code
-    Language:
-      description: Language of plugin code.
-      type: string
-      enum:
-      - LUA
-    PluginVersion:
-      type: string
-      pattern: ^\d+.\d+$
-    PluginSourceFromRepo:
-      allOf:
-      - type: object
-        properties:
-          repo_url:
-            type: string
-          name:
-            type: string
-          version:
-            $ref: '#/components/schemas/PluginVersion'
-          language:
-            $ref: '#/components/schemas/Language'
-          code:
-            type: string
-        required:
-        - repo_url
-        - name
-        - version
-        - language
-        - code
-    PluginSourceInline:
-      allOf:
-      - type: object
-        properties:
-          language:
-            $ref: '#/components/schemas/Language'
-          code:
-            type: string
-        required:
-        - language
-        - code
     Principal:
       description: A security principal.
       oneOf:
@@ -344,6 +212,134 @@ components:
         type: string
         enum:
         - unregistereduser
+    PrincipalUserViaApp:
+      allOf:
+      - type: object
+        description: UserViaApp signifies a user authorizing some app to act on its behalf through OAuth.
+        properties:
+          user_id:
+            type: string
+            format: uuid
+          scopes:
+            type: array
+            uniqueItems: true
+            items:
+              $ref: '#/components/schemas/OauthScope'
+        required:
+        - user_id
+        - scopes
+    PluginSourceRequestInline:
+      allOf:
+      - type: object
+        properties:
+          language:
+            $ref: '#/components/schemas/Language'
+          code:
+            type: string
+        required:
+        - language
+        - code
+    PluginRequest:
+      allOf:
+      - type: object
+        properties:
+          default_group:
+            type:
+            - string
+            - 'null'
+            format: uuid
+            description: The default group a plugin belongs to.
+          description:
+            type:
+            - string
+            - 'null'
+            description: Description of the plugin.
+          enabled:
+            type:
+            - boolean
+            - 'null'
+            description: Is plugin enabled.
+          name:
+            type:
+            - string
+            - 'null'
+            maxLength: 4096
+            pattern: ^[^\n]*[^\s\n][^\n]*$
+            description: Name of the plugin, which must be unique within an account.
+          plugin_type:
+            $ref: '#/components/schemas/PluginType'
+          signature:
+            type:
+            - string
+            - 'null'
+            description: 'A detached OpenPGP signature over the plugin source code.
+
+
+              The signature packet must be armored. If the account has a plugin code signing
+
+              policy, the signature is required in the following cases:
+
+              - when creating a new plugin
+
+              - when updating the plugin code'
+          source:
+            $ref: '#/components/schemas/PluginSourceRequest'
+          add_groups:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+              format: uuid
+            description: Set of all the groups that plugin is part of.
+          del_groups:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+              format: uuid
+            description: Set of all the groups that plugin is part of.
+          mod_groups:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+              format: uuid
+            description: Set of all the groups that plugin is part of.
+    PluginSourceRequestFromRepo:
+      allOf:
+      - type: object
+        properties:
+          repo_url:
+            type: string
+          plugin_name:
+            type: string
+          version:
+            $ref: '#/components/schemas/PluginVersion'
+        required:
+        - repo_url
+        - plugin_name
+        - version
+    PluginSourceRequest:
+      oneOf:
+      - $ref: '#/components/schemas/PluginSourceRequestFromRepo'
+      - $ref: '#/components/schemas/PluginSourceRequestInline'
+    PluginOutput:
+      type: string
+      format: byte
+    PluginVersion:
+      type: string
+      pattern: ^\d+.\d+$
+    Language:
+      description: Language of plugin code.
+      type: string
+      enum:
+      - LUA
     Plugin:
       allOf:
       - type: object
@@ -423,85 +419,89 @@ components:
         - plugin_type
         - source
         - groups
-    PluginSourceRequest:
-      oneOf:
-      - $ref: '#/components/schemas/PluginSourceRequestFromRepo'
-      - $ref: '#/components/schemas/PluginSourceRequestInline'
-    PluginOutput:
-      type: string
-      format: byte
-    PluginRequest:
+    PluginSourceFromRepo:
       allOf:
       - type: object
         properties:
-          default_group:
-            type:
-            - string
-            - 'null'
-            format: uuid
-            description: The default group a plugin belongs to.
-          description:
-            type:
-            - string
-            - 'null'
-            description: Description of the plugin.
-          enabled:
-            type:
-            - boolean
-            - 'null'
-            description: Is plugin enabled.
+          repo_url:
+            type: string
           name:
-            type:
-            - string
-            - 'null'
-            maxLength: 4096
-            pattern: ^[^\n]*[^\s\n][^\n]*$
-            description: Name of the plugin, which must be unique within an account.
-          plugin_type:
-            $ref: '#/components/schemas/PluginType'
-          signature:
-            type:
-            - string
-            - 'null'
-            description: 'A detached OpenPGP signature over the plugin source code.
-
-
-              The signature packet must be armored. If the account has a plugin code signing
-
-              policy, the signature is required in the following cases:
-
-              - when creating a new plugin
-
-              - when updating the plugin code'
-          source:
-            $ref: '#/components/schemas/PluginSourceRequest'
-          add_groups:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              type: string
-              format: uuid
-            description: Set of all the groups that plugin is part of.
-          del_groups:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              type: string
-              format: uuid
-            description: Set of all the groups that plugin is part of.
-          mod_groups:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              type: string
-              format: uuid
-            description: Set of all the groups that plugin is part of.
+            type: string
+          version:
+            $ref: '#/components/schemas/PluginVersion'
+          language:
+            $ref: '#/components/schemas/Language'
+          code:
+            type: string
+        required:
+        - repo_url
+        - name
+        - version
+        - language
+        - code
+    ListPluginsParams:
+      allOf:
+      - type: object
+        description: Query parameters to get Plugins.
+        properties:
+          group_id:
+            type: string
+            format: uuid
+            description: Group for which the associated plugins should be retrieved.
+          limit:
+            type: integer
+            description: Maximum number of entries to return.
+          offset:
+            type: integer
+            description: Starting offset.
+      - $ref: '#/components/schemas/PluginSort'
+    PluginSourceInline:
+      allOf:
+      - type: object
+        properties:
+          language:
+            $ref: '#/components/schemas/Language'
+          code:
+            type: string
+        required:
+        - language
+        - code
+    PluginSource:
+      description: Plugin code that will be executed inside SGX enclave.
+      oneOf:
+      - $ref: '#/components/schemas/PluginSourceFromRepo'
+      - $ref: '#/components/schemas/PluginSourceInline'
+    PluginType:
+      description: Type of a plugin.
+      type: string
+      enum:
+      - STANDARD
+      - IMPERSONATING
+      - CUSTOMALGORITHM
+    OauthScope:
+      description: OAuth scope.
+      type: string
+      enum:
+      - app
+      - openid
+      - email
+      - profile
+    PluginSort:
+      oneOf:
+      - title: PluginSortVariantByPluginId
+        type: object
+        description: Sort plugins by Plugin Id.
+        properties:
+          sort:
+            type: string
+            pattern: ^plugin_id:(?:asc|desc)$
+            example: plugin_id:asc
+          start:
+            type: string
+            format: uuid
+            description: Starting offset(UUID of plugin).
+        required:
+        - sort
   parameters:
     ListPluginsParams:
       in: query
