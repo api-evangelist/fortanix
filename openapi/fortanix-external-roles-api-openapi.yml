@@ -162,57 +162,12 @@ paths:
                 $ref: '#/components/schemas/ExternalRole'
 components:
   schemas:
-    ExternalRoleKind:
-      description: Type of an external role.
-      type: string
-      enum:
-      - ldap-group
-    UserGroupRole:
-      description: User's role(s) in a group.
-      allOf:
-      - type: array
-        uniqueItems: true
-        items:
-          $ref: '#/components/schemas/LegacyUserGroupRoleOrRoleId'
     LegacyUserGroupRoleOrRoleId:
       description: Legacy user group role name or custom role id
       oneOf:
       - $ref: '#/components/schemas/LegacyUserGroupRole'
       - type: string
         format: uuid
-    ExternalRole:
-      allOf:
-      - type: object
-        properties:
-          external_role_id:
-            type: string
-            format: uuid
-          groups:
-            type: object
-            additionalProperties:
-              $ref: '#/components/schemas/ExternalRoleMapping'
-          kind:
-            $ref: '#/components/schemas/ExternalRoleKind'
-          last_synced:
-            type: string
-            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
-            example: 20170509T070912Z
-          name:
-            type: string
-          source_id:
-            type: string
-            format: uuid
-          acct_id:
-            type: string
-            format: uuid
-        required:
-        - external_role_id
-        - groups
-        - kind
-        - last_synced
-        - name
-        - source_id
-        - acct_id
     ExternalRoleMapping:
       allOf:
       - type: object
@@ -225,41 +180,6 @@ components:
             - 'null'
             items:
               $ref: '#/components/schemas/AppPermissions'
-    ExternalRoleRequest:
-      allOf:
-      - type: object
-        properties:
-          add_groups:
-            type:
-            - object
-            - 'null'
-            additionalProperties:
-              $ref: '#/components/schemas/ExternalRoleMapping'
-          del_groups:
-            type:
-            - array
-            - 'null'
-            uniqueItems: true
-            items:
-              type: string
-              format: uuid
-          kind:
-            $ref: '#/components/schemas/ExternalRoleKind'
-          mod_groups:
-            type:
-            - object
-            - 'null'
-            additionalProperties:
-              $ref: '#/components/schemas/ExternalRoleMapping'
-          name:
-            type:
-            - string
-            - 'null'
-          source_id:
-            type:
-            - string
-            - 'null'
-            format: uuid
     AppPermissions:
       description: "Operations allowed to be performed by an app.\n\n\n\n          SIGN:\n\n\n          VERIFY:\n\n\n          ENCRYPT:\n\n\n          DECRYPT:\n\n\n          WRAPKEY:\n\n\n          UNWRAPKEY:\n\n\n          DERIVEKEY:\n\n\n          MACGENERATE:\n\n\n          MACVERIFY:\n\n\n          EXPORT:\n\n\n          MANAGE:\n\n\n          AGREEKEY:\n\n\n          MASKDECRYPT:\n\n\n          AUDIT:\n\n\n          TRANSFORM:\n\n\n          CREATE_SOBJECTS:\n\n\n          COPY_SOBJECTS:\n\n\n          ROTATE_SOBJECTS:\n\n\n          ACTIVATE_SOBJECTS:\n\n\n          REVOKE_SOBJECTS:\n\n\n          REVERT_SOBJECTS:\n\n\n          MOVE_SOBJECTS:\n\n\n          UPDATE_SOBJECTS_PROFILE:\n\n\n          UPDATE_SOBJECTS_ENABLED_STATE:\n\n\n          UPDATE_SOBJECT_POLICIES:\n\n\n          UPDATE_KEY_OPS:\n\n\n          DELETE_KEY_MATERIAL:\n\n\n          DELETE_SOBJECTS:\n\n\n          DESTROY_SOBJECTS:\n\n\n          RESTORE_EXTERNAL_SOBJECTS:\n\n\n          CALCULATE_DIGEST:\n\n\n          ENCAPSULATE:\n\n\n          DECAPSULATE:\n\n"
       type: string
@@ -297,6 +217,92 @@ components:
       - CALCULATE_DIGEST
       - ENCAPSULATE
       - DECAPSULATE
+    UserGroupRole:
+      description: User's role(s) in a group.
+      allOf:
+      - type: array
+        uniqueItems: true
+        items:
+          $ref: '#/components/schemas/LegacyUserGroupRoleOrRoleId'
+    LegacyUserGroupRole:
+      description: Legacy user group role
+      type: string
+      enum:
+      - GROUPAUDITOR
+      - GROUPADMINISTRATOR
+    ExternalRoleKind:
+      description: Type of an external role.
+      type: string
+      enum:
+      - ldap-group
+    ExternalRoleRequest:
+      allOf:
+      - type: object
+        properties:
+          add_groups:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              $ref: '#/components/schemas/ExternalRoleMapping'
+          del_groups:
+            type:
+            - array
+            - 'null'
+            uniqueItems: true
+            items:
+              type: string
+              format: uuid
+          kind:
+            $ref: '#/components/schemas/ExternalRoleKind'
+          mod_groups:
+            type:
+            - object
+            - 'null'
+            additionalProperties:
+              $ref: '#/components/schemas/ExternalRoleMapping'
+          name:
+            type:
+            - string
+            - 'null'
+          source_id:
+            type:
+            - string
+            - 'null'
+            format: uuid
+    ExternalRole:
+      allOf:
+      - type: object
+        properties:
+          external_role_id:
+            type: string
+            format: uuid
+          groups:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/ExternalRoleMapping'
+          kind:
+            $ref: '#/components/schemas/ExternalRoleKind'
+          last_synced:
+            type: string
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            example: 20170509T070912Z
+          name:
+            type: string
+          source_id:
+            type: string
+            format: uuid
+          acct_id:
+            type: string
+            format: uuid
+        required:
+        - external_role_id
+        - groups
+        - kind
+        - last_synced
+        - name
+        - source_id
+        - acct_id
     ListExternalRolesParams:
       allOf:
       - type: object
@@ -304,12 +310,6 @@ components:
           group_id:
             type: string
             format: uuid
-    LegacyUserGroupRole:
-      description: Legacy user group role
-      type: string
-      enum:
-      - GROUPAUDITOR
-      - GROUPADMINISTRATOR
   parameters:
     ListExternalRolesParams:
       in: query

@@ -167,53 +167,16 @@ paths:
                 $ref: '#/components/schemas/TaskResult'
 components:
   schemas:
-    SearchMetadata:
+    TaskUpdateRequest:
       type: object
       required:
-      - total_count
-      - filtered_count
-      - page
-      - pages
-      - limit
+      - status
       properties:
-        page:
-          type: integer
-          description: Current page number
-        pages:
-          type: integer
-          description: Total pages as per the item counts and page limit.
-        limit:
-          type: integer
-          description: Number of items to limit in a page.
-        total_count:
-          type: integer
-          description: Total number of unfiltered items.
-        filtered_count:
-          type: integer
-          description: Total number of items as per the current filter.
-    TaskResult:
-      type: object
-      properties:
-        task_id:
+        status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        denial_reason:
           type: string
-          format: uuid
-          description: Task Id
-        certificate_id:
-          type: string
-          format: uuid
-          description: Certificate Id in case of certificate issuance task.
-        node_id:
-          type: string
-          format: uuid
-          description: Compute Node Id.
-        task_type:
-          $ref: '#/components/schemas/TaskType'
-        task_status:
-          $ref: '#/components/schemas/TaskStatus'
-        build_id:
-          type: string
-          format: uuid
-          description: Build Id.
+          description: Reason associated with the denial.
     ApprovalInfo:
       type: object
       required:
@@ -231,14 +194,35 @@ components:
         denial_reason:
           type: string
           description: Reason associated with the denial.
-    TaskType:
-      type: string
-      description: The types of tasks supported.
-      enum:
-      - NODE_ATTESTATION
-      - CERTIFICATE_ISSUANCE
-      - BUILD_WHITELIST
-      - DOMAIN_WHITELIST
+    GetAllTasksResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+    TaskStatus:
+      required:
+      - created_at
+      - status_updated_at
+      - status
+      type: object
+      description: Status info for a task.
+      properties:
+        created_at:
+          type: integer
+          format: int64
+          description: Task creation time
+        status_updated_at:
+          type: integer
+          format: int64
+          description: Time since the status change.
+        status:
+          $ref: '#/components/schemas/TaskStatusType'
     Task:
       type: object
       required:
@@ -282,41 +266,30 @@ components:
           type: string
           format: uuid
           description: Group Id
-    RequesterType:
-      type: string
-      description: Type of requester.
-      enum:
-      - USER
-      - APP
-      - SYSTEM
-    TaskUpdateRequest:
+    SearchMetadata:
       type: object
       required:
-      - status
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
       properties:
-        status:
-          $ref: '#/components/schemas/ApprovalStatus'
-        denial_reason:
-          type: string
-          description: Reason associated with the denial.
-    TaskStatus:
-      required:
-      - created_at
-      - status_updated_at
-      - status
-      type: object
-      description: Status info for a task.
-      properties:
-        created_at:
+        page:
           type: integer
-          format: int64
-          description: Task creation time
-        status_updated_at:
+          description: Current page number
+        pages:
           type: integer
-          format: int64
-          description: Time since the status change.
-        status:
-          $ref: '#/components/schemas/TaskStatusType'
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
     TaskStatusType:
       type: string
       description: Status string for a task.
@@ -325,12 +298,50 @@ components:
       - FAILED
       - SUCCESS
       - DENIED
+    TaskResult:
+      type: object
+      properties:
+        task_id:
+          type: string
+          format: uuid
+          description: Task Id
+        certificate_id:
+          type: string
+          format: uuid
+          description: Certificate Id in case of certificate issuance task.
+        node_id:
+          type: string
+          format: uuid
+          description: Compute Node Id.
+        task_type:
+          $ref: '#/components/schemas/TaskType'
+        task_status:
+          $ref: '#/components/schemas/TaskStatus'
+        build_id:
+          type: string
+          format: uuid
+          description: Build Id.
     ApprovalStatus:
       type: string
       description: Approval status.
       enum:
       - APPROVED
       - DENIED
+    TaskType:
+      type: string
+      description: The types of tasks supported.
+      enum:
+      - NODE_ATTESTATION
+      - CERTIFICATE_ISSUANCE
+      - BUILD_WHITELIST
+      - DOMAIN_WHITELIST
+    RequesterType:
+      type: string
+      description: Type of requester.
+      enum:
+      - USER
+      - APP
+      - SYSTEM
     RequesterInfo:
       required:
       - requester_type
@@ -352,17 +363,6 @@ components:
           description: App Name.
         requester_type:
           $ref: '#/components/schemas/RequesterType'
-    GetAllTasksResponse:
-      type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
   parameters:
     TaskId:
       name: task-id

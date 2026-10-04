@@ -42,6 +42,31 @@ paths:
                 $ref: '#/components/schemas/EsAuditQueryResponse'
 components:
   schemas:
+    EsAuditLogOuter:
+      allOf:
+      - type: object
+        description: Response structure of a single log.
+        properties:
+          _id:
+            type: string
+            description: UUID of audit log
+          _source:
+            $ref: '#/components/schemas/EsAuditLog'
+        required:
+        - _id
+        - _source
+    EsAuditQueryResponse:
+      allOf:
+      - type: object
+        description: Response for Audit log Query.
+        properties:
+          hits:
+            type: array
+            items:
+              $ref: '#/components/schemas/EsAuditLogOuter'
+            description: List of audit logs.
+        required:
+        - hits
     ActionType:
       type: string
       enum:
@@ -51,6 +76,63 @@ components:
       - RUNPLUGIN
       - CUSTOM
       - OTHER
+    SeverityLevel:
+      type: string
+      enum:
+      - INFO
+      - WARNING
+      - ERROR
+      - CRITICAL
+    LogsParams:
+      allOf:
+      - type: object
+        description: Query parameters to get audit logs.
+        properties:
+          size:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: Maximum number of entries to return. Upper limit for max entries is 1000.
+          from:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+            description: Starting offset
+          range_from:
+            type: integer
+            description: Starting time for search. This is EPOCH time.
+          range_to:
+            type: integer
+            description: Ending time for search. This is EPOCH time.
+          action_type:
+            type: array
+            items:
+              $ref: '#/components/schemas/ActionType'
+            description: Action Type
+          actor_type:
+            type: array
+            items:
+              type: string
+            description: 'Actor Type
+
+              Available values are: User, App & Plugin.'
+          actor_id:
+            type: string
+            format: uuid
+            description: UUID of Actor (User, App or Plugin)
+          object_id:
+            type: string
+            format: uuid
+            description: UUID of entity affected by event. For instance, if a group is created object_id will be UUID of group.
+          previous_id:
+            type: string
+            format: uuid
+            description: UUID of log after which further logs are required.
+          severity:
+            type: array
+            items:
+              $ref: '#/components/schemas/SeverityLevel'
+            description: Severity of event
     EsAuditLog:
       allOf:
       - type: object
@@ -136,88 +218,6 @@ components:
         - actor_id
         - group_ids
         - object_id
-    EsAuditLogOuter:
-      allOf:
-      - type: object
-        description: Response structure of a single log.
-        properties:
-          _id:
-            type: string
-            description: UUID of audit log
-          _source:
-            $ref: '#/components/schemas/EsAuditLog'
-        required:
-        - _id
-        - _source
-    LogsParams:
-      allOf:
-      - type: object
-        description: Query parameters to get audit logs.
-        properties:
-          size:
-            type: integer
-            minimum: 0
-            maximum: 4294967295
-            description: Maximum number of entries to return. Upper limit for max entries is 1000.
-          from:
-            type: integer
-            minimum: 0
-            maximum: 4294967295
-            description: Starting offset
-          range_from:
-            type: integer
-            description: Starting time for search. This is EPOCH time.
-          range_to:
-            type: integer
-            description: Ending time for search. This is EPOCH time.
-          action_type:
-            type: array
-            items:
-              $ref: '#/components/schemas/ActionType'
-            description: Action Type
-          actor_type:
-            type: array
-            items:
-              type: string
-            description: 'Actor Type
-
-              Available values are: User, App & Plugin.'
-          actor_id:
-            type: string
-            format: uuid
-            description: UUID of Actor (User, App or Plugin)
-          object_id:
-            type: string
-            format: uuid
-            description: UUID of entity affected by event. For instance, if a group is created object_id will be UUID of group.
-          previous_id:
-            type: string
-            format: uuid
-            description: UUID of log after which further logs are required.
-          severity:
-            type: array
-            items:
-              $ref: '#/components/schemas/SeverityLevel'
-            description: Severity of event
-    EsAuditQueryResponse:
-      allOf:
-      - type: object
-        description: Response for Audit log Query.
-        properties:
-          hits:
-            type: array
-            items:
-              $ref: '#/components/schemas/EsAuditLogOuter'
-            description: List of audit logs.
-        required:
-        - hits
-    SeverityLevel:
-      type: string
-      enum:
-      - INFO
-      - WARNING
-      - ERROR
-      - CRITICAL
   parameters:
     LogsParams:
       in: query

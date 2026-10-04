@@ -55,19 +55,6 @@ paths:
       - DiscoveryScan
 components:
   schemas:
-    DiscoveryScanParams:
-      allOf:
-      - properties:
-          filter:
-            type: string
-          limit:
-            type: integer
-          previous_id:
-            format: uuid
-            type: string
-          sort_by:
-            type: string
-        type: object
     DiscoveryScan:
       allOf:
       - description: Scan in Predjama.
@@ -121,6 +108,19 @@ components:
       - pending
       - failed
       type: string
+    DiscoveryScanParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            format: uuid
+            type: string
+          sort_by:
+            type: string
+        type: object
     DiscoveryGetAllScansResponse:
       allOf:
       - properties:

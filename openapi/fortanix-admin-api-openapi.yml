@@ -48,29 +48,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/SysAdminGetClusterConfigurationResponse'
 components:
+  parameters:
+    GetClusterConfigParams:
+      name: future
+      in: query
+      required: false
+      description: Whether to get current or future cluster configuration
+      schema:
+        type: boolean
+        default: false
   schemas:
-    SysAdminGetClusterConfigurationResponse:
-      type: object
-      required:
-      - dsm_config
-      - nitro_enclaves_converter_config
-      - microsoft_attestation_service_config
-      - nvidia_attestation_service_config
-      - aci_config
-      - eks_config
-      properties:
-        dsm_config:
-          $ref: '#/components/schemas/DsmClusterConfig'
-        nitro_enclaves_converter_config:
-          $ref: '#/components/schemas/NitroEnclavesConverterConfig'
-        microsoft_attestation_service_config:
-          $ref: '#/components/schemas/MicrosoftAttestationServiceConfig'
-        nvidia_attestation_service_config:
-          $ref: '#/components/schemas/NvidiaAttestationServiceConfig'
-        aci_config:
-          $ref: '#/components/schemas/AciConfig'
-        eks_config:
-          $ref: '#/components/schemas/EksConfig'
     DsmCluster:
       type: object
       required:
@@ -84,42 +71,16 @@ components:
         url:
           type: string
           description: SDKMS URL to use for storing datasets.
-    ConversionRequestImageInfo:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Docker image name
-        auth_config:
-          $ref: '#/components/schemas/AuthConfig'
-          description: Docker credentials
-    EksConfig:
+    NitroEnclavesConverterConfig:
       type:
       - object
       - 'null'
       required:
-      - access_key_id
+      - converter_url
       properties:
-        access_key_id:
+        converter_url:
           type: string
-          description: AWS access key ID
-        secret_access_key:
-          type: string
-          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
-    AuthConfig:
-      description: Credentials for authenticating to a docker registry
-      type: object
-      required:
-      - username
-      properties:
-        username:
-          type: string
-          description: User name for docker registry authentication
-        password:
-          type: string
-          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
+          description: URL to use for contacting the Nitro Enclaves Converter microservice.
     MicrosoftAttestationServiceConfig:
       type:
       - object
@@ -136,33 +97,6 @@ components:
           items:
             type: string
           description: Array of Microsoft Azure Attestation Service (MAA) expected MRSigner value (hex string).
-    AciConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - converter_url
-      - allow_large_images
-      - agent_image
-      - init_image
-      properties:
-        converter_url:
-          type: string
-          description: URL to use for contacting the ACI fortifier microservice.
-        agent_image:
-          $ref: '#/components/schemas/ConversionRequestImageInfo'
-        init_image:
-          $ref: '#/components/schemas/ConversionRequestImageInfo'
-    NitroEnclavesConverterConfig:
-      type:
-      - object
-      - 'null'
-      required:
-      - converter_url
-      properties:
-        converter_url:
-          type: string
-          description: URL to use for contacting the Nitro Enclaves Converter microservice.
     NvidiaAttestationServiceConfig:
       type:
       - object
@@ -188,15 +122,81 @@ components:
           description: Clusters that are being phased out but still have objects inside them. In order of their use, first being the oldest.
           items:
             $ref: '#/components/schemas/DsmCluster'
-  parameters:
-    GetClusterConfigParams:
-      name: future
-      in: query
-      required: false
-      description: Whether to get current or future cluster configuration
-      schema:
-        type: boolean
-        default: false
+    EksConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - access_key_id
+      properties:
+        access_key_id:
+          type: string
+          description: AWS access key ID
+        secret_access_key:
+          type: string
+          description: AWS secret access key. This field is redacted in getClusterConfiguration API's response.
+    AuthConfig:
+      description: Credentials for authenticating to a docker registry
+      type: object
+      required:
+      - username
+      properties:
+        username:
+          type: string
+          description: User name for docker registry authentication
+        password:
+          type: string
+          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
+    AciConfig:
+      type:
+      - object
+      - 'null'
+      required:
+      - converter_url
+      - allow_large_images
+      - agent_image
+      - init_image
+      properties:
+        converter_url:
+          type: string
+          description: URL to use for contacting the ACI fortifier microservice.
+        agent_image:
+          $ref: '#/components/schemas/ConversionRequestImageInfo'
+        init_image:
+          $ref: '#/components/schemas/ConversionRequestImageInfo'
+    SysAdminGetClusterConfigurationResponse:
+      type: object
+      required:
+      - dsm_config
+      - nitro_enclaves_converter_config
+      - microsoft_attestation_service_config
+      - nvidia_attestation_service_config
+      - aci_config
+      - eks_config
+      properties:
+        dsm_config:
+          $ref: '#/components/schemas/DsmClusterConfig'
+        nitro_enclaves_converter_config:
+          $ref: '#/components/schemas/NitroEnclavesConverterConfig'
+        microsoft_attestation_service_config:
+          $ref: '#/components/schemas/MicrosoftAttestationServiceConfig'
+        nvidia_attestation_service_config:
+          $ref: '#/components/schemas/NvidiaAttestationServiceConfig'
+        aci_config:
+          $ref: '#/components/schemas/AciConfig'
+        eks_config:
+          $ref: '#/components/schemas/EksConfig'
+    ConversionRequestImageInfo:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Docker image name
+        auth_config:
+          $ref: '#/components/schemas/AuthConfig'
+          description: Docker credentials
   securitySchemes:
     bearerToken:
       type: apiKey

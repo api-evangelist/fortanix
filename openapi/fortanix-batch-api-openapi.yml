@@ -61,6 +61,25 @@ components:
       enum:
       - Serial
       - Unordered
+    BatchResponseObjectSkipped:
+      allOf:
+      - type: object
+        properties:
+          reason:
+            type: string
+        required:
+        - reason
+    BatchResponseObjectResult:
+      allOf:
+      - type: object
+        properties:
+          status:
+            type: integer
+            minimum: 0
+            maximum: 65535
+          body: {}
+        required:
+        - status
     BatchRequestItem:
       allOf:
       - type: object
@@ -73,26 +92,15 @@ components:
         required:
         - method
         - operation
-    BatchResponseObjectSkipped:
+    BatchResponseList:
       allOf:
       - type: object
         properties:
-          reason:
-            type: string
-        required:
-        - reason
-    BatchRequestList:
-      allOf:
-      - type: object
-        properties:
-          batch_execution_type:
-            $ref: '#/components/schemas/BatchExecutionType'
           items:
             type: array
             items:
-              $ref: '#/components/schemas/BatchRequest'
+              $ref: '#/components/schemas/BatchResponse'
         required:
-        - batch_execution_type
         - items
     BatchRequest:
       oneOf:
@@ -110,33 +118,6 @@ components:
             $ref: '#/components/schemas/BatchRequestItem'
         required:
         - SingleItem
-    BatchResponse:
-      oneOf:
-      - title: BatchResponseVariantBatch
-        type: object
-        properties:
-          Batch:
-            $ref: '#/components/schemas/BatchResponseList'
-        required:
-        - Batch
-      - title: BatchResponseVariantSingleItem
-        type: object
-        properties:
-          SingleItem:
-            $ref: '#/components/schemas/BatchResponseObject'
-        required:
-        - SingleItem
-    BatchResponseObjectResult:
-      allOf:
-      - type: object
-        properties:
-          status:
-            type: integer
-            minimum: 0
-            maximum: 65535
-          body: {}
-        required:
-        - status
     BatchResponseObject:
       oneOf:
       - title: BatchResponseObjectVariantResult
@@ -153,15 +134,34 @@ components:
             $ref: '#/components/schemas/BatchResponseObjectSkipped'
         required:
         - Skipped
-    BatchResponseList:
+    BatchResponse:
+      oneOf:
+      - title: BatchResponseVariantBatch
+        type: object
+        properties:
+          Batch:
+            $ref: '#/components/schemas/BatchResponseList'
+        required:
+        - Batch
+      - title: BatchResponseVariantSingleItem
+        type: object
+        properties:
+          SingleItem:
+            $ref: '#/components/schemas/BatchResponseObject'
+        required:
+        - SingleItem
+    BatchRequestList:
       allOf:
       - type: object
         properties:
+          batch_execution_type:
+            $ref: '#/components/schemas/BatchExecutionType'
           items:
             type: array
             items:
-              $ref: '#/components/schemas/BatchResponse'
+              $ref: '#/components/schemas/BatchRequest'
         required:
+        - batch_execution_type
         - items
   securitySchemes:
     basicAuth:

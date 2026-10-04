@@ -136,32 +136,20 @@ paths:
                 $ref: '#/components/schemas/EsStatsCountQueryResponse'
 components:
   schemas:
-    UniqueOperationsCount:
+    StatsParams:
       allOf:
       - type: object
         properties:
-          value:
+          num_points:
             type: integer
-        required:
-        - value
-    EsTotalTxn:
-      allOf:
-      - type: object
-        properties:
-          buckets:
-            type: array
-            items:
-              $ref: '#/components/schemas/InnerEsBucket'
-        required:
-        - buckets
-    EsStatsCountQueryResponse:
-      allOf:
-      - type: object
-        properties:
-          time:
-            $ref: '#/components/schemas/EsCountStatsLog'
-        required:
-        - time
+          top_count:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+          range_from:
+            type: integer
+          range_to:
+            type: integer
     InnerEsBucket:
       allOf:
       - type: object
@@ -180,20 +168,6 @@ components:
         required:
         - doc_count
         - key
-    StatsParams:
-      allOf:
-      - type: object
-        properties:
-          num_points:
-            type: integer
-          top_count:
-            type: integer
-            minimum: 0
-            maximum: 4294967295
-          range_from:
-            type: integer
-          range_to:
-            type: integer
     OuterEsBucket:
       allOf:
       - type: object
@@ -211,6 +185,16 @@ components:
         - key
         - key_as_string
         - total_txn
+    EsTotalTxn:
+      allOf:
+      - type: object
+        properties:
+          buckets:
+            type: array
+            items:
+              $ref: '#/components/schemas/InnerEsBucket'
+        required:
+        - buckets
     EsCountStatsLog:
       allOf:
       - type: object
@@ -221,6 +205,22 @@ components:
               $ref: '#/components/schemas/OuterEsBucket'
         required:
         - buckets
+    EsStatsCountQueryResponse:
+      allOf:
+      - type: object
+        properties:
+          time:
+            $ref: '#/components/schemas/EsCountStatsLog'
+        required:
+        - time
+    UniqueOperationsCount:
+      allOf:
+      - type: object
+        properties:
+          value:
+            type: integer
+        required:
+        - value
   parameters:
     StatsParams:
       in: query

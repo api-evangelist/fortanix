@@ -126,11 +126,6 @@ paths:
       - bearerToken: []
 components:
   schemas:
-    KubernetesClusterRequest:
-      type: object
-      properties:
-        kubeconfig:
-          $ref: '#/components/schemas/KubeConfig'
     ComputeClusterRequest:
       type: object
       description: Request body for creating a compute cluster. Exactly one of kubernetes or aci field must be set.
@@ -148,6 +143,46 @@ components:
           $ref: '#/components/schemas/KubernetesClusterRequest'
         aci:
           $ref: '#/components/schemas/AciClusterRequest'
+    AciClusterRequest:
+      type: object
+      required:
+      - subscription
+      - resource_group
+      - secrets
+      properties:
+        subscription:
+          type: string
+          format: uuid
+        resource_group:
+          type: string
+        deployment_location:
+          type: string
+        secrets:
+          $ref: '#/components/schemas/AciComputeSecrets'
+    ExecConfig:
+      type: object
+      description: This struct is built to match ExecConfig from the rust kube-client crate.
+      required:
+      - command
+      properties:
+        api_version:
+          type: string
+        command:
+          type: string
+        args:
+          type: array
+          items:
+            type: string
+    KubeConfigContextRef:
+      type: object
+      required:
+      - name
+      - context
+      properties:
+        name:
+          type: string
+        context:
+          $ref: '#/components/schemas/KubeConfigContext'
     KubeConfig:
       type: object
       required:
@@ -173,29 +208,29 @@ components:
             $ref: '#/components/schemas/KubeConfigContextRef'
         current-context:
           type: string
-    KubernetesClusterInfo:
+    KubeConfigContext:
       type: object
       required:
       - cluster
-      - server
       - user
       properties:
         cluster:
           type: string
-        server:
-          type: string
         user:
           type: string
-    KubeConfigClusterRef:
+        namespace:
+          type: string
+    KubeConfigCluster:
       type: object
       required:
-      - name
-      - cluster
+      - server
       properties:
-        name:
+        server:
           type: string
-        cluster:
-          $ref: '#/components/schemas/KubeConfigCluster'
+        insecure-skip-tls-verify:
+          type: boolean
+        certificate-authority-data:
+          type: string
     SearchMetadata:
       type: object
       required:
@@ -220,29 +255,6 @@ components:
         filtered_count:
           type: integer
           description: Total number of items as per the current filter.
-    KubeConfigCluster:
-      type: object
-      required:
-      - server
-      properties:
-        server:
-          type: string
-        insecure-skip-tls-verify:
-          type: boolean
-        certificate-authority-data:
-          type: string
-    KubeConfigContext:
-      type: object
-      required:
-      - cluster
-      - user
-      properties:
-        cluster:
-          type: string
-        user:
-          type: string
-        namespace:
-          type: string
     KubeConfigUser:
       type: object
       properties:
@@ -254,46 +266,60 @@ components:
           type: string
         exec:
           $ref: '#/components/schemas/ExecConfig'
-    KubeConfigContextRef:
+    AciComputeSecrets:
+      type: object
+      minProperties: 1
+      maxProperties: 1
+      properties:
+        service_principal:
+          $ref: '#/components/schemas/ServicePrincipal'
+    GetAllComputeClustersResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComputeClusterResponse'
+    KubernetesClusterInfo:
+      type: object
+      required:
+      - cluster
+      - server
+      - user
+      properties:
+        cluster:
+          type: string
+        server:
+          type: string
+        user:
+          type: string
+    KubeConfigClusterRef:
       type: object
       required:
       - name
-      - context
+      - cluster
       properties:
         name:
           type: string
-        context:
-          $ref: '#/components/schemas/KubeConfigContext'
-    ServicePrincipal:
+        cluster:
+          $ref: '#/components/schemas/KubeConfigCluster'
+    AciClusterInfo:
       type: object
       required:
-      - app_id
-      - tenant
-      - password
+      - subscription
+      - resource_group
       properties:
-        app_id:
-          description: Service principal app id.
+        subscription:
           type: string
-        tenant:
-          description: Service principal tenant id.
+          format: uuid
+        resource_group:
           type: string
-        password:
-          description: Service principal app passcode.
+        deployment_location:
           type: string
-    ExecConfig:
-      type: object
-      description: This struct is built to match ExecConfig from the rust kube-client crate.
-      required:
-      - command
-      properties:
-        api_version:
-          type: string
-        command:
-          type: string
-        args:
-          type: array
-          items:
-            type: string
     KubeConfigUserRef:
       type: object
       required:
@@ -326,53 +352,27 @@ components:
           $ref: '#/components/schemas/KubernetesClusterInfo'
         aci:
           $ref: '#/components/schemas/AciClusterInfo'
-    AciClusterRequest:
+    KubernetesClusterRequest:
+      type: object
+      properties:
+        kubeconfig:
+          $ref: '#/components/schemas/KubeConfig'
+    ServicePrincipal:
       type: object
       required:
-      - subscription
-      - resource_group
-      - secrets
+      - app_id
+      - tenant
+      - password
       properties:
-        subscription:
+        app_id:
+          description: Service principal app id.
           type: string
-          format: uuid
-        resource_group:
+        tenant:
+          description: Service principal tenant id.
           type: string
-        deployment_location:
+        password:
+          description: Service principal app passcode.
           type: string
-        secrets:
-          $ref: '#/components/schemas/AciComputeSecrets'
-    AciComputeSecrets:
-      type: object
-      minProperties: 1
-      maxProperties: 1
-      properties:
-        service_principal:
-          $ref: '#/components/schemas/ServicePrincipal'
-    AciClusterInfo:
-      type: object
-      required:
-      - subscription
-      - resource_group
-      properties:
-        subscription:
-          type: string
-          format: uuid
-        resource_group:
-          type: string
-        deployment_location:
-          type: string
-    GetAllComputeClustersResponse:
-      type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ComputeClusterResponse'
   parameters:
     ComputeClusterRequest:
       name: body

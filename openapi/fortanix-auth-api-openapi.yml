@@ -112,35 +112,56 @@ paths:
       - bearerToken: []
 components:
   schemas:
-    AuthRequest:
+    AuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: Bearer token to be used to authenticate to other APIs.
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    RefreshResponse:
       type: object
       required:
-      - oauth_auth_code
+      - session_info
       properties:
-        oauth_auth_code:
-          $ref: '#/components/schemas/OauthCodeData'
-    SessionInfo:
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    AuthDiscoverResponse:
       type: object
       required:
-      - subject_id
-      - session_expires_at
-      - session_token_expires_at
+      - auth_methods
       properties:
-        subject_id:
+        auth_methods:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthMethod'
+    SelectAccountResponse:
+      type: object
+      required:
+      - session_info
+      properties:
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    OauthCodeData:
+      type: object
+      required:
+      - idp_id
+      - code
+      properties:
+        idp_id:
           type: string
-          format: uuid
-        session_expires_at:
-          type: integer
-          format: int64
-          description: Timestamp of when session will expire.
-        session_token_expires_at:
-          type: integer
-          format: int64
-          description: Timestamp of when session token will expire.
-        selected_account_id:
+          format: binary
+        code:
           type: string
-          format: uuid
-          description: The selected account ID, if one is selected.
+        email:
+          type: string
+    AuthDiscoverRequest:
+      type: object
+      properties:
+        user_email:
+          type: string
+          description: User email.
     OauthAuthCodeGrant:
       type: object
       required:
@@ -169,33 +190,13 @@ components:
           format: binary
         cluster_idp_id:
           type: string
-    RefreshResponse:
+    AuthRequest:
       type: object
       required:
-      - session_info
+      - oauth_auth_code
       properties:
-        session_info:
-          $ref: '#/components/schemas/SessionInfo'
-    SelectAccountResponse:
-      type: object
-      required:
-      - session_info
-      properties:
-        session_info:
-          $ref: '#/components/schemas/SessionInfo'
-    OauthCodeData:
-      type: object
-      required:
-      - idp_id
-      - code
-      properties:
-        idp_id:
-          type: string
-          format: binary
-        code:
-          type: string
-        email:
-          type: string
+        oauth_auth_code:
+          $ref: '#/components/schemas/OauthCodeData'
     AuthMethod:
       type: object
       properties:
@@ -203,29 +204,28 @@ components:
           type: object
         oauth_code_grant:
           $ref: '#/components/schemas/OauthAuthCodeGrant'
-    AuthDiscoverResponse:
+    SessionInfo:
       type: object
       required:
-      - auth_methods
+      - subject_id
+      - session_expires_at
+      - session_token_expires_at
       properties:
-        auth_methods:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthMethod'
-    AuthResponse:
-      type: object
-      properties:
-        access_token:
+        subject_id:
           type: string
-          description: Bearer token to be used to authenticate to other APIs.
-        session_info:
-          $ref: '#/components/schemas/SessionInfo'
-    AuthDiscoverRequest:
-      type: object
-      properties:
-        user_email:
+          format: uuid
+        session_expires_at:
+          type: integer
+          format: int64
+          description: Timestamp of when session will expire.
+        session_token_expires_at:
+          type: integer
+          format: int64
+          description: Timestamp of when session token will expire.
+        selected_account_id:
           type: string
-          description: User email.
+          format: uuid
+          description: The selected account ID, if one is selected.
   parameters:
     AccountId:
       name: account-id

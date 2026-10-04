@@ -53,6 +53,12 @@ paths:
       - DiscoveryConnection
 components:
   schemas:
+    DiscoveryOnPremConnectionStatus:
+      enum:
+      - pending
+      - connected
+      - disconnected
+      type: string
     DiscoveryOnPremConnectionAuthVariantSecret:
       allOf:
       - properties:
@@ -66,215 +72,6 @@ components:
         - $type
         - $value
         type: object
-    DiscoveryOnPremConnectionAuthVariantCertificate:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - certificate
-            type: string
-          $value:
-            format: byte
-            type: string
-        required:
-        - $type
-        - $value
-        type: object
-    DiscoveryDsmDeploymentOther:
-      allOf:
-      - properties:
-          url:
-            format: url
-            type: string
-        required:
-        - url
-        type: object
-    DiscoveryOnPremConnectionConfig:
-      allOf:
-      - properties:
-          auth:
-            $ref: '#/components/schemas/DiscoveryOnPremConnectionAuth'
-          previous_credential:
-            $ref: '#/components/schemas/DiscoveryOnPremPreviousCredential'
-        required:
-        - auth
-        type: object
-    DiscoveryAzureScopeVariantSubscription:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - subscription
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryAzureScopeSubscription'
-    DiscoveryConnectionPolicies:
-      allOf:
-      - properties:
-          crypto_policy:
-            format: uuid
-            type:
-            - string
-            - 'null'
-        type: object
-    DiscoveryGetAllConnectionsParams:
-      allOf:
-      - properties:
-          filter:
-            type: string
-          limit:
-            type: integer
-          offset:
-            type: integer
-          previous_id:
-            format: uuid
-            type: string
-          sort_by:
-            type: string
-        type: object
-    DiscoveryDsmDeployment:
-      discriminator:
-        mapping:
-          other: DiscoveryDsmDeploymentVariantOther
-          saas: DiscoveryDsmDeploymentVariantSaaS
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryDsmDeploymentVariantSaaS'
-      - $ref: '#/components/schemas/DiscoveryDsmDeploymentVariantOther'
-    DiscoveryConnectionConfigVariantDsmAgent:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - dsm_agent
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryDsmAgentConnectionConfig'
-    DiscoveryDsmDeploymentSaaS:
-      allOf:
-      - properties:
-          region:
-            $ref: '#/components/schemas/DiscoveryDsmRegion'
-        required:
-        - region
-        type: object
-    DiscoveryConnectionConfigVariantOnPrem:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - on_prem
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryOnPremConnection'
-    DiscoveryAzureCredentials:
-      discriminator:
-        mapping:
-          client_id_and_secret: DiscoveryAzureCredentialsVariantClientIdAndSecret
-          open_id_connect: DiscoveryAzureCredentialsVariantOpenIdConnect
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryAzureCredentialsVariantClientIdAndSecret'
-      - $ref: '#/components/schemas/DiscoveryAzureCredentialsVariantOpenIdConnect'
-    DiscoveryConnectionConfigVariantDsm:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - dsm
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryDsmConnectionConfig'
-    DiscoveryDsmDeploymentVariantSaaS:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - saas
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryDsmDeploymentSaaS'
-    DiscoveryGetAllConnectionsMetadata:
-      allOf:
-      - properties:
-          filtered_count:
-            description: The amount returned with the filter applied
-            maximum: 4294967295
-            minimum: 0
-            type: integer
-          total_count:
-            description: The total number of Connection objects that exist
-            maximum: 4294967295
-            minimum: 0
-            type: integer
-        required:
-        - total_count
-        - filtered_count
-        type: object
-    DiscoveryConnectionCredentialVariantDsmCertificate:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - dsm_certificate
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryDsmCertificate'
-    DiscoveryDsmAgentCredential:
-      allOf:
-      - properties:
-          credential:
-            $ref: '#/components/schemas/DiscoveryDsmAgentCredentialDetails'
-        required:
-        - credential
-        type: object
-    DiscoveryDsmAgentDetails:
-      allOf:
-      - properties:
-          agent_hostname:
-            type:
-            - string
-            - 'null'
-          app_id:
-            format: uuid
-            type:
-            - string
-            - 'null'
-          dsm_account_id:
-            format: uuid
-            type:
-            - string
-            - 'null'
-          dsm_url:
-            format: url
-            type: string
-        required:
-        - dsm_url
-        type: object
-    DiscoveryAzureCredentialsClientIdAndSecret:
-      allOf:
-      - properties:
-          client_id:
-            type: string
-          client_secret:
-            type:
-            - string
-            - 'null'
-        required:
-        - client_id
-        type: object
     DiscoveryAwsScopeAccount:
       allOf:
       - properties:
@@ -282,39 +79,6 @@ components:
             type:
             - string
             - 'null'
-        type: object
-    DiscoveryAzureScopeVariantManagementGroup:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - management_group
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryAzureScopeManagementGroup'
-    DiscoveryConnectionConfigVariantAws:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - aws
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryAwsConfig'
-    DiscoveryOnPremDetails:
-      allOf:
-      - properties:
-          hostname:
-            type: string
-          resource_summary:
-            $ref: '#/components/schemas/DiscoveryResourceSummary'
-        required:
-        - hostname
-        - resource_summary
         type: object
     DiscoveryAwsCredentials:
       discriminator:
@@ -333,255 +97,51 @@ components:
         required:
         - management_group_id
         type: object
-    DiscoveryAwsCredentialsOpenIdConnect:
-      allOf:
-      - properties:
-          auth_config_id:
-            description: Uuid for the AuthConfig object within Account
-            format: uuid
-            type: string
-        required:
-        - auth_config_id
-        type: object
-    DiscoveryAwsCredentialsAccessAndSecretKey:
-      allOf:
-      - properties:
-          access_key:
-            type: string
-          secret_key:
-            type:
-            - string
-            - 'null'
-        required:
-        - access_key
-        type: object
-    DiscoveryAwsCredentialsVariantOpenIdConnect:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - open_id_connect
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryAwsCredentialsOpenIdConnect'
-    DiscoveryAzureCredentialsVariantClientIdAndSecret:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - client_id_and_secret
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryAzureCredentialsClientIdAndSecret'
-    DiscoveryDsmDeploymentVariantOther:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - other
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryDsmDeploymentOther'
-    DiscoveryAwsConfig:
-      allOf:
-      - properties:
-          aws_scope:
-            $ref: '#/components/schemas/DiscoveryAwsScope'
-          creds:
-            $ref: '#/components/schemas/DiscoveryAwsCredentials'
-          endpoint:
-            format: url
-            type:
-            - string
-            - 'null'
-          role_arn:
-            description: ARN for AWS Role configured for scanning AWS account/organization
-            type:
-            - string
-            - 'null'
-        required:
-        - creds
-        - aws_scope
-        type: object
-    DiscoveryAzureScopeSubscription:
-      allOf:
-      - properties:
-          subscription_id:
-            format: uuid
-            type: string
-        required:
-        - subscription_id
-        type: object
-    DiscoveryAzureConfig:
-      allOf:
-      - properties:
-          azure_scope:
-            $ref: '#/components/schemas/DiscoveryAzureScope'
-          credentials:
-            $ref: '#/components/schemas/DiscoveryAzureCredentials'
-          tenant_id:
-            format: uuid
-            type: string
-        required:
-        - credentials
-        - azure_scope
-        - tenant_id
-        type: object
-    DiscoveryConnectionCredential:
+    DiscoveryDsmDeployment:
       discriminator:
         mapping:
-          dsm_agent: DiscoveryConnectionCredentialVariantDsmAgent
-          dsm_certificate: DiscoveryConnectionCredentialVariantDsmCertificate
+          other: DiscoveryDsmDeploymentVariantOther
+          saas: DiscoveryDsmDeploymentVariantSaaS
         propertyName: $type
       oneOf:
-      - $ref: '#/components/schemas/DiscoveryConnectionCredentialVariantDsmCertificate'
-      - $ref: '#/components/schemas/DiscoveryConnectionCredentialVariantDsmAgent'
-    DiscoveryAwsScopeVariantOrganization:
+      - $ref: '#/components/schemas/DiscoveryDsmDeploymentVariantSaaS'
+      - $ref: '#/components/schemas/DiscoveryDsmDeploymentVariantOther'
+    DiscoveryDsmCertificate:
       allOf:
       - properties:
-          $type:
-            enum:
-            - organization
-            type: string
-        required:
-        - $type
-        type: object
-      - properties: {}
-        type: object
-    DiscoveryConnectionConfigVariantAzure:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - azure
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryAzureConfig'
-    DiscoveryAwsScopeVariantAccount:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - account
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryAwsScopeAccount'
-    DiscoveryConnectionCredentialVariantDsmAgent:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - dsm_agent
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryDsmAgentCredential'
-    DiscoveryGetAllConnectionsResponse:
-      allOf:
-      - properties:
-          items:
+          app_id:
+            format: uuid
+            type:
+            - string
+            - 'null'
+          certificate_chain:
             items:
-              $ref: '#/components/schemas/DiscoveryConnection'
-            type: array
-          metadata:
-            $ref: '#/components/schemas/DiscoveryGetAllConnectionsMetadata'
-        required:
-        - items
-        - metadata
-        type: object
-    DiscoveryOnPremConnectionAuth:
-      discriminator:
-        mapping:
-          certificate: DiscoveryOnPremConnectionAuthVariantCertificate
-          secret: DiscoveryOnPremConnectionAuthVariantSecret
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryOnPremConnectionAuthVariantCertificate'
-      - $ref: '#/components/schemas/DiscoveryOnPremConnectionAuthVariantSecret'
-    DiscoveryAwsScope:
-      description: The scope that current AWS credentials should have access to
-      discriminator:
-        mapping:
-          account: DiscoveryAwsScopeVariantAccount
-          organization: DiscoveryAwsScopeVariantOrganization
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryAwsScopeVariantAccount'
-      - $ref: '#/components/schemas/DiscoveryAwsScopeVariantOrganization'
-    DiscoveryDsmAgentCredentialDetailsSecret:
-      allOf:
-      - properties:
+              format: byte
+              type: string
+            type:
+            - array
+            - 'null'
           created_at:
             example: 20170509T070912Z
             pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
             type: string
           credential_id:
-            format: uuid
             type: string
-          value:
+          private_key:
+            format: byte
             type: string
         required:
         - credential_id
         - created_at
-        - value
         type: object
-    DiscoveryDsmAgentCredentialDetails:
-      discriminator:
-        mapping:
-          secret: DiscoveryDsmAgentCredentialDetailsVariantSecret
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryDsmAgentCredentialDetailsVariantSecret'
-    DiscoveryDsmRegion:
-      enum:
-      - north_america
-      - european_union
-      - united_kingdom
-      - asia_pacific
-      - australia
-      - saudi_arabia
-      type: string
-    DiscoveryOnPremConnectionStatus:
-      enum:
-      - pending
-      - connected
-      - disconnected
-      type: string
-    DiscoveryOnPremConnection:
+    DiscoveryDsmDeploymentSaaS:
       allOf:
       - properties:
-          config:
-            $ref: '#/components/schemas/DiscoveryOnPremConnectionConfig'
-          on_prem_details:
-            $ref: '#/components/schemas/DiscoveryOnPremDetails'
-          state:
-            $ref: '#/components/schemas/DiscoveryOnPremConnectionState'
+          region:
+            $ref: '#/components/schemas/DiscoveryDsmRegion'
         required:
-        - config
-        - state
+        - region
         type: object
-    DiscoveryAzureCredentialsVariantOpenIdConnect:
-      allOf:
-      - properties:
-          $type:
-            enum:
-            - open_id_connect
-            type: string
-        required:
-        - $type
-        type: object
-      - $ref: '#/components/schemas/DiscoveryAzureCredentialsOpenIdConnect'
     DiscoveryOnPremConnectionState:
       allOf:
       - properties:
@@ -595,6 +155,62 @@ components:
         required:
         - status
         type: object
+    DiscoveryAwsCredentialsVariantAccessAndSecretKey:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - access_and_secret_key
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsCredentialsAccessAndSecretKey'
+    DiscoveryAwsCredentialsVariantOpenIdConnect:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - open_id_connect
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsCredentialsOpenIdConnect'
+    DiscoveryDsmAgentCredentialDetailsVariantSecret:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - secret
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryDsmAgentCredentialDetailsSecret'
+    DiscoveryAzureCredentialsClientIdAndSecret:
+      allOf:
+      - properties:
+          client_id:
+            type: string
+          client_secret:
+            type:
+            - string
+            - 'null'
+        required:
+        - client_id
+        type: object
+    DiscoveryConnectionConfigVariantAws:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - aws
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsConfig'
     DiscoveryResourceSummary:
       allOf:
       - properties:
@@ -611,76 +227,26 @@ components:
         required:
         - database_count
         type: object
-    DiscoveryAzureCredentialsOpenIdConnect:
-      allOf:
-      - properties:
-          auth_config_id:
-            description: Uuid for the AuthConfig object within Account
-            format: uuid
-            type: string
-          client_id:
-            type: string
-        required:
-        - client_id
-        - auth_config_id
-        type: object
-    DiscoveryDsmAgentConnectionConfig:
-      allOf:
-      - properties:
-          credentials:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryConnectionCredential'
-            type: object
-          details:
-            $ref: '#/components/schemas/DiscoveryDsmAgentDetails'
-          state:
-            $ref: '#/components/schemas/DiscoveryDsmAgentConnectionState'
-        required:
-        - state
-        - credentials
-        type: object
-    DiscoveryDsmAgentConnectionState:
-      allOf:
-      - properties:
-          last_polled_at:
-            description: The time this DsmAgentConnection was last polled
-            example: 20170509T070912Z
-            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
-            type: string
-          status:
-            $ref: '#/components/schemas/DiscoveryDsmAgentConnectionStatus'
-        required:
-        - status
-        type: object
-    DiscoveryDsmConnectionConfig:
-      allOf:
-      - properties:
-          active_credential_id:
-            type:
-            - string
-            - 'null'
-          credentials:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryConnectionCredential'
-            type:
-            - object
-            - 'null'
-          deployment:
-            $ref: '#/components/schemas/DiscoveryDsmDeployment'
-        required:
-        - deployment
-        type: object
-    DiscoveryDsmAgentCredentialDetailsVariantSecret:
+    DiscoveryConnectionConfigVariantDsm:
       allOf:
       - properties:
           $type:
             enum:
-            - secret
+            - dsm
             type: string
         required:
         - $type
         type: object
-      - $ref: '#/components/schemas/DiscoveryDsmAgentCredentialDetailsSecret'
+      - $ref: '#/components/schemas/DiscoveryDsmConnectionConfig'
+    DiscoveryOnPremConnectionAuth:
+      discriminator:
+        mapping:
+          certificate: DiscoveryOnPremConnectionAuthVariantCertificate
+          secret: DiscoveryOnPremConnectionAuthVariantSecret
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryOnPremConnectionAuthVariantCertificate'
+      - $ref: '#/components/schemas/DiscoveryOnPremConnectionAuthVariantSecret'
     DiscoveryConnection:
       allOf:
       - properties:
@@ -730,6 +296,16 @@ components:
         - scan_filter
         - connection_config
         type: object
+    DiscoveryAzureScope:
+      description: The scope that current Azure credentials should have access to
+      discriminator:
+        mapping:
+          management_group: DiscoveryAzureScopeVariantManagementGroup
+          subscription: DiscoveryAzureScopeVariantSubscription
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureScopeVariantManagementGroup'
+      - $ref: '#/components/schemas/DiscoveryAzureScopeVariantSubscription'
     DiscoveryConnectionConfig:
       discriminator:
         mapping:
@@ -745,6 +321,425 @@ components:
       - $ref: '#/components/schemas/DiscoveryConnectionConfigVariantOnPrem'
       - $ref: '#/components/schemas/DiscoveryConnectionConfigVariantDsm'
       - $ref: '#/components/schemas/DiscoveryConnectionConfigVariantDsmAgent'
+    DiscoveryAwsScopeVariantOrganization:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - organization
+            type: string
+        required:
+        - $type
+        type: object
+      - properties: {}
+        type: object
+    DiscoveryDsmRegion:
+      enum:
+      - north_america
+      - european_union
+      - united_kingdom
+      - asia_pacific
+      - australia
+      - saudi_arabia
+      type: string
+    DiscoveryConnectionCredentialVariantDsmCertificate:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - dsm_certificate
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryDsmCertificate'
+    DiscoveryConnectionConfigVariantDsmAgent:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - dsm_agent
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryDsmAgentConnectionConfig'
+    DiscoveryDsmAgentCredentialDetails:
+      discriminator:
+        mapping:
+          secret: DiscoveryDsmAgentCredentialDetailsVariantSecret
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryDsmAgentCredentialDetailsVariantSecret'
+    DiscoveryConnectionCredentialVariantDsmAgent:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - dsm_agent
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryDsmAgentCredential'
+    DiscoveryDsmAgentConnectionState:
+      allOf:
+      - properties:
+          last_polled_at:
+            description: The time this DsmAgentConnection was last polled
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          status:
+            $ref: '#/components/schemas/DiscoveryDsmAgentConnectionStatus'
+        required:
+        - status
+        type: object
+    DiscoveryDsmAgentCredential:
+      allOf:
+      - properties:
+          credential:
+            $ref: '#/components/schemas/DiscoveryDsmAgentCredentialDetails'
+        required:
+        - credential
+        type: object
+    DiscoveryOnPremDetails:
+      allOf:
+      - properties:
+          hostname:
+            type: string
+          resource_summary:
+            $ref: '#/components/schemas/DiscoveryResourceSummary'
+        required:
+        - hostname
+        - resource_summary
+        type: object
+    DiscoveryGetAllConnectionsMetadata:
+      allOf:
+      - properties:
+          filtered_count:
+            description: The amount returned with the filter applied
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+          total_count:
+            description: The total number of Connection objects that exist
+            maximum: 4294967295
+            minimum: 0
+            type: integer
+        required:
+        - total_count
+        - filtered_count
+        type: object
+    DiscoveryConnectionConfigVariantAzure:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - azure
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureConfig'
+    DiscoveryAzureCredentials:
+      discriminator:
+        mapping:
+          client_id_and_secret: DiscoveryAzureCredentialsVariantClientIdAndSecret
+          open_id_connect: DiscoveryAzureCredentialsVariantOpenIdConnect
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAzureCredentialsVariantClientIdAndSecret'
+      - $ref: '#/components/schemas/DiscoveryAzureCredentialsVariantOpenIdConnect'
+    DiscoveryDsmAgentCredentialDetailsSecret:
+      allOf:
+      - properties:
+          created_at:
+            example: 20170509T070912Z
+            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
+            type: string
+          credential_id:
+            format: uuid
+            type: string
+          value:
+            type: string
+        required:
+        - credential_id
+        - created_at
+        - value
+        type: object
+    DiscoveryAwsCredentialsOpenIdConnect:
+      allOf:
+      - properties:
+          auth_config_id:
+            description: Uuid for the AuthConfig object within Account
+            format: uuid
+            type: string
+        required:
+        - auth_config_id
+        type: object
+    DiscoveryAzureScopeVariantManagementGroup:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - management_group
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureScopeManagementGroup'
+    DiscoveryAwsScopeVariantAccount:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - account
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAwsScopeAccount'
+    DiscoveryDsmDeploymentVariantSaaS:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - saas
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryDsmDeploymentSaaS'
+    DiscoveryAwsCredentialsAccessAndSecretKey:
+      allOf:
+      - properties:
+          access_key:
+            type: string
+          secret_key:
+            type:
+            - string
+            - 'null'
+        required:
+        - access_key
+        type: object
+    DiscoveryConnectionCredential:
+      discriminator:
+        mapping:
+          dsm_agent: DiscoveryConnectionCredentialVariantDsmAgent
+          dsm_certificate: DiscoveryConnectionCredentialVariantDsmCertificate
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryConnectionCredentialVariantDsmCertificate'
+      - $ref: '#/components/schemas/DiscoveryConnectionCredentialVariantDsmAgent'
+    DiscoveryDsmAgentConnectionStatus:
+      enum:
+      - pending
+      - connected
+      - disconnected
+      type: string
+    DiscoveryGetAllConnectionsParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          offset:
+            type: integer
+          previous_id:
+            format: uuid
+            type: string
+          sort_by:
+            type: string
+        type: object
+    DiscoveryConnectionConfigVariantOnPrem:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - on_prem
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryOnPremConnection'
+    DiscoveryAwsScope:
+      description: The scope that current AWS credentials should have access to
+      discriminator:
+        mapping:
+          account: DiscoveryAwsScopeVariantAccount
+          organization: DiscoveryAwsScopeVariantOrganization
+        propertyName: $type
+      oneOf:
+      - $ref: '#/components/schemas/DiscoveryAwsScopeVariantAccount'
+      - $ref: '#/components/schemas/DiscoveryAwsScopeVariantOrganization'
+    DiscoveryOnPremConnection:
+      allOf:
+      - properties:
+          config:
+            $ref: '#/components/schemas/DiscoveryOnPremConnectionConfig'
+          on_prem_details:
+            $ref: '#/components/schemas/DiscoveryOnPremDetails'
+          state:
+            $ref: '#/components/schemas/DiscoveryOnPremConnectionState'
+        required:
+        - config
+        - state
+        type: object
+    DiscoveryOnPremConnectionConfig:
+      allOf:
+      - properties:
+          auth:
+            $ref: '#/components/schemas/DiscoveryOnPremConnectionAuth'
+          previous_credential:
+            $ref: '#/components/schemas/DiscoveryOnPremPreviousCredential'
+        required:
+        - auth
+        type: object
+    DiscoveryDsmDeploymentVariantOther:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - other
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryDsmDeploymentOther'
+    DiscoveryAwsConfig:
+      allOf:
+      - properties:
+          aws_scope:
+            $ref: '#/components/schemas/DiscoveryAwsScope'
+          creds:
+            $ref: '#/components/schemas/DiscoveryAwsCredentials'
+          endpoint:
+            format: url
+            type:
+            - string
+            - 'null'
+          role_arn:
+            description: ARN for AWS Role configured for scanning AWS account/organization
+            type:
+            - string
+            - 'null'
+        required:
+        - creds
+        - aws_scope
+        type: object
+    DiscoveryAzureCredentialsOpenIdConnect:
+      allOf:
+      - properties:
+          auth_config_id:
+            description: Uuid for the AuthConfig object within Account
+            format: uuid
+            type: string
+          client_id:
+            type: string
+        required:
+        - client_id
+        - auth_config_id
+        type: object
+    DiscoveryAzureCredentialsVariantClientIdAndSecret:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - client_id_and_secret
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureCredentialsClientIdAndSecret'
+    DiscoveryDsmAgentConnectionConfig:
+      allOf:
+      - properties:
+          credentials:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryConnectionCredential'
+            type: object
+          details:
+            $ref: '#/components/schemas/DiscoveryDsmAgentDetails'
+          state:
+            $ref: '#/components/schemas/DiscoveryDsmAgentConnectionState'
+        required:
+        - state
+        - credentials
+        type: object
+    DiscoveryAzureScopeVariantSubscription:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - subscription
+            type: string
+        required:
+        - $type
+        type: object
+      - $ref: '#/components/schemas/DiscoveryAzureScopeSubscription'
+    DiscoveryAzureConfig:
+      allOf:
+      - properties:
+          azure_scope:
+            $ref: '#/components/schemas/DiscoveryAzureScope'
+          credentials:
+            $ref: '#/components/schemas/DiscoveryAzureCredentials'
+          tenant_id:
+            format: uuid
+            type: string
+        required:
+        - credentials
+        - azure_scope
+        - tenant_id
+        type: object
+    DiscoveryAzureScopeSubscription:
+      allOf:
+      - properties:
+          subscription_id:
+            format: uuid
+            type: string
+        required:
+        - subscription_id
+        type: object
+    DiscoveryDsmAgentDetails:
+      allOf:
+      - properties:
+          agent_hostname:
+            type:
+            - string
+            - 'null'
+          app_id:
+            format: uuid
+            type:
+            - string
+            - 'null'
+          dsm_account_id:
+            format: uuid
+            type:
+            - string
+            - 'null'
+          dsm_url:
+            format: url
+            type: string
+        required:
+        - dsm_url
+        type: object
+    DiscoveryOnPremConnectionAuthVariantCertificate:
+      allOf:
+      - properties:
+          $type:
+            enum:
+            - certificate
+            type: string
+          $value:
+            format: byte
+            type: string
+        required:
+        - $type
+        - $value
+        type: object
     DiscoveryOnPremPreviousCredential:
       allOf:
       - properties:
@@ -758,60 +753,65 @@ components:
         - credential
         - valid_until
         type: object
-    DiscoveryAwsCredentialsVariantAccessAndSecretKey:
+    DiscoveryAzureCredentialsVariantOpenIdConnect:
       allOf:
       - properties:
           $type:
             enum:
-            - access_and_secret_key
+            - open_id_connect
             type: string
         required:
         - $type
         type: object
-      - $ref: '#/components/schemas/DiscoveryAwsCredentialsAccessAndSecretKey'
-    DiscoveryAzureScope:
-      description: The scope that current Azure credentials should have access to
-      discriminator:
-        mapping:
-          management_group: DiscoveryAzureScopeVariantManagementGroup
-          subscription: DiscoveryAzureScopeVariantSubscription
-        propertyName: $type
-      oneOf:
-      - $ref: '#/components/schemas/DiscoveryAzureScopeVariantManagementGroup'
-      - $ref: '#/components/schemas/DiscoveryAzureScopeVariantSubscription'
-    DiscoveryDsmAgentConnectionStatus:
-      enum:
-      - pending
-      - connected
-      - disconnected
-      type: string
-    DiscoveryDsmCertificate:
+      - $ref: '#/components/schemas/DiscoveryAzureCredentialsOpenIdConnect'
+    DiscoveryConnectionPolicies:
       allOf:
       - properties:
-          app_id:
+          crypto_policy:
             format: uuid
             type:
             - string
             - 'null'
-          certificate_chain:
-            items:
-              format: byte
-              type: string
+        type: object
+    DiscoveryDsmConnectionConfig:
+      allOf:
+      - properties:
+          active_credential_id:
             type:
-            - array
+            - string
             - 'null'
-          created_at:
-            example: 20170509T070912Z
-            pattern: ^\d{4}\d{2}\d{2}T\d{2}\d{2}\d{2}Z$
-            type: string
-          credential_id:
-            type: string
-          private_key:
-            format: byte
+          credentials:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryConnectionCredential'
+            type:
+            - object
+            - 'null'
+          deployment:
+            $ref: '#/components/schemas/DiscoveryDsmDeployment'
+        required:
+        - deployment
+        type: object
+    DiscoveryDsmDeploymentOther:
+      allOf:
+      - properties:
+          url:
+            format: url
             type: string
         required:
-        - credential_id
-        - created_at
+        - url
+        type: object
+    DiscoveryGetAllConnectionsResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryConnection'
+            type: array
+          metadata:
+            $ref: '#/components/schemas/DiscoveryGetAllConnectionsMetadata'
+        required:
+        - items
+        - metadata
         type: object
   parameters:
     DiscoveryGetAllConnectionsParams:

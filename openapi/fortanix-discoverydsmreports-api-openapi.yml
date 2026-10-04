@@ -36,7 +36,37 @@ paths:
       - DiscoveryDsmReports
 components:
   schemas:
+    DiscoveryDsmScanSummaryData:
+      allOf:
+      - properties:
+          connection_correlation_data:
+            items:
+              $ref: '#/components/schemas/DiscoveryConnectionCorrelationData'
+            type: array
+          keys_by_status:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryDsmSummaryKeyStatusData'
+            type: object
+          keys_by_type:
+            additionalProperties:
+              $ref: '#/components/schemas/DiscoveryDsmKeyAlgorithmData'
+            type: object
+          keys_discovery:
+            $ref: '#/components/schemas/DiscoveryDsmKeysDiscoveryData'
+        required:
+        - keys_by_status
+        - keys_by_type
+        - connection_correlation_data
+        type: object
     DiscoveryDsmSummaryKeyStatusData:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryDsmKeyAlgorithmData:
       allOf:
       - properties:
           count:
@@ -71,36 +101,6 @@ components:
         - connection_id
         - connection_name
         - correlated_keys_count
-        type: object
-    DiscoveryDsmKeyAlgorithmData:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
-    DiscoveryDsmScanSummaryData:
-      allOf:
-      - properties:
-          connection_correlation_data:
-            items:
-              $ref: '#/components/schemas/DiscoveryConnectionCorrelationData'
-            type: array
-          keys_by_status:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryDsmSummaryKeyStatusData'
-            type: object
-          keys_by_type:
-            additionalProperties:
-              $ref: '#/components/schemas/DiscoveryDsmKeyAlgorithmData'
-            type: object
-          keys_discovery:
-            $ref: '#/components/schemas/DiscoveryDsmKeysDiscoveryData'
-        required:
-        - keys_by_status
-        - keys_by_type
-        - connection_correlation_data
         type: object
   securitySchemes:
     Oauth2ClientCredentials:

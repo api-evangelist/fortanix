@@ -134,6 +134,54 @@ paths:
       - bearerToken: []
 components:
   schemas:
+    GetAllDatasetsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataset'
+    DatasetCredentialsRequest:
+      type: object
+      description: ''
+      required:
+      - contents
+      properties:
+        contents:
+          type: string
+    CreateDatasetRequest:
+      type: object
+      required:
+      - name
+      - description
+      - labels
+      - location
+      - credentials
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        location:
+          type: string
+        credentials:
+          $ref: '#/components/schemas/DatasetCredentialsRequest'
+        metadata:
+          $ref: '#/components/schemas/DatasetMetadata'
+        long_description:
+          type: string
+          description: A github-flavored markdown-formatted string that will be rendered in UI for viewing a summary of this dataset, limited to 16KiB.
+        group_id:
+          type: string
+          format: uuid
     Dataset:
       type: object
       description: ''
@@ -214,52 +262,6 @@ components:
         filtered_count:
           type: integer
           description: Total number of items as per the current filter.
-    DatasetCredentialsRequest:
-      type: object
-      description: ''
-      required:
-      - contents
-      properties:
-        contents:
-          type: string
-    DatasetMetadata:
-      type: object
-      description: Metadata about the dataset.
-    DatasetCredentials:
-      type: object
-      description: ''
-      properties:
-        sdkms:
-          $ref: '#/components/schemas/SdkmsCredentials'
-    CreateDatasetRequest:
-      type: object
-      required:
-      - name
-      - description
-      - labels
-      - location
-      - credentials
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-        location:
-          type: string
-        credentials:
-          $ref: '#/components/schemas/DatasetCredentialsRequest'
-        metadata:
-          $ref: '#/components/schemas/DatasetMetadata'
-        long_description:
-          type: string
-          description: A github-flavored markdown-formatted string that will be rendered in UI for viewing a summary of this dataset, limited to 16KiB.
-        group_id:
-          type: string
-          format: uuid
     SdkmsCredentials:
       type: object
       description: ''
@@ -271,6 +273,12 @@ components:
           type: string
         credentials_key_name:
           type: string
+    DatasetCredentials:
+      type: object
+      description: ''
+      properties:
+        sdkms:
+          $ref: '#/components/schemas/SdkmsCredentials'
     DatasetUpdateRequest:
       type: object
       properties:
@@ -294,25 +302,10 @@ components:
         group_id:
           type: string
           format: uuid
-    GetAllDatasetsResponse:
+    DatasetMetadata:
       type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dataset'
+      description: Metadata about the dataset.
   parameters:
-    CreateDatasetRequest:
-      name: body
-      in: body
-      required: true
-      description: ''
-      schema:
-        $ref: '#/components/schemas/CreateDatasetRequest'
     DatasetId:
       name: dataset-id
       in: path
@@ -321,6 +314,13 @@ components:
       schema:
         type: string
         format: uuid
+    CreateDatasetRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/CreateDatasetRequest'
     DatasetUpdateRequest:
       name: body
       in: body

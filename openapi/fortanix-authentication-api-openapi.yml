@@ -60,18 +60,6 @@ paths:
       - Authentication
 components:
   schemas:
-    OauthTokenError:
-      properties:
-        error:
-          $ref: '#/components/schemas/OauthTokenErrorCode'
-        error_description:
-          type: string
-        error_uri:
-          type: string
-      required:
-      - error
-      - error_description
-      type: object
     OauthTokenErrorCode:
       description: Conforms to RFC 6749 Section 5.2.
       enum:
@@ -99,6 +87,18 @@ components:
       - access_token
       - token_type
       - expires_in
+      type: object
+    OauthTokenError:
+      properties:
+        error:
+          $ref: '#/components/schemas/OauthTokenErrorCode'
+        error_description:
+          type: string
+        error_uri:
+          type: string
+      required:
+      - error
+      - error_description
       type: object
   securitySchemes:
     Oauth2ClientCredentials:
