@@ -1,0 +1,25 @@
+generated: '2026-10-13'
+method: searched
+checked:
+- https://azuremarketplace.microsoft.com/
+marketplace_apps: []
+edges:
+- partner_name: Microsoft Azure Marketplace
+  partner: microsoft-azure
+  partner_match: aggregator
+  type: marketplace
+  marketplace: azure-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Fortanix
+  listing_count: 5
+  apps:
+  - Fortanix Data Security Manager SaaS (DSM SaaS)
+  - Fortanix Data Security Manager
+  - Fortanix Data Security Manager (VHD)
+  - Fortanix Confidential Computing Node Agent
+  - Fortanix Confidential Computing Manager on Azure
+  seller_name: Fortanix
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
