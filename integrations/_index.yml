@@ -15,3 +15,29 @@
   relationship: distribution-channel
   status: not-a-workflow
   arazzo: null
+- slug: fortanix-okta-own
+  label: Okta (own)
+  partner: okta
+  partner_name: Okta (own)
+  category: Single Sign-On
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.okta.com/integrations/fortanixsdkms/
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: fortanix-palo-alto-networks-own
+  label: Palo Alto Networks (own)
+  partner: palo-alto-networks
+  partner_name: Palo Alto Networks (own)
+  category: Identity and Access Management
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://cortex.marketplace.pan.dev/marketplace/details/Fortanix-DSM/
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
