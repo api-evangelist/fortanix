@@ -167,20 +167,24 @@ paths:
                 $ref: '#/components/schemas/TaskResult'
 components:
   schemas:
-    TaskUpdateRequest:
-      type: object
+    ApprovalStatus:
+      type: string
+      description: Approval status.
+      enum:
+      - APPROVED
+      - DENIED
+    TaskType:
+      type: string
+      description: The types of tasks supported.
+      enum:
+      - NODE_ATTESTATION
+      - CERTIFICATE_ISSUANCE
+      - BUILD_WHITELIST
+      - DOMAIN_WHITELIST
+    RequesterInfo:
       required:
-      - status
-      properties:
-        status:
-          $ref: '#/components/schemas/ApprovalStatus'
-        denial_reason:
-          type: string
-          description: Reason associated with the denial.
-    ApprovalInfo:
+      - requester_type
       type: object
-      required:
-      - user_id
       properties:
         user_id:
           type: string
@@ -189,40 +193,15 @@ components:
         user_name:
           type: string
           description: User Name.
-        status:
-          $ref: '#/components/schemas/ApprovalStatus'
-        denial_reason:
+        app_id:
           type: string
-          description: Reason associated with the denial.
-    GetAllTasksResponse:
-      type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
-    TaskStatus:
-      required:
-      - created_at
-      - status_updated_at
-      - status
-      type: object
-      description: Status info for a task.
-      properties:
-        created_at:
-          type: integer
-          format: int64
-          description: Task creation time
-        status_updated_at:
-          type: integer
-          format: int64
-          description: Time since the status change.
-        status:
-          $ref: '#/components/schemas/TaskStatusType'
+          format: uuid
+          description: App Id.
+        app_name:
+          type: string
+          description: App Name.
+        requester_type:
+          $ref: '#/components/schemas/RequesterType'
     Task:
       type: object
       required:
@@ -266,6 +245,65 @@ components:
           type: string
           format: uuid
           description: Group Id
+    TaskStatusType:
+      type: string
+      description: Status string for a task.
+      enum:
+      - INPROGRESS
+      - FAILED
+      - SUCCESS
+      - DENIED
+    GetAllTasksResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+    RequesterType:
+      type: string
+      description: Type of requester.
+      enum:
+      - USER
+      - APP
+      - SYSTEM
+    TaskResult:
+      type: object
+      properties:
+        task_id:
+          type: string
+          format: uuid
+          description: Task Id
+        certificate_id:
+          type: string
+          format: uuid
+          description: Certificate Id in case of certificate issuance task.
+        node_id:
+          type: string
+          format: uuid
+          description: Compute Node Id.
+        task_type:
+          $ref: '#/components/schemas/TaskType'
+        task_status:
+          $ref: '#/components/schemas/TaskStatus'
+        build_id:
+          type: string
+          format: uuid
+          description: Build Id.
+    TaskUpdateRequest:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        denial_reason:
+          type: string
+          description: Reason associated with the denial.
     SearchMetadata:
       type: object
       required:
@@ -290,62 +328,10 @@ components:
         filtered_count:
           type: integer
           description: Total number of items as per the current filter.
-    TaskStatusType:
-      type: string
-      description: Status string for a task.
-      enum:
-      - INPROGRESS
-      - FAILED
-      - SUCCESS
-      - DENIED
-    TaskResult:
+    ApprovalInfo:
       type: object
-      properties:
-        task_id:
-          type: string
-          format: uuid
-          description: Task Id
-        certificate_id:
-          type: string
-          format: uuid
-          description: Certificate Id in case of certificate issuance task.
-        node_id:
-          type: string
-          format: uuid
-          description: Compute Node Id.
-        task_type:
-          $ref: '#/components/schemas/TaskType'
-        task_status:
-          $ref: '#/components/schemas/TaskStatus'
-        build_id:
-          type: string
-          format: uuid
-          description: Build Id.
-    ApprovalStatus:
-      type: string
-      description: Approval status.
-      enum:
-      - APPROVED
-      - DENIED
-    TaskType:
-      type: string
-      description: The types of tasks supported.
-      enum:
-      - NODE_ATTESTATION
-      - CERTIFICATE_ISSUANCE
-      - BUILD_WHITELIST
-      - DOMAIN_WHITELIST
-    RequesterType:
-      type: string
-      description: Type of requester.
-      enum:
-      - USER
-      - APP
-      - SYSTEM
-    RequesterInfo:
       required:
-      - requester_type
-      type: object
+      - user_id
       properties:
         user_id:
           type: string
@@ -354,16 +340,37 @@ components:
         user_name:
           type: string
           description: User Name.
-        app_id:
+        status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        denial_reason:
           type: string
-          format: uuid
-          description: App Id.
-        app_name:
-          type: string
-          description: App Name.
-        requester_type:
-          $ref: '#/components/schemas/RequesterType'
+          description: Reason associated with the denial.
+    TaskStatus:
+      required:
+      - created_at
+      - status_updated_at
+      - status
+      type: object
+      description: Status info for a task.
+      properties:
+        created_at:
+          type: integer
+          format: int64
+          description: Task creation time
+        status_updated_at:
+          type: integer
+          format: int64
+          description: Time since the status change.
+        status:
+          $ref: '#/components/schemas/TaskStatusType'
   parameters:
+    TaskUpdateRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/TaskUpdateRequest'
     TaskId:
       name: task-id
       in: path
@@ -372,13 +379,6 @@ components:
       schema:
         type: string
         format: uuid
-    TaskUpdateRequest:
-      name: body
-      in: body
-      required: true
-      description: ''
-      schema:
-        $ref: '#/components/schemas/TaskUpdateRequest'
   securitySchemes:
     bearerToken:
       type: apiKey

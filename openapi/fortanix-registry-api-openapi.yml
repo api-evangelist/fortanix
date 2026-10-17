@@ -149,38 +149,22 @@ paths:
       security:
       - bearerToken: []
 components:
-  parameters:
-    RegistryId:
-      name: registry-id
-      in: path
-      required: true
-      description: UUID of a registry.
-      schema:
-        type: string
-        format: uuid
-    UpdateRegistryRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to update registry details.
-      schema:
-        $ref: '#/components/schemas/UpdateRegistryRequest'
-    RegistryRequest:
-      name: body
-      in: body
-      required: true
-      description: Request to add a registry to an account.
-      schema:
-        $ref: '#/components/schemas/RegistryRequest'
-    AppId:
-      name: app-id
-      in: path
-      required: true
-      description: UUID of an app.
-      schema:
-        type: string
-        format: uuid
   schemas:
+    CredentialType:
+      type: object
+      minProperties: 1
+      maxProperties: 1
+      description: ''
+      properties:
+        default:
+          $ref: '#/components/schemas/AuthConfig'
+    AppRegistryResponse:
+      type: object
+      properties:
+        input_image_registry:
+          $ref: '#/components/schemas/Registry'
+        output_image_registry:
+          $ref: '#/components/schemas/Registry'
     PatchDocument:
       type: object
       description: A JSONPatch document as defined by RFC 6902. The patch operation is subset of what is supported by RFC 6902.
@@ -196,36 +180,6 @@ components:
         value:
           type: object
           description: It is the value to be used for the field as indicated by op and path
-    AuthConfig:
-      description: Credentials for authenticating to a docker registry
-      type: object
-      required:
-      - username
-      properties:
-        username:
-          type: string
-          description: User name for docker registry authentication
-        password:
-          type: string
-          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
-    AppRegistryResponse:
-      type: object
-      properties:
-        input_image_registry:
-          $ref: '#/components/schemas/Registry'
-        output_image_registry:
-          $ref: '#/components/schemas/Registry'
-    PatchOperation:
-      type: string
-      description: The operation to be performed
-      enum:
-      - add
-      - remove
-      - replace
-    PatchRequest:
-      type: array
-      items:
-        $ref: '#/components/schemas/PatchDocument'
     Registry:
       type: object
       required:
@@ -245,11 +199,24 @@ components:
         username:
           type: string
           description: Username of the registry.
-    ImageRegistryResponse:
+    PatchRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchDocument'
+    UpdateRegistryRequest:
+      $ref: '#/components/schemas/PatchRequest'
+    AuthConfig:
+      description: Credentials for authenticating to a docker registry
       type: object
+      required:
+      - username
       properties:
-        registry:
-          $ref: '#/components/schemas/Registry'
+        username:
+          type: string
+          description: User name for docker registry authentication
+        password:
+          type: string
+          description: Password for docker registry authentication. Note that this field may be redacted when it appears in API responses.
     RegistryRequest:
       type: object
       required:
@@ -264,16 +231,49 @@ components:
         description:
           type: string
           description: Description of the registry.
-    UpdateRegistryRequest:
-      $ref: '#/components/schemas/PatchRequest'
-    CredentialType:
+    PatchOperation:
+      type: string
+      description: The operation to be performed
+      enum:
+      - add
+      - remove
+      - replace
+    ImageRegistryResponse:
       type: object
-      minProperties: 1
-      maxProperties: 1
-      description: ''
       properties:
-        default:
-          $ref: '#/components/schemas/AuthConfig'
+        registry:
+          $ref: '#/components/schemas/Registry'
+  parameters:
+    UpdateRegistryRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to update registry details.
+      schema:
+        $ref: '#/components/schemas/UpdateRegistryRequest'
+    RegistryId:
+      name: registry-id
+      in: path
+      required: true
+      description: UUID of a registry.
+      schema:
+        type: string
+        format: uuid
+    RegistryRequest:
+      name: body
+      in: body
+      required: true
+      description: Request to add a registry to an account.
+      schema:
+        $ref: '#/components/schemas/RegistryRequest'
+    AppId:
+      name: app-id
+      in: path
+      required: true
+      description: UUID of an app.
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     bearerToken:
       type: apiKey

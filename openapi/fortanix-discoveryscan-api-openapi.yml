@@ -54,7 +54,45 @@ paths:
       tags:
       - DiscoveryScan
 components:
+  parameters:
+    DiscoveryScanParams:
+      explode: true
+      in: query
+      name: DiscoveryScanParams
+      schema:
+        $ref: '#/components/schemas/DiscoveryScanParams'
   schemas:
+    DiscoveryGetAllScansResponse:
+      allOf:
+      - properties:
+          items:
+            items:
+              $ref: '#/components/schemas/DiscoveryScan'
+            type: array
+        required:
+        - items
+        type: object
+    DiscoveryScanStatus:
+      enum:
+      - in_progress
+      - completed
+      - stopped
+      - pending
+      - failed
+      type: string
+    DiscoveryScanParams:
+      allOf:
+      - properties:
+          filter:
+            type: string
+          limit:
+            type: integer
+          previous_id:
+            format: uuid
+            type: string
+          sort_by:
+            type: string
+        type: object
     DiscoveryScan:
       allOf:
       - description: Scan in Predjama.
@@ -100,44 +138,6 @@ components:
         - scan_id
         - scan_status
         type: object
-    DiscoveryScanStatus:
-      enum:
-      - in_progress
-      - completed
-      - stopped
-      - pending
-      - failed
-      type: string
-    DiscoveryScanParams:
-      allOf:
-      - properties:
-          filter:
-            type: string
-          limit:
-            type: integer
-          previous_id:
-            format: uuid
-            type: string
-          sort_by:
-            type: string
-        type: object
-    DiscoveryGetAllScansResponse:
-      allOf:
-      - properties:
-          items:
-            items:
-              $ref: '#/components/schemas/DiscoveryScan'
-            type: array
-        required:
-        - items
-        type: object
-  parameters:
-    DiscoveryScanParams:
-      explode: true
-      in: query
-      name: DiscoveryScanParams
-      schema:
-        $ref: '#/components/schemas/DiscoveryScanParams'
   securitySchemes:
     Oauth2ClientCredentials:
       description: OAuth 2.0 client credential flow, see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.

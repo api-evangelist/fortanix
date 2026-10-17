@@ -112,6 +112,19 @@ paths:
       - bearerToken: []
 components:
   schemas:
+    OauthCodeData:
+      type: object
+      required:
+      - idp_id
+      - code
+      properties:
+        idp_id:
+          type: string
+          format: binary
+        code:
+          type: string
+        email:
+          type: string
     AuthResponse:
       type: object
       properties:
@@ -127,35 +140,6 @@ components:
       properties:
         session_info:
           $ref: '#/components/schemas/SessionInfo'
-    AuthDiscoverResponse:
-      type: object
-      required:
-      - auth_methods
-      properties:
-        auth_methods:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthMethod'
-    SelectAccountResponse:
-      type: object
-      required:
-      - session_info
-      properties:
-        session_info:
-          $ref: '#/components/schemas/SessionInfo'
-    OauthCodeData:
-      type: object
-      required:
-      - idp_id
-      - code
-      properties:
-        idp_id:
-          type: string
-          format: binary
-        code:
-          type: string
-        email:
-          type: string
     AuthDiscoverRequest:
       type: object
       properties:
@@ -190,20 +174,6 @@ components:
           format: binary
         cluster_idp_id:
           type: string
-    AuthRequest:
-      type: object
-      required:
-      - oauth_auth_code
-      properties:
-        oauth_auth_code:
-          $ref: '#/components/schemas/OauthCodeData'
-    AuthMethod:
-      type: object
-      properties:
-        password:
-          type: object
-        oauth_code_grant:
-          $ref: '#/components/schemas/OauthAuthCodeGrant'
     SessionInfo:
       type: object
       required:
@@ -226,6 +196,36 @@ components:
           type: string
           format: uuid
           description: The selected account ID, if one is selected.
+    AuthMethod:
+      type: object
+      properties:
+        password:
+          type: object
+        oauth_code_grant:
+          $ref: '#/components/schemas/OauthAuthCodeGrant'
+    AuthDiscoverResponse:
+      type: object
+      required:
+      - auth_methods
+      properties:
+        auth_methods:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthMethod'
+    SelectAccountResponse:
+      type: object
+      required:
+      - session_info
+      properties:
+        session_info:
+          $ref: '#/components/schemas/SessionInfo'
+    AuthRequest:
+      type: object
+      required:
+      - oauth_auth_code
+      properties:
+        oauth_auth_code:
+          $ref: '#/components/schemas/OauthCodeData'
   parameters:
     AccountId:
       name: account-id

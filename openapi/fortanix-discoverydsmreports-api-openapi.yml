@@ -36,6 +36,33 @@ paths:
       - DiscoveryDsmReports
 components:
   schemas:
+    DiscoveryDsmKeyAlgorithmData:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryDsmSummaryKeyStatusData:
+      allOf:
+      - properties:
+          count:
+            type: integer
+        required:
+        - count
+        type: object
+    DiscoveryDsmKeysDiscoveryData:
+      allOf:
+      - properties:
+          correlated_keys:
+            type: integer
+          total_keys:
+            type: integer
+        required:
+        - total_keys
+        - correlated_keys
+        type: object
     DiscoveryDsmScanSummaryData:
       allOf:
       - properties:
@@ -57,33 +84,6 @@ components:
         - keys_by_status
         - keys_by_type
         - connection_correlation_data
-        type: object
-    DiscoveryDsmSummaryKeyStatusData:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
-    DiscoveryDsmKeyAlgorithmData:
-      allOf:
-      - properties:
-          count:
-            type: integer
-        required:
-        - count
-        type: object
-    DiscoveryDsmKeysDiscoveryData:
-      allOf:
-      - properties:
-          correlated_keys:
-            type: integer
-          total_keys:
-            type: integer
-        required:
-        - total_keys
-        - correlated_keys
         type: object
     DiscoveryConnectionCorrelationData:
       allOf:

@@ -134,25 +134,6 @@ paths:
       - bearerToken: []
 components:
   schemas:
-    GetAllDatasetsResponse:
-      type: object
-      required:
-      - items
-      properties:
-        metadata:
-          $ref: '#/components/schemas/SearchMetadata'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dataset'
-    DatasetCredentialsRequest:
-      type: object
-      description: ''
-      required:
-      - contents
-      properties:
-        contents:
-          type: string
     CreateDatasetRequest:
       type: object
       required:
@@ -182,6 +163,81 @@ components:
         group_id:
           type: string
           format: uuid
+    SearchMetadata:
+      type: object
+      required:
+      - total_count
+      - filtered_count
+      - page
+      - pages
+      - limit
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        pages:
+          type: integer
+          description: Total pages as per the item counts and page limit.
+        limit:
+          type: integer
+          description: Number of items to limit in a page.
+        total_count:
+          type: integer
+          description: Total number of unfiltered items.
+        filtered_count:
+          type: integer
+          description: Total number of items as per the current filter.
+    DatasetCredentials:
+      type: object
+      description: ''
+      properties:
+        sdkms:
+          $ref: '#/components/schemas/SdkmsCredentials'
+    SdkmsCredentials:
+      type: object
+      description: ''
+      required:
+      - credentials_url
+      - credentials_key_name
+      properties:
+        credentials_url:
+          type: string
+        credentials_key_name:
+          type: string
+    DatasetUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        location:
+          type: string
+        credentials:
+          $ref: '#/components/schemas/DatasetCredentialsRequest'
+        long_description:
+          type: string
+          description: A github-flavored-markdown formatted string that will be rendered in UI for viewing a summary of this dataset, limited to 16 KiB.
+        metadata:
+          $ref: '#/components/schemas/DatasetMetadata'
+        group_id:
+          type: string
+          format: uuid
+    GetAllDatasetsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SearchMetadata'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataset'
     Dataset:
       type: object
       description: ''
@@ -238,74 +294,25 @@ components:
         long_description:
           type: string
           description: A github-flavored markdown-formatted string that will be rendered in UI for viewing a summary of this dataset, limited to 16KiB.
-    SearchMetadata:
-      type: object
-      required:
-      - total_count
-      - filtered_count
-      - page
-      - pages
-      - limit
-      properties:
-        page:
-          type: integer
-          description: Current page number
-        pages:
-          type: integer
-          description: Total pages as per the item counts and page limit.
-        limit:
-          type: integer
-          description: Number of items to limit in a page.
-        total_count:
-          type: integer
-          description: Total number of unfiltered items.
-        filtered_count:
-          type: integer
-          description: Total number of items as per the current filter.
-    SdkmsCredentials:
-      type: object
-      description: ''
-      required:
-      - credentials_url
-      - credentials_key_name
-      properties:
-        credentials_url:
-          type: string
-        credentials_key_name:
-          type: string
-    DatasetCredentials:
-      type: object
-      description: ''
-      properties:
-        sdkms:
-          $ref: '#/components/schemas/SdkmsCredentials'
-    DatasetUpdateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-        location:
-          type: string
-        credentials:
-          $ref: '#/components/schemas/DatasetCredentialsRequest'
-        long_description:
-          type: string
-          description: A github-flavored-markdown formatted string that will be rendered in UI for viewing a summary of this dataset, limited to 16 KiB.
-        metadata:
-          $ref: '#/components/schemas/DatasetMetadata'
-        group_id:
-          type: string
-          format: uuid
     DatasetMetadata:
       type: object
       description: Metadata about the dataset.
+    DatasetCredentialsRequest:
+      type: object
+      description: ''
+      required:
+      - contents
+      properties:
+        contents:
+          type: string
   parameters:
+    CreateDatasetRequest:
+      name: body
+      in: body
+      required: true
+      description: ''
+      schema:
+        $ref: '#/components/schemas/CreateDatasetRequest'
     DatasetId:
       name: dataset-id
       in: path
@@ -314,13 +321,6 @@ components:
       schema:
         type: string
         format: uuid
-    CreateDatasetRequest:
-      name: body
-      in: body
-      required: true
-      description: ''
-      schema:
-        $ref: '#/components/schemas/CreateDatasetRequest'
     DatasetUpdateRequest:
       name: body
       in: body

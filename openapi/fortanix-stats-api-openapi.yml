@@ -150,24 +150,24 @@ components:
             type: integer
           range_to:
             type: integer
-    InnerEsBucket:
+    EsCountStatsLog:
       allOf:
       - type: object
         properties:
-          doc_count:
-            type: integer
-          key:
-            type: string
-            format: uuid
-          unique_operations_count:
-            $ref: '#/components/schemas/UniqueOperationsCount'
-          unique_active_sobj_count:
-            $ref: '#/components/schemas/UniqueOperationsCount'
-          unique_active_app_count:
-            $ref: '#/components/schemas/UniqueOperationsCount'
+          buckets:
+            type: array
+            items:
+              $ref: '#/components/schemas/OuterEsBucket'
         required:
-        - doc_count
-        - key
+        - buckets
+    EsStatsCountQueryResponse:
+      allOf:
+      - type: object
+        properties:
+          time:
+            $ref: '#/components/schemas/EsCountStatsLog'
+        required:
+        - time
     OuterEsBucket:
       allOf:
       - type: object
@@ -195,24 +195,24 @@ components:
               $ref: '#/components/schemas/InnerEsBucket'
         required:
         - buckets
-    EsCountStatsLog:
+    InnerEsBucket:
       allOf:
       - type: object
         properties:
-          buckets:
-            type: array
-            items:
-              $ref: '#/components/schemas/OuterEsBucket'
+          doc_count:
+            type: integer
+          key:
+            type: string
+            format: uuid
+          unique_operations_count:
+            $ref: '#/components/schemas/UniqueOperationsCount'
+          unique_active_sobj_count:
+            $ref: '#/components/schemas/UniqueOperationsCount'
+          unique_active_app_count:
+            $ref: '#/components/schemas/UniqueOperationsCount'
         required:
-        - buckets
-    EsStatsCountQueryResponse:
-      allOf:
-      - type: object
-        properties:
-          time:
-            $ref: '#/components/schemas/EsCountStatsLog'
-        required:
-        - time
+        - doc_count
+        - key
     UniqueOperationsCount:
       allOf:
       - type: object
