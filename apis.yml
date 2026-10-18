@@ -330,6 +330,8 @@ apis:
   humanURL: https://support.fortanix.com/apidocs/dsm-introduction
   baseURL: https://amer.smartkey.io
   tags:
+  - Cryptocurrency
+  tags_raw:
   - Crypto
   properties:
   - type: OpenAPI
