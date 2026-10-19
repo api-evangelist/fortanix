@@ -1,7 +1,14 @@
 generated: '2026-10-13'
 method: searched
 checked:
+- https://api.nuget.org/v3
 - https://azuremarketplace.microsoft.com/
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 - okta/integrations/okta-integration-edges.yml
 - palo-alto-networks/integrations/palo-alto-networks-integration-edges.yml
 marketplace_apps: []
@@ -65,6 +72,171 @@ edges:
   category: Identity and Access Management
   badges:
   - support:partner
+- partner_name: crates.io
+  partner: crates-io
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Rust)
+  evidence: https://crates.io/crates/em-client
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: crates.io (public registry JSON)
+    spec_file: null
+    language: Rust
+    packages:
+    - name: em-client
+      version: 4.0.2
+      released: '2026-03-16'
+      released_field: updated_at
+      lapsed: false
+      page: https://crates.io/crates/em-client
+      repo_leg: github-org:fortanix
+      publisher_leg: org:fortanix
+      matched_by: github-org
+    - name: sdkms
+      version: 0.5.1
+      released: '2026-09-02'
+      released_field: updated_at
+      lapsed: false
+      page: https://crates.io/crates/sdkms
+      repo_leg: domain:fortanix.com
+      publisher_leg: org:fortanix
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: Go module proxy
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official SDK (Go)
+  evidence: https://pkg.go.dev/github.com/fortanix/sdkms-client-go
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/fortanix/sdkms-client-go
+      version: v0.4.2
+      released: '2026-06-16'
+      released_field: Time
+      lapsed: false
+      page: https://pkg.go.dev/github.com/fortanix/sdkms-client-go
+      repo_leg: github-org:fortanix
+      publisher_leg: org:fortanix
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: Maven Central
+  partner: maven-central
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Java/JVM)
+  evidence: https://central.sonatype.com/artifact/com.fortanix/sdkms-client
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Maven Central (public registry JSON)
+    spec_file: null
+    language: Java/JVM
+    packages:
+    - name: com.fortanix:sdkms-client
+      version: 5.6.2919
+      released: '2026-03-03'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-client
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    - name: com.fortanix:sdkms-jce-provider
+      version: 5.6.2919
+      released: '2026-03-03'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    - name: com.fortanix:sdkms-jce-provider-dsma
+      version: 4.15.2182
+      released: '2023-03-03'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-dsma
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    - name: com.fortanix:sdkms-jce-provider-dsma-jdk11
+      version: 4.15.2182
+      released: '2023-03-03'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-dsma-jdk11
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    - name: com.fortanix:sdkms-jce-provider-jdk11
+      version: 4.19.2244
+      released: '2023-08-02'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-jdk11
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: PyPI
+  partner: pypi
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Python)
+  evidence: https://pypi.org/project/sdkms/
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public registry JSON)
+    spec_file: null
+    language: Python
+    packages:
+    - name: sdkms
+      version: 5.6.2919
+      released: '2026-03-03'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/sdkms/
+      repo_leg: domain:fortanix.com
+      publisher_leg: email:fortanix.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 source:
 - okta/integrations/okta-integration-edges.yml
 - palo-alto-networks/integrations/palo-alto-networks-integration-edges.yml

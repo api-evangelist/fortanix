@@ -41,3 +41,171 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: fortanix-crates-io
+  label: crates.io
+  partner: crates-io
+  partner_name: crates.io
+  category: official SDK (Rust)
+  type: register
+  channel: package-registry
+  evidence: https://crates.io/crates/em-client
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: crates.io (public registry JSON)
+    spec_file: null
+    language: Rust
+    packages:
+    - name: em-client
+      version: 4.0.2
+      released: '2026-03-16'
+      released_field: updated_at
+      lapsed: false
+      page: https://crates.io/crates/em-client
+      repo_leg: github-org:fortanix
+      publisher_leg: org:fortanix
+      matched_by: github-org
+    - name: sdkms
+      version: 0.5.1
+      released: '2026-09-02'
+      released_field: updated_at
+      lapsed: false
+      page: https://crates.io/crates/sdkms
+      repo_leg: domain:fortanix.com
+      publisher_leg: org:fortanix
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: fortanix-go-module-proxy
+  label: Go module proxy
+  partner_name: Go module proxy
+  category: official SDK (Go)
+  type: register
+  channel: package-registry
+  evidence: https://pkg.go.dev/github.com/fortanix/sdkms-client-go
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/fortanix/sdkms-client-go
+      version: v0.4.2
+      released: '2026-06-16'
+      released_field: Time
+      lapsed: false
+      page: https://pkg.go.dev/github.com/fortanix/sdkms-client-go
+      repo_leg: github-org:fortanix
+      publisher_leg: org:fortanix
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: fortanix-maven-central
+  label: Maven Central
+  partner: maven-central
+  partner_name: Maven Central
+  category: official SDK (Java/JVM)
+  type: register
+  channel: package-registry
+  evidence: https://central.sonatype.com/artifact/com.fortanix/sdkms-client
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Maven Central (public registry JSON)
+    spec_file: null
+    language: Java/JVM
+    packages:
+    - name: com.fortanix:sdkms-client
+      version: 5.6.2919
+      released: '2026-03-03'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-client
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    - name: com.fortanix:sdkms-jce-provider
+      version: 5.6.2919
+      released: '2026-03-03'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    - name: com.fortanix:sdkms-jce-provider-dsma
+      version: 4.15.2182
+      released: '2023-03-03'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-dsma
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    - name: com.fortanix:sdkms-jce-provider-dsma-jdk11
+      version: 4.15.2182
+      released: '2023-03-03'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-dsma-jdk11
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    - name: com.fortanix:sdkms-jce-provider-jdk11
+      version: 4.19.2244
+      released: '2023-08-02'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.fortanix/sdkms-jce-provider-jdk11
+      repo_leg: domain:fortanix.com
+      publisher_leg: groupId:fortanix.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: fortanix-pypi
+  label: PyPI
+  partner: pypi
+  partner_name: PyPI
+  category: official SDK (Python)
+  type: register
+  channel: package-registry
+  evidence: https://pypi.org/project/sdkms/
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public registry JSON)
+    spec_file: null
+    language: Python
+    packages:
+    - name: sdkms
+      version: 5.6.2919
+      released: '2026-03-03'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/sdkms/
+      repo_leg: domain:fortanix.com
+      publisher_leg: email:fortanix.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
