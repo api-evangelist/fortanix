@@ -12,6 +12,13 @@ checked:
 - okta/integrations/okta-integration-edges.yml
 - palo-alto-networks/integrations/palo-alto-networks-integration-edges.yml
 - terraform/integrations/terraform-integration-edges.yml
+- https://catalog.redhat.com/api/containers/v1/operators/bundles?filter=organization==certified-operators
+- https://catalog.redhat.com/api/containers/v1/repositories?page_size=100
+- https://catalog.redhat.com/api/containers/v1/vendors/label/
+- https://catalog.redhat.com/software/partners
+- https://csrc.nist.gov/projects/cryptographic-module-validation-program/modules-in-process/modules-in-process-list
+- https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search/all
+- https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search?SearchMode=Advanced&Standard=140-2&CertificateStatus=Historical&ValidationYear=0
 marketplace_apps: []
 edges:
 - partner_name: Microsoft Azure Marketplace
@@ -258,6 +265,105 @@ edges:
   category: infrastructure-as-code provider registry listing
   badges:
   - Verified publisher (Terraform partner tier)
+- partner_name: Red Hat Ecosystem Catalog (certified partners)
+  partner: red-hat
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://catalog.redhat.com/software/containers/search?p=1&vendor_name=Fortanix
+  category: Red Hat OpenShift / RHEL software certification
+  contract_reference:
+    register: 'Red Hat Ecosystem Catalog (catalog.redhat.com/api/containers/v1: repositories, vendors, certified
+      operator bundles)'
+    standard: Red Hat Container Certification (Red Hat Ecosystem Catalog, registry.connect.redhat.com)
+    spec_file: null
+    role: red-hat-certified-partner
+    registered_name: Fortanix
+    register_id: fortanix
+    matched_domain: fortanix.com
+    matched_by: domain
+    identity_source: the register's own company_url for the vendor (no lookup)
+    certified_products:
+    - product: Red Hat certified container image
+      product_type: container-image
+      standard: Red Hat Container Certification (Red Hat Ecosystem Catalog, registry.connect.redhat.com)
+      lapsed: false
+      repositories_listed: 10
+      products_sample:
+      - fortanix/ccm-node-agent-dcap-operator
+      - fortanix/ccm-node-agent-dcap-operator-bundle
+      - fortanix/ccm-node-agent-operator
+      - fortanix/ccm-node-agent-operator-bundle
+      - fortanix/ccm-node-agent-ubi7
+      - fortanix/k8s-sdkms-cert-setup
+    - product: Red Hat certified OpenShift operator
+      product_type: openshift-operator
+      standard: Red Hat OpenShift Operator Certification (certified-operator-index)
+      lapsed: true
+      operator_packages: 2
+      products_sample:
+      - ccm-node-agent-dcap-operator
+      - ccm-node-agent-operator
+      ocp_versions:
+      - '4.16'
+      - '4.17'
+      - '4.18'
+    signal_note: 'certified_products = one entry per certified product TYPE (container image, OpenShift operator),
+      standard named on each; lapsed: true when no certified item of that type is current (containers: all Deprecated
+      / past EOL / unpublished; operators: absent from the three newest certified-operator indexes); repository
+      and package counts are context, never counted'
+    detected_by: sweep-red-hat-certified-ecosystem.py
+    detected: '2026-10-22'
+  detected_by: sweep-red-hat-certified-ecosystem.py
+  first_seen: '2026-10-22'
+- partner_name: NIST Cryptographic Module Validation Program (FIPS 140)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules/search/all
+  category: FIPS 140 cryptographic module validation (NIST / CCCS CMVP)
+  contract_reference:
+    register: 'NIST CMVP validated cryptographic modules (csrc.nist.gov validated-modules search: active + historical)
+      and Modules In Process list'
+    standard: FIPS 140-2 / FIPS 140-3
+    spec_file: null
+    role: fips-140-validated-vendor
+    registered_name: Fortanix, Inc.
+    matched_domain: fortanix.com
+    matched_by: domain
+    signal_note: 'certified_products = one entry per (FIPS 140 edition, CMVP module type) held; a pair whose certificates
+      are all on the historical list is lapsed: true; Modules In Process are listing only (in_process), never certified;
+      certificate and module counts are context, never counted'
+    detected_by: sweep-nist-cmvp-fips-140-modules.py
+    detected: '2026-10-22'
+    certified_products:
+    - product: FIPS 140-2 Hardware cryptographic module
+      product_type: Hardware
+      standard: FIPS 140-2
+      status: Historical
+      lapsed: true
+      validated: '2022-01-19'
+    - product: FIPS 140-2 Software cryptographic module
+      product_type: Software
+      standard: FIPS 140-2
+      status: Historical
+      lapsed: true
+      validated: '2018-11-13'
+    - product: FIPS 140-3 Hardware cryptographic module
+      product_type: Hardware
+      standard: FIPS 140-3
+      status: Active
+      lapsed: false
+      validated: '2026-10-19'
+    vendor_country: USA
+    identity_source: register website (CMVP certificate Vendor panel)
+  detected_by: sweep-nist-cmvp-fips-140-modules.py
+  first_seen: '2026-10-22'
 source:
 - okta/integrations/okta-integration-edges.yml
 - palo-alto-networks/integrations/palo-alto-networks-integration-edges.yml
